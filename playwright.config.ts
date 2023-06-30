@@ -10,8 +10,8 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  // testDir: './tests',
   testDir: './tests',
+  timeout: 60000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -41,7 +41,21 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    }
+      testIgnore: ['**/tests/mol/*.spec.ts'] //ignore MOL defined below
+    },
+
+    //MOL
+    {
+      name: 'MOL logged in - chromium',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/*.spec.ts',
+      dependencies: ['MOL setup']
+    },
+    {
+      name: 'MOL setup',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/setup/mol_setup.ts',
+    },
 
     // {
     //   name: 'firefox',

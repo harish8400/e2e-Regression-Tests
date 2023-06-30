@@ -8,6 +8,10 @@ export abstract class BasePage {
         this.page = page;
     }
 
+    async reload() {
+        await this.page.reload();
+    }
+
     async sleep(miliseconds: number) {
         await this.page.waitForTimeout(miliseconds);
     }
