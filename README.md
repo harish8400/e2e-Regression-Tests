@@ -5,12 +5,12 @@ End to end Playwright monorepo containing e2e tests for various online portals (
 ## Installation
 Install NPM packages
 ```
-npm install #
+npm install 
 ```
 
 Install Playwright browsers
 ```
-npm playwright install
+npx playwright install
 ```
 
 ## Usage
@@ -23,12 +23,12 @@ export ENVIRONMENT=dev
 
 Run all tests
 ```
-npm playwright test
+npx playwright test
 ```
 
 Run specific tagged test/group
 ```
-npm playwright test --grep @adviser_online
+npx playwright test --grep @adviser_online
 ````
 
 ## Test results
@@ -46,3 +46,12 @@ Execute tests
 ```
 docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=poc e2e_tests --grep @adviser_online
 ```
+
+## Credentials
+
+Following test credentials required to run tests:
+
+### MOL
+
+* DLTA_JWT environment variable - admin credentials with access to perform actions (i.e. create and approve cases) in DLTA
+* MOL_USERNAME & MOL_PASSWORD envrionment variables - existing MOL user credentials (H4F only currently) with 2FA disabled 
