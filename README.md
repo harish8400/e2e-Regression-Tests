@@ -15,10 +15,10 @@ npx playwright install
 
 ## Usage
 
-Tests are execute in 'poc' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
+Tests are execute in 'dev' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
 
 ```
-export ENVIRONMENT=dev
+export ENVIRONMENT=uat
 ```
 
 Run all tests
