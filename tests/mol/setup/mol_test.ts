@@ -5,12 +5,14 @@ import { BeneficiariesPage } from '../../../src/mol/pom/beneficiaries_page';
 import { MemberApi } from '../../../src/dlta/api/member_api';
 import { CaseApi } from '../../../src/dlta/api/case_api';
 import { initDltaApiContext } from '../../../src/dlta/api/base_dlta_api';
+import { InvestmentsPage } from '../../../src/mol/pom/investments_page';
 
 
 type Pages = {
     loginPage: LoginPage;
     dashboardPage: DashboardPage;
     beneficiariesPage: BeneficiariesPage;
+    investmentsPage: InvestmentsPage;
 };
 
 type DltaApi = {
@@ -45,6 +47,10 @@ export const molAuthenticatedUserTest = base.extend<Pages & DltaApi>({
 
     beneficiariesPage: async ({ page }, use) => {
         await use(new BeneficiariesPage(page));
+    },
+
+    investmentsPage: async ({ page }, use) => {
+        await use(new InvestmentsPage(page));
     },
 
     dltaApiRequestContext: async ({ }, use) => {

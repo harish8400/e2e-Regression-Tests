@@ -42,6 +42,21 @@ export interface Account {
     productPhase: string
 }
 
+export interface InvestmentChange {
+    changeType: INVESTMENT_CHANGE_TYPE
+    investments: Array<MolInvestmentSelection>
+}
+
+export interface MolInvestmentSelection {
+    name: string,
+    percentage: number
+}
+
+export interface DltaInvestmentSelection {
+    id: string,
+    percent: number
+}
+
 export interface CaseGroupResponse {
     caseGroup: CaseGroup,
     cases: Array<CaseData>
@@ -68,8 +83,10 @@ export interface CloseCaseGroupData {
 }
 
 //enums
+
 export const enum CASE_TYPES {
-    MODIFY_BENEFICIARIES = "Beneficiary - Modify"
+    MODIFY_BENEFICIARIES = "Beneficiary - Modify",
+    MANUAL_INVESTMENT_SWITCH = "Investment Switch - Manual"
 }
 
 export const enum CASE_STATUS {
@@ -88,11 +105,18 @@ export const enum CASE_OUTCOME {
 };
 
 export const enum CASE_CONFIG_REFERENCE {
-    MODIFY_BENEFICIARIES = "modifyBeneficiaries"
+    MODIFY_BENEFICIARIES = "modifyBeneficiaries",
+    MANUAL_INVESTMENT_SWITCH = "manualInvestmentChange"
 }
 
 export const enum CASE_NOTES {
-    NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent."
+    NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent.",
+    INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent."
+}
+
+export const enum INVESTMENT_CHANGE_TYPE {
+    CURRENT_BALANCE,
+    FUTURE_INVESTMENTS
 }
 
 //consts
@@ -111,6 +135,29 @@ export const FUND_IDS = {
         PRODUCT_ID:
         {
             ACCUMULATION: "f4e4bf41-1351-52e5-8cbd-39105264d3e1"
+        }
+    }
+}
+
+export const INVESTMENT_OPTIONS = {
+    MERCY: {
+        ACCUMULATION: {
+            BALANCED_GROWTH: {
+                NAME: "Balanced Growth",
+                ID: "HE46"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "HE53"
+            },
+            PROPERTY_AND_INFRASTRUCTURE: {
+                NAME: "Property and Infrastructure",
+                ID: "HE48"
+            },
+            DIVERSIFIED_BONDS: {
+                NAME: "Diversified Bonds",
+                ID: "HE56"
+            }
         }
     }
 }

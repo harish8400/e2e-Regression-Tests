@@ -42,7 +42,7 @@ export class BeneficaryApiHandler {
         }
     }
 
-    static async createMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, beneficiaries?: Array<Beneficary>, skipCorrespondence?: boolean) {
+    static async createMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, beneficiaries: Array<Beneficary>, skipCorrespondence?: boolean) {
         let caseData: CaseData = {
             type: CASE_TYPES.MODIFY_BENEFICIARIES,
             status: CASE_STATUS.PENDING,
@@ -51,7 +51,7 @@ export class BeneficaryApiHandler {
         };
         let newCase = await memberApi.initCase(memberId, caseData);
 
-        let beneficiariesToCreate = beneficiaries?.map(beneficiary => {
+        let beneficiariesToCreate = beneficiaries.map(beneficiary => {
             return {
                 entityName: beneficiary.name,
                 percent: beneficiary.percentage,

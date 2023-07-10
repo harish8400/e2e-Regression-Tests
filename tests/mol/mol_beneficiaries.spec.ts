@@ -65,7 +65,7 @@ test("MOL add beneficiaries @mol @mol_add", async ({ beneficiariesPage, memberAp
     //TODO: handle if update already in progress
     await test.step("Data prep - DLTA delete all beneficiaries", async () => {
         await BeneficaryApiHandler.deleteMemberBeneficiaries(memberApi, caseApi, memberId);
-        beneficiariesPage.reload();
+        await beneficiariesPage.reload();
     })
 
     let beneficiariesToAdd: Beneficary[] = [
