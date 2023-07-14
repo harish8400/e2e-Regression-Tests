@@ -6,6 +6,7 @@ import { MemberApi } from '../../../src/dlta/api/member_api';
 import { CaseApi } from '../../../src/dlta/api/case_api';
 import { initDltaApiContext } from '../../../src/dlta/api/base_dlta_api';
 import { InvestmentsPage } from '../../../src/mol/pom/investments_page';
+import { InsurancePage } from '../../../src/mol/pom/insurance_page';
 
 
 type Pages = {
@@ -13,6 +14,7 @@ type Pages = {
     dashboardPage: DashboardPage;
     beneficiariesPage: BeneficiariesPage;
     investmentsPage: InvestmentsPage;
+    insurancePage: InsurancePage;
 };
 
 type DltaApi = {
@@ -34,6 +36,7 @@ export const molTest = base.extend<Pages>({
 
 //User previously logged in and sessionStorage has been saved
 export const molAuthenticatedUserTest = base.extend<Pages & DltaApi>({
+    //pom
     dashboardPage: async ({ page }, use) => {
         const loginPage = new LoginPage(page);
         await loginPage.goTo();
@@ -53,6 +56,11 @@ export const molAuthenticatedUserTest = base.extend<Pages & DltaApi>({
         await use(new InvestmentsPage(page));
     },
 
+    insurancePage: async ({ page }, use) => {
+        await use(new InsurancePage(page));
+    },
+
+    //api
     dltaApiRequestContext: async ({ }, use) => {
         await use(await initDltaApiContext());
     },

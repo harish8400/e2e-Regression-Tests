@@ -47,6 +47,12 @@ export interface InvestmentChange {
     investments: Array<MolInvestmentSelection>
 }
 
+export interface InsurancePolicy {
+    category: string,
+    coverAmount: number,
+    premium: number,
+}
+
 export interface MolInvestmentSelection {
     name: string,
     percentage: number
@@ -86,7 +92,10 @@ export interface CloseCaseGroupData {
 
 export const enum CASE_TYPES {
     MODIFY_BENEFICIARIES = "Beneficiary - Modify",
-    MANUAL_INVESTMENT_SWITCH = "Investment Switch - Manual"
+    MANUAL_INVESTMENT_SWITCH = "Investment Switch - Manual",
+    REMOVE_TAGS = "Tags - Remove",
+    INSURANCE_MODIFY_COVER = "Insurance - Add/Modify members cover records",
+    INSURANCE_BATCH_COMMENCEMENT = "Insurance - Batch members commencement"
 }
 
 export const enum CASE_STATUS {
@@ -106,7 +115,10 @@ export const enum CASE_OUTCOME {
 
 export const enum CASE_CONFIG_REFERENCE {
     MODIFY_BENEFICIARIES = "modifyBeneficiaries",
-    MANUAL_INVESTMENT_SWITCH = "manualInvestmentChange"
+    MANUAL_INVESTMENT_SWITCH = "manualInvestmentChange",
+    REMOVE_MEMBER_CATEGORY = "removeMemberCategory",
+    PROCESS_MEMBER_INSURANCE = "processMemberInsurance",
+    INSURANCE_BATCH_COMMENCEMENT = "insuranceBatchCommencement"
 }
 
 export const enum CASE_NOTES {
@@ -117,6 +129,10 @@ export const enum CASE_NOTES {
 export const enum INVESTMENT_CHANGE_TYPE {
     CURRENT_BALANCE,
     FUTURE_INVESTMENTS
+}
+
+export const enum LINK_TYPE {
+    INSURANCE_OPT_IN = "IOI"
 }
 
 //consts

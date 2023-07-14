@@ -29,7 +29,7 @@ npx playwright test
 Run specific tagged test/group
 ```
 npx playwright test --grep @adviser_online
-````
+```
 
 or project
 ```

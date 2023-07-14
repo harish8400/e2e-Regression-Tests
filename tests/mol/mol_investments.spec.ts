@@ -50,7 +50,7 @@ test("MOL change future investment @mol @mol_future_investments_switch", async (
     await test.step("Wait for DLTA processing and close", async () => {
         await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTES.INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT);
         //TODO check letter payload
-        await CaseApiHandler.closeCloseCaseGroupWithSuccess(memberApi, memberId, caseGroupId)
+        await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
     })
 
     await test.step("Check investments updated in MOL", async () => {

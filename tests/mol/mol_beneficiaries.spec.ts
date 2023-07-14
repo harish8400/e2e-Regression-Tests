@@ -99,7 +99,7 @@ test("MOL add beneficiaries @mol @mol_add", async ({ beneficiariesPage, memberAp
         await CaseApiHandler.approveCaseGroup(caseApi, caseGroupId);
         await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTES.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
         //TODO check letter payload
-        await CaseApiHandler.closeCloseCaseGroupWithSuccess(memberApi, memberId, caseGroupId)
+        await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
     })
 
     await test.step("Check beneficiaries updated in MOL", async () => {

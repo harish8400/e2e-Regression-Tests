@@ -13,6 +13,16 @@ export class MemberApi extends BaseDltaApi {
         return await response.json();
     }
 
+    async getLink(memberId: string) {
+        let response = await this.get(`member/${memberId}/link`);
+        return await response.json();
+    }
+
+    async getInsurance(memberId: string) {
+        let response = await this.get(`member/${memberId}/insurance`);
+        return await response.json();
+    }
+
     async initCase(memberId: string, caseData: CaseData) {
         let path = `/member/${memberId}/case`;
         let data = {
