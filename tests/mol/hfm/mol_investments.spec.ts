@@ -1,19 +1,15 @@
 import { expect } from "@playwright/test";
-import { CASE_NOTES, DltaInvestmentSelection, FUND_IDS, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS, InvestmentChange } from "../../types";
-import { molAuthenticatedUserTest as test } from "./setup/mol_test";
-import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
-import { CaseApiHandler } from "../../src/dlta/api/case_api_handler";
-import { InvestmentApiHandler } from "../../src/dlta/api/investment_api_handler";
-
-let memberId: string;
+import { CASE_NOTES, DltaInvestmentSelection, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS, InvestmentChange } from "../../../types";
+import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
+import { InvestmentApiHandler } from "../../../src/dlta/api/investment_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    let accounts = await dashboardPage.doAccountsGet();
-    memberId = accounts.find(account => account.fundProductId === FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION)!!.memberId!!;
     await dashboardPage.navigateToInvestments();
 })
 
-test("MOL change future investment @mol @mol_future_investments_switch", async ({ investmentsPage, memberApi, caseApi }) => {
+test("MOL change future investment @mol @mol_future_investments_switch", async ({ investmentsPage, memberApi, caseApi, memberId }) => {
     // data prep - change future investment to something else first
     await test.step("Data prep - DLTA update future investments", async () => {
         let investments: Array<DltaInvestmentSelection> = [{ id: INVESTMENT_OPTIONS.MERCY.ACCUMULATION.DIVERSIFIED_BONDS.ID, percent: 100 }]

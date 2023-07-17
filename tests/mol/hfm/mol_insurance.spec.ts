@@ -1,19 +1,15 @@
 import { expect } from "@playwright/test";
-import { CASE_STATUS, FUND_IDS, InsurancePolicy, LINK_TYPE } from "../../types";
-import { molAuthenticatedUserTest as test } from "./setup/mol_test";
-import { CaseApiHandler } from "../../src/dlta/api/case_api_handler";
-import { LinkApiHandler } from "../../src/dlta/api/link_api_handler";
-import { InsuranceApiHandler } from "../../src/dlta/api/insurance_api_handler";
-
-let memberId: string;
+import { CASE_STATUS, InsurancePolicy, LINK_TYPE } from "../../../types";
+import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
+import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
+import { LinkApiHandler } from "../../../src/dlta/api/link_api_handler";
+import { InsuranceApiHandler } from "../../../src/dlta/api/insurance_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    let accounts = await dashboardPage.doAccountsGet();
-    memberId = accounts.find(account => account.fundProductId === FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION)!!.memberId!!;
     await dashboardPage.navigateToInsurance();
 })
 
-test("MOL insurance opt-in @mol @mol_insurance_opt-in", async ({ insurancePage, memberApi, caseApi }) => {
+test("MOL insurance opt-in @mol @mol_insurance_opt-in", async ({ insurancePage, memberApi, caseApi, memberId }) => {
     await test.step("Data prep - DLTA delete existing insurance and opt-in", async () => {
         await InsuranceApiHandler.deleteAllPolicies(memberApi, caseApi, memberId);
         await LinkApiHandler.deleteLinkType(memberApi, caseApi, memberId, LINK_TYPE.INSURANCE_OPT_IN);

@@ -1,19 +1,15 @@
 import { expect } from "@playwright/test";
-import { molAuthenticatedUserTest as test } from "./setup/mol_test";
-import { BeneficaryApiHandler } from "../../src/dlta/api/beneficiary_api_handler";
-import { Beneficary, CASE_NOTES, CASE_STATUS, FUND_IDS } from "../../types";
-import { CaseApiHandler } from "../../src/dlta/api/case_api_handler";
-import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
-
-let memberId: string;
+import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
+import { BeneficaryApiHandler } from "../../../src/dlta/api/beneficiary_api_handler";
+import { Beneficary, CASE_NOTES, CASE_STATUS } from "../../../types";
+import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    let accounts = await dashboardPage.doAccountsGet();
-    memberId = accounts.find(account => account.fundProductId === FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION)!!.memberId!!;
     await dashboardPage.navigateToBeneficiaries();
 })
 
-test("MOL View Beneficiaries @mol @mol_view", async ({ beneficiariesPage, caseApi, memberApi }) => {
+test("MOL view beneficiaries @mol @mol_beneficiaries_view", async ({ beneficiariesPage, caseApi, memberApi, memberId }) => {
     await test.step("Data prep - DLTA delete all beneficiaries", async () => {
         await BeneficaryApiHandler.deleteMemberBeneficiaries(memberApi, caseApi, memberId);
     })
@@ -61,7 +57,7 @@ test("MOL View Beneficiaries @mol @mol_view", async ({ beneficiariesPage, caseAp
     })
 })
 
-test("MOL add beneficiaries @mol @mol_add", async ({ beneficiariesPage, memberApi, caseApi }) => {
+test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiariesPage, memberApi, caseApi, memberId }) => {
     //TODO: handle if update already in progress
     await test.step("Data prep - DLTA delete all beneficiaries", async () => {
         await BeneficaryApiHandler.deleteMemberBeneficiaries(memberApi, caseApi, memberId);

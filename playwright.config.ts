@@ -33,28 +33,29 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
+    actionTimeout: 15000
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: ['**/tests/mol/*.spec.ts'] //ignore MOL defined below
+      testIgnore: ['**/tests/mol/**/*.spec.ts'] //ignore MOL defined below
     },
 
-    //MOL
+    //HfM MOL
     {
-      name: 'MOL logged in - chromium',
+      name: 'mol_hfm_chromium',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/*.spec.ts',
-      dependencies: ['MOL setup']
+      testMatch: '**/tests/mol/hfm/*.spec.ts',
+      dependencies: ['mol_hfm_setup']
     },
     {
-      name: 'MOL setup',
+      name: 'mol_hfm_setup',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/setup/mol_setup.ts',
+      testMatch: '**/tests/mol/hfm/setup/mol_hfm_setup.ts',
     },
 
     // {

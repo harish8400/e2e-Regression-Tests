@@ -33,7 +33,7 @@ npx playwright test --grep @adviser_online
 
 or project
 ```
-npx playwright test --project "MOL logged in - chromium"
+npx playwright test --project mol_hfm_chromium
 ```
 
 ## Test results
@@ -60,6 +60,9 @@ Following test credentials required to run tests:
 * DLTA_JWT environment variable - admin credentials with access to perform actions (i.e. create and approve cases) in DLTA
 * MOL_USERNAME & MOL_PASSWORD envrionment variables - existing MOL user credentials (H4F only currently) with 2FA disabled 
 
+```
+docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat -e MOL_USERNAME=$MOL_USERNAME -e MOL_PASSWORD=$MOL_PASSWORD -e DLTA_JWT=$DLTA_JWT e2e_tests --project mol_hfm_chromium
+```
 
 ### TODO
 [ ] add another Dockefile for non-arm processors
