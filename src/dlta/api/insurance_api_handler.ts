@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, CaseData, InsurancePolicy, ProcessTemplateData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, InsurancePolicy, ProcessTemplateData } from "../../../types";
 import { CaseApi } from "./case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api";
@@ -12,15 +12,7 @@ export class InsuranceApiHandler {
 
         let insuranceIdsToDelete = insurances.data.map((insurance: { linearId: { id: string; }; }) => insurance.linearId.id);
 
-        //TODO: move create case into reusable handler
-        let caseData: CaseData = {
-            type: CASE_TYPES.INSURANCE_MODIFY_COVER,
-            notes: "E2E auto test case creation",
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE,
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE);
 
         let templateData: ProcessTemplateData = {
             templateReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE,
@@ -138,15 +130,7 @@ export class InsuranceApiHandler {
             }
         }
 
-        let caseData: CaseData = {
-            type: CASE_TYPES.INSURANCE_MODIFY_COVER,
-            notes: "E2E auto test case creation",
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
-
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE)
 
         let templateData: ProcessTemplateData = {
             templateReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE,
@@ -162,14 +146,7 @@ export class InsuranceApiHandler {
     }
 
     static async commenceInsuranceForMember(memberApi: MemberApi, caseApi: CaseApi, memberId: string, skipCorrespondence?: boolean) {
-        let caseData: CaseData = {
-            type: CASE_TYPES.INSURANCE_BATCH_COMMENCEMENT,
-            notes: "E2E auto test case creation",
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_BATCH_COMMENCEMENT, CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT);
 
         let templateData: ProcessTemplateData = {
             templateReference: CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT,

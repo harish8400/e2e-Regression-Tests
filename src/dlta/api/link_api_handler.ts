@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, CaseData, LINK_TYPE, ProcessTemplateData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, LINK_TYPE, ProcessTemplateData } from "../../../types";
 import { CaseApi } from "./case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api";
@@ -14,14 +14,7 @@ export class LinkApiHandler {
             return;
         }
 
-        let caseData: CaseData = {
-            type: CASE_TYPES.REMOVE_TAGS,
-            notes: "E2E auto test case creation",
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY,
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.REMOVE_TAGS, CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY);
 
         let templateData: ProcessTemplateData = {
             templateReference: CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY,

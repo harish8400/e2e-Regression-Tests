@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, CaseData, DltaInvestmentSelection, ProcessTemplateData } from "../../../types"
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, DltaInvestmentSelection, ProcessTemplateData } from "../../../types"
 import { CaseApi } from "./case_api"
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api"
@@ -6,13 +6,7 @@ import { MemberApi } from "./member_api"
 export class InvestmentApiHandler {
 
     static async changeFutureInvestment(memberApi: MemberApi, caseApi: CaseApi, memberId: string, investments: Array<DltaInvestmentSelection>, skipCorrespondence?: boolean) {
-        let caseData: CaseData = {
-            type: CASE_TYPES.MANUAL_INVESTMENT_SWITCH,
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.MANUAL_INVESTMENT_SWITCH,
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MANUAL_INVESTMENT_SWITCH, CASE_CONFIG_REFERENCE.MANUAL_INVESTMENT_SWITCH);
 
         let templateData: ProcessTemplateData = {
             templateReference: CASE_CONFIG_REFERENCE.MANUAL_INVESTMENT_SWITCH,

@@ -1,6 +1,6 @@
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api";
-import { Beneficary, CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, CaseData, ProcessTemplateData } from "../../../types";
+import { Beneficary, CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, ProcessTemplateData } from "../../../types";
 import { CaseApi } from "./case_api";
 
 export class BeneficaryApiHandler {
@@ -12,14 +12,7 @@ export class BeneficaryApiHandler {
         if (beneficiaries.data.length < 1) {
             return;
         } else {
-            let caseData: CaseData = {
-                type: CASE_TYPES.MODIFY_BENEFICIARIES,
-                notes: "E2E auto test case creation",
-                status: CASE_STATUS.PENDING,
-                hold: false,
-                configReference: CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES,
-            };
-            let newCase = await memberApi.initCase(memberId, caseData);
+            let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
 
             let beneficiariesIdToDelete = beneficiaries.data.map((beneficiary: any) => beneficiary.linearId.id);
             let templateData: ProcessTemplateData = {
@@ -43,13 +36,7 @@ export class BeneficaryApiHandler {
     }
 
     static async createMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, beneficiaries: Array<Beneficary>, skipCorrespondence?: boolean) {
-        let caseData: CaseData = {
-            type: CASE_TYPES.MODIFY_BENEFICIARIES,
-            status: CASE_STATUS.PENDING,
-            hold: false,
-            configReference: CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES,
-        };
-        let newCase = await memberApi.initCase(memberId, caseData);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
 
         let beneficiariesToCreate = beneficiaries.map(beneficiary => {
             return {
@@ -80,6 +67,5 @@ export class BeneficaryApiHandler {
 
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
-
 
 }

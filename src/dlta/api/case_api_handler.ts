@@ -1,6 +1,6 @@
 import waitUntil from "async-wait-until";
 import { CaseApi } from "./case_api";
-import { CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CaseGroupApproveRejectData, CloseCaseGroupData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData } from "../../../types";
 import { MemberApi } from "./member_api";
 
 export class CaseApiHandler {
@@ -53,6 +53,18 @@ export class CaseApiHandler {
             status: CASE_STATUS.COMPLETE,
         }
         await memberApi.closeCaseGroup(memberId, closeData, true);
+    }
+
+    static async createPendingCase(memberApi: MemberApi, memberId: string, caseType: CASE_TYPES, configReference: CASE_CONFIG_REFERENCE) {
+        let caseData: CaseData = {
+            type: caseType,
+            notes: "E2E auto test case creation",
+            status: CASE_STATUS.PENDING,
+            hold: false,
+            configReference: configReference,
+        };
+        let newCase = await memberApi.initCase(memberId, caseData);
+        return newCase;
     }
 
 }
