@@ -10,10 +10,10 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  // testDir: './tests',
   testDir: './tests',
+  timeout: 60000,
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -33,15 +33,30 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
+    actionTimeout: 15000
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    }
+      testIgnore: ['**/tests/mol/**/*.spec.ts'] //ignore MOL defined below
+    },
+
+    //HfM MOL
+    {
+      name: 'mol_hfm_chromium',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/hfm/*.spec.ts',
+      dependencies: ['mol_hfm_setup']
+    },
+    {
+      name: 'mol_hfm_setup',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/hfm/setup/mol_hfm_setup.ts',
+    },
 
     // {
     //   name: 'firefox',

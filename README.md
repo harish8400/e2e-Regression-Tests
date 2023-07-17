@@ -5,37 +5,41 @@ End to end Playwright monorepo containing e2e tests for various online portals (
 ## Installation
 Install NPM packages
 ```
-npm install #
+npm install 
 ```
 
 Install Playwright browsers
 ```
-npm playwright install
+npx playwright install
 ```
 
 ## Usage
 
-Tests are execute in 'poc' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
+Tests are execute in 'dev' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
 
 ```
-export ENVIRONMENT=dev
+export ENVIRONMENT=uat
 ```
 
 Run all tests
 ```
-npm playwright test
+npx playwright test
 ```
 
 Run specific tagged test/group
 ```
-npm playwright test --grep @adviser_online
-````
+npx playwright test --grep @adviser_online
+```
+
+or project
+```
+npx playwright test --project mol_hfm_chromium
+```
 
 ## Test results
 Test results can be found in ./playwright-report folder after test run
 
 ## Docker
-[ ] TODO: add another Dockefile for non-arm processors
 
 Buld image
 ```
@@ -46,3 +50,35 @@ Execute tests
 ```
 docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=poc e2e_tests --grep @adviser_online
 ```
+
+## Credentials
+
+Following test credentials required to run tests:
+
+### MOL
+
+* DLTA_JWT environment variable - admin credentials with access to perform actions (i.e. create and approve cases) in DLTA
+* MOL_USERNAME & MOL_PASSWORD envrionment variables - existing MOL user credentials (H4F only currently) with 2FA disabled 
+
+```
+docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat -e MOL_USERNAME=$MOL_USERNAME -e MOL_PASSWORD=$MOL_PASSWORD -e DLTA_JWT=$DLTA_JWT e2e_tests --project mol_hfm_chromium
+```
+
+### TODO
+[ ] add another Dockefile for non-arm processors
+
+[ ] investigate if POM classes should be split into 'view' and 'manage'
+
+[ ] address various TODOs comments in code
+
+[ ] investigate if types (i.e. ./types.ts) should be split and kepts closer to where used
+
+[ ] split tests (incl. fixtures?) by funds?
+
+[ ] add clear test details and steps to html report for testers
+
+[ ] figure out if there is a better way of getting memberId from username
+
+[ ] before test is run check/deal with cases in progress if using existing members
+
+[ ] move environment config init to global setup?
