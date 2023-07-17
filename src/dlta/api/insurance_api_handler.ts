@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, InsurancePolicy, ProcessTemplateData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, InsurancePolicy } from "../../../types";
 import { CaseApi } from "./case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api";
@@ -14,15 +14,11 @@ export class InsuranceApiHandler {
 
         let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE);
 
-        let templateData: ProcessTemplateData = {
-            templateReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE,
-            initialData: {
-                policiesToDelete: insuranceIdsToDelete,
-                skipCorrespondence: skipCorrespondence || true
-            },
-            linkedCaseGroupId: newCase.case.caseGroupId
-        }
-        await memberApi.initProcess(memberId, templateData);
+        let initialData = {
+            policiesToDelete: insuranceIdsToDelete,
+            skipCorrespondence: skipCorrespondence || true
+        };
+        await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE, initialData, newCase.case.caseGroupId)
 
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
@@ -132,15 +128,11 @@ export class InsuranceApiHandler {
 
         let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE)
 
-        let templateData: ProcessTemplateData = {
-            templateReference: CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE,
-            initialData: {
-                policiesToCreate: policiesToCreate,
-                skipCorrespondence: skipCorrespondence || true
-            },
-            linkedCaseGroupId: newCase.case.caseGroupId
+        let initialData = {
+            policiesToCreate: policiesToCreate,
+            skipCorrespondence: skipCorrespondence || true
         }
-        await memberApi.initProcess(memberId, templateData);
+        await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE, initialData, newCase.case.caseGroupId)
 
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
@@ -148,15 +140,12 @@ export class InsuranceApiHandler {
     static async commenceInsuranceForMember(memberApi: MemberApi, caseApi: CaseApi, memberId: string, skipCorrespondence?: boolean) {
         let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_BATCH_COMMENCEMENT, CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT);
 
-        let templateData: ProcessTemplateData = {
-            templateReference: CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT,
-            initialData: {
-                memberId: memberId,
-                skipCorrespondence: skipCorrespondence || true
-            },
-            linkedCaseGroupId: newCase.case.caseGroupId
+        let initialData = {
+            memberId: memberId,
+            skipCorrespondence: skipCorrespondence || true
         }
-        await memberApi.initProcess(memberId, templateData);
+        await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT, initialData, newCase.case.caseGroupId);
+
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
 

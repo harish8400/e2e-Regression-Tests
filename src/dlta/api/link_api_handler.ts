@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, LINK_TYPE, ProcessTemplateData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, LINK_TYPE } from "../../../types";
 import { CaseApi } from "./case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "./member_api";
@@ -16,15 +16,11 @@ export class LinkApiHandler {
 
         let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.REMOVE_TAGS, CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY);
 
-        let templateData: ProcessTemplateData = {
-            templateReference: CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY,
-            initialData: {
-                linkId: foundLink.linearId.id,
-                skipCorrespondence: skipCorrespondence || true
-            },
-            linkedCaseGroupId: newCase.case.caseGroupId
+        let initialData = {
+            linkId: foundLink.linearId.id,
+            skipCorrespondence: skipCorrespondence || true
         }
-        await memberApi.initProcess(memberId, templateData);
+        await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY, initialData, newCase.case.caseGroupId);
 
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }

@@ -1,6 +1,6 @@
 import waitUntil from "async-wait-until";
 import { CaseApi } from "./case_api";
-import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData } from "../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData, ProcessTemplateData } from "../../../types";
 import { MemberApi } from "./member_api";
 
 export class CaseApiHandler {
@@ -65,6 +65,15 @@ export class CaseApiHandler {
         };
         let newCase = await memberApi.initCase(memberId, caseData);
         return newCase;
+    }
+
+    static async initCaseProcess(memberApi: MemberApi, memberId: string, configReference: CASE_CONFIG_REFERENCE, initialData: any, caseGroupId: string) {
+        let templateData: ProcessTemplateData = {
+            templateReference: configReference,
+            initialData: initialData,
+            linkedCaseGroupId: caseGroupId
+        }
+        await memberApi.initProcess(memberId, templateData);
     }
 
 }
