@@ -40,6 +40,10 @@ export abstract class AuthenticatedPage extends BasePage {
         await this.navbar.clickInsurance();
     }
 
+    async navigateToPension() {
+        await this.navbar.clickPayments();
+    }
+
     async navigateToCombine() {
         await this.navbar.clickMoreAndCombine();
     }
