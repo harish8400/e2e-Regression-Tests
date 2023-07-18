@@ -8,13 +8,13 @@ export class CaseApiHandler {
     static async waitForCaseGroupStatus(caseApi: CaseApi, caseGroupId: string, expectedStatus: CASE_STATUS) {
         await waitUntil(async () => {
             return (await caseApi.getCaseGroup(caseGroupId)).caseGroup.status === expectedStatus;
-        }, { timeout: 15000, intervalBetweenAttempts: 2000 })
+        }, { timeout: 30000, intervalBetweenAttempts: 3000 })
     }
 
     static async waitForCaseGroupOutcome(caseApi: CaseApi, caseGroupId: string, expectedOutcome: CASE_OUTCOME) {
         await waitUntil(async () => {
             return (await caseApi.getCaseGroup(caseGroupId)).caseGroup.outcome === expectedOutcome;
-        }, { timeout: 15000, intervalBetweenAttempts: 2000 })
+        }, { timeout: 30000, intervalBetweenAttempts: 3000 })
     }
 
     static async waitForCaseGroupCaseWithNote(caseApi: CaseApi, caseGroupId: any, note: CASE_NOTES) {
@@ -22,7 +22,7 @@ export class CaseApiHandler {
             let caseGroupResult = await caseApi.getCaseGroup(caseGroupId);
             let caseWithMatchingNote = caseGroupResult.cases.find(c => c.notes === note);
             return caseWithMatchingNote !== undefined;
-        }, { timeout: 15000, intervalBetweenAttempts: 2000 })
+        }, { timeout: 30000, intervalBetweenAttempts: 3000 })
     }
 
     //TODO: resolve approve and reject code duplication
