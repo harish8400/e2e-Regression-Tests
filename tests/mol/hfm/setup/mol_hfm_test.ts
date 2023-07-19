@@ -56,13 +56,14 @@ const molHfmAuthenticatedUserTest = molBaseTest.extend<Pages>({
 
     pensionPage: async ({ page }, use) => {
         await use(new PensionPage(page));
-    }
+    },
+
+    //test options
+    fundIds: async ({ }, use) => { await use(FUND_IDS.MERCY) },
 });
 
 export const molHfmAccumTest = molHfmAuthenticatedUserTest.extend({
     //test options
-    fundIds: async ({ }, use) => { await use(FUND_IDS.MERCY) },
-
     memberId: async ({ dashboardPage, fundIds }, use) => {
         let accounts = await dashboardPage.doAccountsGet();
         await use(accounts.find(account => account.fundProductId === fundIds.PRODUCT_ID.ACCUMULATION)!!.memberId!!);
@@ -78,8 +79,6 @@ export const molHfmPensionTest = molHfmAuthenticatedUserTest.extend({
     },
 
     //test options
-    fundIds: async ({ }, use) => { await use(FUND_IDS.MERCY) },
-
     memberId: async ({ dashboardPage, fundIds }, use) => {
         let accounts = await dashboardPage.doAccountsGet();
         await use(accounts.find(account => account.fundProductId === fundIds.PRODUCT_ID.RETIREMENT)!!.memberId!!);
