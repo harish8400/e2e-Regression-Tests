@@ -5,6 +5,11 @@ import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 export class PensionPage extends AuthenticatedPage {
 
+    //view
+    private readonly nextPaymentDateParagraph;
+    private readonly paymenFrequencyParagraph;
+    private readonly paymenSelectionParagraph;
+
     //manage payment details
     private readonly changePaymentDetailsButton: Locator;
     private readonly frequencyDropdown: Locator;
@@ -22,6 +27,12 @@ export class PensionPage extends AuthenticatedPage {
     constructor(page: Page) {
         super(page);
 
+        //view
+        this.nextPaymentDateParagraph = page.locator('//p[@data-cy="pension-info-details-next-payment-date"]');
+        this.paymenFrequencyParagraph = page.locator('//p[@data-cy="pension-info-details-frequency"]');
+        this.paymenSelectionParagraph = page.locator('//p[@data-cy="pension-info-details-payment-selection"]');
+
+        //manage payment details
         //has different aria-label, can't use role
         this.changePaymentDetailsButton = page.getByText('Change payment details');
         this.frequencyDropdown = page.locator('//div[@data-cy="frequency-option-input-select"]//div[@data-cy-name="dropdown-trigger"]');
@@ -38,6 +49,14 @@ export class PensionPage extends AuthenticatedPage {
         } else {
             this.yesSureButton = page.getByText('YES, I\'M SURE');
         }
+    }
+
+    async getCurrentPaymentDetails() {
+        let paymentDetailsText: Array<string> = [];
+        paymentDetailsText.push((await this.nextPaymentDateParagraph.innerText()).replace("\n\n", " "));
+        paymentDetailsText.push((await this.paymenFrequencyParagraph.innerText()).replace("\n", " "));
+        paymentDetailsText.push((await this.paymenSelectionParagraph.innerText()).replace("\n", " "));
+        return paymentDetailsText;
     }
 
     async changePaymentDetails(paymentDetails: PensionPaymentDetails) {
