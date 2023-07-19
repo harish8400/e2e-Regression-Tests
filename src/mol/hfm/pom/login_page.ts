@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { BasePage } from "../../../common/pom/base_page";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class LoginPage extends BasePage {
     private readonly url: string;

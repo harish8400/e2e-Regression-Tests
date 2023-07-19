@@ -1,10 +1,10 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
+import { BasePage } from "../../../common/pom/base_page";
 import { Navbar } from "./components/navbar";
 import path from "path";
 import fs from "fs"
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
-import { Account } from "../../../types";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
+import { Account } from "../../../../types";
 
 
 const AUTH_DIRECTORY = path.join(__dirname, '../../../playwright/.auth');

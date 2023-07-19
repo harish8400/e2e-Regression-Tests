@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { PensionPaymentDetails } from "../../../types";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { PensionPaymentDetails } from "../../../../types";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class PensionPage extends AuthenticatedPage {
 

@@ -1,12 +1,12 @@
 import { test as base } from "@playwright/test";
-import { LoginPage } from '../../../../src/mol/pom/login_page';
-import { ACCOUNT_OPTION, DashboardPage } from '../../../../src/mol/pom/dashboard_page';
-import { BeneficiariesPage } from '../../../../src/mol/pom/beneficiaries_page';
-import { InvestmentsPage } from '../../../../src/mol/pom/investments_page';
-import { InsurancePage } from '../../../../src/mol/pom/insurance_page';
+import { LoginPage } from '../../../../src/mol/hfm/pom/login_page';
+import { ACCOUNT_OPTION, DashboardPage } from '../../../../src/mol/hfm/pom/dashboard_page';
+import { BeneficiariesPage } from '../../../../src/mol/hfm/pom/beneficiaries_page';
+import { InvestmentsPage } from '../../../../src/mol/hfm/pom/investments_page';
+import { InsurancePage } from '../../../../src/mol/hfm/pom/insurance_page';
 import { molBaseTest } from '../../common/setup/mol_base_test';
 import { FUND_IDS } from "../../../../types";
-import { PensionPage } from "../../../../src/mol/pom/pension_page";
+import { PensionPage } from "../../../../src/mol/hfm/pom/pension_page";
 
 type Pages = {
     loginPage: LoginPage;

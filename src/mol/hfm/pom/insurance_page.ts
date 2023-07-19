@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
 export class InsurancePage extends AuthenticatedPage {

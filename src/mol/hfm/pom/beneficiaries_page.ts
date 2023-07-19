@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { Beneficary } from "../../../types";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { Beneficary } from "../../../../types";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class BeneficiariesPage extends AuthenticatedPage {
 
