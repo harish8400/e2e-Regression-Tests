@@ -15,6 +15,13 @@ export class CaseApi extends BaseDltaApi {
         return caseGroupResult;
     }
 
+    async getCaseGroupInitialData(caseGroupId: string) {
+        let path = `/case/group/${caseGroupId}/initialdata`;
+        let response = await this.get(path);
+        let initalData = await response.json();
+        return initalData;
+    }
+
     async rejectCaseGroup(caseGroupId: string, caseGroupRejectData: CaseGroupApproveRejectData) {
         let path = `/case/group/${caseGroupId}/reject`;
         caseGroupRejectData.notes = "E2E auto test - reject";

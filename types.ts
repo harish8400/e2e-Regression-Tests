@@ -43,7 +43,7 @@ export interface Account {
 }
 
 export interface InvestmentChange {
-    changeType: INVESTMENT_CHANGE_TYPE
+    changeType: INVESTMENT_CHANGE_TYPE,
     investments: Array<MolInvestmentSelection>
 }
 
@@ -51,6 +51,12 @@ export interface InsurancePolicy {
     category: string,
     coverAmount: number,
     premium: number,
+}
+
+export interface PensionPaymentDetails {
+    frequency: PAYMENT_FREQUENCY,
+    amount: number | "Minimum amount",
+    nextPaymentDate?: string
 }
 
 export interface MolInvestmentSelection {
@@ -95,7 +101,8 @@ export const enum CASE_TYPES {
     MANUAL_INVESTMENT_SWITCH = "Investment Switch - Manual",
     REMOVE_TAGS = "Tags - Remove",
     INSURANCE_MODIFY_COVER = "Insurance - Add/Modify members cover records",
-    INSURANCE_BATCH_COMMENCEMENT = "Insurance - Batch members commencement"
+    INSURANCE_BATCH_COMMENCEMENT = "Insurance - Batch members commencement",
+    PENSION_UPDATE_PAYMENT_DETAILS = "Pension - Update Payment Details"
 }
 
 export const enum CASE_STATUS {
@@ -118,12 +125,14 @@ export const enum CASE_CONFIG_REFERENCE {
     MANUAL_INVESTMENT_SWITCH = "manualInvestmentChange",
     REMOVE_MEMBER_CATEGORY = "removeMemberCategory",
     PROCESS_MEMBER_INSURANCE = "processMemberInsurance",
-    INSURANCE_BATCH_COMMENCEMENT = "insuranceBatchCommencement"
+    INSURANCE_BATCH_COMMENCEMENT = "insuranceBatchCommencement",
+    PENSION_UPDATE_PAYMENT_DETAILS = "updatePensionPaymentDetails"
 }
 
 export const enum CASE_NOTES {
     NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent.",
-    INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent."
+    INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent.",
+    PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent."
 }
 
 export const enum INVESTMENT_CHANGE_TYPE {
@@ -133,6 +142,11 @@ export const enum INVESTMENT_CHANGE_TYPE {
 
 export const enum LINK_TYPE {
     INSURANCE_OPT_IN = "IOI"
+}
+
+export const enum PAYMENT_FREQUENCY {
+    MONTHLY = "Monthly",
+    ANNUALLY = "Annually",
 }
 
 //consts

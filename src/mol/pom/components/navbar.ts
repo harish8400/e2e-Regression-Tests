@@ -7,6 +7,7 @@ export class Navbar extends BasePage {
     private readonly investments: Locator;
     private readonly transactions: Locator;
     private readonly insurance: Locator;
+    private readonly payments: Locator;
     private readonly more: Locator;
     private readonly profile: Locator;
 
@@ -23,6 +24,7 @@ export class Navbar extends BasePage {
         this.investments = page.getByRole('button', { name: 'Investments' });
         this.transactions = page.getByRole('button', { name: 'Transactions' });
         this.insurance = page.getByRole('button', { name: 'Insurance' });
+        this.payments = page.getByRole('button', { name: 'Payments' });
         this.more = page.getByRole('button', { name: 'More', exact: true });
         this.profile = this.page.locator('button', { hasText: new RegExp(/^[A-Z]{2}$/) });
 
@@ -46,6 +48,10 @@ export class Navbar extends BasePage {
 
     async clickInsurance() {
         await this.insurance.click();
+    }
+
+    async clickPayments() {
+        await this.payments.click();
     }
 
     async clickMoreAndCombine() {
