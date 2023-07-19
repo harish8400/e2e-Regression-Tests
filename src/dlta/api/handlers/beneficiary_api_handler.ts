@@ -1,7 +1,7 @@
 import { CaseApiHandler } from "./case_api_handler";
-import { MemberApi } from "./member_api";
-import { Beneficary, CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES } from "../../../types";
-import { CaseApi } from "./case_api";
+import { MemberApi } from "../member_api";
+import { Beneficary, CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES } from "../../../../types";
+import { CaseApi } from "../case_api";
 
 export class BeneficaryApiHandler {
 

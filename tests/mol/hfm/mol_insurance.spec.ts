@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
 import { CASE_STATUS, InsurancePolicy, LINK_TYPE } from "../../../types";
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
-import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
-import { LinkApiHandler } from "../../../src/dlta/api/link_api_handler";
-import { InsuranceApiHandler } from "../../../src/dlta/api/insurance_api_handler";
+import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
+import { LinkApiHandler } from "../../../src/dlta/api/handlers/link_api_handler";
+import { InsuranceApiHandler } from "../../../src/dlta/api/handlers/insurance_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToInsurance();

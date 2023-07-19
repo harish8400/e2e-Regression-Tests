@@ -1,8 +1,8 @@
 import { CASE_STATUS, PAYMENT_FREQUENCY, PensionPaymentDetails } from "../../../types";
 import { molHfmPensionTest as test } from "./setup/mol_hfm_test";
-import { PensionApiHandler } from "../../../src/dlta/api/pension_api_handler";
+import { PensionApiHandler } from "../../../src/dlta/api/handlers/pension_api_handler";
 import { expect } from "@playwright/test";
-import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
+import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToPension();

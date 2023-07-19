@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
-import { BeneficaryApiHandler } from "../../../src/dlta/api/beneficiary_api_handler";
+import { BeneficaryApiHandler } from "../../../src/dlta/api/handlers/beneficiary_api_handler";
 import { Beneficary, CASE_NOTES, CASE_STATUS } from "../../../types";
-import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
+import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {

@@ -1,7 +1,7 @@
 import waitUntil from "async-wait-until";
-import { CaseApi } from "./case_api";
-import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData, ProcessTemplateData } from "../../../types";
-import { MemberApi } from "./member_api";
+import { CaseApi } from "../case_api";
+import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData, ProcessTemplateData } from "../../../../types";
+import { MemberApi } from "../member_api";
 
 export class CaseApiHandler {
 

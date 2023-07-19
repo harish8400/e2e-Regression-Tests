@@ -2,8 +2,8 @@ import { expect } from "@playwright/test";
 import { CASE_NOTES, DltaInvestmentSelection, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS, InvestmentChange } from "../../../types";
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
-import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
-import { InvestmentApiHandler } from "../../../src/dlta/api/investment_api_handler";
+import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
+import { InvestmentApiHandler } from "../../../src/dlta/api/handlers/investment_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToInvestments();
