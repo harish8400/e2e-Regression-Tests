@@ -13,7 +13,7 @@ export class DashboardPage extends AuthenticatedPage {
     constructor(page: Page) {
         super(page);
 
-        this.url = ENVIRONMENT_CONFIG.molURL + "/dashboard"
+        this.url = ENVIRONMENT_CONFIG.molHfmURL + "/dashboard"
 
         this.accountDropdown = page.locator('//div[@data-cy-name="dropdown-trigger"]');
         this.accumulationDropdownOption = page.getByText(ACCOUNT_OPTION.ACCUMULATION);

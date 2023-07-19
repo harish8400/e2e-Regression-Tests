@@ -69,13 +69,13 @@ test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiaries
         {
             relationship: "Spouse",
             name: "Spouse Beneficiary",
-            dateOfBirth: "01-01-1981",
+            dateOfBirth: "01/01/1981",
             percentage: 75
         },
         {
             relationship: "Child",
             name: "Child Beneficiary",
-            dateOfBirth: "30-01-2002",
+            dateOfBirth: "30/01/2002",
             percentage: 25
         }
     ];

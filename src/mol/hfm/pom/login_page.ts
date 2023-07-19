@@ -12,7 +12,7 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.url = ENVIRONMENT_CONFIG.molURL;
+        this.url = ENVIRONMENT_CONFIG.molHfmURL;
 
         this.emailInput = page.getByLabel('Your Email');
         this.passwordInput = page.getByLabel('Your Password');
