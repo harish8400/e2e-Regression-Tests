@@ -4,8 +4,6 @@ import { Navbar } from "./components/navbar";
 import path from "path";
 import fs from "fs"
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
-import { Account } from "../../../../types";
-
 
 const AUTH_DIRECTORY = path.join(__dirname, '../../../../playwright/.auth');
 const SESSION_STORAGE = AUTH_DIRECTORY + '/user.json';
@@ -97,4 +95,13 @@ export abstract class AuthenticatedPage extends BasePage {
         return headers;
     }
 
-}
+};
+
+export interface Account {
+    memberId: string,
+    memberNo: string,
+    productReference: string,
+    productType: string,
+    fundProductId: string,
+    productPhase: string
+};

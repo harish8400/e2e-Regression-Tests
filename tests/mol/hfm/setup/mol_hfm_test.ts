@@ -5,8 +5,8 @@ import { BeneficiariesPage } from '../../../../src/mol/hfm/pom/beneficiaries_pag
 import { InvestmentsPage } from '../../../../src/mol/hfm/pom/investments_page';
 import { InsurancePage } from '../../../../src/mol/hfm/pom/insurance_page';
 import { molBaseTest } from '../../common/setup/mol_base_test';
-import { FUND_IDS } from "../../../../types";
 import { PensionPage } from "../../../../src/mol/hfm/pom/pension_page";
+import { FUND_IDS } from "../../../../constants";
 
 type Pages = {
     loginPage: LoginPage;

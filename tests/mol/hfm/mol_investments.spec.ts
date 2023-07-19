@@ -1,9 +1,10 @@
 import { expect } from "@playwright/test";
-import { CASE_NOTES, DltaInvestmentSelection, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS, InvestmentChange } from "../../../types";
+import { CASE_NOTE, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS } from "../../../constants";
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
-import { InvestmentApiHandler } from "../../../src/dlta/api/handlers/investment_api_handler";
+import { DltaInvestmentSelection, InvestmentApiHandler } from "../../../src/dlta/api/handlers/investment_api_handler";
+import { InvestmentChange } from "../../../src/mol/hfm/pom/investments_page";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToInvestments();
@@ -44,7 +45,7 @@ test("MOL change future investment @mol @mol_future_investments_switch", async (
     })
 
     await test.step("Wait for DLTA processing and close", async () => {
-        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTES.INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT);
+        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT);
         //TODO check letter payload
         await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
     })

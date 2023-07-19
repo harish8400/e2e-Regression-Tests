@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, InsurancePolicy } from "../../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
 import { CaseApi } from "../case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "../member_api";
@@ -12,7 +12,7 @@ export class InsuranceApiHandler {
 
         let insuranceIdsToDelete = insurances.data.map((insurance: { linearId: { id: string; }; }) => insurance.linearId.id);
 
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE);
 
         let initialData = {
             policiesToDelete: insuranceIdsToDelete,
@@ -126,7 +126,7 @@ export class InsuranceApiHandler {
             }
         }
 
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE)
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.INSURANCE_MODIFY_COVER, CASE_CONFIG_REFERENCE.PROCESS_MEMBER_INSURANCE)
 
         let initialData = {
             policiesToCreate: policiesToCreate,
@@ -138,7 +138,7 @@ export class InsuranceApiHandler {
     }
 
     static async commenceInsuranceForMember(memberApi: MemberApi, caseApi: CaseApi, memberId: string, skipCorrespondence?: boolean) {
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.INSURANCE_BATCH_COMMENCEMENT, CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.INSURANCE_BATCH_COMMENCEMENT, CASE_CONFIG_REFERENCE.INSURANCE_BATCH_COMMENCEMENT);
 
         let initialData = {
             memberId: memberId,
@@ -149,4 +149,10 @@ export class InsuranceApiHandler {
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
 
-}
+};
+
+export interface InsurancePolicy {
+    category: string,
+    coverAmount: number,
+    premium: number,
+};

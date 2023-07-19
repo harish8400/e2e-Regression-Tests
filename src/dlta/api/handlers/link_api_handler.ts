@@ -1,4 +1,4 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, LINK_TYPE } from "../../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE, LINK_TYPE } from "../../../../constants";
 import { CaseApi } from "../case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "../member_api";
@@ -14,7 +14,7 @@ export class LinkApiHandler {
             return;
         }
 
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.REMOVE_TAGS, CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.REMOVE_TAGS, CASE_CONFIG_REFERENCE.REMOVE_MEMBER_CATEGORY);
 
         let initialData = {
             linkId: foundLink.linearId.id,

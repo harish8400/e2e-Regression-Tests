@@ -1,4 +1,3 @@
-import { CaseData, CloseCaseGroupData, ProcessTemplateData } from "../../../types";
 import { APIRequestContext } from "@playwright/test";
 import { BaseDltaApi } from "./base_dlta_api";
 
@@ -66,4 +65,29 @@ export class MemberApi extends BaseDltaApi {
         return await response.json();
     }
 
-}
+};
+
+export interface CaseData {
+    type: string,
+    notes?: string,
+    documents?: Array<any>,
+    outcome?: number,
+    status: number,
+    hold: boolean,
+    configReference: string,
+    creatorReference?: string
+};
+
+export interface CloseCaseGroupData {
+    caseGroupId: string,
+    outcome: number,
+    status: number,
+    notes?: string,
+    creatorReference?: string
+};
+
+export interface ProcessTemplateData {
+    templateReference: string,
+    initialData: any,
+    linkedCaseGroupId: string
+};

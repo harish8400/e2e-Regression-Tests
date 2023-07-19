@@ -1,6 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { Beneficary } from "../../../../types";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class BeneficiariesPage extends AuthenticatedPage {
@@ -69,7 +68,7 @@ export class BeneficiariesPage extends AuthenticatedPage {
         return beneficiariesText;
     }
 
-    async addNonBindingBeneficiaries(beneficiaries: Array<Beneficary>) {
+    async addNonBindingBeneficiaries(beneficiaries: Array<MolBeneficary>) {
         await this.manageBeneficiariesButton.click();
         await this.nominateNonBindingBeneficiaryLabel.click();
         await this.startNominationButton.click();
@@ -84,9 +83,7 @@ export class BeneficiariesPage extends AuthenticatedPage {
             await this.page.getByText(beneficiary.relationship, { exact: true }).click();
             await workingDiv.locator(this.manageBeneficaryName).fill(beneficiary.name);
             await workingDiv.locator(this.manageBeneficaryDateOfBirth).click();
-            let dobString = beneficiary.dateOfBirth.toLocaleString(
-                "en-AU", { day: "numeric", month: "numeric", year: "numeric" });
-            await workingDiv.locator(this.manageBeneficaryDateOfBirth).fill(dobString);
+            await workingDiv.locator(this.manageBeneficaryDateOfBirth).fill(beneficiary.dateOfBirth);
             await this.page.keyboard.press("Enter");
         }
         await this.continueButton.click();
@@ -109,4 +106,11 @@ export class BeneficiariesPage extends AuthenticatedPage {
         return responseJson.linkedCaseGroupId.toString();
     }
 
-}
+};
+
+export interface MolBeneficary {
+    relationship: string,
+    name: string,
+    dateOfBirth: string,
+    percentage: number,
+};

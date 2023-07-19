@@ -1,5 +1,5 @@
 import { Locator, Page } from "@playwright/test";
-import { INVESTMENT_CHANGE_TYPE, InvestmentChange } from "../../../../types";
+import { INVESTMENT_CHANGE_TYPE } from "../../../../constants";
 import { AuthenticatedPage } from "./authenticated_page";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
@@ -142,4 +142,14 @@ export class InvestmentsPage extends AuthenticatedPage {
         }
     }
 
-}
+};
+
+export interface InvestmentChange {
+    changeType: INVESTMENT_CHANGE_TYPE,
+    investments: Array<MolInvestmentSelection>
+};
+
+export interface MolInvestmentSelection {
+    name: string,
+    percentage: number
+};

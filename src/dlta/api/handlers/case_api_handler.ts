@@ -1,7 +1,7 @@
 import waitUntil from "async-wait-until";
-import { CaseApi } from "../case_api";
-import { CASE_CONFIG_REFERENCE, CASE_NOTES, CASE_OUTCOME, CASE_STATUS, CASE_TYPES, CaseData, CaseGroupApproveRejectData, CloseCaseGroupData, ProcessTemplateData } from "../../../../types";
-import { MemberApi } from "../member_api";
+import { CaseApi, CaseGroupApproveRejectData } from "../case_api";
+import { CaseData, CloseCaseGroupData, MemberApi, ProcessTemplateData } from "../member_api";
+import { CASE_CONFIG_REFERENCE, CASE_NOTE, CASE_OUTCOME, CASE_STATUS, CASE_TYPE } from "../../../../constants";
 
 export class CaseApiHandler {
 
@@ -17,7 +17,7 @@ export class CaseApiHandler {
         }, { timeout: 30000, intervalBetweenAttempts: 3000 })
     }
 
-    static async waitForCaseGroupCaseWithNote(caseApi: CaseApi, caseGroupId: any, note: CASE_NOTES) {
+    static async waitForCaseGroupCaseWithNote(caseApi: CaseApi, caseGroupId: any, note: CASE_NOTE) {
         await waitUntil(async () => {
             let caseGroupResult = await caseApi.getCaseGroup(caseGroupId);
             let caseWithMatchingNote = caseGroupResult.cases.find(c => c.notes === note);
@@ -55,7 +55,7 @@ export class CaseApiHandler {
         await memberApi.closeCaseGroup(memberId, closeData, true);
     }
 
-    static async createPendingCase(memberApi: MemberApi, memberId: string, caseType: CASE_TYPES, configReference: CASE_CONFIG_REFERENCE) {
+    static async createPendingCase(memberApi: MemberApi, memberId: string, caseType: CASE_TYPE, configReference: CASE_CONFIG_REFERENCE) {
         let caseData: CaseData = {
             type: caseType,
             notes: "E2E auto test case creation",
@@ -76,4 +76,4 @@ export class CaseApiHandler {
         await memberApi.initProcess(memberId, templateData);
     }
 
-}
+};

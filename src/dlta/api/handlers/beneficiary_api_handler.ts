@@ -1,6 +1,6 @@
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "../member_api";
-import { Beneficary, CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES } from "../../../../types";
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
 import { CaseApi } from "../case_api";
 
 export class BeneficaryApiHandler {
@@ -12,7 +12,7 @@ export class BeneficaryApiHandler {
         if (beneficiaries.data.length < 1) {
             return;
         } else {
-            let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
+            let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
 
             let beneficiariesIdToDelete = beneficiaries.data.map((beneficiary: any) => beneficiary.linearId.id);
 
@@ -32,16 +32,16 @@ export class BeneficaryApiHandler {
         }
     }
 
-    static async createMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, beneficiaries: Array<Beneficary>, skipCorrespondence?: boolean) {
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
+    static async createMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, beneficiaries: Array<DltaBeneficary>, skipCorrespondence?: boolean) {
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.MODIFY_BENEFICIARIES, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES);
 
         let beneficiariesToCreate = beneficiaries.map(beneficiary => {
             return {
-                entityName: beneficiary.name,
-                percent: beneficiary.percentage,
-                dob: beneficiary.dateOfBirth.toISOString().substring(0, 10),
-                beneficiaryType: beneficiary.type || "nonBinding",
-                relationship: beneficiary.relationship.toLowerCase(),
+                entityName: beneficiary.entityName,
+                percent: beneficiary.percent,
+                dob: beneficiary.dob,
+                beneficiaryType: beneficiary.beneficiaryType,
+                relationship: beneficiary.relationship,
                 contactDetails: []
             }
         })
@@ -61,4 +61,13 @@ export class BeneficaryApiHandler {
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
 
-}
+};
+
+export interface DltaBeneficary {
+    entityName: string,
+    percent: number,
+    dob: string,
+    beneficiaryType: string,
+    relationship: string,
+    contactDetails: any[]
+};

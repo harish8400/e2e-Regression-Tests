@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { PensionPaymentDetails } from "../../../../types";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
+import { PAYMENT_FREQUENCY } from "../../../../constants";
 
 export class PensionPage extends AuthenticatedPage {
 
@@ -85,4 +85,10 @@ export class PensionPage extends AuthenticatedPage {
         return responseJson.linkedCaseGroupId.toString();
     }
 
+};
+
+export interface PensionPaymentDetails {
+    frequency: PAYMENT_FREQUENCY,
+    amount: number | "Minimum amount",
+    nextPaymentDate?: string
 }

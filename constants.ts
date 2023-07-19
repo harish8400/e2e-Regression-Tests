@@ -1,102 +1,5 @@
-//interfaces
-export interface CaseData {
-    type: string,
-    notes?: string,
-    documents?: Array<any>,
-    outcome?: number,
-    status: number,
-    hold: boolean,
-    configReference: string,
-    creatorReference?: string
-}
-
-export interface ProcessTemplateData {
-    templateReference: string,
-    initialData: any,
-    linkedCaseGroupId: string
-}
-
-export interface CaseGroupApproveRejectData {
-    memberId: string,
-    fundProductId: string,
-    fundName: string,
-    notes?: string,
-    creatorReference?: string,
-}
-
-export interface Beneficary {
-    relationship: string,
-    name: string,
-    dateOfBirth: Date,
-    percentage: number,
-    contactDetails?: any[],
-    type?: string
-}
-
-export interface Account {
-    memberId: string,
-    memberNo: string,
-    productReference: string,
-    productType: string,
-    fundProductId: string,
-    productPhase: string
-}
-
-export interface InvestmentChange {
-    changeType: INVESTMENT_CHANGE_TYPE,
-    investments: Array<MolInvestmentSelection>
-}
-
-export interface InsurancePolicy {
-    category: string,
-    coverAmount: number,
-    premium: number,
-}
-
-export interface PensionPaymentDetails {
-    frequency: PAYMENT_FREQUENCY,
-    amount: number | "Minimum amount",
-    nextPaymentDate?: string
-}
-
-export interface MolInvestmentSelection {
-    name: string,
-    percentage: number
-}
-
-export interface DltaInvestmentSelection {
-    id: string,
-    percent: number
-}
-
-export interface CaseGroupResponse {
-    caseGroup: CaseGroup,
-    cases: Array<CaseData>
-}
-
-export interface CaseGroup {
-    memberId: string,
-    fundProductId: string,
-    caseGroupId: string,
-    type: string,
-    status: number,
-    outcome: number,
-    configReference: string,
-    creatorReference: string,
-    fundName: string
-}
-
-export interface CloseCaseGroupData {
-    caseGroupId: string,
-    outcome: number,
-    status: number,
-    notes?: string,
-    creatorReference?: string
-}
-
 //enums
-
-export const enum CASE_TYPES {
+export const enum CASE_TYPE {
     MODIFY_BENEFICIARIES = "Beneficiary - Modify",
     MANUAL_INVESTMENT_SWITCH = "Investment Switch - Manual",
     REMOVE_TAGS = "Tags - Remove",
@@ -129,7 +32,7 @@ export const enum CASE_CONFIG_REFERENCE {
     PENSION_UPDATE_PAYMENT_DETAILS = "updatePensionPaymentDetails"
 }
 
-export const enum CASE_NOTES {
+export const enum CASE_NOTE {
     NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent.",
     INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent.",
     PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent."

@@ -71,10 +71,6 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat
 
 [ ] address various TODOs comments in code
 
-[ ] investigate if types (i.e. ./types.ts) should be split and kepts closer to where used
-
-[ ] split tests (incl. fixtures?) by funds?
-
 [ ] add clear test details and steps to html report for testers
 
 [ ] figure out if there is a better way of getting memberId from username
