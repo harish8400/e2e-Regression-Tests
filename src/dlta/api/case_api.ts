@@ -1,6 +1,6 @@
-import { CaseGroupApproveRejectData, CaseGroupResponse } from "../../../types";
 import { APIRequestContext } from "@playwright/test";
 import { BaseDltaApi } from "./base_dlta_api";
+import { CaseData } from "./member_api";
 
 export class CaseApi extends BaseDltaApi {
 
@@ -48,4 +48,29 @@ export class CaseApi extends BaseDltaApi {
         }
     }
 
-}
+};
+
+export interface CaseGroup {
+    memberId: string,
+    fundProductId: string,
+    caseGroupId: string,
+    type: string,
+    status: number,
+    outcome: number,
+    configReference: string,
+    creatorReference: string,
+    fundName: string
+};
+
+export interface CaseGroupResponse {
+    caseGroup: CaseGroup,
+    cases: Array<CaseData>
+};
+
+export interface CaseGroupApproveRejectData {
+    memberId: string,
+    fundProductId: string,
+    fundName: string,
+    notes?: string,
+    creatorReference?: string,
+};

@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { BasePage } from "../../../common/pom/base_page";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class LoginPage extends BasePage {
     private readonly url: string;
@@ -12,11 +12,11 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.url = ENVIRONMENT_CONFIG.molURL;
+        this.url = ENVIRONMENT_CONFIG.molHfmURL;
 
         this.emailInput = page.getByLabel('Your Email');
         this.passwordInput = page.getByLabel('Your Password');
-        this.loginButton = page.getByRole('button', { name: 'LOG IN NOW' });
+        this.loginButton = page.getByRole('button', { name: 'Log In Now' });
     }
 
     async goTo() {

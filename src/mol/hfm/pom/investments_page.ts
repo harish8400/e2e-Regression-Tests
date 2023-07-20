@@ -1,7 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { INVESTMENT_CHANGE_TYPE, InvestmentChange } from "../../../types";
+import { INVESTMENT_CHANGE_TYPE } from "../../../../constants";
 import { AuthenticatedPage } from "./authenticated_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 export class InvestmentsPage extends AuthenticatedPage {
 
@@ -38,19 +37,13 @@ export class InvestmentsPage extends AuthenticatedPage {
         this.investmentItem = page.locator('xpath=//div[@data-cy-name="investment-breakdown-item"]');
         this.investmentItemTitle = page.locator('xpath=//p[@data-cy-name="legend-title"]');
         this.investmentItemSubTitle = page.locator('xpath=//p[@data-cy-name="legend-subtitle"]');
-        this.changeInvestmentsButton = page.getByRole('button', { name: 'Change investments' });
+        this.changeInvestmentsButton = page.locator('xpath=//button[text() = "Change investments"]');
 
         //change
         //switch type selection
-        if (ENVIRONMENT_CONFIG.name === "uat") {
-            this.currentBalanceAllocationOptionDiv = page.getByText('Current investments', { exact: true });
-            this.futureInvestmentsOptionDiv = page.getByText('Future investments', { exact: true });
-            this.currentAndFuturePortfolioOptionDiv = page.getByText('Current and future investments', { exact: true });
-        } else {
-            this.currentBalanceAllocationOptionDiv = page.getByText('Current balance allocation', { exact: true });
-            this.futureInvestmentsOptionDiv = page.getByText('Future Investments', { exact: true });
-            this.currentAndFuturePortfolioOptionDiv = page.getByText('Current and future portfolio', { exact: true });
-        }
+        this.currentBalanceAllocationOptionDiv = page.getByText('Current investments', { exact: true });
+        this.futureInvestmentsOptionDiv = page.getByText('Future investments', { exact: true });
+        this.currentAndFuturePortfolioOptionDiv = page.getByText('Current and future investments', { exact: true });
 
         //allocations
         this.investmentRow = page.locator('xpath=//div[@data-cy="investment-strategy-wrapper"]');
@@ -58,14 +51,10 @@ export class InvestmentsPage extends AuthenticatedPage {
         this.investmentRowPercentInput = page.locator('xpath=//input[@data-cy="input-field"]');
         this.sameAllocationLabel = page.getByText('Same as above allocation')
         //has different aria-label value so can't use getByRole with name
-        this.applyChangesButton = page.getByText('APPLY CHANGES');
+        this.applyChangesButton = page.locator('xpath=//button[text() = "Apply changes"]');
 
         //confirmation modal
-        if (ENVIRONMENT_CONFIG.name === "uat") {
-            this.yesUpdateButton = page.getByRole('button', { name: 'Yes, I’m sure' });
-        } else {
-            this.yesUpdateButton = page.getByRole('button', { name: 'Yes, Update' });
-        }
+        this.yesUpdateButton = page.locator('xpath=//button[text() = "Yes, I’m sure"]');
     }
 
     async getCurrentAssetAllocation(): Promise<Array<{ title: string, subtitle1: string, subtitle2: string }>> {
@@ -142,4 +131,14 @@ export class InvestmentsPage extends AuthenticatedPage {
         }
     }
 
-}
+};
+
+export interface InvestmentChange {
+    changeType: INVESTMENT_CHANGE_TYPE,
+    investments: Array<MolInvestmentSelection>
+};
+
+export interface MolInvestmentSelection {
+    name: string,
+    percentage: number
+};

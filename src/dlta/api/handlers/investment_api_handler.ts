@@ -1,12 +1,12 @@
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPES, DltaInvestmentSelection } from "../../../types"
-import { CaseApi } from "./case_api"
+import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants"
+import { CaseApi } from "../case_api"
 import { CaseApiHandler } from "./case_api_handler";
-import { MemberApi } from "./member_api"
+import { MemberApi } from "../member_api"
 
 export class InvestmentApiHandler {
 
     static async changeFutureInvestment(memberApi: MemberApi, caseApi: CaseApi, memberId: string, investments: Array<DltaInvestmentSelection>, skipCorrespondence?: boolean) {
-        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPES.MANUAL_INVESTMENT_SWITCH, CASE_CONFIG_REFERENCE.MANUAL_INVESTMENT_SWITCH);
+        let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.MANUAL_INVESTMENT_SWITCH, CASE_CONFIG_REFERENCE.MANUAL_INVESTMENT_SWITCH);
 
         let initialData = {
             investmentSwitch: null,
@@ -24,4 +24,9 @@ export class InvestmentApiHandler {
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
 
-}
+};
+
+export interface DltaInvestmentSelection {
+    id: string,
+    percent: number
+};

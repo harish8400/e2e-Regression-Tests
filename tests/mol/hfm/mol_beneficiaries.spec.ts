@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
-import { BeneficaryApiHandler } from "../../../src/dlta/api/beneficiary_api_handler";
-import { Beneficary, CASE_NOTES, CASE_STATUS } from "../../../types";
-import { CaseApiHandler } from "../../../src/dlta/api/case_api_handler";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { BeneficaryApiHandler, DltaBeneficary } from "../../../src/dlta/api/handlers/beneficiary_api_handler";
+import { CASE_NOTE, CASE_STATUS } from "../../../constants";
+import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
+import { MolBeneficary } from "../../../src/mol/hfm/pom/beneficiaries_page";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToBeneficiaries();
@@ -21,20 +21,20 @@ test("MOL view beneficiaries @mol @mol_beneficiaries_view", async ({ beneficiari
     })
 
     await test.step("Data prep - DLTA add beneficiaries", async () => {
-        let beneficiariesToCreate: Array<Beneficary> = [
+        let beneficiariesToCreate: Array<DltaBeneficary> = [
             {
-                name: "Beneficiary One",
-                percentage: 60,
-                dateOfBirth: new Date("1981-01-01"),
-                type: "nonBinding",
+                entityName: "Beneficiary One",
+                percent: 60,
+                dob: "1981-01-01",
+                beneficiaryType: "nonBinding",
                 relationship: "spouse",
                 contactDetails: []
             },
             {
-                name: "Beneficiary Two",
-                percentage: 40,
-                dateOfBirth: new Date("2000-12-31"),
-                type: "nonBinding",
+                entityName: "Beneficiary Two",
+                percent: 40,
+                dob: "2000-12-31",
+                beneficiaryType: "nonBinding",
                 relationship: "child",
                 contactDetails: []
             }
@@ -64,17 +64,17 @@ test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiaries
         await beneficiariesPage.reload();
     })
 
-    let beneficiariesToAdd: Beneficary[] = [
+    let beneficiariesToAdd: MolBeneficary[] = [
         {
             relationship: "Spouse",
             name: "Spouse Beneficiary",
-            dateOfBirth: new Date("1981-01-01"),
+            dateOfBirth: "01/01/1981",
             percentage: 75
         },
         {
             relationship: "Child",
             name: "Child Beneficiary",
-            dateOfBirth: new Date("2002-01-30"),
+            dateOfBirth: "30/01/2002",
             percentage: 25
         }
     ];
@@ -85,15 +85,14 @@ test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiaries
     let caseGroupId = await beneficiariesPage.waitForBeneficiariesPostResponseCaseGroupId();
 
     await test.step("Check successfully submitted message", async () => {
-        //success message different in environmentes
-        let expectedSuccessText = ENVIRONMENT_CONFIG.name === "uat" ? "Request successfully submitted." : "Your request has been successfully submitted.";
+        let expectedSuccessText = "Request successfully submitted.";
         await expect(beneficiariesPage.messageItem).toHaveText(expectedSuccessText);
     })
 
     await test.step("Approve case in DLTA", async () => {
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, caseGroupId, CASE_STATUS.IN_REVIEW);
         await CaseApiHandler.approveCaseGroup(caseApi, caseGroupId);
-        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTES.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
+        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
         //TODO check letter payload
         await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
     })

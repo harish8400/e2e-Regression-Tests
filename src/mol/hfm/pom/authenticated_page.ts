@@ -1,13 +1,11 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
+import { BasePage } from "../../../common/pom/base_page";
 import { Navbar } from "./components/navbar";
 import path from "path";
 import fs from "fs"
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
-import { Account } from "../../../types";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
-
-const AUTH_DIRECTORY = path.join(__dirname, '../../../playwright/.auth');
+const AUTH_DIRECTORY = path.join(__dirname, '../../../../playwright/.auth');
 const SESSION_STORAGE = AUTH_DIRECTORY + '/user.json';
 
 export abstract class AuthenticatedPage extends BasePage {
@@ -78,7 +76,7 @@ export abstract class AuthenticatedPage extends BasePage {
     }
 
     async doAccountsGet() {
-        let response = await this.page.request.get(ENVIRONMENT_CONFIG.molApiURL + "/v1/identities/current/accounts", {
+        let response = await this.page.request.get(ENVIRONMENT_CONFIG.molHfmApiURL + "/v1/identities/current/accounts", {
             headers: await this.assembleHeaderForApiRequest()
         });
 
@@ -97,4 +95,13 @@ export abstract class AuthenticatedPage extends BasePage {
         return headers;
     }
 
-}
+};
+
+export interface Account {
+    memberId: string,
+    memberNo: string,
+    productReference: string,
+    productType: string,
+    fundProductId: string,
+    productPhase: string
+};

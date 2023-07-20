@@ -1,7 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
-
 
 export class InsurancePage extends AuthenticatedPage {
 
@@ -23,29 +21,20 @@ export class InsurancePage extends AuthenticatedPage {
         super(page);
 
         //view
-        if (ENVIRONMENT_CONFIG.name === 'uat') {
-            this.deathHeader = page.getByRole('heading', { name: 'Death' });
-            this.tpdHeader = page.getByRole('heading', { name: 'Total and Permanent Disablement (TPD)' });
-        } else {
-            this.deathHeader = page.getByRole('heading', { name: 'Life' });
-            this.tpdHeader = page.getByRole('heading', { name: 'Total or Permanent Disability' });
-        }
+        this.deathHeader = page.getByRole('heading', { name: 'Death' });
+        this.tpdHeader = page.getByRole('heading', { name: 'Total and Permanent Disablement (TPD)' });
         this.ipHeader = page.getByRole('heading', { name: 'Income Protection' });
 
         this.optInHeader = page.getByRole('heading', { name: 'Opt In' });
         this.applicationInProgressHeader = page.getByRole('heading', { name: 'Insurance Application in progress' });
-        if (ENVIRONMENT_CONFIG.name === 'uat') {
-            this.coverOptionsHeader = page.getByRole('heading', { name: 'Cover options' });
-        } else {
-            this.coverOptionsHeader = page.getByRole('heading', { name: 'Manage insurance cover' });
-        }
+        this.coverOptionsHeader = page.getByRole('heading', { name: 'Cover options' });
 
-        this.optInButton = page.getByRole('button', { name: 'Opt in' });
-        this.manageYourCoverButton = page.getByRole('button', { name: 'Manage your cover' });
+        this.optInButton = page.locator('xpath=//button[text() = "Opt in"]');
+        this.manageYourCoverButton = page.locator('xpath=//button[text() = "Manage your cover"]');
 
         //opt-in modal
         //has different aria-label value so can't use getByRole with name
-        this.yesOptInButton = page.getByText('Yes, Opt in');
+        this.yesOptInButton = page.locator('xpath=//button[text() = "Yes, Opt in"]');
     }
 
     async getInsurance() {

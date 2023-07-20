@@ -1,7 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { PensionPaymentDetails } from "../../../types";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { PAYMENT_FREQUENCY } from "../../../../constants";
 
 export class PensionPage extends AuthenticatedPage {
 
@@ -34,21 +33,17 @@ export class PensionPage extends AuthenticatedPage {
 
         //manage payment details
         //has different aria-label, can't use role
-        this.changePaymentDetailsButton = page.getByText('Change payment details');
+        this.changePaymentDetailsButton = page.locator('xpath=//button[text() = "Change payment details"]');
         this.frequencyDropdown = page.locator('//div[@data-cy="frequency-option-input-select"]//div[@data-cy-name="dropdown-trigger"]');
         this.paymentSelectionDropdown = page.locator('//div[@data-cy="payment-selection-option-input-select"]//div[@data-cy-name="dropdown-trigger"]');
         this.minimumAmountSelection = page.getByTitle("Minimum amount", { exact: true })
         this.nominatedAmountSelection = page.getByTitle("Nominated amount", { exact: true })
         this.nominatedAmountInput = page.getByLabel('Amount per', { exact: false });
         //has different aria-label, can't use role
-        this.saveChangesButton = page.getByText('Save Changes');
+        this.saveChangesButton = page.locator('xpath=//button[text() = "Save Changes"]');
 
         //confirmation modal
-        if (ENVIRONMENT_CONFIG.name === "uat") {
-            this.yesSureButton = page.getByText('Yes, I’m sure');
-        } else {
-            this.yesSureButton = page.getByText('YES, I\'M SURE');
-        }
+        this.yesSureButton = page.locator('xpath=//button[text() = "Yes, I’m sure"]');
     }
 
     async getCurrentPaymentDetails() {
@@ -85,4 +80,10 @@ export class PensionPage extends AuthenticatedPage {
         return responseJson.linkedCaseGroupId.toString();
     }
 
+};
+
+export interface PensionPaymentDetails {
+    frequency: PAYMENT_FREQUENCY,
+    amount: number | "Minimum amount",
+    nextPaymentDate?: string
 }

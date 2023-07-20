@@ -6,8 +6,8 @@ interface ConfigContent {
         "adviserOnlineURL": string,
         "aolURL": string,
         "dltaApiURL": string,
-        "molURL": string
-        "molApiURL": string
+        "molHfmURL": string
+        "molHfmApiURL": string
     };
 }
 
