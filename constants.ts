@@ -52,6 +52,13 @@ export const enum PAYMENT_FREQUENCY {
     ANNUALLY = "Annually",
 }
 
+export const enum MOL_DOCUMENT_TYPE {
+    ALL = "All",
+    BENEFICIARIES = "Beneficiaries",
+    INSURANCE = "Insurance",
+    INVESTMENTS = "Investments"
+}
+
 //consts
 export const FUND_IDS = {
     MERCY: {
