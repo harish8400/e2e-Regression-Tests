@@ -3,7 +3,6 @@ import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { BeneficaryApiHandler, DltaBeneficary } from "../../../src/dlta/api/handlers/beneficiary_api_handler";
 import { CASE_NOTE, CASE_STATUS } from "../../../constants";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 import { MolBeneficary } from "../../../src/mol/hfm/pom/beneficiaries_page";
 
 test.beforeEach(async ({ dashboardPage }) => {
@@ -86,8 +85,7 @@ test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiaries
     let caseGroupId = await beneficiariesPage.waitForBeneficiariesPostResponseCaseGroupId();
 
     await test.step("Check successfully submitted message", async () => {
-        //success message different in environmentes
-        let expectedSuccessText = ENVIRONMENT_CONFIG.name === "uat" ? "Request successfully submitted." : "Your request has been successfully submitted.";
+        let expectedSuccessText = "Request successfully submitted.";
         await expect(beneficiariesPage.messageItem).toHaveText(expectedSuccessText);
     })
 

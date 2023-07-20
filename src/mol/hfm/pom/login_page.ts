@@ -16,7 +16,7 @@ export class LoginPage extends BasePage {
 
         this.emailInput = page.getByLabel('Your Email');
         this.passwordInput = page.getByLabel('Your Password');
-        this.loginButton = page.getByRole('button', { name: 'LOG IN NOW' });
+        this.loginButton = page.getByRole('button', { name: 'Log In Now' });
     }
 
     async goTo() {

@@ -1,6 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { AuthenticatedPage } from "./authenticated_page";
-import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class BeneficiariesPage extends AuthenticatedPage {
 
@@ -32,7 +31,7 @@ export class BeneficiariesPage extends AuthenticatedPage {
         this.noBeneficiariesHeading = page.getByRole('heading', { name: 'No existing beneficiaries' });
 
         //paragraph text is different in uat
-        const noBeneficiariesParagraphText = ENVIRONMENT_CONFIG.name === "uat" ? 'We don\'t have any nominated beneficiaries for you yet.' : 'You don\'t have any beneficiaries yet.'
+        const noBeneficiariesParagraphText = 'We don\'t have any nominated beneficiaries for you yet.';
         this.noBeneficiariesYetParagraph = page.getByText(noBeneficiariesParagraphText);
         //div with each beneficiary's details
         this.beneficiarySummary = page.locator('xpath=//*[@data-cy-name="beneficiary-summary-list"]');
@@ -40,13 +39,13 @@ export class BeneficiariesPage extends AuthenticatedPage {
         this.beneficiarySummaryDescription = page.locator('xpath=//*[@data-cy-name="beneficiary-summary-item-description"]');
 
         //manage
-        this.manageBeneficiariesButton = page.getByRole('button', { name: 'MANAGE BENEFICIARIES' });
+        this.manageBeneficiariesButton = page.locator('xpath=//button[text() = "Manage beneficiaries"]');
         this.nominateNonBindingBeneficiaryLabel = page.getByText('Nominate non-binding beneficiary');
-        this.startNominationButton = page.getByRole('button', { name: 'START NOMINATION' });
-        this.addBeneficiaryButton = page.getByRole('button', { name: 'ADD BENEFICIARY' });
-        this.continueButton = page.getByRole('button', { name: 'CONTINUE' });
-        this.applyChangeButton = page.getByRole('button', { name: 'APPLY CHANGES' });
-        this.yesProceedButton = page.getByRole('button', { name: 'YES, PROCEED' });
+        this.startNominationButton = page.locator('xpath=//button[text() = "Start nomination"]');
+        this.addBeneficiaryButton = page.locator('xpath=//button[text() = "Add beneficiary"]');
+        this.continueButton = page.locator('xpath=//button[text() = "Continue"]');
+        this.applyChangeButton = page.locator('xpath=//button[text() = "Apply changes"]');
+        this.yesProceedButton = page.locator('xpath=//button[text() = "Yes, proceed"]');
 
         this.manageBeneficiaryItemDiv = page.locator('xpath=//div[@data-cy-name="beneficiary-item"]');
         //within each div

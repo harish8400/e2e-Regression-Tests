@@ -24,7 +24,7 @@ export class PensionApiHandler {
         await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
         //there sometimes appear to be a slight delay in processing, this delay to pause test execution briefly
         let startTime = Date.now();
-        await waitUntil(() => Date.now() - startTime >= 2000);
+        await waitUntil(() => Date.now() - startTime >= 4000);
         //there is a second review on this update on Increment Member Pension Schedule step
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
         await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
