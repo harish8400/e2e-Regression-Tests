@@ -78,3 +78,5 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat
 [ ] before test is run check/deal with cases in progress if using existing members
 
 [ ] move environment config init to global setup?
+
+[ ] check if can upload document in dev MOL
