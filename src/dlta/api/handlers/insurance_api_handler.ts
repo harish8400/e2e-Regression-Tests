@@ -47,7 +47,7 @@ export class InsuranceApiHandler {
                             isSaved: true,
                             occupation: "default",
                             occupationModel: "default",
-                            outstandingPremium: 1530,
+                            outstandingPremium: 0,
                             premium: policy.premium,
                             premiumLoading: 0,
                             provider: "Zurich",

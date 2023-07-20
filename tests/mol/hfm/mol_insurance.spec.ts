@@ -15,10 +15,11 @@ test("MOL insurance opt-in @mol @mol_insurance_opt-in", async ({ insurancePage, 
         await LinkApiHandler.deleteLinkType(memberApi, caseApi, memberId, LINK_TYPE.INSURANCE_OPT_IN);
     });
 
+    //assuming 61 years old
     let policies: Array<InsurancePolicy> = [
-        { category: "STD Death", coverAmount: 390000, premium: 20.8 },
-        { category: "STD TPD", coverAmount: 390000, premium: 27.5925 },
-        { category: "STD IP 2y 60d", coverAmount: 30000, premium: 17.05 }
+        { category: "STD Death", coverAmount: 45000, premium: 12.09 },
+        { category: "STD TPD", coverAmount: 45000, premium: 31.10 },
+        { category: "STD IP 2y 60d", coverAmount: 30000, premium: 83.48 }
     ]
     await test.step("Data prep - DLTA create standard pending insurance", async () => {
         await InsuranceApiHandler.createStandardPendingPolicies(memberApi, caseApi, memberId, policies);
@@ -53,9 +54,9 @@ test("MOL insurance opt-in @mol @mol_insurance_opt-in", async ({ insurancePage, 
     await test.step("Check active insurance displayed", async () => {
         await insurancePage.reload();
         let expectedInsurance = {
-            death: { cover: "$390,000.00", fee: "$20.80" },
-            tpd: { cover: "$390,000.00", fee: "$27.59" },
-            ip: { cover: "up to $2,500.00\nper month\nup to 2 years\nbenefit period\n60 days\nwaiting period", fee: "$17.05" }
+            death: { cover: "$45,000.00", fee: "$12.09" },
+            tpd: { cover: "$45,000.00", fee: "$31.10" },
+            ip: { cover: "up to $2,500.00\nper month\nup to 2 years\nbenefit period\n60 days\nwaiting period", fee: "$83.48" }
         };
         let actualInsurance = await insurancePage.getInsurance();
         expect(actualInsurance).toEqual(expectedInsurance);
