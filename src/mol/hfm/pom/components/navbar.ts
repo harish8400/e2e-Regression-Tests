@@ -69,9 +69,8 @@ export class Navbar extends BasePage {
         await this.moreDocuments.click();
     }
 
-    async doLogout() {
+    async clickProfile() {
         await this.profile.click();
-        //TODO: click logout
     }
 
     private async clickMore() {

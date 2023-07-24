@@ -4,6 +4,8 @@ import { Navbar } from "./components/navbar";
 import path from "path";
 import fs from "fs"
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
+import { SettingsSidebar } from "./components/settingsSidebar";
+import { ContactDetailsSidebar } from "./components/contactDetailsSidebar";
 
 const AUTH_DIRECTORY = path.join(__dirname, '../../../../playwright/.auth');
 const SESSION_STORAGE = AUTH_DIRECTORY + '/user.json';
@@ -11,6 +13,9 @@ const SESSION_STORAGE = AUTH_DIRECTORY + '/user.json';
 export abstract class AuthenticatedPage extends BasePage {
 
     private readonly navbar: Navbar;
+    private readonly setttingsSidebar: SettingsSidebar;
+
+    readonly contactDetailsSidebar: ContactDetailsSidebar;
 
     readonly messageItem: Locator;
 
@@ -18,6 +23,8 @@ export abstract class AuthenticatedPage extends BasePage {
         super(page);
 
         this.navbar = new Navbar(page);
+        this.setttingsSidebar = new SettingsSidebar(page);
+        this.contactDetailsSidebar = new ContactDetailsSidebar(page);
 
         this.messageItem = page.locator('xpath=//div[@data-cy="message-item"]');
     }
@@ -54,8 +61,14 @@ export abstract class AuthenticatedPage extends BasePage {
         await this.navbar.clickMoreAndDocuments();
     }
 
+    async navigateToContactDetails() {
+        await this.navbar.clickProfile();
+        await this.setttingsSidebar.clickContactDetails();
+    }
+
     async doLogout() {
-        await this.navbar.doLogout();
+        await this.navbar.clickProfile();
+        await this.setttingsSidebar.clickLogout();
     }
 
     async saveSessionStorage() {
