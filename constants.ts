@@ -35,7 +35,8 @@ export const enum CASE_CONFIG_REFERENCE {
 export const enum CASE_NOTE {
     NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent.",
     INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent.",
-    PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent."
+    PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent.",
+    UPDATE_SENT = "Process step completed with note: Update Sent"
 }
 
 export const enum INVESTMENT_CHANGE_TYPE {
