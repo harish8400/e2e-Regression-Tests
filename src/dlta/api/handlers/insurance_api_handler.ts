@@ -34,6 +34,7 @@ export class InsuranceApiHandler {
                         {
                             active: true,
                             category: "STD Death",
+                            originalCoverAmount: policy.coverAmount,
                             cover: 10,
                             coverAmount: policy.coverAmount,
                             coverBasis: "unitBased",
@@ -64,6 +65,7 @@ export class InsuranceApiHandler {
                         {
                             active: true,
                             category: "STD TPD",
+                            originalCoverAmount: policy.coverAmount,
                             cover: 10,
                             coverAmount: policy.coverAmount,
                             coverBasis: "unitBased",
