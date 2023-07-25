@@ -4,7 +4,7 @@ import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler"
 import { CASE_NOTE } from "../../../constants";
 
 
-test("MOL Profile - update landline number", async ({ dashboardPage, caseApi, memberApi, memberId }) => {
+test("MOL Profile - update landline number @mol @mol_profile", async ({ dashboardPage, caseApi, memberApi, memberId }) => {
     await dashboardPage.navigateToContactDetails();
 
     let newLandlineNumber = (Math.floor(Math.random() * 90000000) + 10000000).toString();
