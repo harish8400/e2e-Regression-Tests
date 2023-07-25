@@ -23,6 +23,7 @@ test("MOL documents filter", async ({ documentsPage }) => {
         expect(errors, `Expected title/s not found among displayed: ${uniqueTitles}`).toEqual([])
     });
 
+    //TODO: resolve dup steps
     let docType = MOL_DOCUMENT_TYPE.BENEFICIARIES;
     await test.step(`Filter documents list to '${docType}'`, async () => {
         await documentsPage.filterByDocumentType(docType);

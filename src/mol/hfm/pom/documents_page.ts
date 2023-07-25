@@ -30,7 +30,6 @@ export class DocumentsPage extends AuthenticatedPage {
 
     async getDocumentsTitles() {
         await this.documentsList.waitFor({ state: "attached" });
-        await this.documentTitle.all();
         let documentTitlesStrings = [];
         for (let i = 0; i < await this.documentTitle.count(); i++) {
             documentTitlesStrings.push(await this.documentTitle.nth(i).textContent())

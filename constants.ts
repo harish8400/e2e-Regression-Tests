@@ -5,7 +5,9 @@ export const enum CASE_TYPE {
     REMOVE_TAGS = "Tags - Remove",
     INSURANCE_MODIFY_COVER = "Insurance - Add/Modify members cover records",
     INSURANCE_BATCH_COMMENCEMENT = "Insurance - Batch members commencement",
-    PENSION_UPDATE_PAYMENT_DETAILS = "Pension - Update Payment Details"
+    PENSION_UPDATE_PAYMENT_DETAILS = "Pension - Update Payment Details",
+    MEMBER_CREATE_CONTRIBUTION = "Member - Create Contribution",
+    ROLLOVER_IN_CREATE = "Rollover In - Create"
 }
 
 export const enum CASE_STATUS {
@@ -29,7 +31,9 @@ export const enum CASE_CONFIG_REFERENCE {
     REMOVE_MEMBER_CATEGORY = "removeMemberCategory",
     PROCESS_MEMBER_INSURANCE = "processMemberInsurance",
     INSURANCE_BATCH_COMMENCEMENT = "insuranceBatchCommencement",
-    PENSION_UPDATE_PAYMENT_DETAILS = "updatePensionPaymentDetails"
+    PENSION_UPDATE_PAYMENT_DETAILS = "updatePensionPaymentDetails",
+    MEMBER_CONTRIBUTION = "memberContribution",
+    MANUAL_ROLLIN = "manualRollin"
 }
 
 export const enum CASE_NOTE {
@@ -53,11 +57,22 @@ export const enum PAYMENT_FREQUENCY {
     ANNUALLY = "Annually",
 }
 
+export const enum CONTRIBUTION_TYPE {
+    SUPER_GUARANTEE = "SGC",
+    PERSONAL = "MNC"
+}
+
 export const enum MOL_DOCUMENT_TYPE {
     ALL = "All",
     BENEFICIARIES = "Beneficiaries",
     INSURANCE = "Insurance",
     INVESTMENTS = "Investments"
+}
+
+export const enum MOL_TRANSACTION_TYPE {
+    ANY = "Any",
+    CONTRIBUTION = "Contribution",
+    ROLL_IN = "Roll In"
 }
 
 //consts

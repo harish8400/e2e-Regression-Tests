@@ -9,6 +9,7 @@ import { PensionPage } from "../../../../src/mol/hfm/pom/pension_page";
 import { FUND_IDS } from "../../../../constants";
 import { DocumentsPage } from "../../../../src/mol/hfm/pom/documents_page";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
+import { TransactionsPage } from "../../../../src/mol/hfm/pom/transactions_page";
 
 type Pages = {
     loginPage: LoginPage;
@@ -18,6 +19,7 @@ type Pages = {
     insurancePage: InsurancePage;
     pensionPage: PensionPage;
     documentsPage: DocumentsPage;
+    transactionsPage: TransactionsPage;
 };
 
 //User not logged in
@@ -74,6 +76,10 @@ const molHfmAuthenticatedUserTest = molBaseTest.extend<Pages>({
 
     documentsPage: async ({ page }, use) => {
         await use(new DocumentsPage(page));
+    },
+
+    transactionsPage: async ({ page }, use) => {
+        await use(new TransactionsPage(page));
     },
 
     //test options
