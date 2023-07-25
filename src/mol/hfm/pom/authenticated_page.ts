@@ -89,7 +89,12 @@ export abstract class AuthenticatedPage extends BasePage {
     }
 
     async doAccountsGet() {
-        let response = await this.page.request.get(ENVIRONMENT_CONFIG.molHfmApiURL + "/v1/identities/current/accounts", {
+        let apiUrl = ENVIRONMENT_CONFIG.molHfmApiURL + "/v1/identities/current/accounts";
+        if (ENVIRONMENT_CONFIG.name === "dev") {
+            apiUrl = apiUrl + `?mol-api-version=${ENVIRONMENT_CONFIG.molHfmMolApiVersion}`;
+        }
+
+        let response = await this.page.request.get(apiUrl, {
             headers: await this.assembleHeaderForApiRequest()
         });
 

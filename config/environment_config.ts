@@ -2,12 +2,13 @@ import configFile from './env.config.json';
 
 interface ConfigContent {
     [key: string]: {
-        "name": string,
-        "adviserOnlineURL": string,
-        "aolURL": string,
-        "dltaApiURL": string,
-        "molHfmURL": string
-        "molHfmApiURL": string
+        name: string,
+        adviserOnlineURL: string,
+        aolURL: string,
+        dltaApiURL: string,
+        molHfmURL: string,
+        molHfmApiURL: string,
+        molHfmMolApiVersion?: string
     };
 }
 
