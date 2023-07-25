@@ -8,7 +8,7 @@ test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToTransactions();
 })
 
-test("MOL transactions filter", async ({ transactionsPage, memberApi, caseApi, memberId }) => {
+test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage, memberApi, caseApi, memberId }) => {
     //create transactions
     let currentDate = new Date();
     currentDate.setUTCHours(0, 0, 0, 0);

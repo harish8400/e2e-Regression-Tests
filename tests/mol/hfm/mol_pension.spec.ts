@@ -9,7 +9,7 @@ test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToPension();
 })
 
-test("MOL update pension payment details", async ({ pensionPage, memberApi, caseApi, memberId }) => {
+test("MOL update pension payment details @mol @mol_pension", async ({ pensionPage, memberApi, caseApi, memberId }) => {
     let today = new Date();
     today.setUTCHours(10, 0, 0, 0);
     let randomDays = Math.floor(Math.random() * (120 - 30 + 1)) + 30;

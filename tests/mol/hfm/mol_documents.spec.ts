@@ -7,7 +7,7 @@ test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToDocuments();
 })
 
-test("MOL documents filter", async ({ documentsPage }) => {
+test("MOL documents filter @mol @mol_documents", async ({ documentsPage }) => {
     test.skip(ENVIRONMENT_CONFIG.name !== "uat", `Can not test MOL documents in '${ENVIRONMENT_CONFIG.name}' environment yet`);
 
     let expectedDocTitles = ["Beneficiaries Confirmation", "Insurance Commencement", "Investment Change"];
