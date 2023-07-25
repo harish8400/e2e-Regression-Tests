@@ -4,7 +4,7 @@ import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler"
 import { CASE_NOTE } from "../../../constants";
 
 
-test("MOL Profile - contact details", async ({ dashboardPage, caseApi }) => {
+test("MOL Profile - update landline number", async ({ dashboardPage, caseApi, memberApi, memberId }) => {
     await dashboardPage.navigateToContactDetails();
 
     let newLandlineNumber = (Math.floor(Math.random() * 90000000) + 10000000).toString();
@@ -21,6 +21,8 @@ test("MOL Profile - contact details", async ({ dashboardPage, caseApi }) => {
 
     await test.step("Wait for DLTA processing", async () => {
         await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.UPDATE_SENT);
+        //TODO check letter payload
+        await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
     })
 
     await test.step("Check landline number updated", async () => {
