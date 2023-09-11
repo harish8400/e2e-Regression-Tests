@@ -1,11 +1,12 @@
 import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
+import { DateUtils } from "../../../utils/date_utils";
 import { CaseApi } from "../case_api";
 import { MemberApi } from "../member_api";
 import { CaseApiHandler } from "./case_api_handler";
 
 export class RollinApiHandler {
 
-    static async createRollin(memberApi: MemberApi, caseApi: CaseApi, memberId: string, rollin: Rollin, skipCorrespondence?: boolean) {
+    static async createRollin(memberApi: MemberApi, caseApi: CaseApi, memberId: string, rollin: Rollin, stp?: boolean, skipCorrespondence?: boolean) {
 
         let newCase = await CaseApiHandler.createPendingCase(memberApi, memberId, CASE_TYPE.ROLLOVER_IN_CREATE, CASE_CONFIG_REFERENCE.MANUAL_ROLLIN);
 
@@ -28,17 +29,18 @@ export class RollinApiHandler {
             validUSI: true,
             transferringClientIdentifier: rollin.transferringClientIdentifier,
             paymentReference: rollin.paymentReference,
-            paymentReceivedDate: rollin.paymentReceivedDate.toISOString().slice(0, 10),
-            effectiveDate: rollin.effectiveDate.toISOString().slice(0, 10),
+            paymentReceivedDate: DateUtils.ISOStringDate(rollin.paymentReceivedDate),
+            effectiveDate: DateUtils.ISOStringDate(rollin.effectiveDate),
             amount: rollin.amount,
             messageType: "Client-RTR",
             skipCorrespondence: skipCorrespondence || true
         }
         await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.MANUAL_ROLLIN, initialData, newCase.case.caseGroupId);
 
-        await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
-
-        await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
+        if (!stp) {
+            await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
+            await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
+        }
 
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
     }
