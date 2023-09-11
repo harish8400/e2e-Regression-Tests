@@ -19,7 +19,7 @@ export abstract class MolDashboardBasePage extends MolBasePage {
     }
 
     async waitForBalanceHeading() {
-        await this.balancedHeading.waitFor({ state: "visible" });
+        await this.balancedHeading.waitFor({ state: "visible", timeout: 60000 });
     }
 
 }

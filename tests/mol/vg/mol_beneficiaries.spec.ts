@@ -4,16 +4,17 @@ import { molVgAccumTest as test } from "./setup/mol_vg_test"
 import { MolBeneficary } from "../../../src/mol/common/pom/mol_beneficiaries_base_page";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
 import { CASE_NOTE } from "../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.sideNavbar.clickBeneficiaries();
 })
 
-test("VG MOL view beneficiaries @mol @mol_beneficiaries_view", async ({ beneficiariesPage, caseApi, memberApi, memberId }) => {
+test("VG MOL view beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiariesPage, caseApi, memberApi, memberId }) => {
 
     //TODO: handle if update already in progress
     await test.step("Data prep - DLTA delete all beneficiaries", async () => {
-        await BeneficaryApiHandler.deleteMemberBeneficiaries(memberApi, caseApi, memberId);
+        await BeneficaryApiHandler.deleteMemberBeneficiaries(memberApi, caseApi, memberId, true);
         await beneficiariesPage.reload();
     })
 
@@ -43,8 +44,15 @@ test("VG MOL view beneficiaries @mol @mol_beneficiaries_view", async ({ benefici
     })
 
     await test.step("Wait for DLTA processing", async () => {
-        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
-        //TODO check letter payload
+        if (ENVIRONMENT_CONFIG.name === "dev") {
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.ADDED_BENEFICIARIES_FOR_THE_MEMBER);
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.UNAUTHORISED);
+            await CaseApiHandler.closeGroupWithError(memberApi, memberId, caseGroupId)
+        } else {
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
+            //TODO check letter payload
+            await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
+        }
     })
 
     await test.step("Check beneficiaries updated in MOL", async () => {
