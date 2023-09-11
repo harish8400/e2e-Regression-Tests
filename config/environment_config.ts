@@ -7,8 +7,10 @@ interface ConfigContent {
         aolURL: string,
         dltaApiURL: string,
         molHfmURL: string,
-        molHfmApiURL: string,
+        molApiURL: string,
         molHfmMolApiVersion?: string
+        molVgURL: string,
+        molVgMolApiVersion?: string
     };
 }
 

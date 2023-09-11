@@ -1,6 +1,6 @@
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 import { ParametersUtils } from "../../../../src/utils/parameters_utils";
-import { hfmMolLogin as setup } from "./mol_hfm_test";
+import { molHfmLogin as setup } from "./mol_hfm_test";
 
 setup("Login and save storage", async ({ loginPage, dashboardPage }) => {
     setup.info().annotations.push({ type: "environment", description: ENVIRONMENT_CONFIG.name })

@@ -1,16 +1,16 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "../../../common/pom/base_page";
 import { Navbar } from "./components/navbar";
 import path from "path";
 import fs from "fs"
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 import { SettingsSidebar } from "./components/settingsSidebar";
 import { ContactDetailsSidebar } from "./components/contactDetailsSidebar";
+import { MolBasePage } from "../../common/mol_base_page";
 
 const AUTH_DIRECTORY = path.join(__dirname, '../../../../playwright/.auth');
-const SESSION_STORAGE = AUTH_DIRECTORY + '/user.json';
+const SESSION_STORAGE = AUTH_DIRECTORY + '/mol_hfm_user.json';
 
-export abstract class AuthenticatedPage extends BasePage {
+export abstract class AuthenticatedPage extends MolBasePage {
 
     private readonly navbar: Navbar;
     private readonly setttingsSidebar: SettingsSidebar;
@@ -89,17 +89,13 @@ export abstract class AuthenticatedPage extends BasePage {
     }
 
     async doAccountsGet() {
-        let apiUrl = ENVIRONMENT_CONFIG.molHfmApiURL + "/v1/identities/current/accounts";
+        let headers = await this.assembleHeaderForApiRequest();
+        let apiVersion = undefined;
         if (ENVIRONMENT_CONFIG.name === "dev") {
-            apiUrl = apiUrl + `?mol-api-version=${ENVIRONMENT_CONFIG.molHfmMolApiVersion}`;
+            apiVersion = ENVIRONMENT_CONFIG.molHfmMolApiVersion;
         }
 
-        let response = await this.page.request.get(apiUrl, {
-            headers: await this.assembleHeaderForApiRequest()
-        });
-
-        let accounts: Array<Account>;
-        accounts = await response.json();
+        let accounts = await super.doAccountsGet(headers, apiVersion);
         return accounts;
     }
 
@@ -113,13 +109,4 @@ export abstract class AuthenticatedPage extends BasePage {
         return headers;
     }
 
-};
-
-export interface Account {
-    memberId: string,
-    memberNo: string,
-    productReference: string,
-    productType: string,
-    fundProductId: string,
-    productPhase: string
 };
