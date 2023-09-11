@@ -12,8 +12,8 @@ export class ContribtionApiHandler {
         let initialData = {
             type: contribution.type,
             paymentReference: contribution.paymentReference,
-            paymentReceivedDate: DateUtils.ISOStringDate(contribution.paymentReceivedDate),
-            effectiveDate: DateUtils.ISOStringDate(contribution.effectiveDate),
+            paymentReceivedDate: DateUtils.localISOStringDate(contribution.paymentReceivedDate),
+            effectiveDate: DateUtils.localISOStringDate(contribution.effectiveDate),
             amount: contribution.amount,
             messageType: "paper",
             skipCorrespondence: skipCorrespondence || true

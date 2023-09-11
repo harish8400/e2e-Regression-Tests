@@ -13,7 +13,7 @@ export class PensionApiHandler {
             amount: 0,
             frequency: "annually",
             annualPensionPaymentOption: "minimumAmount",
-            nextPaymentDate: DateUtils.ISOStringDate(paymentDate),
+            nextPaymentDate: DateUtils.localISOStringDate(paymentDate),
             skipCorrespondence: skipCorrespondence || true
         };
 

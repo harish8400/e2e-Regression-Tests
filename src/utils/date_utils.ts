@@ -1,8 +1,10 @@
 export class DateUtils {
 
     /**format example: 2023-09-01*/
-    static ISOStringDate(date: Date) {
-        return date.toISOString().slice(0, 10)
+    static localISOStringDate(date: Date) {
+        let timezoneOffsetMs = date.getTimezoneOffset() * 60000;
+        let localISODateTime = (new Date(date.valueOf() - timezoneOffsetMs)).toISOString().slice(0, 10);
+        return localISODateTime
     }
 
     /**format example: 1 Sep 2023*/

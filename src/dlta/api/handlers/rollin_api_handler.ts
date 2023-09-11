@@ -29,8 +29,8 @@ export class RollinApiHandler {
             validUSI: true,
             transferringClientIdentifier: rollin.transferringClientIdentifier,
             paymentReference: rollin.paymentReference,
-            paymentReceivedDate: DateUtils.ISOStringDate(rollin.paymentReceivedDate),
-            effectiveDate: DateUtils.ISOStringDate(rollin.effectiveDate),
+            paymentReceivedDate: DateUtils.localISOStringDate(rollin.paymentReceivedDate),
+            effectiveDate: DateUtils.localISOStringDate(rollin.effectiveDate),
             amount: rollin.amount,
             messageType: "Client-RTR",
             skipCorrespondence: skipCorrespondence || true

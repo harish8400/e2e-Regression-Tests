@@ -25,7 +25,7 @@ export class InsuranceApiHandler {
     }
 
     static async createStandardZurichPendingPolicies(memberApi: MemberApi, caseApi: CaseApi, memberId: string, policies: Array<InsurancePolicy>, skipCorrespondence?: boolean) {
-        let todayDate = DateUtils.ISOStringDate(new Date());
+        let todayDate = DateUtils.localISOStringDate(new Date());
         let policiesToCreate = [];
         for (let index = 0; index < policies.length; index++) {
             const policy = policies[index];
@@ -133,7 +133,7 @@ export class InsuranceApiHandler {
     }
 
     static async createDefaultAiaPendingPolicies(memberApi: MemberApi, caseApi: CaseApi, memberId: string, policies: Array<InsurancePolicy>, skipCorrespondence?: boolean) {
-        let todayDate = DateUtils.ISOStringDate(new Date());
+        let todayDate = DateUtils.localISOStringDate(new Date());
         let policiesToCreate = [];
         for (let index = 0; index < policies.length; index++) {
             const policy = policies[index];
