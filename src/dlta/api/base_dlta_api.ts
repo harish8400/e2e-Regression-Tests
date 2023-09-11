@@ -1,5 +1,6 @@
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { ParametersUtils } from "../../utils/parameters_utils";
 
 export abstract class BaseDltaApi {
 
@@ -38,6 +39,10 @@ export abstract class BaseDltaApi {
 }
 
 export async function initDltaApiContext() {
+    if (process.env.BUILDKITE) {
+        process.env.DLTA_JWT = await ParametersUtils.getQualityParamValue("e2e/DLTA_JWT");
+    }
+
     const jwt = process.env.DLTA_JWT;
     if (jwt === undefined) {
         throw new Error("DLTA_JWT environment variable not found");

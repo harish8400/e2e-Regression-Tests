@@ -42,12 +42,12 @@ test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage
 
     //check transactions
     let expectedSgTransaction = {
-        date: sg.effectiveDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        date: `${sg.effectiveDate.toLocaleString('en-US', { day: '2-digit' })} ${sg.effectiveDate.toLocaleString('en-US', { month: 'short' })} ${sg.effectiveDate.getFullYear()}`,
         description: "Super Guarantee (Contribution)",
         amount: `$${sg.amount.toFixed(2)}`
     };
     let expectedRollinTransaction = {
-        date: rollin.effectiveDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        date: `${rollin.effectiveDate.toLocaleString('en-US', { day: '2-digit' })} ${rollin.effectiveDate.toLocaleString('en-US', { month: 'short' })} ${rollin.effectiveDate.getFullYear()}`,
         description: "Roll In (Roll In)",
         amount: `$${rollin.amount.toFixed(2)}`
     }

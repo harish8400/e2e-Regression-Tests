@@ -55,6 +55,15 @@ export class CaseApiHandler {
         await memberApi.closeCaseGroup(memberId, closeData, true);
     }
 
+    static async closeGroupWithError(memberApi: MemberApi, memberId: string, caseGroupId: string) {
+        let closeData: CloseCaseGroupData = {
+            caseGroupId: caseGroupId,
+            outcome: CASE_OUTCOME.ERROR,
+            status: CASE_STATUS.COMPLETE,
+        }
+        await memberApi.closeCaseGroup(memberId, closeData, false);
+    }
+
     static async createPendingCase(memberApi: MemberApi, memberId: string, caseType: CASE_TYPE, configReference: CASE_CONFIG_REFERENCE) {
         let caseData: CaseData = {
             type: caseType,

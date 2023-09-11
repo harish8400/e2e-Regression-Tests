@@ -4,6 +4,7 @@ import { BeneficaryApiHandler, DltaBeneficary } from "../../../src/dlta/api/hand
 import { CASE_NOTE, CASE_STATUS } from "../../../constants";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
 import { MolBeneficary } from "../../../src/mol/hfm/pom/beneficiaries_page";
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navigateToBeneficiaries();
@@ -92,9 +93,15 @@ test("MOL add beneficiaries @mol @mol_beneficiaries_add", async ({ beneficiaries
     await test.step("Approve case in DLTA", async () => {
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, caseGroupId, CASE_STATUS.IN_REVIEW);
         await CaseApiHandler.approveCaseGroup(caseApi, caseGroupId);
-        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
-        //TODO check letter payload
-        await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
+        if (ENVIRONMENT_CONFIG.name === "dev") {
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.ADDED_BENEFICIARIES_FOR_THE_MEMBER);
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.UNAUTHORISED);
+            await CaseApiHandler.closeGroupWithError(memberApi, memberId, caseGroupId)
+        } else {
+            await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, caseGroupId, CASE_NOTE.NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT);
+            //TODO check letter payload
+            await CaseApiHandler.closeGroupWithSuccess(memberApi, memberId, caseGroupId)
+        }
     })
 
     await test.step("Check beneficiaries updated in MOL", async () => {

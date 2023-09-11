@@ -37,10 +37,14 @@ export const enum CASE_CONFIG_REFERENCE {
 }
 
 export const enum CASE_NOTE {
+    UNAUTHORISED = "\"Unauthorised\"",
+    ADDED_BENEFICIARIES_FOR_THE_MEMBER = "Added beneficiaries for the member.",
     NEW_MEMBER_BENEFICIARY_LETTER_PAYLOAD_SENT = "Process step completed with note: New Member Beneficiary letter payload sent.",
     INVESTMENT_CHANGE_LETTER_PAYLOAD_SENT = "Process step completed with note: Investment change letter payload sent.",
+    MEMBER_PROFILE_TYPE_SWITCH_INITIATED = "Process step completed with note: Member profile type switch initiated.",
     PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent.",
-    UPDATE_SENT = "Process step completed with note: Update Sent"
+    UPDATE_SENT = "Process step completed with note: Update Sent",
+    UPDATED_MEMBER = "Updated member."
 }
 
 export const enum INVESTMENT_CHANGE_TYPE {
