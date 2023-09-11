@@ -1,6 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
-import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export abstract class MolBasePage extends BasePage {
     readonly messageItem: Locator;
@@ -11,8 +10,8 @@ export abstract class MolBasePage extends BasePage {
         this.messageItem = page.locator('div[data-cy="message-item"]');
     }
 
-    async doAccountsGet(headers: { [key: string]: string }, molApiVerion?: string) {
-        let apiUrl = ENVIRONMENT_CONFIG.molApiURL + "/v1/identities/current/accounts";
+    async doAccountsGet(baseUrl: string, headers: { [key: string]: string }, molApiVerion?: string) {
+        let apiUrl = baseUrl + "/v1/identities/current/accounts";
         if (molApiVerion) {
             apiUrl = apiUrl + `?mol-api-version=${molApiVerion}`;
         }
@@ -21,8 +20,7 @@ export abstract class MolBasePage extends BasePage {
             headers: headers
         });
 
-        let accounts: Array<Account>;
-        accounts = await response.json();
+        let accounts = await response.json() as Array<Account>;
         return accounts;
     }
 

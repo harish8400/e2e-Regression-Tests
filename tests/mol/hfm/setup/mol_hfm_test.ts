@@ -6,7 +6,7 @@ import { InvestmentsPage } from '../../../../src/mol/hfm/pom/investments_page';
 import { InsurancePage } from '../../../../src/mol/hfm/pom/insurance_page';
 import { molBaseTest, setMolApiVersionLocalStorage } from '../../common/setup/mol_base_test';
 import { PensionPage } from "../../../../src/mol/hfm/pom/pension_page";
-import { FUND_IDS } from "../../../../constants";
+import { AUTH_USER_FILENAME, FUND_IDS } from "../../../../constants";
 import { DocumentsPage } from "../../../../src/mol/hfm/pom/documents_page";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 import { TransactionsPage } from "../../../../src/mol/hfm/pom/transactions_page";
@@ -52,7 +52,7 @@ const molHfmAuthenticatedUserTest = molBaseTest.extend<Pages>({
         }
 
         const dashboardPage = new DashboardPage(page);
-        await dashboardPage.addSessionAndLocalStorage("mol_hfm_user.json");
+        await dashboardPage.addSessionAndLocalStorage(AUTH_USER_FILENAME.MOL_HFM);
         await dashboardPage.goTo();
 
         await use(dashboardPage);

@@ -11,7 +11,7 @@ export abstract class MolInvestmentsBasePage extends MolBasePage {
     private readonly investmentItemTitle: Locator;
     private readonly investmentItemSubTitle: Locator;
 
-    private readonly changeInvestmentsButton: Locator;
+    protected changeInvestmentsButton: Locator;
 
     //change
     private readonly currentBalanceAllocationOptionDiv: Locator;

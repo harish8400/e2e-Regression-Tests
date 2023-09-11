@@ -1,17 +1,14 @@
 import { Locator, Page } from "@playwright/test";
-import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 import { MolBasePage } from "./mol_base_page";
 
 
 export abstract class MolDashboardBasePage extends MolBasePage {
-    private readonly url;
+    protected abstract readonly url: string;
 
     private readonly balancedHeading: Locator;
 
     constructor(page: Page) {
         super(page);
-
-        this.url = ENVIRONMENT_CONFIG.molHfmURL + "/dashboard"
 
         this.balancedHeading = page.getByRole('heading', { name: 'Estimated balance as at' });
     }

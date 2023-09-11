@@ -1,5 +1,6 @@
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 import { ParametersUtils } from "../../../../src/utils/parameters_utils";
+import { AUTH_USER_FILENAME } from "../../../../constants";
 import { molHfmLogin as setup } from "./mol_hfm_test";
 
 setup("Login and save storage", async ({ loginPage, dashboardPage }) => {
@@ -17,5 +18,5 @@ setup("Login and save storage", async ({ loginPage, dashboardPage }) => {
 
     await loginPage.doLogin(username!!, password!!);
     await dashboardPage.waitForBalanceHeading();
-    await dashboardPage.saveSessionAndLocalStorage("mol_hfm_user.json");
+    await dashboardPage.saveSessionAndLocalStorage(AUTH_USER_FILENAME.MOL_HFM);
 });

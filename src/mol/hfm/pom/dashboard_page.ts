@@ -7,6 +7,7 @@ import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
 export class DashboardPage extends MolDashboardBasePage {
+    protected override readonly url: string;
 
     readonly navbar: Navbar;
     readonly setttingsSidebar: SettingsSidebar;
@@ -18,6 +19,8 @@ export class DashboardPage extends MolDashboardBasePage {
 
     constructor(page: Page) {
         super(page);
+
+        this.url = ENVIRONMENT_CONFIG.molHfmURL + "/dashboard";
 
         this.navbar = new Navbar(page);
         this.setttingsSidebar = new SettingsSidebar(page);
@@ -54,7 +57,7 @@ export class DashboardPage extends MolDashboardBasePage {
             apiVersion = ENVIRONMENT_CONFIG.molHfmMolApiVersion;
         }
 
-        let accounts = await super.doAccountsGet(headers, apiVersion);
+        let accounts = await super.doAccountsGet(ENVIRONMENT_CONFIG.molHfmApiURL, headers, apiVersion);
         return accounts;
     }
 

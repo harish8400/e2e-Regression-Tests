@@ -41,19 +41,19 @@ export abstract class MolInsuranceBasePage extends MolBasePage {
         //TODO: check with devs if can add some html locators instead
         let deathRow = this.deathHeader.locator('../..');
         let deathCover = await deathRow.locator('p').nth(1).textContent();
-        let deathFee = await deathRow.locator('p').nth(2).textContent();
+        let deathPremium = await deathRow.locator('p').nth(2).textContent();
 
         let tpdRow = this.tpdHeader.locator('../..');
         let tpdCover = await tpdRow.locator('p').nth(1).textContent();
-        let tpdFee = await tpdRow.locator('p').nth(2).textContent();
+        let tpdPremium = await tpdRow.locator('p').nth(2).textContent();
 
         let ipRow = this.ipHeader.locator('../..');
-        let ipCover = (await ipRow.locator('div').nth(1).locator('div').nth(0).innerText()).replaceAll("\n\n", "\n");
-        let ipFee = await ipRow.locator('p').nth(4).textContent();
+        let ipCover = (await ipRow.locator('div').nth(1).locator("div,p").first().innerText()).replaceAll("\n\n", "\n");
+        let ipPremium = await ipRow.locator('div').last().locator("p").textContent();
         return {
-            death: { cover: deathCover, fee: deathFee },
-            tpd: { cover: tpdCover, fee: tpdFee },
-            ip: { cover: ipCover, fee: ipFee },
+            death: { cover: deathCover, premium: deathPremium },
+            tpd: { cover: tpdCover, premium: tpdPremium },
+            ip: { cover: ipCover, premium: ipPremium }
         };
     }
 
