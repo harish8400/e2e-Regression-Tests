@@ -29,12 +29,12 @@ export class InsurancePage extends AuthenticatedPage {
         this.applicationInProgressHeader = page.getByRole('heading', { name: 'Insurance Application in progress' });
         this.coverOptionsHeader = page.getByRole('heading', { name: 'Cover options' });
 
-        this.optInButton = page.locator('xpath=//button[text() = "Opt in"]');
-        this.manageYourCoverButton = page.locator('xpath=//button[text() = "Manage your cover"]');
+        this.optInButton = page.locator('button:text-is("Opt in")');
+        this.manageYourCoverButton = page.locator('button:text-is("Manage your cover")');
 
         //opt-in modal
         //has different aria-label value so can't use getByRole with name
-        this.yesOptInButton = page.locator('xpath=//button[text() = "Yes, Opt in"]');
+        this.yesOptInButton = page.locator('button:text-is("Yes, Opt in")');
     }
 
     async getInsurance() {

@@ -15,7 +15,7 @@ export class DashboardPage extends AuthenticatedPage {
 
         this.url = ENVIRONMENT_CONFIG.molHfmURL + "/dashboard"
 
-        this.accountDropdown = page.locator('//div[@data-cy-name="dropdown-trigger"]');
+        this.accountDropdown = page.locator('div[data-cy-name="dropdown-trigger"]');
         this.accumulationDropdownOption = page.getByText(ACCOUNT_OPTION.ACCUMULATION);
         this.retirementDropdownOption = page.getByText(ACCOUNT_OPTION.RETIREMENT);
     }

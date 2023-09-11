@@ -16,11 +16,11 @@ export class DocumentsPage extends AuthenticatedPage {
         super(page);
 
         //documents filter
-        this.documentsFilter = page.locator('xpath=//div[@data-cy-name="documents-filter"]');
-        this.documentsFilterOptionsWrapper = page.locator('xpath=//div[@data-cy-name="dropdown-wrapper"]');
+        this.documentsFilter = page.locator('div[data-cy-name="documents-filter"]');
+        this.documentsFilterOptionsWrapper = page.locator('div[data-cy-name="dropdown-wrapper"]');
         //documents list
-        this.documentsList = page.locator('xpath=//div[@data-cy-name="documents-list"]');
-        this.documentTitle = page.locator('xpath=//p[@data-cy-name="document-title"]');
+        this.documentsList = page.locator('div[data-cy-name="documents-list"]');
+        this.documentTitle = page.locator('p[data-cy-name="document-title"]');
     }
 
     async filterByDocumentType(type: MOL_DOCUMENT_TYPE) {

@@ -14,13 +14,13 @@ export class TransactionsPage extends AuthenticatedPage {
     constructor(page: Page) {
         super(page);
 
-        this.transactionFilter = page.locator('xpath=//div[@data-cy="transactions-category-filter"]');
-        this.transactionFilterOptionsWrapper = page.locator('xpath=//div[@data-cy-name="dropdown-wrapper"]');
+        this.transactionFilter = page.locator('div[data-cy="transactions-category-filter"]');
+        this.transactionFilterOptionsWrapper = page.locator('div[data-cy-name="dropdown-wrapper"]');
 
-        this.transactionHistoryList = page.locator('xpath=//div[@data-cy="transactions-history-list"]');
-        this.transactionItem = page.locator('xpath=//div[@data-cy="transaction-item"]');
-        this.transactionItemTopRow = page.locator('xpath=//div[@data-cy="transaction-item-above"]');
-        this.transactionItemBottomRow = page.locator('xpath=//div[@data-cy="transaction-item-body"]');
+        this.transactionHistoryList = page.locator('div[data-cy="transactions-history-list"]');
+        this.transactionItem = page.locator('div[data-cy="transaction-item"]');
+        this.transactionItemTopRow = page.locator('div[data-cy="transaction-item-above"]');
+        this.transactionItemBottomRow = page.locator('div[data-cy="transaction-item-body"]');
     }
 
     async filterByTransactionType(type: MOL_TRANSACTION_TYPE) {
@@ -34,7 +34,7 @@ export class TransactionsPage extends AuthenticatedPage {
         let transactions = [];
         for (let i = 0; i < await this.transactionItem.count(); i++) {
             let tr = this.transactionItem.nth(i);
-            let bottomRowParagraphs = await tr.locator(this.transactionItemBottomRow).locator('xpath=.//p').all();
+            let bottomRowParagraphs = await tr.locator(this.transactionItemBottomRow).locator('p').all();
             transactions.push({
                 date: await tr.locator(this.transactionItemTopRow).textContent(),
                 description: await bottomRowParagraphs[0].textContent(),

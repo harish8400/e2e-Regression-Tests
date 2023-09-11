@@ -26,7 +26,7 @@ export abstract class AuthenticatedPage extends MolBasePage {
         this.setttingsSidebar = new SettingsSidebar(page);
         this.contactDetailsSidebar = new ContactDetailsSidebar(page);
 
-        this.messageItem = page.locator('xpath=//div[@data-cy="message-item"]');
+        this.messageItem = page.locator('div[data-cy="message-item"]');
     }
 
     async navigateToDashboard() {

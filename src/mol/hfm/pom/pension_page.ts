@@ -27,23 +27,23 @@ export class PensionPage extends AuthenticatedPage {
         super(page);
 
         //view
-        this.nextPaymentDateParagraph = page.locator('//p[@data-cy="pension-info-details-next-payment-date"]');
-        this.paymenFrequencyParagraph = page.locator('//p[@data-cy="pension-info-details-frequency"]');
-        this.paymenSelectionParagraph = page.locator('//p[@data-cy="pension-info-details-payment-selection"]');
+        this.nextPaymentDateParagraph = page.locator('p[data-cy="pension-info-details-next-payment-date"]');
+        this.paymenFrequencyParagraph = page.locator('p[data-cy="pension-info-details-frequency"]');
+        this.paymenSelectionParagraph = page.locator('p[data-cy="pension-info-details-payment-selection"]');
 
         //manage payment details
         //has different aria-label, can't use role
-        this.changePaymentDetailsButton = page.locator('xpath=//button[text() = "Change payment details"]');
-        this.frequencyDropdown = page.locator('//div[@data-cy="frequency-option-input-select"]//div[@data-cy-name="dropdown-trigger"]');
-        this.paymentSelectionDropdown = page.locator('//div[@data-cy="payment-selection-option-input-select"]//div[@data-cy-name="dropdown-trigger"]');
+        this.changePaymentDetailsButton = page.locator('button:text-is("Change payment details")');
+        this.frequencyDropdown = page.locator('div[data-cy="frequency-option-input-select"] div[data-cy-name="dropdown-trigger"]');
+        this.paymentSelectionDropdown = page.locator('div[data-cy="payment-selection-option-input-select"] div[data-cy-name="dropdown-trigger"]');
         this.minimumAmountSelection = page.getByTitle("Minimum amount", { exact: true })
         this.nominatedAmountSelection = page.getByTitle("Nominated amount", { exact: true })
         this.nominatedAmountInput = page.getByLabel('Amount per', { exact: false });
         //has different aria-label, can't use role
-        this.saveChangesButton = page.locator('xpath=//button[text() = "Save Changes"]');
+        this.saveChangesButton = page.locator('button:text-is("Save Changes")');
 
         //confirmation modal
-        this.yesSureButton = page.locator('xpath=//button[text() = "Yes, I’m sure"]');
+        this.yesSureButton = page.locator('button:text-is("Yes, I’m sure")');
     }
 
     async getCurrentPaymentDetails() {

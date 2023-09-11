@@ -32,12 +32,12 @@ export class InvestmentsPage extends AuthenticatedPage {
         super(page);
 
         //view
-        this.currentInvestmentChart = page.locator('xpath=//div[@data-cy="current-investment-chart"]');
-        this.futureInvestmentChart = page.locator('xpath=//div[@data-cy="future-investment-chart"]');
-        this.investmentItem = page.locator('xpath=//div[@data-cy-name="investment-breakdown-item"]');
-        this.investmentItemTitle = page.locator('xpath=//p[@data-cy-name="legend-title"]');
-        this.investmentItemSubTitle = page.locator('xpath=//p[@data-cy-name="legend-subtitle"]');
-        this.changeInvestmentsButton = page.locator('xpath=//button[text() = "Change investments"]');
+        this.currentInvestmentChart = page.locator('div[data-cy="current-investment-chart"]');
+        this.futureInvestmentChart = page.locator('div[data-cy="future-investment-chart"]');
+        this.investmentItem = page.locator('div[data-cy-name="investment-breakdown-item"]');
+        this.investmentItemTitle = page.locator('p[data-cy-name="legend-title"]');
+        this.investmentItemSubTitle = page.locator('p[data-cy-name="legend-subtitle"]');
+        this.changeInvestmentsButton = page.locator('button:text-is("Change investments")');
 
         //change
         //switch type selection
@@ -46,15 +46,15 @@ export class InvestmentsPage extends AuthenticatedPage {
         this.currentAndFuturePortfolioOptionDiv = page.getByText('Current and future investments', { exact: true });
 
         //allocations
-        this.investmentRow = page.locator('xpath=//div[@data-cy="investment-strategy-wrapper"]');
-        this.investmentRowLabel = page.locator('xpath=//p[@data-cy="investment-strategy-label"]');
-        this.investmentRowPercentInput = page.locator('xpath=//input[@data-cy="input-field"]');
+        this.investmentRow = page.locator('div[data-cy="investment-strategy-wrapper"]');
+        this.investmentRowLabel = page.locator('p[data-cy="investment-strategy-label"]');
+        this.investmentRowPercentInput = page.locator('input[data-cy="input-field"]');
         this.sameAllocationLabel = page.getByText('Same as above allocation')
         //has different aria-label value so can't use getByRole with name
-        this.applyChangesButton = page.locator('xpath=//button[text() = "Apply changes"]');
+        this.applyChangesButton = page.locator('button:text-is("Apply changes")');
 
         //confirmation modal
-        this.yesUpdateButton = page.locator('xpath=//button[text() = "Yes, I’m sure"]');
+        this.yesUpdateButton = page.locator('button:text-is("Yes, I’m sure")');
     }
 
     async getCurrentAssetAllocation(): Promise<Array<{ title: string, subtitle1: string, subtitle2: string }>> {

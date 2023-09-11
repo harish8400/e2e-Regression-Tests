@@ -30,30 +30,29 @@ export class BeneficiariesPage extends AuthenticatedPage {
         //view
         this.noBeneficiariesHeading = page.getByRole('heading', { name: 'No existing beneficiaries' });
 
-        //paragraph text is different in uat
         const noBeneficiariesParagraphText = 'We don\'t have any nominated beneficiaries for you yet.';
         this.noBeneficiariesYetParagraph = page.getByText(noBeneficiariesParagraphText);
         //div with each beneficiary's details
-        this.beneficiarySummary = page.locator('xpath=//*[@data-cy-name="beneficiary-summary-list"]');
-        this.beneficiarySummaryHeader = page.locator('xpath=//*[@data-cy-name="beneficiary-summary-item-header"]');
-        this.beneficiarySummaryDescription = page.locator('xpath=//*[@data-cy-name="beneficiary-summary-item-description"]');
+        this.beneficiarySummary = page.locator('div[data-cy-name="beneficiary-summary-list"]');
+        this.beneficiarySummaryHeader = page.locator('p[data-cy-name="beneficiary-summary-item-header"]');
+        this.beneficiarySummaryDescription = page.locator('p[data-cy-name="beneficiary-summary-item-description"]');
 
         //manage
-        this.manageBeneficiariesButton = page.locator('xpath=//button[text() = "Manage beneficiaries"]');
+        this.manageBeneficiariesButton = page.locator('button:text-is("Manage beneficiaries")');
         this.nominateNonBindingBeneficiaryLabel = page.getByText('Nominate non-binding beneficiary');
-        this.startNominationButton = page.locator('xpath=//button[text() = "Start nomination"]');
-        this.addBeneficiaryButton = page.locator('xpath=//button[text() = "Add beneficiary"]');
-        this.continueButton = page.locator('xpath=//button[text() = "Continue"]');
-        this.applyChangeButton = page.locator('xpath=//button[text() = "Apply changes"]');
-        this.yesProceedButton = page.locator('xpath=//button[text() = "Yes, proceed"]');
+        this.startNominationButton = page.locator('button:text-is("Start nomination")');
+        this.addBeneficiaryButton = page.locator('button:text-is("Add beneficiary")');
+        this.continueButton = page.locator('button:text-is("Continue")');
+        this.applyChangeButton = page.locator('button:text-is("Apply changes")');
+        this.yesProceedButton = page.locator('button:text-is("Yes, proceed")');
 
-        this.manageBeneficiaryItemDiv = page.locator('xpath=//div[@data-cy-name="beneficiary-item"]');
+        this.manageBeneficiaryItemDiv = page.locator('div[data-cy-name="beneficiary-item"]');
         //within each div
-        this.manageBeneficiaryRelationshipDropdown = page.locator('xpath=//div[@data-cy-name="dropdown-trigger"]');
+        this.manageBeneficiaryRelationshipDropdown = page.locator('div[data-cy-name="dropdown-trigger"]');
         this.manageBeneficaryName = page.getByLabel('Name of beneficiary (First name and Surname)');
         this.manageBeneficaryDateOfBirth = page.getByLabel('Date of birth');
 
-        this.manageBeneficiaryPercentageDiv = page.locator('xpath=//div[@data-cy-name="non-binding-beneficiary-allocation-item-input"]');
+        this.manageBeneficiaryPercentageDiv = page.locator('div[data-cy-name="non-binding-beneficiary-allocation-item-input"]');
     }
 
     async getBeneficiaries() {

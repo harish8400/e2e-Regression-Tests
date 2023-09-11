@@ -28,7 +28,7 @@ export class Navbar extends BasePage {
         this.more = page.getByRole('button', { name: 'More', exact: true });
         this.profile = this.page.locator('button', { hasText: new RegExp(/^[A-Z]{2}$/) });
 
-        this.moreMenu = page.locator("xpath=//div[@data-cy-name='dropdown']");
+        this.moreMenu = page.locator("div[data-cy-name='dropdown']");
         this.moreCombine = this.moreMenu.getByText('Combine');
         this.moreBeneficiaries = this.moreMenu.getByText('Beneficiaries');
         this.moreDocuments = this.moreMenu.getByText('Documents');
