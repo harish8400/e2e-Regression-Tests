@@ -15,7 +15,7 @@ npx playwright install
 
 ## Usage
 
-Tests are execute in 'dev' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
+Tests are executed in 'dev' environment by default if no environment is provided, to run tests using specific environment set your ENVIRONMENT environment variable, i.e.:
 
 ```
 export ENVIRONMENT=uat
@@ -53,19 +53,24 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=poc
 
 ## Credentials
 
-Following test credentials required to run tests:
-
-### MOL
+Following test credentials required to run tests locally:
 
 * DLTA_JWT environment variable - admin credentials with access to perform actions (i.e. create and approve cases) in DLTA
+
+#### MOL HFM
+
 * MOL_USERNAME & MOL_PASSWORD envrionment variables - existing MOL user credentials (H4F only currently) with 2FA disabled 
 
 ```
 docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat -e MOL_USERNAME=$MOL_USERNAME -e MOL_PASSWORD=$MOL_PASSWORD -e DLTA_JWT=$DLTA_JWT e2e_tests --project mol_hfm_chromium
 ```
 
+#### MOL VG
+
+* OKTA_USERNAME & OKTA_PASSWORD envrionment variables - existing okta dev account creds with registered member's profile IDs set up
+
 ### TODO
-[ ] add another Dockefile for non-arm processors
+[ ] new member creation and registration
 
 [ ] investigate if POM classes should be split into 'view' and 'manage'
 
