@@ -16,6 +16,6 @@ setup("Login and save storage", async ({ loginPage, dashboardPage }) => {
     }
 
     await loginPage.doLogin(username!!, password!!);
-    await dashboardPage.navigateToInvestments();
-    await dashboardPage.saveSessionStorage();
+    await dashboardPage.waitForBalanceHeading();
+    await dashboardPage.saveSessionAndLocalStorage("mol_hfm_user.json");
 });

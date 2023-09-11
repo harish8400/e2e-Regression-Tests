@@ -52,7 +52,7 @@ const molHfmAuthenticatedUserTest = molBaseTest.extend<Pages>({
         }
 
         const dashboardPage = new DashboardPage(page);
-        await dashboardPage.addSessionStorage();
+        await dashboardPage.addSessionAndLocalStorage("mol_hfm_user.json");
         await dashboardPage.goTo();
 
         await use(dashboardPage);

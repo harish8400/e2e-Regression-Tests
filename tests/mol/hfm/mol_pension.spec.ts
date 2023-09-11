@@ -3,10 +3,10 @@ import { molHfmPensionTest as test } from "./setup/mol_hfm_test";
 import { PensionApiHandler } from "../../../src/dlta/api/handlers/pension_api_handler";
 import { expect } from "@playwright/test";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
-import { PensionPaymentDetails } from "../../../src/mol/hfm/pom/pension_page";
+import { PensionPaymentDetails } from "../../../src/mol/common/pom/mol_pension_base_page";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToPension();
+    await dashboardPage.navbar.clickPayments();
 })
 
 test("MOL update pension payment details @mol @mol_pension", async ({ pensionPage, memberApi, caseApi, memberId }) => {

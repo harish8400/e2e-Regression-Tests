@@ -3,11 +3,11 @@ import { CASE_NOTE, INVESTMENT_CHANGE_TYPE, INVESTMENT_OPTIONS } from "../../../
 import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
 import { DltaInvestmentSelection, InvestmentApiHandler } from "../../../src/dlta/api/handlers/investment_api_handler";
-import { InvestmentChange } from "../../../src/mol/hfm/pom/investments_page";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { InvestmentChange } from "../../../src/mol/common/pom/mol_investments_base_page";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToInvestments();
+    await dashboardPage.navbar.clickInvestments();
 })
 
 test("MOL change future investment @mol @mol_future_investments_switch", async ({ investmentsPage, memberApi, caseApi, memberId }) => {

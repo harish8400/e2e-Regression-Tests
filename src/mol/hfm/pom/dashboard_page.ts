@@ -1,10 +1,16 @@
 import { Locator, Page } from "@playwright/test";
-import { AuthenticatedPage } from "./authenticated_page";
+import { MolDashboardBasePage } from "../../common/pom/mol_dashboard_base_page";
+import { Navbar } from "./components/navbar";
+import { SettingsSidebar } from "./components/settingsSidebar";
+import { ContactDetailsSidebar } from "./components/contactDetailsSidebar";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
-export class DashboardPage extends AuthenticatedPage {
-    private readonly url;
+export class DashboardPage extends MolDashboardBasePage {
+
+    readonly navbar: Navbar;
+    readonly setttingsSidebar: SettingsSidebar;
+    readonly contactDetailsSidebar: ContactDetailsSidebar;
 
     private readonly accountDropdown: Locator;
     private readonly accumulationDropdownOption: Locator;
@@ -13,15 +19,13 @@ export class DashboardPage extends AuthenticatedPage {
     constructor(page: Page) {
         super(page);
 
-        this.url = ENVIRONMENT_CONFIG.molHfmURL + "/dashboard"
+        this.navbar = new Navbar(page);
+        this.setttingsSidebar = new SettingsSidebar(page);
+        this.contactDetailsSidebar = new ContactDetailsSidebar(page);
 
-        this.accountDropdown = page.locator('div[data-cy-name="dropdown-trigger"]');
+        this.accountDropdown = page.locator('div[data-cy-name="dropdown-trigger"]').first();
         this.accumulationDropdownOption = page.getByText(ACCOUNT_OPTION.ACCUMULATION);
         this.retirementDropdownOption = page.getByText(ACCOUNT_OPTION.RETIREMENT);
-    }
-
-    async goTo() {
-        await this.page.goto(this.url);
     }
 
     async selectAccount(accountOption: string) {
@@ -41,6 +45,27 @@ export class DashboardPage extends AuthenticatedPage {
             default:
                 throw new Error(`Account option '${accountOption}' not yet implemented`);
         }
+    }
+
+    async doAccountsGet() {
+        let headers = await this.assembleHeaderForApiRequest();
+        let apiVersion = undefined;
+        if (ENVIRONMENT_CONFIG.name === "dev") {
+            apiVersion = ENVIRONMENT_CONFIG.molHfmMolApiVersion;
+        }
+
+        let accounts = await super.doAccountsGet(headers, apiVersion);
+        return accounts;
+    }
+
+    private async assembleHeaderForApiRequest() {
+        let accessToken = await this.page.evaluate(() => sessionStorage.accessToken);
+        let idToken = await this.page.evaluate(() => sessionStorage.idToken);
+        let headers = {
+            "Authorization": `Bearer ${accessToken}`,
+            "Identity": `Bearer ${idToken}`,
+        };
+        return headers;
     }
 
 }

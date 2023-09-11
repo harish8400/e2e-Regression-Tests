@@ -5,7 +5,7 @@ import { ContribtionApiHandler, Contribution } from "../../../src/dlta/api/handl
 import { Rollin, RollinApiHandler } from "../../../src/dlta/api/handlers/rollin_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToTransactions();
+    await dashboardPage.navbar.clickTransactions();
 })
 
 test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage, memberApi, caseApi, memberId }) => {

@@ -6,7 +6,7 @@ import { LinkApiHandler } from "../../../src/dlta/api/handlers/link_api_handler"
 import { InsuranceApiHandler, InsurancePolicy } from "../../../src/dlta/api/handlers/insurance_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToInsurance();
+    await dashboardPage.navbar.clickInsurance();
 })
 
 test("MOL insurance opt-in @mol @mol_insurance_opt-in", async ({ insurancePage, memberApi, caseApi, memberId }) => {

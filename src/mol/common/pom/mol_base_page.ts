@@ -1,11 +1,14 @@
-import { Page } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
-import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { Locator, Page } from "@playwright/test";
+import { BasePage } from "../../../common/pom/base_page";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export abstract class MolBasePage extends BasePage {
+    readonly messageItem: Locator;
 
     constructor(page: Page) {
         super(page);
+
+        this.messageItem = page.locator('div[data-cy="message-item"]');
     }
 
     async doAccountsGet(headers: { [key: string]: string }, molApiVerion?: string) {

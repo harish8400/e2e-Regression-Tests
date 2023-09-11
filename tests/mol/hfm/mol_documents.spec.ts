@@ -4,7 +4,7 @@ import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToDocuments();
+    await dashboardPage.navbar.clickMoreAndDocuments();
 })
 
 test("MOL documents filter @mol @mol_documents", async ({ documentsPage }) => {
