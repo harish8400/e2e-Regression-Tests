@@ -62,7 +62,7 @@ export default defineConfig({
     },
     //VG MOL
     {
-      name: 'vg_hfm_chromium',
+      name: 'mol_vg_chromium',
       use: { ...devices['Desktop Chrome'] },
       testMatch: '**/tests/mol/vg/*.spec.ts',
       dependencies: ['mol_vg_setup']
