@@ -3,11 +3,11 @@ import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
 import { BeneficaryApiHandler, DltaBeneficary } from "../../../src/dlta/api/handlers/beneficiary_api_handler";
 import { CASE_NOTE, CASE_STATUS } from "../../../constants";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
-import { MolBeneficary } from "../../../src/mol/hfm/pom/beneficiaries_page";
+import { MolBeneficary } from "../../../src/mol/common/pom/mol_beneficiaries_base_page";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToBeneficiaries();
+    await dashboardPage.navbar.clickMoreAndBeneficiaries();
 })
 
 test("MOL view beneficiaries @mol @mol_beneficiaries_view", async ({ beneficiariesPage, caseApi, memberApi, memberId }) => {

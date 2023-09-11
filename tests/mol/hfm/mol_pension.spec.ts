@@ -3,17 +3,16 @@ import { molHfmPensionTest as test } from "./setup/mol_hfm_test";
 import { PensionApiHandler } from "../../../src/dlta/api/handlers/pension_api_handler";
 import { expect } from "@playwright/test";
 import { CaseApiHandler } from "../../../src/dlta/api/handlers/case_api_handler";
-import { PensionPaymentDetails } from "../../../src/mol/hfm/pom/pension_page";
+import { PensionPaymentDetails } from "../../../src/mol/common/pom/mol_pension_base_page";
+import { DateUtils } from "../../../src/utils/date_utils";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navigateToPension();
+    await dashboardPage.navbar.clickPayments();
 })
 
 test("MOL update pension payment details @mol @mol_pension", async ({ pensionPage, memberApi, caseApi, memberId }) => {
-    let today = new Date();
-    today.setUTCHours(10, 0, 0, 0);
     let randomDays = Math.floor(Math.random() * (120 - 30 + 1)) + 30;
-    let nextPaymentDate = new Date(today.setDate(today.getDate() + randomDays));
+    let nextPaymentDate = DateUtils.addDaysToNow(randomDays);
 
     await test.step("Data prep - DLTA update pension payment details to annually", async () => {
         await PensionApiHandler.updatePensionPaymentToAnnualMinimum(memberApi, caseApi, memberId, nextPaymentDate);
@@ -22,7 +21,7 @@ test("MOL update pension payment details @mol @mol_pension", async ({ pensionPag
     await test.step("Check payment details displayed correctly", async () => {
         await pensionPage.reload();
         let expectedPaymentDetails = [
-            `Next payment: ${nextPaymentDate.getDate()} ${nextPaymentDate.toLocaleString('en-US', { month: 'short' })} ${nextPaymentDate.getFullYear()}`,
+            `Next payment: ${DateUtils.dMMMyyyStringDate(nextPaymentDate)}`,
             "Frequency: Annually",
             "Payment selection: Minimum amount"
         ];

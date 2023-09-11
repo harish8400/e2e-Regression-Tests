@@ -1,4 +1,4 @@
-import { APIRequestContext, test as base } from "@playwright/test";
+import { APIRequestContext, Page, test as base } from "@playwright/test";
 import { initDltaApiContext } from "../../../../src/dlta/api/base_dlta_api";
 import { MemberApi } from "../../../../src/dlta/api/member_api";
 import { CaseApi } from "../../../../src/dlta/api/case_api";
@@ -36,3 +36,8 @@ export const molBaseTest = base.extend<DltaApi & TestContext>({
         await use(new CaseApi(dltaApiRequestContext));
     }
 });
+
+export async function setMolApiVersionLocalStorage(page: Page, apiVersion: string) {
+    await page.evaluate((molApiVersion) => { window.localStorage.setItem("mol-api-version", molApiVersion) }, apiVersion);
+    await page.reload();
+}

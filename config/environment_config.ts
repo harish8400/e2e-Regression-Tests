@@ -8,7 +8,10 @@ interface ConfigContent {
         dltaApiURL: string,
         molHfmURL: string,
         molHfmApiURL: string,
+        molVgApiURL: string,
         molHfmMolApiVersion?: string
+        molVgURL: string,
+        molVgMolApiVersion?: string
     };
 }
 

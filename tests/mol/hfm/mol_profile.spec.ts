@@ -6,7 +6,8 @@ import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
 
 test("MOL Profile - update landline number @mol @mol_profile", async ({ dashboardPage, caseApi, memberApi, memberId }) => {
-    await dashboardPage.navigateToContactDetails();
+    await dashboardPage.navbar.clickProfile();
+    await dashboardPage.setttingsSidebar.clickContactDetails();
 
     let newLandlineNumber = (Math.floor(Math.random() * 90000000) + 10000000).toString();
     await test.step(`Update landline number to ${newLandlineNumber}`, async () => {
@@ -34,7 +35,8 @@ test("MOL Profile - update landline number @mol @mol_profile", async ({ dashboar
 
     await test.step("Check landline number updated", async () => {
         await dashboardPage.reload();
-        await dashboardPage.navigateToContactDetails();
+        await dashboardPage.navbar.clickProfile();
+        await dashboardPage.setttingsSidebar.clickContactDetails();
         let expectedLandlineNumber = `*******${newLandlineNumber.slice(-4)}`;
         let actualLandlineNumber = await dashboardPage.contactDetailsSidebar.getLandlineNumber();
         expect(actualLandlineNumber).toEqual(expectedLandlineNumber);

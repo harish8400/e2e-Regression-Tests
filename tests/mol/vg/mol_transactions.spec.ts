@@ -1,12 +1,12 @@
 import { expect } from "@playwright/test";
-import { molHfmAccumTest as test } from "./setup/mol_hfm_test";
+import { molVgAccumTest as test } from "./setup/mol_vg_test"
 import { CONTRIBUTION_TYPE, MOL_TRANSACTION_TYPE } from "../../../constants";
 import { ContribtionApiHandler, Contribution } from "../../../src/dlta/api/handlers/contribution_api_handler";
 import { Rollin, RollinApiHandler } from "../../../src/dlta/api/handlers/rollin_api_handler";
 import { DateUtils } from "../../../src/utils/date_utils";
 
 test.beforeEach(async ({ dashboardPage }) => {
-    await dashboardPage.navbar.clickTransactions();
+    await dashboardPage.sideNavbar.clickTransactions();
 })
 
 test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage, memberApi, caseApi, memberId }) => {
@@ -21,7 +21,7 @@ test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage
         amount: sgAmount
     }
     await test.step(`Data prep - DLTA add '${JSON.stringify(sg)}' SG cont`, async () => {
-        await ContribtionApiHandler.createContribution(memberApi, caseApi, memberId, sg);
+        await ContribtionApiHandler.createContribution(memberApi, caseApi, memberId, sg, true);
     });
 
     let twoWeeksAgo = DateUtils.addDaysToNow(-14);
@@ -36,7 +36,7 @@ test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage
         amount: rollinAmount
     }
     await test.step(`Data prep - DLTA add '${JSON.stringify(rollin)}' rollin`, async () => {
-        await RollinApiHandler.createRollin(memberApi, caseApi, memberId, rollin);
+        await RollinApiHandler.createRollin(memberApi, caseApi, memberId, rollin, true);
     });
 
     //check transactions

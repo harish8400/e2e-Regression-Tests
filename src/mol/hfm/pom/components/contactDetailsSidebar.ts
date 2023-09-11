@@ -11,11 +11,11 @@ export class ContactDetailsSidebar extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.landlineNumberLabel = page.getByText('Landline number');
+        this.landlineNumberLabel = page.locator('span:text-is("Landline number")');
 
-        this.phoneInput = page.locator('//input[@id = "phone"]');
+        this.phoneInput = page.locator('input[id = "phone"]');
 
-        this.saveButton = page.locator('xpath=//button[text() = "Save"]');
+        this.saveButton = page.locator('button:text-is("Save")');
     }
 
     async getLandlineNumber() {
@@ -39,8 +39,9 @@ export class ContactDetailsSidebar extends BasePage {
     }
 
     private valueForLabelLocator(labelLocator: Locator) {
-        //value should be in label's parent div's span sibling
-        return labelLocator.locator('xpath=./parent::div/following-sibling::span');
+        //value should be in label's span ancestor's in 2nd span
+        let parentSpan = this.page.locator("span", { has: labelLocator });
+        return parentSpan.locator("span").nth(1);
     }
 
 }

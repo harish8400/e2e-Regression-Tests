@@ -3,17 +3,17 @@ import { CaseApi } from "../case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "../member_api";
 import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
+import { DateUtils } from "../../../utils/date_utils";
 
 export class PensionApiHandler {
 
     static async updatePensionPaymentToAnnualMinimum(memberApi: MemberApi, caseApi: CaseApi, memberId: string, paymentDate: Date, skipCorrespondence?: boolean) {
-        let paymentDateString = paymentDate.toISOString().substring(0, 10);
         let initialData = {
             claimingPensionTaxFreeThreshold: false,
             amount: 0,
             frequency: "annually",
             annualPensionPaymentOption: "minimumAmount",
-            nextPaymentDate: paymentDateString,
+            nextPaymentDate: DateUtils.localISOStringDate(paymentDate),
             skipCorrespondence: skipCorrespondence || true
         };
 

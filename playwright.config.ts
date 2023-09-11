@@ -60,6 +60,18 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
       testMatch: '**/tests/mol/hfm/setup/mol_hfm_setup.ts',
     },
+    //VG MOL
+    {
+      name: 'mol_vg_chromium',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/vg/*.spec.ts',
+      dependencies: ['mol_vg_setup']
+    },
+    {
+      name: 'mol_vg_setup',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/tests/mol/vg/setup/mol_vg_setup.ts',
+    },
 
     // {
     //   name: 'firefox',

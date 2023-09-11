@@ -79,6 +79,11 @@ export const enum MOL_TRANSACTION_TYPE {
     ROLL_IN = "Roll In"
 }
 
+export const enum AUTH_USER_FILENAME {
+    MOL_HFM = "mol_hfm_user.json",
+    MOL_VG = "mol_vg_user.json"
+}
+
 //consts
 export const FUND_IDS = {
     MERCY: {
@@ -117,6 +122,26 @@ export const INVESTMENT_OPTIONS = {
             DIVERSIFIED_BONDS: {
                 NAME: "Diversified Bonds",
                 ID: "HE56"
+            }
+        }
+    },
+    VANGUARD: {
+        ACCUMULATION: {
+            ETHICALLY_CONSCIOUS_GROWTH: {
+                NAME: "Ethically Conscious Growth",
+                ID: "SESGA"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "SCDA"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "SASIA"
+            },
+            CASH: {
+                NAME: "Growth",
+                ID: "Cash"
             }
         }
     }

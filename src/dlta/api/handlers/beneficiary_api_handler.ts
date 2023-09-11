@@ -6,7 +6,7 @@ import { CaseApi } from "../case_api";
 export class BeneficaryApiHandler {
 
     //TODO: resolve delete and add code duplication
-    static async deleteMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, skipCorrespondence?: boolean) {
+    static async deleteMemberBeneficiaries(memberApi: MemberApi, caseApi: CaseApi, memberId: string, isSTP?: boolean, skipCorrespondence?: boolean) {
         let beneficiaries = await memberApi.getBeneficiaries(memberId);
 
         if (beneficiaries.data.length < 1) {
@@ -24,9 +24,10 @@ export class BeneficaryApiHandler {
             }
             await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.MODIFY_BENEFICIARIES, initialData, newCase.case.caseGroupId);
 
-            await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
-
-            await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
+            if (!isSTP) {
+                await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
+                await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
+            }
 
             await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE);
         }
