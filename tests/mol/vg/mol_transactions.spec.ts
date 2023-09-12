@@ -24,15 +24,14 @@ test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage
         await ContribtionApiHandler.createContribution(memberApi, caseApi, memberId, sg, true);
     });
 
-    let twoWeeksAgo = DateUtils.addDaysToNow(-14);
     let rollinAmount = parseFloat((Math.random() * (100 - 10) + 10).toFixed(2)); //random amount between 10 and 100
     let rollin: Rollin = {
         taxed: rollinAmount,
         preserved: rollinAmount,
         transferringClientIdentifier: `e2eTest_${Date.now()}`,
         paymentReference: `e2eTest_${Date.now()}`,
-        paymentReceivedDate: twoWeeksAgo,
-        effectiveDate: twoWeeksAgo,
+        paymentReceivedDate: oneWeekAgo,
+        effectiveDate: oneWeekAgo,
         amount: rollinAmount
     }
     await test.step(`Data prep - DLTA add '${JSON.stringify(rollin)}' rollin`, async () => {
