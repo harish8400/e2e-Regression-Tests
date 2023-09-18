@@ -1,8 +1,7 @@
-import waitUntil from "async-wait-until";
 import { CaseApi } from "../case_api";
 import { CaseApiHandler } from "./case_api_handler";
 import { MemberApi } from "../member_api";
-import { CASE_CONFIG_REFERENCE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
+import { CASE_CONFIG_REFERENCE, CASE_NOTE, CASE_STATUS, CASE_TYPE } from "../../../../constants";
 import { DateUtils } from "../../../utils/date_utils";
 
 export class PensionApiHandler {
@@ -22,10 +21,8 @@ export class PensionApiHandler {
         await CaseApiHandler.initCaseProcess(memberApi, memberId, CASE_CONFIG_REFERENCE.PENSION_UPDATE_PAYMENT_DETAILS, initialData, newCase.case.caseGroupId);
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
         await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
-        //there sometimes appear to be a slight delay in processing, this delay to pause test execution briefly
-        let startTime = Date.now();
-        await waitUntil(() => Date.now() - startTime >= 4000);
         //there is a second review on this update on Increment Member Pension Schedule step
+        await CaseApiHandler.waitForCaseGroupCaseWithNote(caseApi, newCase.case.caseGroupId, CASE_NOTE.INCREMENT_PENSION_SCHEDULE_DID_NOT_MEET_CONDITIONS);
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.IN_REVIEW);
         await CaseApiHandler.approveCaseGroup(caseApi, newCase.case.caseGroupId);
         await CaseApiHandler.waitForCaseGroupStatus(caseApi, newCase.case.caseGroupId, CASE_STATUS.COMPLETE)
