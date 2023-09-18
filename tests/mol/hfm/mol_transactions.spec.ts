@@ -4,14 +4,26 @@ import { CONTRIBUTION_TYPE, MOL_TRANSACTION_TYPE } from "../../../constants";
 import { ContribtionApiHandler, Contribution } from "../../../src/dlta/api/handlers/contribution_api_handler";
 import { Rollin, RollinApiHandler } from "../../../src/dlta/api/handlers/rollin_api_handler";
 import { DateUtils } from "../../../src/utils/date_utils";
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { ProductApiHandler } from "../../../src/dlta/api/handlers/product_api_handler";
 
 test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.navbar.clickTransactions();
 })
 
-test("MOL transactions filter @mol @mol_transactions", async ({ transactionsPage, memberApi, caseApi, memberId }) => {
-    //create transactions
+test("MOL transactions filter @mol @mol_transactions", async ({
+    transactionsPage, memberApi, caseApi, productApi, productAggregationApi, fundIds, memberId }) => {
+
     let oneWeekAgo = DateUtils.addDaysToNow(-7);
+    //upload unit prices if missing in non-uat env
+    if (ENVIRONMENT_CONFIG.name !== "uat") {
+        let refDate = DateUtils.localISOStringDate(oneWeekAgo);
+        let investments = await productAggregationApi.getInvestmentPerformanceByRefDate(fundIds.PRODUCT_ID.ACCUMULATION, refDate);
+        if (investments.data.length === 0) {
+            ProductApiHandler.uploadHfmAccumUnitPrices(productApi, fundIds.PRODUCT_ID.ACCUMULATION, refDate);
+        }
+    }
+
     let sgAmount = parseFloat((Math.random() * (100 - 10) + 10).toFixed(2)); //random amount between 10 and 100
     let sg: Contribution = {
         type: CONTRIBUTION_TYPE.SUPER_GUARANTEE,

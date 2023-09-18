@@ -36,6 +36,7 @@ export const enum CASE_CONFIG_REFERENCE {
     MANUAL_ROLLIN = "manualRollin"
 }
 
+
 export const enum CASE_NOTE {
     UNAUTHORISED = "\"Unauthorised\"",
     ADDED_BENEFICIARIES_FOR_THE_MEMBER = "Added beneficiaries for the member.",
@@ -44,7 +45,8 @@ export const enum CASE_NOTE {
     MEMBER_PROFILE_TYPE_SWITCH_INITIATED = "Process step completed with note: Member profile type switch initiated.",
     PENSION_PAYMENT_CORRESPONDENCE_SENT = "Process step completed with note: Pension payment correspondence sent.",
     UPDATE_SENT = "Process step completed with note: Update Sent",
-    UPDATED_MEMBER = "Updated member."
+    UPDATED_MEMBER = "Updated member.",
+    INCREMENT_PENSION_SCHEDULE_DID_NOT_MEET_CONDITIONS = "Process step **Increment Member Pension Schedule** did not meet conditions."
 }
 
 export const enum INVESTMENT_CHANGE_TYPE {
