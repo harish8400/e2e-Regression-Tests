@@ -1,0 +1,84 @@
+{
+    "prices": [
+        {
+            "applicationPrice": 1.8641,
+            "investmentId": "HE48",
+            "midPrice": 1.8641,
+            "redemptionPrice": 1.8641,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.2593,
+            "investmentId": "HE50",
+            "midPrice": 1.2593,
+            "redemptionPrice": 1.2593,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.8265,
+            "investmentId": "HE53",
+            "midPrice": 1.8265,
+            "redemptionPrice": 1.8265,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.7566,
+            "investmentId": "HE51",
+            "midPrice": 1.7566,
+            "redemptionPrice": 1.7566,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.3076,
+            "investmentId": "HE52",
+            "midPrice": 1.3076,
+            "redemptionPrice": 1.3076,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.6480,
+            "investmentId": "HE46",
+            "midPrice": 1.6480,
+            "redemptionPrice": 1.6480,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.6755,
+            "investmentId": "HE54",
+            "midPrice": 1.6755,
+            "redemptionPrice": 1.6755,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.3892,
+            "investmentId": "HEBN",
+            "midPrice": 1.3892,
+            "redemptionPrice": 1.3892,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.389249,
+            "investmentId": "HE56",
+            "midPrice": 1.389249,
+            "redemptionPrice": 1.389249,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        },
+        {
+            "applicationPrice": 1.389249,
+            "investmentId": "HE47",
+            "midPrice": 1.389249,
+            "redemptionPrice": 1.389249,
+            "referenceDate": "{{referenceDate}}",
+            "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+        }
+    ]
+}

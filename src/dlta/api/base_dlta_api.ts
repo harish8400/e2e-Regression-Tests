@@ -18,8 +18,8 @@ export abstract class BaseDltaApi {
         return response;
     }
 
-    protected async post(path: string, jsonString: string) {
-        let response = await this.requestContext.post(path, { data: jsonString });
+    protected async post(path: string, payloadJsonString: string) {
+        let response = await this.requestContext.post(path, { data: payloadJsonString });
         this.failIfResponseError(response);
         return response;
     }
