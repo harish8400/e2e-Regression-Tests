@@ -39,6 +39,9 @@ npx playwright test --project mol_hfm_chromium
 ## Test results
 Test results can be found in ./playwright-report folder after test run
 
+## Buildkite pipeline
+https://buildkite.com/grow-inc/e2e-playwright-regression-tests
+
 ## Docker
 
 Buld image
@@ -70,7 +73,7 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat
 * OKTA_USERNAME & OKTA_PASSWORD envrionment variables - existing okta dev account creds with registered member's profile IDs set up
 
 ### TODO
-[ ] new member creation and registration
+[ ] new member creation and registration (MOL dev work completed to save OTPs in db, tests to be updated)
 
 [ ] investigate if POM classes should be split into 'view' and 'manage'
 
@@ -84,4 +87,4 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat
 
 [ ] move environment config init to global setup?
 
-[ ] check if can upload document in dev MOL
+[ ] update MOL documents tests to upload document as part of the test 
