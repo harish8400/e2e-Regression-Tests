@@ -10,13 +10,9 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
-  timeout: 90000,
-  expect: {
-    timeout: 10000
-  },
+  testDir: './tests/adviser_online',
   /* Run tests in files in parallel */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -24,59 +20,28 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ['list'],
-    ['html', { open: 'never' }],
-    ['junit', { outputFile: './playwright-report/results.xml' }]
-  ],
+  reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    headless: false,
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    actionTimeout: 15000
   },
 
-  /* Configure projects */
+  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: ['**/tests/mol/**/*.spec.ts'] //ignore MOL defined below
     },
 
-    //HfM MOL
-    {
-      name: 'mol_hfm_chromium',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/hfm/*.spec.ts',
-      dependencies: ['mol_hfm_setup']
-    },
-    {
-      name: 'mol_hfm_setup',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/hfm/setup/mol_hfm_setup.ts',
-    },
-    //VG MOL
-    {
-      name: 'mol_vg_chromium',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/vg/*.spec.ts',
-      dependencies: ['mol_vg_setup']
-    },
-    {
-      name: 'mol_vg_setup',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/tests/mol/vg/setup/mol_vg_setup.ts',
-    },
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // }
+    /* {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    }, */
 
     // {
     //   name: 'webkit',
@@ -100,7 +65,7 @@ export default defineConfig({
     // },
     // {
     //   name: 'Google Chrome',
-    //   use: { ..devices['Desktop Chrome'], channel: 'chrome' },
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
 

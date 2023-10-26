@@ -76,7 +76,6 @@ export class ClientPage extends BasePage {
     }
 
     async clickTransactionTab(){
-        console.log('hhhhhhhhhh');
         await this.transactionTab.click();       
     }
 
@@ -150,7 +149,7 @@ export class ClientPage extends BasePage {
     await this.downloadButton.click();
 
    }
-       
-     
+    
+ 
 
 }

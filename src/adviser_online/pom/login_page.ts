@@ -9,7 +9,7 @@ export class LoginPage extends BasePage {
     private readonly emailInput: Locator;
     private readonly passwordInput: Locator;
     private readonly continueButton: Locator;
-    
+
     constructor(page: Page) {
         super(page);
 
@@ -17,13 +17,11 @@ export class LoginPage extends BasePage {
 
         this.emailInput = page.getByLabel('Email address');
         this.passwordInput = page.getByLabel('Password');
-        this.continueButton =  page.getByRole('button', { name: 'Continue' });
-        
+        this.continueButton = page.getByRole('button', { name: 'Continue' });
     }
 
     async navigateTo() {
         await this.page.goto(this.url);
-        //await this.page.goto(this.url) ;
     }
 
     async navigateToClientTab(){
