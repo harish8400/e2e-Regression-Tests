@@ -6,6 +6,7 @@ interface ConfigContent {
         adviserOnlineURL: string,
         aolURL: string,
         dltaApiURL: string,
+        dltaOnlineURL: string,
         molHfmURL: string,
         molHfmApiURL: string,
         molVgApiURL: string,
