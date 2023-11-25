@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
 import { Admins } from "../../src/dlta_online/data/admins";
 
@@ -13,19 +14,32 @@ test.describe("Add case management @closedcases", () => {
             await dashboardPage.maximizeWindow();
         })
 
-        //await test.step("To validate casemanagement dashboard screen", async () => {
-        //    await dashboardPage.waitForTimeout(3000)
-            //await expect(dashboardPage.case_management).toHaveText("Case Management");      
+        await test.step("To validate casemanagement dashboard screen", async () => {
+            await dashboardPage.waitForTimeout(3000)
+            await expect(dashboardPage.case_management).toHaveText("Case Management");      
 
-        //})
+        })
         await test.step("To validate closed cases dashboard screen",async () => {
               await dashboardPage.verifyCaseManagementButtons();
             
         })
 
-        await test.step("To validate closed cases filter option",async () => {
+        await test.step("To verify filtering is available on closed Cases in Case Management", async () => {
+            let expectedItems = ["Member Account Number", "Effective Date", "Assigned to","Case Type","Outcome","Case Group ID","Status","Reference"]
             await dashboardPage.clickOnFilter();
+            let actualItems = await dashboardPage.getListOfItems();
+            expect(actualItems).toEqual(expectedItems) 
+         })
+
+         await test.step("Ensure that a member is able to find his case based on his account number", async () => {
+            //await dashboardPage.clickOnClosedIcon();
+            //await dashboardPage.clickOnFilter();
+            await dashboardPage.verifyMemberAccNumber();
+            expect(dashboardPage.memberText.filter({ hasText: ('Member Account Number: 4F653-90-') })); 
+        })
+        //await test.step("To validate closed cases filter option",async () => {
+         //   await dashboardPage.clickOnFilter();
           
-      })
+      //})
     })
 })
