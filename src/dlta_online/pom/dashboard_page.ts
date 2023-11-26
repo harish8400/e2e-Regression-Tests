@@ -31,12 +31,19 @@ export class DashboardPage extends BasePage {
     }
 
     async navigateToAccumulationAddMember(){
-        //this.sleep(2000);
         await this.selectProduct.click();
         await this.selectHFM.click();
         await this.accumulationProduct.isVisible();
         await this.accumulationProduct.click();
         await this.accumulationMembersLink.click();
         await this.accumulationAddMember.click();
+    }
+
+    async navigateToMembers(){
+        await this.selectProduct.click();
+        await this.selectHFM.click();
+        await this.accumulationProduct.isVisible();
+        await this.accumulationProduct.click();
+        await this.accumulationMembersLink.click();
     }
 }

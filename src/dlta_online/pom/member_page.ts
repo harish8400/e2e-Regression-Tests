@@ -1,7 +1,13 @@
 import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
+import { TFN } from "../data/tfn";
+import { ProcessPage } from "./process_page";
+import { DateUtils } from "../../utils/date_utils";
 
 export class MemberPage extends BasePage { 
+
+    readonly processPage: ProcessPage;
+    readonly processesLink: Locator;
 
     readonly title: Locator;
     readonly selectTitle: Locator;
@@ -61,9 +67,16 @@ export class MemberPage extends BasePage {
     readonly beneficiarySave: Locator;
     readonly createAccount: Locator;
 
+    readonly memberGivenName: string;
+
+
     constructor(page: Page) {
         super(page)
 
+    this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.processPage = new ProcessPage(page);
+
+    this.memberGivenName = "Michelle";
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -121,13 +134,16 @@ export class MemberPage extends BasePage {
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
     this.createAccount = page.getByRole('button', { name: 'Create Account' });
+
     }
 
     async addNewMember(){
+        
+        let tfns = TFN.getValidTFN();
         await this.title.click();
         await this.selectTitle.click();
-        await this.givenName.fill('John');
-        await this.surname.fill('Mayors');
+        await this.givenName.fill(this.memberGivenName);
+        await this.surname.fill('Faulkner');
         await this.dob.fill('01/01/2000');
         await this.gender.click();
         await this.genderSelect.click();
@@ -135,22 +151,25 @@ export class MemberPage extends BasePage {
         await this.primaryPhone.fill('61412345678');
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
-        await this.tfn.fill('002283275');
+        await this.tfn.click();
+        await this.tfn.fill(tfns.tfn);
         await this.address1.fill('11 high street');
         await this.city.fill('Sydney');
         await this.state.click();
         await this.stateSelect.click();
         await this.postcode.fill('2000');
-        await this.preferredContactName.fill('John');
+        await this.preferredContactName.fill(this.memberGivenName);
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
         await this.nextStep.click();
+        
         //Employer details
         await this.employer.click();
         await this.employerSelect.click();
-        await this.employerStartDate.fill('11/11/2023')
+        await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate()}`)
         await this.employerSave.click();
         await this.nextStep.click();
+        
         //Consolidation details
         await this.addFund.click();
         await this.addFundSelect.click();
@@ -159,8 +178,10 @@ export class MemberPage extends BasePage {
         await this.USI.fill('STA0100AU');
         await this.USI.press('Tab');
         await this.enterAmount.fill('50000');
+        await this.sleep(1000);
         await this.saveFundDetails.click();
         await this.nextStep.click();
+        
         //Investments
         await this.invSelect.click();
         await this.invSelection.click();
@@ -169,6 +190,7 @@ export class MemberPage extends BasePage {
         await this.profileType.click();
         await this.profileTypeSelect.click();
         await this.nextStep.click();
+        
         //Beneficiaries
         await this.addNewBeneficiary.click();
         await this.beneficiaryName.fill('Rose');
@@ -176,11 +198,17 @@ export class MemberPage extends BasePage {
         await this.beneficiaryType.click();
         await this.beneficiaryRelation.click();
         await this.beneficiaryRelationSelect.click();
-        await this.beneficiaryEffectiveDate.fill('11/11/2023');
+        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate()}`);
         await this.beneficiaryEffectiveDate.press('Tab');
         await this.beneficiaryPercentage.fill('100');
         await this.beneficiarySave.click();
+        
         //Create account
         await this.createAccount.click();
+        return this.memberGivenName;
+    }
+
+    async selectMember(memberName: string){
+        await this.page.getByRole('cell', { name: memberName }).first().click();
     }
 }

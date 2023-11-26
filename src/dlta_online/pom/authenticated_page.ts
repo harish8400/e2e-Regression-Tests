@@ -14,7 +14,7 @@ export abstract class AuthenticatedPage extends BasePage {
     }
    
     async doLogout() {
-        await this.navbar.doLogout();
+        //await this.navbar.doLogout();
     }
 
 }
