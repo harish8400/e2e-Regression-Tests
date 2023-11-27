@@ -15,9 +15,8 @@ export class DashboardPage extends BasePage {
      readonly apply:Locator;
      readonly text_Box: Locator;
      readonly items:Locator;
-	 readonly caseGroupId:Locator;
+	   readonly caseGroupId:Locator;
      readonly memberText:Locator;
-	 //readonly assignedTo:Locator;
      readonly filter_dropdown: Locator;
      readonly close_left: Locator;
 
@@ -36,9 +35,7 @@ export class DashboardPage extends BasePage {
         this.items = page.locator('//div[contains(@class,"filter-list-item")]');
         this.memberText = page.locator('span');
         this.caseGroupId = page.getByText('Case Group ID');
-		//    this.assignedTo = page.getByPlaceholder('Select');
         this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
-       // this.activity_text = page.getByText('Case Assigned to \'Admin User\'.').first();
         this.close_left =  page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     }
 
