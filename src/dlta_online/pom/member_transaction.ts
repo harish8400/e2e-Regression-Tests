@@ -2,6 +2,7 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
+import assert, { AssertionError } from "assert";
 
 export class MemberTransactionsPage extends BasePage {
 
@@ -129,9 +130,10 @@ export class MemberTransactionsPage extends BasePage {
                 }
             }
 
+            //assert(await this.processException.count() < 0);
             //Break if there is an process exception
             if (await this.processException.count() > 0){
-                throw InvalidResultAttributeException;
+                throw AssertionError;
              }
 
         } while(await this.verifyContributionSuccess.count() == 0);
@@ -194,5 +196,6 @@ export class MemberTransactionsPage extends BasePage {
         await this.page.reload();
         await this.memberOverview.click();
         await expect(this.exitStatus).toBeVisible();
+        await this.exitStatus.hover();
     }
 }

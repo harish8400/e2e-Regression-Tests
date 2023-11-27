@@ -1,31 +1,7 @@
 import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
 import { Admins } from "../../src/dlta_online/data/admins";
-import { DateUtils } from "../../src/utils/date_utils";
 
-test.describe("Member Management in DLTA @dltaonline", () => {
-
-    test("Testing temp", async() => {
-        console.log(DateUtils.ddmmyyyStringDate())
-    })
-
-    test("Add member, roloverIn, rolloverOut", async({loginPage, dashboardPage, memberPage, memberTransactionPage}) => {
-        test.setTimeout(600000);
-        let admin = Admins.getAdminByUsername("admin@tinasuper.com");
-
-        await test.step("Login", async () => {
-            await loginPage.navigateTo();
-            await loginPage.doLogin(admin.username, admin.password);
-        })
-
-        await test.step("Navigate to add member and create", async () => {
-            await dashboardPage.navigateToAccumulationAddMember();
-            let addedMember = await memberPage.addNewMember();
-            await memberPage.selectMember(addedMember);
-            await memberTransactionPage.memberRolloverIn();
-            await memberTransactionPage.memberRolloverOut();
-        })
-       
-    })
+test.describe("Member transactions in DLTA @dltaonline", () => {
 
     test("Add Member Rollover In", async({loginPage, dashboardPage, memberPage, memberTransactionPage}) => {
         test.setTimeout(600000);
@@ -38,7 +14,7 @@ test.describe("Member Management in DLTA @dltaonline", () => {
 
         await test.step("Add Member Personal Contribution", async () => {
             await dashboardPage.navigateToMembers();
-            await memberPage.selectMember('Alexis');
+            await memberPage.selectMember('Nancy');
             await memberTransactionPage.memberRolloverIn();
         })
     })
@@ -59,4 +35,5 @@ test.describe("Member Management in DLTA @dltaonline", () => {
             await memberTransactionPage.memberRolloverOut();
         })
     })
+    
 })

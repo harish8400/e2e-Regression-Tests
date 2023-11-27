@@ -18,7 +18,7 @@ export class DashboardPage extends BasePage {
 
         this.addCaseLink = page.getByRole('button', { name: 'add-circle icon Add New Case' });
         this.addCase = new AddCase(page);
-        this.selectProduct = page.getByText('Australian Ethical');
+        this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
         this.selectHFM = page.getByText('HESTA for Mercy');
         this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
