@@ -139,25 +139,5 @@ export class DashboardPage extends BasePage {
     }
   }
 
-  async alert_displayed(): Promise<string[]> {
-    const alertSelector = 'xpath=//span[@class="filter-tag"]//span[1]';
-    const alertTextArray: string[] = [];
-  
-    const alertElements = await this.page.$$(alertSelector);
-  
-    for (const alertElement of alertElements) {
-      const alertText = await alertElement.evaluate(el => el.textContent);
-      if (alertText) {
-        console.log(`Alert message: ${alertText}`);
-        alertTextArray.push(alertText);
-      }
-    }
-  
-    if (alertTextArray.length > 0) {
-      return alertTextArray;
-    } else {
-      console.log('Alert elements not found or no text content.');
-      return [];
-    }
-  }
+
 }
