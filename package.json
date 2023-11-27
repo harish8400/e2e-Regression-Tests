@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "postinstall": "npx playwright install",
+    "test": "npx playwright test",
+    "report": "npx playwright show-report"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
