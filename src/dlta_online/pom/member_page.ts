@@ -68,7 +68,7 @@ export class MemberPage extends BasePage {
     readonly createAccount: Locator;
 
     readonly memberGivenName: string;
-
+    readonly memberSurname: string;
 
     constructor(page: Page) {
         super(page)
@@ -76,7 +76,8 @@ export class MemberPage extends BasePage {
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.processPage = new ProcessPage(page);
 
-    this.memberGivenName = "Michelle";
+    this.memberGivenName = this.randomName();
+    this.memberSurname = this.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -143,7 +144,7 @@ export class MemberPage extends BasePage {
         await this.title.click();
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
-        await this.surname.fill('Faulkner');
+        await this.surname.fill(this.memberSurname);
         await this.dob.fill('01/01/2000');
         await this.gender.click();
         await this.genderSelect.click();
@@ -166,7 +167,7 @@ export class MemberPage extends BasePage {
         //Employer details
         await this.employer.click();
         await this.employerSelect.click();
-        await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate()}`)
+        await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`)
         await this.employerSave.click();
         await this.nextStep.click();
         
@@ -198,17 +199,36 @@ export class MemberPage extends BasePage {
         await this.beneficiaryType.click();
         await this.beneficiaryRelation.click();
         await this.beneficiaryRelationSelect.click();
-        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate()}`);
+        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.beneficiaryEffectiveDate.press('Tab');
         await this.beneficiaryPercentage.fill('100');
         await this.beneficiarySave.click();
         
         //Create account
         await this.createAccount.click();
-        return this.memberGivenName;
+        await this.sleep(5000);
+        return this.memberSurname;
     }
 
     async selectMember(memberName: string){
+        await this.page.reload();
         await this.page.getByRole('cell', { name: memberName }).first().click();
+    }
+
+    randomSurname(length: number) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+          counter += 1;
+        }
+        return result;
+    }
+
+    randomName(){
+        let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver' ];
+        return names[Math.floor(Math.random()*names.length)]
     }
 }
