@@ -1,6 +1,7 @@
 import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
 import { Admins } from "../../src/dlta_online/data/admins";
 import { DateUtils } from "../../src/utils/date_utils";
+import { csv_utils } from "../../src/utils/csv_utils";
 
 test.describe("Member Management in DLTA @dltaonline", () => {
 
@@ -59,4 +60,13 @@ test.describe("Member Management in DLTA @dltaonline", () => {
             await memberTransactionPage.memberRolloverOut();
         })
     })
+
+    test ("Read CSV", async({}) => {
+        await csv_utils.readcsv();
+    });
+
+    test ("Write CSV", async({}) => {
+        await csv_utils.writecsv();
+    });
+
 })
