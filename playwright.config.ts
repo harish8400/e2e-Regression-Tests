@@ -20,7 +20,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [["html"],["line"], ["allure-playwright"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     headless: false,
@@ -36,12 +36,16 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] ,
+      use: {  
+        ...devices['Desktop Chromium'],
+        viewport: null,
+    
         launchOptions: {
-          args: ["--start-maximized"],
-      } 
-      }, 
-      
+          args: ["--start-maximized"]
+      } ,
+      video: "on",
+      screenshot: "on"
+      },
     },
     
 
