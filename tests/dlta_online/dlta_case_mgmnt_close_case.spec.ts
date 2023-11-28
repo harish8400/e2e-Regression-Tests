@@ -2,27 +2,27 @@ import { expect } from "@playwright/test";
 import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
 import { Admins } from "../../src/dlta_online/data/admins";
 
-test.describe("Test describe block @casemanagement", () => {
+test.describe("Test describe block", () => {
     test.setTimeout(60000);
 
-    test.beforeEach(async ({ loginPage, dashboardPage }) => {
+    test.beforeEach(async ({ loginPage }) => {
         let admin = Admins.getAdminByUsername("admin@tinasuper.com");
         await loginPage.navigateTo();
         await loginPage.doLogin(admin.username, admin.password);
-        await dashboardPage.maximizeWindow();
+        //await dashboardPage.maximizeWindow();
     });
 
-    test("Ensure dashboard is correctly displayed", async ({ dashboardPage }) => {
+    test("Ensure dashboard is correctly displayed @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.waitForTimeout(3000);
         await expect(dashboardPage.case_management).toHaveText("Case Management");
     });
 
-    test("Ensure cases are correctly displayed under Closed Cases tab", async ({ dashboardPage }) => {
+    test("Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.closed_cases.click();
         await dashboardPage.verifyCaseManagementButtons();
     });
 
-    test("Ensure the user can successfully filter on multiple parameters in Case Management Closed Cases", async ({ dashboardPage }) => {
+    test("Ensure the user can successfully filter on multiple parameters in Case Management Closed Cases @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.waitForTimeout(3000);
         await dashboardPage.closed_cases.click();
         await dashboardPage.clickOnFilter();

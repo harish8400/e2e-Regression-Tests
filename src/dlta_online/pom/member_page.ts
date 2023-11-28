@@ -167,7 +167,7 @@ export class MemberPage extends BasePage {
         //Employer details
         await this.employer.click();
         await this.employerSelect.click();
-        await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate()}`)
+        await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`)
         await this.employerSave.click();
         await this.nextStep.click();
         
@@ -199,19 +199,19 @@ export class MemberPage extends BasePage {
         await this.beneficiaryType.click();
         await this.beneficiaryRelation.click();
         await this.beneficiaryRelationSelect.click();
-        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate()}`);
+        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.beneficiaryEffectiveDate.press('Tab');
         await this.beneficiaryPercentage.fill('100');
         await this.beneficiarySave.click();
         
         //Create account
         await this.createAccount.click();
-        this.sleep(5000);
+        await this.sleep(5000);
         return this.memberSurname;
     }
 
     async selectMember(memberName: string){
-        this.page.reload();
+        await this.page.reload();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
 

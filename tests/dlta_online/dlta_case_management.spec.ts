@@ -2,24 +2,31 @@ import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_t
 import { Admins } from "../../src/dlta_online/data/admins";
 import { expect } from "@playwright/test";
 
-test.describe("Test describe block @casemanagement", () => {
+test.describe("Test describe block", () => {
     test.setTimeout(60000);
 
-    test.beforeEach(async ({ loginPage, dashboardPage }) => {
+    test.beforeEach(async ({ loginPage }) => {
         let admin = Admins.getAdminByUsername("admin@tinasuper.com");
         await loginPage.navigateTo();
         await loginPage.doLogin(admin.username, admin.password);
-        await dashboardPage.maximizeWindow();
+        //await dashboardPage.maximizeWindow();
     });
 
-    //These are steps we are checking:To verify open,close,on hold,Go tabs are visible or not
-    test("Ensure cases are correctly displayed under Open Cases tab", async ({ dashboardPage }) => {
+    test("Add case @casemanagement", async ({ dashboardPage }) => {
+
+        await test.step("add Case", async () => {
+            await dashboardPage.addNewCase();
+        })
+    })
+
+    //This step verifies if case list is displayed with open, close, on hold, Go tabs options to select
+    test("Ensure cases are correctly displayed under Open Cases tab @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.verifyCaseManagementTabs();
-        await dashboardPage.waitForTimeout(50000)
+        await dashboardPage.waitForTimeout(5000)
         await dashboardPage.takeScreenshot('Tabs.png');
     });
 
-    test("Ensure the user can successfully filter on multiple parameters in Case Management Open Cases", async ({ dashboardPage }) => {
+    test("Ensure the user can successfully filter on multiple parameters in Case Management Open Cases @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.clickFilter();
         await dashboardPage.waitForTimeout(5000);
         let expectedItems = ["Member Account Number", "Effective Date", "Assigned to", "Case Type", "Case Group ID", "Reference", "Status", "Outcome"];
@@ -28,7 +35,7 @@ test.describe("Test describe block @casemanagement", () => {
         await dashboardPage.takeScreenshot('Filter.png');
     });
 
-    test("Ensure that an existing case can be assigned to a user", async ({ dashboardPage }) => {
+    test("Ensure that an existing case can be assigned to a user @casemanagement", async ({ dashboardPage }) => {
         await dashboardPage.sleep(5000);
         const rowNumberToClick = 2;
         await dashboardPage.clickOnTableRow(rowNumberToClick);
