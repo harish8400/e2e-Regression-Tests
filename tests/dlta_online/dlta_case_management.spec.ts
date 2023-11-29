@@ -5,11 +5,10 @@ import { expect } from "@playwright/test";
 test.describe("Test describe block", () => {
     test.setTimeout(60000);
 
-    test.beforeEach(async ({ loginPage, dashboardPage }) => {
+    test.beforeEach(async ({ loginPage }) => {
         let admin = Admins.getAdminByUsername("admin@tinasuper.com");
         await loginPage.navigateTo();
         await loginPage.doLogin(admin.username, admin.password);
-        await dashboardPage.maximizeWindow();
     });
 
     test("Add case @casemanagement", async ({ dashboardPage }) => {
@@ -42,7 +41,8 @@ test.describe("Test describe block", () => {
         await dashboardPage.clickOnTableRow(rowNumberToClick);
         await dashboardPage.addCaseToAssignee();
         await dashboardPage.sleep(5000);
-        const expected_activity = /Case Assigned from '.+' to '.+'/; // Regex pattern for the dynamic assignment text
+        // Regex pattern for the dynamic assignment text
+        const expected_activity = /Case Assigned from '.+' to '.+'/; 
         const activityNotes = await dashboardPage.activity_notes();
         expect(activityNotes).toMatch(expected_activity);
 
