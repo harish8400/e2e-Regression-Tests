@@ -1,12 +1,12 @@
-import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
-import { Admins } from "../../src/dlta_online/data/admins";
-import { DateUtils } from "../../src/utils/date_utils";
-import { csv_utils } from "../../src/utils/csv_utils";
+import { dltaOnlineTest as test } from "../../../src/aol/base_dlta_online_test"
+import { Admins } from "../../../src/aol/data/admins";
+import { DateUtils } from "../../../src/utils/date_utils";
+import { csv_utils } from "../../../src/utils/csv_utils";
 
 test.describe("Member Management in DLTA @dltaonline", () => {
 
     test("Testing temp", async() => {
-        console.log(DateUtils.ddmmyyyStringDate())
+        console.log(DateUtils.ddmmyyyStringDate(0))
     })
 
     test("Add member, roloverIn, rolloverOut", async({loginPage, dashboardPage, memberPage, memberTransactionPage}) => {
