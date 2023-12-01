@@ -1,27 +1,25 @@
-import { Locator, Page } from "@playwright/test";
-import { Sidebar } from "./component/sidebar";
-import { BasePage } from "../../common/pom/base_page";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { Locator, Page } from "@playwright/test";
+import { BasePage } from "../../common/pom/base_page";
 
 export class LoginPage extends BasePage {
 
-    readonly url: string;
+    private readonly url: string
 
-    readonly emailInput: Locator;
-    readonly passwordInput: Locator;
-    readonly loginButton: Locator;
-
-    readonly sidebar: Sidebar;
+    private readonly emailInput: Locator;
+    private readonly passwordInput: Locator;
+    private readonly continueButton: Locator;
+    private readonly vpnCancel: Locator;
 
     constructor(page: Page) {
         super(page);
-        this.url = ENVIRONMENT_CONFIG.aolURL;
 
-        this.emailInput = page.locator("#email-input input");
-        this.passwordInput = page.locator("#password-input input");
-        this.loginButton = page.locator("#login-btn");
+        this.url = ENVIRONMENT_CONFIG.dltaOnlineURL;
 
-        this.sidebar = new Sidebar(page)
+        this.emailInput = page.getByPlaceholder('user@company.com');
+        this.passwordInput = page.getByPlaceholder('Your password');
+        this.continueButton = page.getByRole('button', { name: 'Log in' });
+        this.vpnCancel = page.locator('.enSeWG');
     }
 
     async navigateTo() {
@@ -29,9 +27,10 @@ export class LoginPage extends BasePage {
     }
 
     async doLogin(email: string, password: string) {
+        await this.vpnCancel.click();
         await this.emailInput.fill(email);
         await this.passwordInput.fill(password);
-        await this.loginButton.click();
+        await this.page.keyboard.press('Tab');
+        await this.continueButton.click();
     }
-
 }

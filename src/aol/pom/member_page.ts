@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { TFN } from "../data/tfn";
 import { ProcessPage } from "./process_page";
@@ -212,6 +212,7 @@ export class MemberPage extends BasePage {
 
     async selectMember(memberName: string){
         await this.page.reload();
+        await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
 

@@ -192,13 +192,6 @@ export class MemberTransactionsPage extends BasePage {
         } while (
             await this.verifyRolloutProcessSuccess.count() == 0
         );
-
-        await this.sleep(5000);
-        await this.page.reload();
-        await this.memberOverview.click();
-        // await expect.soft(this.exitStatus).toBeVisible();
-        // if(await this.exitStatus.count() > 0){
-        //     await this.exitStatus.hover();
-        // }
+        
     }
 }

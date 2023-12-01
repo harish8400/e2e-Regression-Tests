@@ -1,7 +1,17 @@
-import { dltaOnlineTest as test } from "../../src/dlta_online/base_dlta_online_test"
-import { Admins } from "../../src/dlta_online/data/admins";
+import { dltaOnlineTest as test } from "../../../src/aol/base_dlta_online_test"
+import { Admins } from "../../../src/aol/data/admins";
+import { csv_utils } from "../../../src/utils/csv_utils";
 
-/**This test perform self triggered rollout full exit on a member */
+
+test ("Read CSV", async({}) => {
+    await csv_utils.readcsv();
+});
+
+test ("Write CSV", async({}) => {
+    //await csv_utils.writecsv();
+});
+
+/**This test performs self triggered rollout full exit on a member */
 test("HFM - Self triggered rollout out full exit @fullexit", async ({ loginPage, dashboardPage, memberPage, memberTransactionPage }) => {
 
     test.setTimeout(600000);
