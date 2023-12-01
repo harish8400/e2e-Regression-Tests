@@ -1,12 +1,12 @@
 import { allure } from "allure-playwright";
-import { dltaOnlineTest as test } from "../../../src/aol/base_dlta_online_test"
+import { dltaOnlineTest as test } from "../../../src/aol/base_aol_test"
 import { Admins } from "../../../src/aol/data/admins";
 
 /**This test performs self triggered rollout full exit on a member */
-test("HFM - Self triggered rollout out full exit @fullexit", async ({ loginPage, dashboardPage, memberPage, memberTransactionPage }) => {
+test("Money Out - Rollover out full exit @fullexit", async ({ loginPage, dashboardPage, memberPage, memberTransactionPage }) => {
 
-    await allure.suite("Member Management");
-    await allure.subSuite("Self triggered full exit");
+    await allure.suite("Money Out");
+    await allure.subSuite("Rollover out full exit");
 
     test.setTimeout(600000);
 

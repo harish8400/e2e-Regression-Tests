@@ -189,6 +189,8 @@ export class MemberTransactionsPage extends BasePage {
             if (await this.processException.count() > 0){
                throw InvalidResultAttributeException;
             }
+
+            await this.sleep(2000);
         } while (
             await this.verifyRolloutProcessSuccess.count() == 0
         );

@@ -168,6 +168,7 @@ export class MemberPage extends BasePage {
         await this.employer.click();
         await this.employerSelect.click();
         await this.employerStartDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`)
+        await this.employerStartDate.press('Tab');
         await this.employerSave.click();
         await this.nextStep.click();
         
