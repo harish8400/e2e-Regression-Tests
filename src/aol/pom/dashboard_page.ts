@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { AddCase } from "./component/addcase";
 import * as caseManagement from "../data/case_data.json";
@@ -29,10 +29,11 @@ export class DashboardPage extends BasePage {
     private readonly caseGroupId: Locator;
     private readonly assignedTo: Locator;
     private readonly close_left: Locator;
-    private readonly filter_dropdown: Locator;
+    //private readonly filter_dropdown: Locator;
     private readonly select_member: Locator;
     private readonly Member_ToAsigned: Locator;
     private readonly unassigned: Locator;
+    private readonly assigned_Other:Locator;
     //private readonly alert:Locator;
     readonly case_management: Locator;
     readonly closed_cases: Locator;
@@ -67,11 +68,12 @@ export class DashboardPage extends BasePage {
         this.Member_text = page.locator('span');
         this.caseGroupId = page.getByText('Case Group ID');
         this.assignedTo = page.getByPlaceholder('Select');
-        //this.assigned_Other =page.locator('//input[@class="el-input__inner"]/following::span[text()="01_NO_WRITE_PERMISSION USER"]');
+        this.assigned_Other =page.locator('//input[@class="el-input__inner"]/following::span[text()="01_NO_WRITE_PERMISSION USER"]');
         this.select_member = page.getByRole('textbox', { name: 'Select' });
-        this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
-        this.activity_text = page.getByText('Case Assigned to \'Admin User\'.').first();
-        this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
+        //this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
+        this.activity_text = page.locator('(//div[contains(@class,"leading-snug break-words")]//p)[1]');
+;
+        //this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
         this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
         this.Member_ToAsigned = page.locator('//div[text()="Assigned to"]');
         this.unassigned = page.locator('(//input[@class="el-input__inner"]/following::span[text()="Admin User"])[2]');
@@ -86,7 +88,7 @@ export class DashboardPage extends BasePage {
         this.items = page.locator('//div[contains(@class,"filter-list-item")]');
         this.memberText = page.locator('span');
         this.caseGroupId = page.getByText('Case Group ID');
-        this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
+        //this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
         this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
 
     }
@@ -121,11 +123,11 @@ export class DashboardPage extends BasePage {
         await this.page.waitForTimeout(milliseconds); // Wait for the specified duration in milliseconds
       }
       async verifyCaseManagementTabs() {
-        await this.openCases_link.isVisible();
-        await this.closedCases_link.isVisible();
-        await this.onHoldCases_check.isVisible();
-        await this.go_button.isVisible();
-        await this.filter_option.isVisible();
+        await expect(this.openCases_link).toBeVisible();
+        await expect(this.closedCases_link).toBeVisible();
+        await expect(this.onHoldCases_check).toBeVisible();
+        await expect(this.go_button).toBeVisible();
+        await expect(this.filter_option).toBeVisible();
       }
       async clickFilter() {
         await this.filter_option.click({ timeout: 50000 });
@@ -160,7 +162,8 @@ export class DashboardPage extends BasePage {
       }
       async addCaseToAssignee() {
         await this.assignedTo.click();
-        await this.filter_dropdown.click({ timeout: 50000 })
+        //await this.filter_dropdown.click({ timeout: 50000 })
+        await this.assigned_Other.click({ timeout: 50000 })
       }
       async clickOnTableRow(rowNumber: number) {
         const tableRows = await this.page.$$('table tbody tr');
@@ -216,5 +219,24 @@ export class DashboardPage extends BasePage {
         console.log("Generated items:", items);
         return items
       }
+      async activity_notes(): Promise<string> {
+        const xpathExpression = '//div[contains(@class,"leading-snug break-words")]//p[1]';
+        
+        try {
+            await this.page.waitForSelector(xpathExpression);
+            const activityElement = await this.page.$(xpathExpression);
+    
+            if (activityElement) {
+                const activityText = await activityElement.textContent();
+                return activityText || '';
+            } else {
+                throw new Error('Activity element not found.');
+            }
+        } catch (error) {
+            throw new Error(`Error while retrieving activity notes: ${error}`);
+        }
+    }
+    
+    
     
 }
