@@ -1,4 +1,32 @@
 {
-    "accountNumber": "268290079",
-    "caseGroupid": "f05f8206-6e33-4f1d-bebe-616f28530977"
-  }
+  "accountNumber": "268290079",
+  "caseGroupid": "f05f8206-6e33-4f1d-bebe-616f28530977",
+  "expectedItems": [
+    "Member Account Number",
+    "Effective Date",
+    "Assigned to",
+    "Case Type",
+    "Case Group ID",
+    "Reference",
+    "Status",
+    "Outcome"
+  ],
+  "List_outcome": "Outcome",
+  "alert_outcome":"Outcome: Processing",
+  "AssignedTo":"Admin User",
+  "ToAssign":"Assigned to",
+  "alert_assignedTo":"Assigned to: Admin User",
+  "dataExpected_outcomecase":"Processing",
+  "caseType":"Case Type",
+  "case_type_selected":"10 Day Follow-up",
+  "status":"Status",
+  "status_selected":[
+    "In Review",
+    "On Hold",
+    "Pending",
+    "In Progress"],
+  "EffectiveDate":"Effective Date",
+  "selected_date":"`${DateUtils.ddmmyyyStringDate(0)}`",
+  "time":"`\\d{1,2} ${currentMonth} \\d{4} \\d{1,2}:\\d{2}:\\d{2} (AM|PM)`"
+  
+}
