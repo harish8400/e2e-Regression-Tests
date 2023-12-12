@@ -1,7 +1,8 @@
 {
-  "accountNumber": "268290079",
+  "accountNumber": "MER-ACC-355657",
   "caseGroupid": "f05f8206-6e33-4f1d-bebe-616f28530977",
-  "expectedItems": [
+  "reference_No":"AE-102",
+    "expectedItems": [
     "Member Account Number",
     "Effective Date",
     "Assigned to",
@@ -11,22 +12,34 @@
     "Status",
     "Outcome"
   ],
+  "alert_account":"Member Account Number: MER-ACC-355657",
   "List_outcome": "Outcome",
-  "alert_outcome":"Outcome: Processing",
-  "AssignedTo":"Admin User",
-  "ToAssign":"Assigned to",
-  "alert_assignedTo":"Assigned to: Admin User",
-  "dataExpected_outcomecase":"Processing",
-  "caseType":"Case Type",
-  "case_type_selected":"10 Day Follow-up",
-  "status":"Status",
-  "status_selected":[
-    "In Review",
-    "On Hold",
+  "alert_outcome": "Outcome: Success",
+  "Outcome_selected": [
+    "Processing",
+    "Error"
+  ],
+  "success": "Success",
+  "AssignedTo": "Unassigned",
+  "ToAssign": "Assigned to",
+  "alert_assignedTo": "Assigned to: Unassigned",
+  "caseType": "Case Type",
+  "case_type_selected": "10 Day Follow-up",
+  "status": "Status",
+  "status_selected": [
     "Pending",
-    "In Progress"],
-  "EffectiveDate":"Effective Date",
-  "selected_date":"`${DateUtils.ddmmyyyStringDate(0)}`",
-  "time":"`\\d{1,2} ${currentMonth} \\d{4} \\d{1,2}:\\d{2}:\\d{2} (AM|PM)`"
-  
+    "In Progress",
+    "In Review",
+    "On Hold"
+  ],
+  "status_selected_close": [
+    "Closed",
+    "Deleted"
+  ],
+  "EffectiveDate": "Effective Date",
+  "selected_date": "`${DateUtils.ddmmyyyStringDate(0)}`",
+  "time": "`\\d{1,2} ${currentMonth} \\d{4} \\d{1,2}:\\d{2}:\\d{2} (AM|PM)`",
+  "Notes": "Added some notes/comments",
+  "Attachements": "Added some attachments",
+  "AddFile": "///home/pharish.kumar/Pictures/SWTM-2088_Atlassian-Git-Cheatsheet.pdf"
 }

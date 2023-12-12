@@ -1,0 +1,421 @@
+Element Text: Open Cases
+Element Text: Closed Cases
+Element Text: Include on hold cases 
+Element Text:  SLA 
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Alert message: Member Account Number: MER-ACC-355657
+Alert message: close icon
+Expected data "MER-ACC-355657" not found in the table.
+Data verification failed!
+Alert message: Effective Date: 12 Dec 2023
+Alert message: close icon
+Expected data "12 Dec 2023 4:03:00 PM" found in the table.
+Data verification passed!
+Text "12 Dec 2023 4:03:00 PM" highlighted in a table cell.
+"12 Dec 2023 4:03:00 PM" found in 1 rows.
+Expected data "12 Dec 2023 2:31:42 PM" found in the table.
+Data verification passed!
+Text "12 Dec 2023 2:31:42 PM" highlighted in a table cell.
+"12 Dec 2023 2:31:42 PM" found in 1 rows.
+Expected data "12 Dec 2023 3:06:09 PM" found in the table.
+Data verification passed!
+Text "12 Dec 2023 3:06:09 PM" highlighted in a table cell.
+"12 Dec 2023 3:06:09 PM" found in 1 rows.
+Expected data "12 Dec 2023 4:01:19 PM" found in the table.
+Data verification passed!
+Text "12 Dec 2023 4:01:19 PM" highlighted in a table cell.
+"12 Dec 2023 4:01:19 PM" found in 1 rows.
+Alert message: Assigned to: Unassigned
+Alert message: close icon
+Expected data "Unassigned" found in the table.
+Data verification passed!
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+"Unassigned" found in 20 rows.
+Alert message: Case Type: 10 Day Follow-up
+Alert message: close icon
+Expected data "10 Day Follow-up" found in the table.
+Data verification passed!
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+"10 Day Follow-up" found in 20 rows.
+Alert message: Case Group ID: f05f8206-6e33-4f1d-bebe-616f28530977
+Alert message: close icon
+Expected data "f05f8206-6e33-4f1d-bebe-616f28530977" found in the table.
+Data verification passed!
+Text "f05f8206-6e33-4f1d-bebe-616f28530977" highlighted in a table cell.
+"f05f8206-6e33-4f1d-bebe-616f28530977" found in 1 rows.
+Alert message: Reference: AE-102
+Alert message: close icon
+Expected data "AE-102" found in the table.
+Data verification passed!
+Text "AE-102" highlighted in a table cell.
+"AE-102" found in 1 rows.
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Outcome" text.
+Alert message: Outcome: Processing
+Alert message: close icon
+Expected data "Processing" found in the table.
+Data verification passed!
+Text "Processing" highlighted in a table cell.
+"Processing" found in 1 rows.
+Expected data "Error" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Outcome" text.
+Alert message: Outcome: Error
+Alert message: close icon
+Expected data "Processing" found in the table.
+Data verification passed!
+"Processing" found in 0 rows.
+Expected data "Error" found in the table.
+Data verification passed!
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+Text "Error" highlighted in a table cell.
+"Error" found in 20 rows.
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Outcome
+Element Text: Case Group ID
+Element Text: Status
+Element Text: Reference
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Outcome',
+  'Case Group ID',
+  'Status',
+  'Reference'
+]
+Clicked on the item with "Outcome" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Outcome: Success
+Alert message: close icon
+Expected data "10 Day Follow-up" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: Pending
+Alert message: close icon
+Expected data "Pending" found in the table.
+Data verification passed!
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+Text "Pending" highlighted in a table cell.
+"Pending" found in 20 rows.
+Expected data "In Progress" not found in the table.
+Data verification failed!
+Expected data "In Review" not found in the table.
+Data verification failed!
+Expected data "On Hold" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: In Progress
+Alert message: close icon
+Expected data "Pending" found in the table.
+Data verification passed!
+"Pending" found in 0 rows.
+Expected data "In Progress" found in the table.
+Data verification passed!
+Text "In Progress" highlighted in a table cell.
+"In Progress" found in 1 rows.
+Expected data "In Review" not found in the table.
+Data verification failed!
+Expected data "On Hold" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: In Review
+Alert message: close icon
+Expected data "Pending" not found in the table.
+Data verification failed!
+Expected data "In Progress" found in the table.
+Data verification passed!
+Text "In Progress" highlighted in a table cell.
+"In Progress" found in 1 rows.
+Expected data "In Review" not found in the table.
+Data verification failed!
+Expected data "On Hold" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: On Hold
+Alert message: close icon
+Expected data "Pending" not found in the table.
+Data verification failed!
+Expected data "In Progress" not found in the table.
+Data verification failed!
+Expected data "In Review" not found in the table.
+Data verification failed!
+Expected data "On Hold" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Outcome
+Element Text: Case Group ID
+Element Text: Status
+Element Text: Reference
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Outcome',
+  'Case Group ID',
+  'Status',
+  'Reference'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: Closed
+Alert message: close icon
+Expected data "Closed" found in the table.
+Data verification passed!
+Text "Closed" highlighted in a table cell.
+"Closed" found in 1 rows.
+Expected data "Deleted" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Outcome
+Element Text: Case Group ID
+Element Text: Status
+Element Text: Reference
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Outcome',
+  'Case Group ID',
+  'Status',
+  'Reference'
+]
+Clicked on the item with "Status" text.
+Alert message: Effective Date: Between 06 Dec 2023 - 12 Dec 2023
+Alert message: close icon
+Alert message: Status: Deleted
+Alert message: close icon
+Expected data "Closed" found in the table.
+Data verification passed!
+"Closed" found in 0 rows.
+Expected data "Deleted" not found in the table.
+Data verification failed!
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Generated items: [
+  'Member Account Number',
+  'Effective Date',
+  'Assigned to',
+  'Case Type',
+  'Case Group ID',
+  'Reference',
+  'Status',
+  'Outcome'
+]
+Clicked on the item with "Assigned to" text.

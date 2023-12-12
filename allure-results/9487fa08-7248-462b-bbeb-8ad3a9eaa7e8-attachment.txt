@@ -1,0 +1,25 @@
+Error in verifyCaseManagementTabs: Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+
+Locator: getByText('SLA', { exact: true }).first()
+Expected: visible
+Received: hidden
+Call log:
+  - expect.toBeVisible with timeout 5000ms
+  - waiting for getByText('SLA', { exact: true }).first()
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+  -   locator resolved to <div data-v-253af5c3="" class="gs-column case-table-l…> SLA </div>
+  -   unexpected value "hidden"
+

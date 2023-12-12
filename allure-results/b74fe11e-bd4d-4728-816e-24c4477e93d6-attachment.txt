@@ -1,0 +1,84 @@
+Element Text: Open Cases
+Element Text: Closed Cases
+Element Text: Include on hold cases 
+Element Text:  SLA 
+Element Text: Member Account Number
+Element Text: Effective Date
+Element Text: Assigned to
+Element Text: Case Type
+Element Text: Case Group ID
+Element Text: Reference
+Element Text: Status
+Element Text: Outcome
+Alert message: Member Account Number: MER-ACC-355657
+Alert message: close icon
+Expected data "MER-ACC-355657" not found in the table.
+Data verification failed!
+Alert message: Effective Date: 12 Dec 2023
+Alert message: close icon
+Expected data "12 Dec 2023 2:31:42 PM" found in the table.
+Data verification passed!
+Text "12 Dec 2023 2:31:42 PM" highlighted in a table cell.
+"12 Dec 2023 2:31:42 PM" found in 1 rows.
+Alert message: Assigned to: Unassigned
+Alert message: close icon
+Expected data "Unassigned" found in the table.
+Data verification passed!
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+Text "Unassigned" highlighted in a table cell.
+"Unassigned" found in 20 rows.
+Alert message: Case Type: 10 Day Follow-up
+Alert message: close icon
+Expected data "10 Day Follow-up" found in the table.
+Data verification passed!
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+Text "10 Day Follow-up" highlighted in a table cell.
+"10 Day Follow-up" found in 20 rows.
+Alert message: Case Group ID: f05f8206-6e33-4f1d-bebe-616f28530977
+Alert message: close icon
+Expected data "f05f8206-6e33-4f1d-bebe-616f28530977" found in the table.
+Data verification passed!
+Text "f05f8206-6e33-4f1d-bebe-616f28530977" highlighted in a table cell.
+"f05f8206-6e33-4f1d-bebe-616f28530977" found in 1 rows.
+Alert message: Reference: AE-102
+Alert message: close icon
+Expected data "AE-102" found in the table.
+Data verification passed!
+Text "AE-102" highlighted in a table cell.
+"AE-102" found in 1 rows.

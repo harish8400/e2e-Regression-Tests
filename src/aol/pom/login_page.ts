@@ -19,7 +19,7 @@ export class LoginPage extends BasePage {
         this.emailInput = page.getByPlaceholder('user@company.com');
         this.passwordInput = page.getByPlaceholder('Your password');
         this.continueButton = page.getByRole('button', { name: 'Log in' });
-        this.vpnCancel = page.locator('.enSeWG');
+        this.vpnCancel = page.locator('//div[@data-cy="alert-button"]');
     }
 
     async navigateTo() {
