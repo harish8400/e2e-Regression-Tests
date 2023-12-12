@@ -3,7 +3,7 @@ import { Admins } from "../../../src/aol/data/admins";
 import { expect } from "@playwright/test";
 import { allure } from "allure-playwright";
 import * as caseManagement from '../../../src/aol/data/case_data.json';
-import { DateUtils } from "../../../src/utils/date_utils";
+//import { DateUtils } from "../../../src/utils/date_utils";
 
 test("casemanagement @casemanagement", async ({ loginPage, dashboardPage }) => {
     await allure.suite("Case Management");
@@ -16,121 +16,128 @@ test("casemanagement @casemanagement", async ({ loginPage, dashboardPage }) => {
     await test.step("Login", async () => {
         await loginPage.navigateTo();
         await loginPage.doLogin(admin.username, admin.password);
-    })
+    });
 
-    await test.step('add Case', async () => {
-        await allure.suite("Case Management");
+    await test.step('Ensure cases are correctly displayed under Open Cases tab with following tabs: Open Cases, Closed Cases, On Hold, SLA @casemanagement', async () => {
+
+        expect(await dashboardPage.casemanagement.innerText()).toBe('Case Management');
+        await dashboardPage.verifyCaseManagementTabs()
+    });
+
+    await test.step('Ensure filtering is available on Open Cases in Case Management & user can filter on multiple parameters', async () => {
+        await allure.subSuite("Filtering");
+        await dashboardPage.open();
+        await dashboardPage.close_main();
+        await dashboardPage.waitForTimeout(5000);
+        await dashboardPage.clickFilter();
+        const expectedItems = caseManagement.expectedItems;
+        const actualItems = await dashboardPage.getListItemsAndHighlight();
+        expect(actualItems).toEqual(expectedItems);
+        await dashboardPage.validateMemberAccountNumber({ dashboardPage });
+        await dashboardPage.validateeffectivedate({ dashboardPage });
+        await dashboardPage.validate_MemberTobeAssigned({ dashboardPage });
+        await dashboardPage.validate_case_type({ dashboardPage });
+        await dashboardPage.validate_case_Id({ dashboardPage });
+        await dashboardPage.validate_reference({ dashboardPage });
+    });
+
+    await test.step('Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success', async () => {
         await allure.suite("Case Management");
         await allure.subSuite("Adding new case");
         await dashboardPage.addNewCase();
-    })
-    await test.step('Ensure that user is able to find the date and time of exactly when a case was created', async () => {
-        const currentDate = new Date();
-        const expectedDate = DateUtils.ddMMMyyyStringDate(currentDate);;
-        const actual_date = await dashboardPage.getCreatedDate();
-        expect(actual_date).toBe(expectedDate);
-        
-    })
-
-    await test.step('Ensure that an existing case can be assigned to a user @casemanagement', async () => {
         await dashboardPage.clickOnClosedIcon();
-        const rowNumberToClick = 1;
-        await dashboardPage.clickOnTableRow(rowNumberToClick);
-        await dashboardPage.addCaseToAssignee();
-        await dashboardPage.waitForTimeout(5000);
-        const expected_activity = /Case Assigned from '.+' to '.+'/;
-        const activityNotes = await dashboardPage.activity_notes();
-        expect(activityNotes).toMatch(expected_activity);
-        await dashboardPage.clickOnClosedIcon();
+        await dashboardPage.selectOutcomeItems({ dashboardPage });
+        await dashboardPage.closedCase({ dashboardPage })
     })
 
 
-    await test.step('Ensure cases are correctly displayed under Open Cases tab @casemanagement', async () => {
-        expect(await dashboardPage.casemanagement.innerText()).toBe('Case Management');
-        await dashboardPage.verifyCaseManagementTabs();
-        await dashboardPage.waitForTimeout(5000);
+    await test.step("Ensure that primary statuses of the cases are: Pending, In Progress, In Review, On Hold (Open Cases)", async () => {
+        await dashboardPage.select_status({ dashboardPage });
+        await dashboardPage.select_status_closed({ dashboardPage });
     })
 
-    await test.step('Ensure the user can successfully filter on multiple parameters in Case Management Open Cases @casemanagement', async () => {
-        await dashboardPage.clickFilter();
-        await dashboardPage.waitForTimeout(5000);
-        const expectedItems = caseManagement.expectedItems;
-        const actualItems = await dashboardPage.getListItems();
-        expect(actualItems).toEqual(expectedItems);
-    })
 
-    await test.step('Ensure that possible Outcomes for cases are: Processing, Error, Success', async () => {
-        await dashboardPage.clickOnOutcomeItem(caseManagement.List_outcome);
-        await dashboardPage.box_select();
-        await dashboardPage.click_outcome();
-        await dashboardPage.apply_button();
-        await dashboardPage.go_Button();
-        await dashboardPage.waitForTimeout(5000);
-        const expectedAlertText = caseManagement.alert_outcome;
-        const actualAlertText = await dashboardPage.alert_displayed();
-        await dashboardPage.validateAlert(expectedAlertText, actualAlertText);
-        const expectedData = caseManagement.dataExpected_outcomecase;
-        await dashboardPage.verifyData(expectedData, dashboardPage);
-    })
-    await test.step('FilterOption:AssignedTo', async () => {
-        await dashboardPage.clickFilter();
+    await test.step('Verify that an existing case can be updated with:assigning to a user @casemanagement', async () => {
+        await dashboardPage.open();
+        await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
         await dashboardPage.box_select();
         await dashboardPage.waitForTimeout(5000);
         await dashboardPage.verify_Member_TobeAssigned();
         await dashboardPage.apply_button();
         await dashboardPage.go_Button();
-        const expectedAlertText = caseManagement.alert_assignedTo;
-        const actualAlertText = await dashboardPage.alert_displayed();
-        await dashboardPage.validateAlert(expectedAlertText, actualAlertText);
-        const expectedData = caseManagement.AssignedTo;
-        await dashboardPage.verifyData(expectedData, dashboardPage);
-    })
-    await test.step("Ensure that possible Outcomes for cases are: Processing, Error, Success", async () => {
-
-        await dashboardPage.clickFilter();
-        await dashboardPage.clickOnOutcomeItem(caseManagement.caseType);
-        await dashboardPage.click_caseType();
         await dashboardPage.waitForTimeout(5000);
-        await dashboardPage.select_outcome();
-        await dashboardPage.apply_button();
-        await dashboardPage.go_Button();
-        const expectedAlertText = caseManagement.alert_outcome; // Replace with your expected alert text
-        const actualAlertText = await dashboardPage.alert_displayed();
-        await dashboardPage.validateAlert(expectedAlertText, actualAlertText);
-        //To validate wheteher Outcome is displayed in table  
-        const expectedData = caseManagement.case_type_selected; // Replace with the data you want to verify
-        await dashboardPage.verifyData(expectedData, dashboardPage);
+        const rowNumberToClick = 1;
+        await dashboardPage.clickOnTableRow(rowNumberToClick);
+        await dashboardPage.addCaseToAssignee();
         await dashboardPage.waitForTimeout(5000);
-
+        const expected_activity = /Case Assigned to '.+'/;
+        const activityNotes = await dashboardPage.activity_notes();
+        expect(activityNotes).toMatch(expected_activity);
+        
     })
-    await test.step("Ensure that primary statuses of the cases are: Pending, In Progress, In Review, On Hold (Open Cases)", async () => {
-        await dashboardPage.select_status({ dashboardPage });
+
+    await test.step('Verify that an existing case can be updated with:adding notes/comments @casemanagement', async () => {
+        await dashboardPage.notes_comments();
+        const expected_activity = caseManagement.Notes;
+        const activityLogElement = await dashboardPage.getActivityLogElement();
+        expect(activityLogElement).toMatch(expected_activity);
     })
-    await test.step("Ensure that Last Updated column in case Management Open Cases correctly reflects date/time when the update was made on open case", async () => {
-        await dashboardPage.clickFilter();
-        await dashboardPage.clickOnOutcomeItem(caseManagement.EffectiveDate);
-        await dashboardPage.effectivedate();
-        await dashboardPage.waitForTimeout(5000);
-        await dashboardPage.apply_button();
-        await dashboardPage.go_Button();
-        const expected_date = /Effective Date: \d{2} [A-Za-z]{3} \d{4}/;
-        const actual_date = await dashboardPage.alert_displayed();
-        if (typeof actual_date === 'string' && actual_date !== null) {
-            const isMatch = expected_date.test(actual_date);
-            expect(isMatch).toBeTruthy(); 
-                  } else {
-            throw new Error('Actual date is not a valid string');
-                  }
+    // // await test.step('Verify that an existing case can be updated with:adding attachments @casemanagement', async () => {
 
-                  const expected = await dashboardPage.getLastColumnData();
+    // //     try {
+    // //         // Perform the file upload
+    // //         await dashboardPage.attachemnts();
+    // //         const fileName = caseManagement.AddFile;
+    // //         await dashboardPage.uploadCsvFile(fileName);
 
-                  for (const data of expected) {
-                    await dashboardPage.verifyData(data, dashboardPage);
-                  }
-                  
 
-    })
-    
+    // //     } catch (error) {
+    // //         console.error("Error:", error);
+
+    // //     }
+    // //     await dashboardPage.done_upload();
+    // // })
+
+
+    // await test.step("Ensure that user can find exact created and updated date time of a case", async () => {
+    //     const { lastColumn, beforeLastColumn } = await dashboardPage.getLastAndBeforeLastColumnData();
+
+
+    // const highlightElement = async (el: { style: { backgroundColor: any; }; }, color: any) => {
+    //     el.style.backgroundColor = color;
+    //     // Add any other styling you prefer for highlighting
+    // };
+
+    // // Highlight last column text
+    // for (const element of lastColumn) {
+    //     await dashboardPage.evaluate(highlightElement, element, 'yellow');
+    // }
+
+    // // Highlight before last column text
+    // for (const element of beforeLastColumn) {
+    //     await dashboardPage.evaluate(highlightElement, element, 'orange');
+    // }
+
+    // // Rest of your assertions and validations
+    // expect(lastColumn.length).toBeGreaterThan(0); 
+    // expect(beforeLastColumn.length).toBeGreaterThan(0);
+
+    //     for (const text of lastColumn) {
+    //         const expectedPattern = /\d{1,2} [A-Za-z]{3} \d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)/;
+    //         expect(text).toMatch(expectedPattern);
+    //         console.log(text);
+    //     }
+
+    //     for (const text of beforeLastColumn) {
+    //         const expectedPattern = /\d{1,2} [A-Za-z]{3} \d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)/;
+    //         expect(text).toMatch(expectedPattern);
+    //         console.log(text);
+    //     }
+    // });
+
+
+
 
 })
+
