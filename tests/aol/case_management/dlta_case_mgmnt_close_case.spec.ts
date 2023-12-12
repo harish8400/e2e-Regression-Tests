@@ -33,7 +33,7 @@ test.describe("Case management - Closed cases", () => {
             let expectedItems = ["Member Account Number", "Effective Date", "Assigned to", "Case Type", "Outcome", "Case Group ID", "Status", "Reference"];
             let actualItems = await dashboardPage.getListOfItems();
             expect(actualItems).toEqual(expectedItems);
-            await dashboardPage.verifyMemberAccNumber();
+            await dashboardPage.verifyMemberAccountNumber(1000);
             expect(dashboardPage.memberText.filter({ hasText: ('Member Account Number: 4F653-90-') }));
             await dashboardPage.go_option.click();
         })
@@ -65,7 +65,7 @@ test.describe("Case management - Closed cases", () => {
         let expectedItems = ["Member Account Number", "Effective Date", "Assigned to", "Case Type", "Outcome", "Case Group ID", "Status", "Reference"];
         let actualItems = await dashboardPage.getListOfItems();
         expect(actualItems).toEqual(expectedItems);
-        await dashboardPage.verifyMemberAccNumber();
+        await dashboardPage.verifyMemberAccountNumber(1000);
         expect(dashboardPage.memberText.filter({ hasText: ('Member Account Number: 4F653-90-') }));
         await dashboardPage.go_option.click();
     });
