@@ -1,5 +1,5 @@
 import { allure } from "allure-playwright";
-import { dltaOnlineTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { Admins } from "../../../src/aol/data/admins";
 
 /**This test performs self triggered rollout full exit on a member */
@@ -9,13 +9,6 @@ test("Money Out - Rollover out full exit @fullexit", async ({ loginPage, dashboa
     await allure.subSuite("Rollover out full exit");
 
     test.setTimeout(600000);
-
-    let admin = Admins.getAdminByUsername("admin@tinasuper.com");
-
-    await test.step("Login", async () => {
-        await loginPage.navigateTo();
-        await loginPage.doLogin(admin.username, admin.password);
-    })
 
     await test.step("Super Member creation", async () => {
         await dashboardPage.navigateToAccumulationAddMember();

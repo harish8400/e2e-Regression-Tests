@@ -34,10 +34,15 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Setup project
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+
     {
       name: 'chromium',
       use: {  
         ...devices['Desktop Chromium'],
+        // Use prepared auth state.
+        storageState: 'playwright/.auth/user.json',
         viewport: null,
     
         launchOptions: {
@@ -46,6 +51,7 @@ export default defineConfig({
       video: "on",
       screenshot: "on"
       },
+      dependencies: ['setup'],
     },
     
 
@@ -91,6 +97,7 @@ export default defineConfig({
     },
   ],
 
+  timeout: 10 * 60 * 1000
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',

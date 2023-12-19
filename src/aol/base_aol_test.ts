@@ -11,7 +11,7 @@ type ExtensionFixtures = {
     memberTransactionPage: MemberTransactionsPage
 }
 
-export const dltaOnlineTest = base.extend<ExtensionFixtures>({
+export const aolTest = base.extend<ExtensionFixtures>({
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));
     },
