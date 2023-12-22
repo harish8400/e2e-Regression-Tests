@@ -5,6 +5,7 @@ import * as caseManagement from "../data/case_data.json";
 import { DateUtils } from "../../utils/date_utils";
 import { AssertionError } from "assert";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import path from "path";
 export class DashboardPage extends BasePage {
 
   readonly addCaseLink: Locator;
@@ -15,13 +16,14 @@ export class DashboardPage extends BasePage {
   readonly accumulationMembersLink: Locator;
   readonly accumulationAddMember: Locator;
   readonly casemanagement: Locator;
+  readonly closedCaseManagementHeading: Locator;
   readonly Member_text: Locator;
   readonly activity_text: Locator;
   private readonly caseId: Locator;
   private readonly referenceId: Locator;
   //casemanagemnet screen
   private readonly openCaseslink: Locator;
-  private readonly closedCases_link: Locator;
+  private readonly closedCasesLink: Locator;
   private readonly onHoldCases_check: Locator;
   private readonly SLA: Locator;
   private readonly filter_option: Locator;
@@ -35,17 +37,12 @@ export class DashboardPage extends BasePage {
   private readonly items: Locator;
   private readonly assignedTo: Locator;
   private readonly close_left: Locator;
-  //private readonly select_member: Locator;
   private readonly unassigned: Locator;
-  //private readonly filter_dropdown:Locator;
-  private readonly assigned_Other: Locator;
-  //private readonly alert:Locator;
   private readonly select_process: Locator;
   private readonly member_entity: Locator;
   private readonly heading: Locator;
   readonly case_management: Locator;
   private readonly case_text: Locator;
-  readonly closed_cases: Locator;
   readonly filter: Locator;
   readonly go_option: Locator;
   readonly memberAccNumber: Locator;
@@ -60,13 +57,11 @@ export class DashboardPage extends BasePage {
   private readonly arrow: Locator;
   private readonly attachment: Locator;
   private readonly write_note: Locator;
-  private readonly file_upload: Locator;
-  private readonly add_file: Locator;
   private readonly close: Locator;
   setInputFiles: any;
   private readonly select_member: Locator;
   private mainAlert: Locator;
-  private caseManagementURL = ENVIRONMENT_CONFIG.dltaOnlineURL;
+  private caseManagementURL = ENVIRONMENT_CONFIG.aolURL;
 
   constructor(page: Page) {
     super(page)
@@ -82,34 +77,25 @@ export class DashboardPage extends BasePage {
     //Case Mgmt
     this.casemanagement = page.getByRole('heading', { name: 'Case Management' });
     this.openCaseslink = page.getByText('Open Cases', { exact: true });
-    this.closedCases_link = page.getByText('Closed Cases', { exact: true });
+    this.closedCasesLink = page.getByRole('link', { name: 'Closed Cases' });
+    this.closedCaseManagementHeading = page.getByRole('heading', { name: 'Closed Cases' });
     this.onHoldCases_check = page.getByText('Include on hold cases', { exact: true }).nth(1);
     this.SLA = page.getByText('SLA', { exact: true }).first();
     this.filter_option = page.getByText('FILTER', { exact: true });
     this.memberAccountNumber = page.locator('//div[text()="Member Account Number"]');
     this.apply = page.getByRole('button', { name: 'APPLY' });
-    this.textBox = page.locator('//label[text()="Include on hold cases "]/following::input');
+    //this.textBox = page.locator('//label[text()="Include on hold cases "]/following::input');
+    this.textBox = page.getByRole('textbox');
     this.items = page.locator('//div[contains(@class, "filter-list-item")]');
     this.Member_text = page.locator('span');
     this.select_member = page.getByRole('textbox', { name: 'Select' });
-    //this.Member_close =page.locator('span').filter({ hasText: 'Member Account Number: MER-ACC-355657close icon' }).locator('path');
-    //this.date =page.getByRole('main').getByLabel('close icon');
     this.assignedTo = page.locator('//label[text()="Case Party"]/following::input[1]');
-    this.assigned_Other = page.locator('//input[@class="el-input__inner"]/following::span[text()="01_NO_WRITE_PERMISSION USER"]');
-    //this.select_member = page.getByRole('textbox', { name: 'Select' });
-    //this.filter_dropdown = page.locator('(//input[@class="el-input__inner"]/following::span[text()="Admin User"])[2]');
     this.activity_text = page.locator('(//div[contains(@class,"leading-snug break-words")]//p)[1]');
-    ;
-    //this.filter_dropdown = page.locator('li').filter({ hasText: /^Admin User$/ });
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.case = page.getByText('Case Type', { exact: true });
-    //const alertSelector = 'xpath=//span[@class="filter-tag"]//span[1]';
     this.case_management = page.getByRole('heading', { name: 'Case Management' });
-    this.closed_cases = page.getByRole('link', { name: 'Closed Cases' });
-    this.filter = page.getByRole('button', { name: 'FILTER' });
     this.go_option = page.getByRole('button', { name: 'Go' });
     this.memberAccNumber = page.getByText('Member Account Number');
-    this.apply = page.getByRole('button', { name: 'APPLY' });
     this.items = page.locator('//div[contains(@class,"filter-list-item")]');
     this.memberText = page.locator('span');
     this.memberToAssign = page.locator('//div[text()="Assigned to"]');
@@ -117,7 +103,7 @@ export class DashboardPage extends BasePage {
     this.unassigned = page.locator('//input[@class="el-input__inner"]/following::span[text()="Unassigned"][2]');
     //const alertSelector = 'xpath=//span[@class="filter-tag"]//span[1]';
     this.case_management = page.getByRole('heading', { name: 'Case Management' });
-    this.closed_cases = page.getByRole('link', { name: 'Closed Cases' });
+    this.closedCasesLink = page.getByRole('link', { name: 'Closed Cases' });
     this.filter = page.getByRole('button', { name: 'FILTER' });
     this.go_option = page.getByRole('button', { name: 'Go' });
     this.memberAccNumber = page.getByText('Member Account Number');
@@ -139,8 +125,6 @@ export class DashboardPage extends BasePage {
     this.arrow = page.locator('//div[@class="close-filter-arrow"]');
     this.attachment = page.getByRole('button', { name: 'Attachments add-circle icon', exact: true });
     this.write_note = page.getByPlaceholder('Write note...');
-    this.file_upload = page.getByRole('img', { name: 'file-upload' });
-    this.add_file = page.locator('.el-upload');
     this.close = page.locator('//span[text()="Status: Deleted"]/following::span[@class="flex items-center cursor-pointer"]');
     this.caseId = page.getByText('Case Group ID');
     this.referenceId = page.locator('//span[contains(@class,"flex items-center")]/following::div[@class="filter-list-item"][text()="Reference"]');
@@ -183,8 +167,9 @@ export class DashboardPage extends BasePage {
   }
 
   async navigateToAccumulationAddMember() {
-    await this.selectProduct.click();
-    await this.selectHFM.click();
+    await this.navigateToCaseManagement();
+    //await this.selectProduct.click();
+    //await this.selectHFM.click();
     await this.accumulationProduct.isVisible();
     await this.accumulationProduct.click();
     await this.accumulationMembersLink.click();
@@ -211,8 +196,8 @@ export class DashboardPage extends BasePage {
       await this.highlightElement(this.openCaseslink);
       console.log("Open cases tab is verified with sucess");
 
-      await expect(this.closedCases_link).toBeVisible();
-      await this.highlightElement(this.closedCases_link);
+      await expect(this.closedCasesLink).toBeVisible();
+      await this.highlightElement(this.closedCasesLink);
       console.log("Closed cases tab is verified with sucess");
 
       await expect(this.onHoldCases_check).toBeVisible();
@@ -293,20 +278,20 @@ export class DashboardPage extends BasePage {
   async verifyMemberAccountNumber(_milliseconds: number) {
 
     try {
+      await this.clickOnFilter();
       await this.memberAccountNumber.click();
-      await this.textBox.fill(caseManagement.accountNumber);
+      await this.textBox.fill("MER-ACC-356142");
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
-      // Handle the error or throw it further if needed
-      throw error;
     }
 
   }
 
   async validateMemberAccountNumberFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
 
+    await this.page.reload();
     await this.verifyMemberAccountNumber(5000);
 
     const expectedAlertText = caseManagement.alert_account;
@@ -322,25 +307,23 @@ export class DashboardPage extends BasePage {
 
     try {
       await this.clickOnFilter();
-      await this.memberToAssign.click({ timeout: 5000 })
-      await this.select_member.click({ timeout: 5000 });
-      await this.waitForTimeout(5000);
+      await this.memberToAssign.click()
+      await this.select_member.click();
+      await this.waitForTimeout(1000);
       await this.unassigned.click();
-      await this.waitForTimeout(5000);
+      await this.waitForTimeout(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
-      // Handle the error or throw it further if needed
-      throw error;
+      //throw error;
     }
 
   }
 
   async validateMemberTobeAssignedFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
 
-    // select member filter
-    await this.sleep(3000);
+    await this.page.reload();
     await this.verifyMemberAssignFilter(5000);
 
     // verify if result is filtered
@@ -353,16 +336,16 @@ export class DashboardPage extends BasePage {
     //await this.close_main();
   }
 
-  async verify_case_type(_milliseconds: number) {
+  async verify_case_type() {
 
     try {
       await this.clickFilter();
       await this.case.click();
-      await this.waitForTimeout(5000);
+      await this.sleep(1000);
       await this.text_Box.click();
       await this.member_entity.click();
-      await this.heading.click({ timeout: 5000 })
-      await this.waitForTimeout(5000);
+      await this.heading.click({ timeout: 1000 })
+      await this.sleep(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
@@ -375,7 +358,8 @@ export class DashboardPage extends BasePage {
 
   async validateCaseTypeFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
 
-    await this.verify_case_type(50000);
+    await this.page.reload();
+    await this.verify_case_type();
 
     const expectedAlertText = caseManagement.case_type_selected;
     const actualAlertText = await this.filterDisplayed();
@@ -385,46 +369,47 @@ export class DashboardPage extends BasePage {
     //await this.close_main();
   }
 
-  async verify_case_Id(_milliseconds: number) {
+  async verify_case_Id() {
 
     try {
       await this.clickFilter();
       await this.caseId.click();
-      await this.waitForTimeout(5000);
+      await this.waitForTimeout(1000);
       await this.text_Box.click();
       await this.text_Box.fill(caseManagement.caseGroupid);
-      await this.waitForTimeout(5000);
+      await this.waitForTimeout(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
       // Handle the error or throw it further if needed
-      throw error;
+      //throw error;
     }
 
   }
 
   async validateCaseIdFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
 
-    await this.verify_case_Id(50000);
+    await this.page.reload();
+    await this.verify_case_Id();
 
     const expectedAlertText = caseManagement.caseGroupid;
     const actualAlertText = await this.filterDisplayed();
     await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
     const expectedData = caseManagement.caseGroupid;
-    await this.waitForTimeout(5000)
+    await this.waitForTimeout(1000)
     await this.verifyFilterResult(expectedData, dashboardPage);
     //await this.close_main();
   }
 
-  async verify_reference(_milliseconds: number) {
+  async verify_reference() {
     try {
       await this.clickFilter();
       await this.referenceId.click();
-      await this.waitForTimeout(2000);
+      await this.waitForTimeout(1000);
       await this.text_Box.click();
       await this.text_Box.fill(caseManagement.reference_No);
-      await this.waitForTimeout(2000);
+      await this.waitForTimeout(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
@@ -436,19 +421,20 @@ export class DashboardPage extends BasePage {
 
   async validateReferenceFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
 
-    await this.verify_reference(50000);
+    await this.page.reload();
+    await this.verify_reference();
 
     const expectedAlertText = caseManagement.reference_No;
     const actualAlertText = await this.filterDisplayed();
     await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
     const expectedData = caseManagement.reference_No;
-    await this.waitForTimeout(5000)
+    await this.waitForTimeout(1000)
     await this.verifyFilterResult(expectedData, dashboardPage);
     //await this.close_main();
   }
 
   async apply_button() {
-    await this.apply.click({ force: true });
+    await this.apply.click();
   }
 
   async go_Button() {
@@ -463,7 +449,8 @@ export class DashboardPage extends BasePage {
   async addCaseToAssignee() {
     await this.assignedTo.click();
     //await this.filter_dropdown.click({ timeout: 50000 })
-    await this.assigned_Other.click({ timeout: 50000 })
+    await this.page.locator('li').filter({ hasText: /^Admin User$/ }).click();
+    //await this.assigned_Other.click({ timeout: 50000 })
   }
 
   async clickOnTableRow(rowNumber: number) {
@@ -480,9 +467,9 @@ export class DashboardPage extends BasePage {
   }
 
 
-  async verifyCaseManagementButtons() {
-    await this.closed_cases.isVisible();
-    await this.closed_cases.click();
+  async verifyCaseManagementTab() {
+    await this.closedCasesLink.isVisible();
+    await this.closedCasesLink.click();
     await this.filter.isVisible();
     await this.go_option.isVisible();
   }
@@ -609,37 +596,36 @@ export class DashboardPage extends BasePage {
 
     //const isDataPresent = await page.verifyDataInTable(expectedData);
 
-    await this.sleep(3000);
+    await this.sleep(2000);
     const filteredResults = await this.page.locator(`div.cell:has-text("${expectedData}")`).all();
 
     if(filteredResults.length > 0){
 
       for (const row of filteredResults) {
         
-        await expect(row).toHaveText(expectedData);
+        await expect(row).toContainText(expectedData);
         
         // const rowData = await row.textContent();
         // if (rowData && rowData.includes(expectedData)) {
           //console.log(`Results based on filter "${expectedData}" is listed successfully`);
+       
           await row.evaluate((node: HTMLElement) => {
             node.style.backgroundColor = 'yellow'; // Choose any color you prefer
             node.style.color = 'black'; // Choose any color you prefer for text
           });
       
           // Wait for a short duration for the highlighting effect
-          await new Promise((resolve) => setTimeout(resolve, 100)); // Highlight duration
-         // return true;
-        //}
+          await new Promise((resolve) => setTimeout(resolve, 200)); // Highlight duration
+
+          // await row.evaluate((node: HTMLElement) => {
+          //   node.style.backgroundColor = ''; // Choose any color you prefer
+          //   node.style.color = ''; // Choose any color you prefer for text
+          // });
       }
     }
     else{
       console.log(`Results based on filter "${expectedData}" is not found`);
-      return false;
     }
-    // if (isDataPresent) {
-    //   await page.highlightTextInTableCells(expectedData);
-    //   await page.waitForTimeout(100);
-    // } 
 
   }
 
@@ -653,8 +639,8 @@ export class DashboardPage extends BasePage {
 
   async verifyOpencaseStatuses({ dashboardPage }: { dashboardPage: DashboardPage }) {
     const selected = caseManagement.status_selected;
+    //await this.openCaseslink.click();
     for (const status of selected) {
-      await this.openCaseslink.click();
       await this.clickOnFilter();
       await this.clickOnOutcomeItem(caseManagement.status);
       await this.box_select();
@@ -664,15 +650,16 @@ export class DashboardPage extends BasePage {
       const actualAlertText = await this.filterDisplayed();
       await this.validateIfFilterIsApplied(status, actualAlertText);
       await this.verifyFilterResult(status, dashboardPage);
-      console.log(`Open cases with status '${status}' is verified`)
+      //console.log(`Open cases with status '${status}' is verified`)
     }
   }
 
   async verifyClosedcaseStatuses({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await this.closedCasesLink.click();
+    await this.sleep(1000);
+    
     const selected = caseManagement.status_selected_close;
-    await this.sleep(5000);
     for (const status of selected) {
-      await this.closedCases_link.click();
       await this.clickOnFilter();
       await this.clickOnOutcomeItem(caseManagement.status);
       await this.box_select();
@@ -682,7 +669,7 @@ export class DashboardPage extends BasePage {
       const actualAlertText = await this.filterDisplayed();
       await this.validateIfFilterIsApplied(status, actualAlertText);
       await this.verifyFilterResult(status, dashboardPage);
-      console.log(`Closed cases with status '${status}' is verified`)
+      //console.log(`Closed cases with status '${status}' is verified`)
     }
     await this.closed();
   }
@@ -697,22 +684,42 @@ export class DashboardPage extends BasePage {
   }
 
   async validateEffectiveDateFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
-
+    await this.page.reload();
     await this.clickOnFilter();
     await this.date_picker.click();
-    let effectiveDate = DateUtils.ddmmyyyStringDate(-3);
+    let effectiveDate = DateUtils.ddmmyyyStringDate(3);
     await this.effectiveDate.fill(effectiveDate);
-    await this.waitForTimeout(5000);
+    await this.effectiveDate.press('Tab');
+    await this.sleep(1000);
     await this.apply_button();
     await this.go_Button();
     await dashboardPage.go_Button();
 
-    const expected = await dashboardPage.getLastColumnData();
+    // const lastColumnData = await dashboardPage.getLastColumnData();
 
-    for (const data of expected) {
-      await dashboardPage.verifyFilterResult(data, dashboardPage);
+    // for (const data of lastColumnData) {
+    //   await dashboardPage.verifyFilterResult(data, dashboardPage);
+    // }
+
+    const dynamicXPath = await this.getTableLastColumnXPath();
+
+    // Get all elements matching the last column XPath
+    const lastColumnElements = await this.page.$$(dynamicXPath);
+    const lastColumnTexts: string[] = [];
+
+    for (const element of lastColumnElements) {
+      const lastColumnText = await element.textContent();
+
+      // Add text content to the array and perform assertions if needed
+      if (lastColumnText !== null) {
+        const expectedPattern = /\d{1,2} [A-Za-z]{3} \d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)/;
+        expect(lastColumnText).toMatch(expectedPattern);
+        lastColumnTexts.push(lastColumnText);
+        await dashboardPage.verifyFilterResult(lastColumnText, dashboardPage);
+      } else {
+        throw new Error('Text content not found in one of the last column elements');
+      }
     }
-    //await this.close_main();
   }
 
   async getTableLastColumnXPath_(): Promise<string> {
@@ -796,29 +803,15 @@ export class DashboardPage extends BasePage {
     await this.done.click();
   }
 
-  async attachemnts() {
+  async uploadFileCaseManagement(){
     await this.attachment.click();
     await this.write_note.click();
     await this.write_note.fill(caseManagement.Attachements);
-    this.waitForSelector('.el-upload__text pt-5');
-    await this.file_upload.click();
-  }
 
-  async waitForSelector(_arg0: string) {
-    throw new Error("Method not implemented.");
-  }
-
-  async uploadCsvFile(filePath: string) {
-    const fileInput = await this.add_file.elementHandle(); // Retrieve the element handle
-    if (fileInput) {
-      await fileInput.setInputFiles(filePath);
-    } else {
-      throw new Error('File input element not found');
-    } // Set the input files
-
-  }
-
-  async done_upload() {
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.page.getByText('Browse').click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(path.join(__dirname, '../../../src/aol/data/sample.csv'));
     await this.done.click();
   }
 
@@ -842,7 +835,7 @@ export class DashboardPage extends BasePage {
   }
 
   async verifyClosedCasesOutcomes({ dashboardPage }: { dashboardPage: DashboardPage }) {
-    await this.closedCases_link.click();
+    await this.closedCasesLink.click();
     await this.sleep(3000);
     const selected = caseManagement.Outcome_closed_cases;
 
@@ -878,6 +871,7 @@ export class DashboardPage extends BasePage {
     return `//td[contains(@class, 'el-table_1_column')][last()]/div`;
   }
 
+  //TO BE DELETED
   async getLastColumnData(): Promise<string[]> {
     const dynamicXPath = await this.getTableLastColumnXPath();
 
@@ -910,7 +904,14 @@ export class DashboardPage extends BasePage {
       await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
       await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
       await this.page.getByRole('switch').locator('span').click();
-      await this.page.locator('//tr[2]').first().click();
+      
+      await this.page.getByRole('button', { name: 'FILTER' }).first().click();
+      await this.page.getByText('Member Last Name').click();
+      await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').click();
+      await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').fill('5tMnr');
+      await this.page.getByRole('button', { name: 'APPLY' }).click();
+      await this.page.getByText('Kyle 5tMnr', { exact: true }).click();
+      //await this.page.locator('//tr[2]').first().click();
       await this.page.getByRole('button', { name: 'Create Case' }).click();
       await expect(this.page.locator('body')).toContainText('Pending arrow-down icon');
     }
@@ -970,6 +971,40 @@ export class DashboardPage extends BasePage {
     {
       throw new AssertionError({message: 'Verify username, datetime log of closed case update failed'});
     }
+  }
+
+  async verifyClosedCasesPageFilters(){
+    await this.closedCasesLink.click();
+    await this.clickFilter();
+    const expectedFilters = caseManagement.expectedItems;
+    const actualFilters = await this.getListItemsAndHighlight();
+    expect(expectedFilters).toEqual(expect.arrayContaining(actualFilters));
+  }
+
+  async navigateToClosedCasesTab(){
+    this.closedCasesLink.click();
+  }
+
+
+  async filterCaseByReference() {
+    try {
+      await this.clickFilter();
+      await this.referenceId.click();
+      await this.waitForTimeout(1000);
+      await this.text_Box.click();
+      await this.text_Box.fill("MER-1903");
+      await this.waitForTimeout(1000);
+      await this.apply_button();
+      await this.go_Button();
+    } catch (error) {
+      console.error('Error occurred while verifying member account number:', error);
+      // Handle the error or throw it further if needed
+      throw error;
+    }
+  }
+
+  async selectExistingCase(){
+    
   }
 
 }

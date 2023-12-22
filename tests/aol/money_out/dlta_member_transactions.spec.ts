@@ -3,7 +3,7 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { Admins } from "../../../src/aol/data/admins";
 
 /**This test performs self triggered rollout full exit on a member */
-test("Money Out - Rollover out full exit @fullexit", async ({ loginPage, dashboardPage, memberPage, memberTransactionPage }) => {
+test("Money Out - Rollover out full exit @fullexit", async ({ dashboardPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");

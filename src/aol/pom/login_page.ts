@@ -14,7 +14,7 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.url = ENVIRONMENT_CONFIG.dltaOnlineURL;
+        this.url = ENVIRONMENT_CONFIG.aolURL;
 
         this.emailInput = page.getByPlaceholder('user@company.com');
         this.passwordInput = page.getByPlaceholder('Your password');

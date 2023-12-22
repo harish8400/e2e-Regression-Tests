@@ -8,8 +8,8 @@ setup('authenticate', async ({ page }) => {
 
     let admin = Admins.getAdminByUsername("admin@tinasuper.com");
     // Perform authentication steps. Replace these actions with your own.
-    await page.goto(ENVIRONMENT_CONFIG.dltaOnlineURL);
-    await page.locator('//div[@data-cy="alert-button"]').click();
+    await page.goto(ENVIRONMENT_CONFIG.aolURL);
+    await page.getByRole('button').nth(2).click();
     await page.getByPlaceholder('user@company.com').fill(admin.username);
     await page.getByPlaceholder('Your password').fill(admin.password);
     await page.keyboard.press('Tab');
