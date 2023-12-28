@@ -3,16 +3,22 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "postinstall": "npx playwright install",
+    "test": "npx playwright test",
+    "report": "npx playwright show-report"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.405.0",
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "^1.40.0",
     "@types/node": "^20.3.1",
+    "allure-playwright": "^2.9.2",
     "async-wait-until": "^2.0.12"
   },
   "dependencies": {
-    "allure-commandline": "^2.24.1"
+    "allure-commandline": "^2.24.1",
+    "fast-csv": "^4.3.6"
   }
 }

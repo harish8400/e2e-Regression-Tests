@@ -27,4 +27,20 @@ export class DateUtils {
         return newDate;
     }
 
+    /**format example: 24/11/2023 */
+    static ddmmyyyStringDate(dayToSkip: number) {
+        let date = new Date();
+        return `${date.getDate() - dayToSkip}/${date.getMonth() + 1}/${date.getFullYear()}`
+    }
+
+    static ddmmyyy_StringDate(daysToAdd: number): string {
+        const currentDate = new Date();
+        const targetDate = new Date(currentDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000); // Add days in milliseconds
+        const day = String(targetDate.getDate()).padStart(2, '0');
+        const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+        const year = String(targetDate.getFullYear());
+    
+        return `${day}/${month}/${year}`;
+    }
+
 }

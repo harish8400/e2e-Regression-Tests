@@ -5,3 +5,5 @@ dist/
 /playwright/.cache/
 **/.DS_STORE
 /playwright/
+.vscode/settings.json
+\nplaywright/.auth
