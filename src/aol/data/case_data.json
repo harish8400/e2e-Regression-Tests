@@ -1,8 +1,8 @@
 {
-  "accountNumber": "MER-ACC-355657",
-  "caseGroupid": "f05f8206-6e33-4f1d-bebe-616f28530977",
-  "reference_No":"AE-102",
-    "expectedItems": [
+  "accountNumber": "MER-ACC-356142",
+  "caseGroupid": "c884863c-ec81-415a-a7ac-404a587365b8",
+  "reference_No": "MER-1892",
+  "expectedItems": [
     "Member Account Number",
     "Effective Date",
     "Assigned to",
@@ -12,11 +12,15 @@
     "Status",
     "Outcome"
   ],
-  "alert_account":"Member Account Number: MER-ACC-355657",
+  "alert_account": "Member Account Number: MER-ACC-356142",
   "List_outcome": "Outcome",
   "alert_outcome": "Outcome: Success",
   "Outcome_selected": [
     "Processing",
+    "Error"
+  ],
+  "Outcome_closed_cases": [
+    "Success",
     "Error"
   ],
   "success": "Success",
