@@ -12,7 +12,8 @@ interface ConfigContent {
         molVgApiURL: string,
         molHfmMolApiVersion?: string
         molVgURL: string,
-        molVgMolApiVersion?: string
+        molVgMolApiVersion?: string,
+        product: string
     };
 }
 

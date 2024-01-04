@@ -1,12 +1,10 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { TFN } from "../data/tfn";
-import { ProcessPage } from "./process_page";
 import { DateUtils } from "../../utils/date_utils";
 
 export class MemberPage extends BasePage { 
 
-    readonly processPage: ProcessPage;
     readonly processesLink: Locator;
 
     readonly title: Locator;
@@ -74,7 +72,6 @@ export class MemberPage extends BasePage {
         super(page)
 
     this.processesLink = page.getByRole('link', { name: 'Processes' });
-    this.processPage = new ProcessPage(page);
 
     this.memberGivenName = this.randomName();
     this.memberSurname = this.randomSurname(5);

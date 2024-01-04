@@ -1,14 +1,15 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
+import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
-import * as pensions from "../data/pensions.json";
-import { DateUtils } from "../../utils/date_utils";
+import * as pensions from "../../data/pensions.json";
+import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
+import { Navbar } from "../component/navbar";
 
-export class CommutationPayment extends BasePage {
+export class PensionTransactionPage extends BasePage {
 
-
+  readonly navbar: Navbar;
   //Rollover In
   readonly memberTransactionTab: Locator;
   readonly memberAddTransaction: Locator;
@@ -40,7 +41,7 @@ export class CommutationPayment extends BasePage {
 
   //Pension commutation roll-out
 
-  readonly pension_commutation: Locator;
+  readonly pensionCommutation: Locator;
   readonly commutation_type: Locator;
   readonly commutation_rollout: Locator;
   readonly payTo: Locator;
@@ -48,6 +49,7 @@ export class CommutationPayment extends BasePage {
   readonly destinationAccountNumber: Locator;
   readonly payFullBalance: Locator;
   readonly verifyRolloutProcessSuccess: Locator;
+  readonly verfiyRollInProcessSuccess: Locator;
 
   //close Icon
   readonly close_left: Locator;
@@ -65,6 +67,7 @@ export class CommutationPayment extends BasePage {
   constructor(page: Page) {
     super(page)
 
+    this.navbar = new Navbar(page);
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
     //Rollover In
@@ -96,7 +99,7 @@ export class CommutationPayment extends BasePage {
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
 
     //Pension commutation roll-out
-    this.pension_commutation = page.getByText('Pension Commutation', { exact: true });
+    this.pensionCommutation = page.getByText('Pension Commutation', { exact: true });
     this.commutation_type = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('CloseSelect');
     this.commutation_rollout = page.getByRole('option', { name: 'Commutation - Rollover Out' });
     this.payTo = page.locator('#gs4__combobox div').first();
@@ -104,6 +107,7 @@ export class CommutationPayment extends BasePage {
     this.destinationAccountNumber = page.getByLabel('Destination account number');
     this.payFullBalance = page.locator('.switch-slider').first();
     this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sen');
+    this.verfiyRollInProcessSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler');
 
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
@@ -115,14 +119,24 @@ export class CommutationPayment extends BasePage {
     this.commence_pension_button = page.locator('//*[@type="button"]/following::span[text()=" COMMENCE PENSION "]');
   }
 
+  async selectMember(uniqueSurname: string){
+    await this.navbar.selectMember(uniqueSurname);
+  }
 
   /** Member Rollin, adds a contribution to member account */
-  async memberRolloverIn() {
-    await this.sleep(3000);
-    await this.memberTransactionTab.scrollIntoViewIfNeeded();
+  async rollInTransaction() {
+    // await this.navigateToPensionMemberPage();
+    // await this.sleep(2000);
+    // await this.memberTransactionTab.scrollIntoViewIfNeeded();
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.memberAddContribution.click()
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
     await this.USI.fill(pensions.USI);
     await this.account_number.click();
     await this.account_number.fill(pensions.AccNumber);
@@ -142,19 +156,20 @@ export class CommutationPayment extends BasePage {
     await this.restricted_preserved.press('Tab');
     await this.preserved_component.scrollIntoViewIfNeeded();
     await this.preserved_component.fill(pensions.Amount);
-    await this.waitForTimeout(6000);
+    await this.sleep(2000);
     await this.rollIn.click();
     await this.rollIn_type.click();
     await this.eligible_serviceDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.eligible_serviceDate.press('Enter');
 
+    await this.linkCase.click();
+    await this.sleep(3000);
+
+    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
+
   }
 
-  async waitForTimeout(milliseconds: number) {
-    await this.page.waitForTimeout(milliseconds); // Wait for the specified duration in milliseconds
-  }
-
-  async rollIn_process() {
+  async pensionCommence() {
     await this.viewCase.click();
     await this.sleep(5000);
     await this.createCase.click();
@@ -162,43 +177,22 @@ export class CommutationPayment extends BasePage {
     await this.linkCase.click();
     await this.sleep(5000);
 
-    //Review case process steps, approve/retry or exit on exception
-    do {
-      //Approve step
-      if (await this.approveProcessStep.count() > 0) {
-        try {
-          await this.approveProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
+    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
 
-      //Retry step
-      if (await this.retryProcessStep.count() > 0) {
-        try {
-          await this.retryProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
-
-      //assert(await this.processException.count() < 0);
-      //Break if there is an process exception
-      if (await this.processException.count() > 0) {
-        throw new AssertionError({ message: "Error in Processing Case" });
-      }
-
-    } while (await this.verifyContributionSuccess.count() == 0);
-
-    await expect(this.verifyContributionSuccess).toBeVisible();
   }
 
   //Pension commutation roll-out
-  async pension_commutation_rollOut() {
+  async rollOutTransaction() {
+
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
-    await this.pension_commutation.click();
-    await this.waitForTimeout(3000);
+    await this.pensionCommutation.click();
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
     await this.commutation_type.click();
     await this.commutation_type.press('Enter');
     await this.sleep(3000);
@@ -211,10 +205,15 @@ export class CommutationPayment extends BasePage {
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
     await this.payFullBalance.click();
-    await this.viewCase.click();
-    await this.createCase.click();
+    
     await this.linkCase.click();
-    await this.sleep(5000);
+    await this.sleep(3000);
+
+    await this.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+
+  }
+
+  async reviewCaseProcess(successLocator: Locator){
 
     //Review case process steps, approve/retry or exit on exception
     do {
@@ -243,9 +242,8 @@ export class CommutationPayment extends BasePage {
 
       await this.sleep(2000);
     } while (
-      await this.verifyRolloutProcessSuccess.count() == 0
+      await successLocator.count() == 0
     );
-
   }
 
   //Pension commencement
@@ -270,7 +268,7 @@ export class CommutationPayment extends BasePage {
     }
 
     await this.check_box.click();
-    await this.waitForTimeout(5000);
+    await this.sleep(5000);
     await this.commence_pension_button.click();
 
 
@@ -311,5 +309,6 @@ export class CommutationPayment extends BasePage {
     await this.sleep(3000);
     await this.close_left.click();
   }
+
 
 }

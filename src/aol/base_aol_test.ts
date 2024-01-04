@@ -3,15 +3,15 @@ import { LoginPage } from './pom/login_page';
 import { DashboardPage } from './pom/dashboard_page';
 import { MemberPage } from './pom/member_page';
 import { MemberTransactionsPage } from './pom/member_transaction';
-import{CommutationPayment} from './pom/commutation_payment_rollout';
-import{PensionShellAccount} from "./pom/pension_shell_account"
+import{PensionTransactionPage} from './pom/Pension/pension_transaction_page';
+import{PensionShellAccount as PensionShellAccountPage} from "./pom/Pension/pension_account_page"
 type ExtensionFixtures = {
     loginPage: LoginPage;
     dashboardPage: DashboardPage
     memberPage: MemberPage
     memberTransactionPage: MemberTransactionsPage
-    pensionShellAccount:PensionShellAccount
-    commutationPayment:CommutationPayment
+    pensionAccountPage:PensionShellAccountPage
+    pensionTransactionPage:PensionTransactionPage
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -31,11 +31,11 @@ export const aolTest = base.extend<ExtensionFixtures>({
         await use(new MemberTransactionsPage(page));
     },
 
-    pensionShellAccount:  async ({ page }, use) => {
-        await use(new PensionShellAccount(page));
+    pensionAccountPage:  async ({ page }, use) => {
+        await use(new PensionShellAccountPage(page));
     },
 
-    commutationPayment: async ({ page }, use) => {
-        await use(new CommutationPayment(page));
+    pensionTransactionPage: async ({ page }, use) => {
+        await use(new PensionTransactionPage(page));
     },
 })

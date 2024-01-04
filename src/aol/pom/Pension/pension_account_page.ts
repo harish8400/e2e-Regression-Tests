@@ -1,12 +1,16 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
-//import { TFN } from "../data/tfn";
-import * as pensions from "../data/pensions.json";
-import { DateUtils } from "../../utils/date_utils";
+import { BasePage } from "../../../common/pom/base_page";
+import { Navbar } from "../component/navbar";
+import * as pensions from "../../data/pensions.json";
+import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
+import { UtilsAOL } from "../../utils_aol";
 
 export class PensionShellAccount extends BasePage {
 
+
+  readonly navbar: Navbar;
+  readonly addMemberButton: Locator; 
 
   //Add Member
   readonly title: Locator;
@@ -71,7 +75,6 @@ export class PensionShellAccount extends BasePage {
   readonly beneficiaryPostcode: Locator;
   readonly beneficiarySave: Locator;
 
-
   //pensions
   readonly payment_frequency_select: Locator;
   readonly payment_frequency: Locator;
@@ -102,25 +105,22 @@ export class PensionShellAccount extends BasePage {
   readonly retryProcessStep: Locator;
   readonly verifyShellAccountCreation: Locator;
   readonly close_left: Locator;
-  readonly checkbox: Locator;
+  readonly acknowledgeCheckbox: Locator;
   readonly createAcc: Locator
 
- 
-
-
-
   //Exceptions
-
   readonly processException: Locator;
-
 
   constructor(page: Page) {
     super(page)
 
+    this.navbar = new Navbar(page);
+    this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
+
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
     //Add member
-    this.memberGivenName = this.randomName();
-    this.memberSurname = this.randomSurname(5);
+    this.memberGivenName = UtilsAOL.randomName();
+    this.memberSurname = UtilsAOL.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -153,8 +153,8 @@ export class PensionShellAccount extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
     //Investment step
-    this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
-    this.invSelection = page.getByText('IS Australian Shares', { exact: true });
+    this.invSelect = page.getByRole('textbox', { name: 'Select' });
+    this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
     this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add' });
@@ -183,7 +183,7 @@ export class PensionShellAccount extends BasePage {
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
     this.proRata = page.getByText('Yes').first();
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
+    this.select_eligibility = page.locator('li').filter({ hasText: '65 or older' });
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
 
@@ -206,68 +206,56 @@ export class PensionShellAccount extends BasePage {
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
-    this.checkbox = page.locator('.checkbox-indicator');
+    this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
-
- 
-
   }
 
-  randomSurname(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
+  // async select_member(memberName: string) {
+  //   let memberExists = false;
+  //   let retries = 3; // Set a limit for the number of retries
+
+  //   while (!memberExists && retries > 0) {
+  //     await this.sleep(3000);
+  //     await this.page.reload();
+  //     await this.sleep(5000);
+
+  //     console.log(`Selecting member: ${memberName}`); // Log the member name being selected
+
+  //     // Check if the member exists in the table
+  //     memberExists = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`, { timeout: 5000, state: 'visible' })
+  //       .then(() => true)
+  //       .catch(() => false);
+
+  //     if (memberExists) {
+  //       const memberElement = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`);
+  //       await memberElement.click();
+  //     } else {
+  //       console.log(`Member "${memberName}" not found in the table. Retrying...`);
+  //       retries--; // Decrement the retries count
+  //       await this.sleep(2000); // Adjust the delay as needed
+  //     }
+  //   }
+
+  //   if (!memberExists) {
+  //     console.log(`Member "${memberName}" not found after retries.`);
+  //   }
+  // }
+
+  async selectProduct(){
+    await this.navbar.selectProduct();
   }
 
-  randomName() {
-    let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver','Gopu','Dilip','Anil','Harish','Pooja','sreekar','yathindra','Teja'];
-    return names[Math.floor(Math.random() * names.length)]
+  async navigateToPensionMemberPage(){
+    await this.navbar.navigateToPensionMemberPage();
   }
-  
- async select_member(memberName: string) {
-    let memberExists = false;
-    let retries = 3; // Set a limit for the number of retries
 
-    while (!memberExists && retries > 0) {
-        await this.sleep(3000);
-        await this.page.reload();
-        await this.sleep(5000);
-
-        console.log(`Selecting member: ${memberName}`); // Log the member name being selected
-
-        // Check if the member exists in the table
-        memberExists = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`, { timeout: 5000, state: 'visible' })
-            .then(() => true)
-            .catch(() => false);
-
-        if (memberExists) {
-            const memberElement = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`);
-            await memberElement.click();
-        } else {
-            console.log(`Member "${memberName}" not found in the table. Retrying...`);
-            retries--; // Decrement the retries count
-            await this.sleep(2000); // Adjust the delay as needed
-        }
-    }
-
-    if (!memberExists) {
-        console.log(`Member "${memberName}" not found after retries.`);
-    }
-}
- 
-  async addNewMember() {
+  async addMemberPersonalDetails(uniqueSurname: string) {
 
     //let tfns = TFN.getValidTFN();
     await this.title.click();
     await this.selectTitle.click();
     await this.givenName.fill(this.memberGivenName);
-    await this.surname.fill(this.memberSurname);
+    await this.surname.fill(uniqueSurname);
     await this.dob.fill(pensions.dob);
     await this.gender.click();
     await this.genderSelect.click();
@@ -287,10 +275,10 @@ export class PensionShellAccount extends BasePage {
     await this.residencyStatus.click();
     await this.residencyStatusSelect.click();
     await this.nextStep.click();
-    return this.memberSurname;
+    //return this.memberSurname;
   }
 
-  async consolidation() {
+  async addMemberConsolidation() {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
@@ -303,7 +291,7 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async investments() {
+  async addMemberInvestments() {
     await this.invSelect.click();
     await this.invSelection.click();
     await this.invPercentage.fill('100');
@@ -311,7 +299,7 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async beneficiaries() {
+  async addMemberBeneficiaries() {
     await this.addNewBeneficiary.click();
     await this.beneficiaryName.fill(pensions.beneficiary);
     await this.beneficiaryRelation.click();
@@ -331,15 +319,11 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async waitForTimeout(milliseconds: number) {
-    await this.page.waitForTimeout(milliseconds); // Wait for the specified duration in milliseconds
-  }
-
-  async pensionDetails() {
+  async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
     await this.PensionPaymentDate.click();
-    await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyy_StringDate(10)}`);
+    await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
     await this.proRata.hover();
     await this.proRata.click();
@@ -347,7 +331,7 @@ export class PensionShellAccount extends BasePage {
     await this.select_eligibility.click();
     await this.annual_payment.click();
     await this.select_payment.click();
-    await this.waitForTimeout(5000);
+    await this.sleep(5000);
     await this.page.evaluate(() => window.scrollBy(0, window.innerHeight));
     await this.bsb.scrollIntoViewIfNeeded();
     await this.bsb.click();
@@ -363,23 +347,17 @@ export class PensionShellAccount extends BasePage {
     await this.drop_down_select.click();
 
   }
-  async case_process() {
+
+  async initCreateCase() {
     await this.viewCase.click();
-    await this.sleep(5000);
-    await this.createCase.click();
-    await this.sleep(5000)
-
-  }
-
-  async clickOnClosedIcon() {
     await this.sleep(3000);
-    await this.close_left.click();
+    await this.createCase.click();
+    await this.sleep(3000);
+    await this.acknowledgeCheckbox.click();
   }
 
-  async check_box() {
-    await this.checkbox.click();
-  }
-  async create_account() {
+  async createAccount() {
+    
     await this.createAcc.click();
 
     //Review case process steps, approve/retry or exit on exception
@@ -402,7 +380,6 @@ export class PensionShellAccount extends BasePage {
         }
       }
 
-      //assert(await this.processException.count() < 0);
       //Break if there is an process exception
       if (await this.processException.count() > 0) {
         throw new AssertionError({ message: "Error in Processing Case" });
@@ -412,5 +389,19 @@ export class PensionShellAccount extends BasePage {
 
     await expect(this.verifyShellAccountCreation).toBeVisible();
   }
-   
+
+  async createShellAccount(uniqueSurname : string){
+    
+    await this.selectProduct();
+    await this.navigateToPensionMemberPage();
+    await this.addMemberButton.click();
+    await this.addMemberPersonalDetails(uniqueSurname);
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    await this.addMemberBeneficiaries();
+    await this.addMemberPensionDetails();
+    await this.initCreateCase();
+    await this.createAccount();
+
+  }
 }

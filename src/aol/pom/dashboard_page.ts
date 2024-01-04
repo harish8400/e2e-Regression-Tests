@@ -184,10 +184,6 @@ export class DashboardPage extends BasePage {
     await this.accumulationMembersLink.click();
   }
 
-  async waitForTimeout(milliseconds: number) {
-    await this.page.waitForTimeout(milliseconds); // Wait for the specified duration in milliseconds
-  }
-
   async verifyCaseManagementTabs() {
 
     try 
@@ -309,9 +305,9 @@ export class DashboardPage extends BasePage {
       await this.clickOnFilter();
       await this.memberToAssign.click()
       await this.select_member.click();
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.unassigned.click();
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
@@ -331,7 +327,7 @@ export class DashboardPage extends BasePage {
     const actualAlertText = await this.filterDisplayed();
     await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
     const expectedData = caseManagement.AssignedTo;
-    await this.waitForTimeout(5000);
+    await this.sleep(5000);
     await this.verifyFilterResult(expectedData, dashboardPage);
     //await this.close_main();
   }
@@ -374,10 +370,10 @@ export class DashboardPage extends BasePage {
     try {
       await this.clickFilter();
       await this.caseId.click();
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.text_Box.click();
       await this.text_Box.fill(caseManagement.caseGroupid);
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
@@ -397,7 +393,7 @@ export class DashboardPage extends BasePage {
     const actualAlertText = await this.filterDisplayed();
     await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
     const expectedData = caseManagement.caseGroupid;
-    await this.waitForTimeout(1000)
+    await this.sleep(1000)
     await this.verifyFilterResult(expectedData, dashboardPage);
     //await this.close_main();
   }
@@ -406,10 +402,10 @@ export class DashboardPage extends BasePage {
     try {
       await this.clickFilter();
       await this.referenceId.click();
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.text_Box.click();
       await this.text_Box.fill(caseManagement.reference_No);
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {
@@ -428,7 +424,7 @@ export class DashboardPage extends BasePage {
     const actualAlertText = await this.filterDisplayed();
     await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
     const expectedData = caseManagement.reference_No;
-    await this.waitForTimeout(1000)
+    await this.sleep(1000)
     await this.verifyFilterResult(expectedData, dashboardPage);
     //await this.close_main();
   }
@@ -687,7 +683,7 @@ export class DashboardPage extends BasePage {
     await this.page.reload();
     await this.clickOnFilter();
     await this.date_picker.click();
-    let effectiveDate = DateUtils.ddmmyyyStringDate(3);
+    let effectiveDate = DateUtils.ddmmyyyStringDate(-3);
     await this.effectiveDate.fill(effectiveDate);
     await this.effectiveDate.press('Tab');
     await this.sleep(1000);
@@ -990,10 +986,10 @@ export class DashboardPage extends BasePage {
     try {
       await this.clickFilter();
       await this.referenceId.click();
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.text_Box.click();
       await this.text_Box.fill("MER-1903");
-      await this.waitForTimeout(1000);
+      await this.sleep(1000);
       await this.apply_button();
       await this.go_Button();
     } catch (error) {

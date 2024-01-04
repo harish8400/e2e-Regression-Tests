@@ -8,6 +8,10 @@ test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
 });
 
+test("Test @prodtest",async () => {
+    let prod = process.env.PRODUCT;
+    console.log(prod);
+})
 /* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
 test("Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
     try {
@@ -139,16 +143,16 @@ test("Verify that an existing case can be updated by assigning to a user @casema
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
         await dashboardPage.box_select();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         await dashboardPage.verify_Member_TobeAssigned();
         await dashboardPage.apply_button();
         await dashboardPage.go_Button();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         const rowNumberToClick = 1;
         await dashboardPage.clickOnTableRow(rowNumberToClick);
 
         await dashboardPage.addCaseToAssignee();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         const expected_activity = /Case Assigned to '.+'/;
         const activityNotes = await dashboardPage.activity_notes();
         expect(activityNotes).toMatch(expected_activity);
@@ -169,11 +173,11 @@ test("Verify that an existing case can be updated by adding notes/comments @case
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
         await dashboardPage.box_select();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         await dashboardPage.verify_Member_TobeAssigned();
         await dashboardPage.apply_button();
         await dashboardPage.go_Button();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         const rowNumberToClick = 1;
         await dashboardPage.clickOnTableRow(rowNumberToClick);
 
@@ -199,11 +203,11 @@ test("Verify if existing case can be updated by adding attachment", async ({ das
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
         await dashboardPage.box_select();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         await dashboardPage.verify_Member_TobeAssigned();
         await dashboardPage.apply_button();
         await dashboardPage.go_Button();
-        await dashboardPage.waitForTimeout(2000);
+        await dashboardPage.sleep(2000);
         const rowNumberToClick = 1;
         await dashboardPage.clickOnTableRow(rowNumberToClick);
 
