@@ -37,9 +37,9 @@ export class Navbar extends BasePage {
         
     }
 
-    async selectMember(memberName: string){
+    async selectMember(member: string){
         //await this.page.reload();
-        await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
-        await this.page.getByRole('cell', { name: memberName }).first().click();
+        await expect(this.page.getByRole('cell', { name: member }).first()).toBeVisible();
+        await this.page.getByRole('cell', { name: member }).first().click();
     }
 }

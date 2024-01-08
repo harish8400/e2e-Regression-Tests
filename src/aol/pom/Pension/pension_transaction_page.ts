@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
-import * as pensions from "../../data/pensions.json";
+import * as pensions from "../../data/member.json";
 import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
@@ -119,10 +119,6 @@ export class PensionTransactionPage extends BasePage {
     this.commence_pension_button = page.locator('//*[@type="button"]/following::span[text()=" COMMENCE PENSION "]');
   }
 
-  async selectMember(uniqueSurname: string){
-    await this.navbar.selectMember(uniqueSurname);
-  }
-
   /** Member Rollin, adds a contribution to member account */
   async rollInTransaction() {
     // await this.navigateToPensionMemberPage();
@@ -164,18 +160,6 @@ export class PensionTransactionPage extends BasePage {
 
     await this.linkCase.click();
     await this.sleep(3000);
-
-    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
-
-  }
-
-  async pensionCommence() {
-    await this.viewCase.click();
-    await this.sleep(5000);
-    await this.createCase.click();
-    await this.sleep(5000);
-    await this.linkCase.click();
-    await this.sleep(5000);
 
     await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
 
@@ -246,8 +230,20 @@ export class PensionTransactionPage extends BasePage {
     );
   }
 
+  async pensionCommence() {
+    await this.viewCase.click();
+    await this.sleep(5000);
+    await this.createCase.click();
+    await this.sleep(5000);
+    await this.linkCase.click();
+    await this.sleep(5000);
+
+    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
+
+  }
+
   //Pension commencement
-  async pension_commence() {
+  async pensionUpdate() {
     await this.pensionTab.click();
     await this.viewCase.click();
     await this.createCase.click();
@@ -303,12 +299,5 @@ export class PensionTransactionPage extends BasePage {
 
     await expect(this.verifyContributionSuccess).toBeVisible();
   }
-
-
-  async clickOnClosedIcon() {
-    await this.sleep(3000);
-    await this.close_left.click();
-  }
-
 
 }

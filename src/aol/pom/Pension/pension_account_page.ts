@@ -210,41 +210,6 @@ export class PensionShellAccount extends BasePage {
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
   }
 
-  // async select_member(memberName: string) {
-  //   let memberExists = false;
-  //   let retries = 3; // Set a limit for the number of retries
-
-  //   while (!memberExists && retries > 0) {
-  //     await this.sleep(3000);
-  //     await this.page.reload();
-  //     await this.sleep(5000);
-
-  //     console.log(`Selecting member: ${memberName}`); // Log the member name being selected
-
-  //     // Check if the member exists in the table
-  //     memberExists = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`, { timeout: 5000, state: 'visible' })
-  //       .then(() => true)
-  //       .catch(() => false);
-
-  //     if (memberExists) {
-  //       const memberElement = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`);
-  //       await memberElement.click();
-  //     } else {
-  //       console.log(`Member "${memberName}" not found in the table. Retrying...`);
-  //       retries--; // Decrement the retries count
-  //       await this.sleep(2000); // Adjust the delay as needed
-  //     }
-  //   }
-
-  //   if (!memberExists) {
-  //     console.log(`Member "${memberName}" not found after retries.`);
-  //   }
-  // }
-
-  async selectProduct(){
-    await this.navbar.selectProduct();
-  }
-
   async navigateToPensionMemberPage(){
     await this.navbar.navigateToPensionMemberPage();
   }
@@ -392,8 +357,6 @@ export class PensionShellAccount extends BasePage {
 
   async createShellAccount(uniqueSurname : string){
     
-    await this.selectProduct();
-    await this.navigateToPensionMemberPage();
     await this.addMemberButton.click();
     await this.addMemberPersonalDetails(uniqueSurname);
     await this.addMemberConsolidation();
