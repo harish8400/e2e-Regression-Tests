@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { Navbar } from "../component/navbar";
-import * as pensions from "../../data/pensions.json";
+import * as member from "../../data/member.json";
 import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
 import { UtilsAOL } from "../../utils_aol";
@@ -256,21 +256,21 @@ export class PensionShellAccount extends BasePage {
     await this.selectTitle.click();
     await this.givenName.fill(this.memberGivenName);
     await this.surname.fill(uniqueSurname);
-    await this.dob.fill(pensions.dob);
+    await this.dob.fill(member.dob);
     await this.gender.click();
     await this.genderSelect.click();
-    await this.emailAddress.fill(pensions.email);
-    await this.primaryPhone.fill(pensions.phone);
+    await this.emailAddress.fill(member.email);
+    await this.primaryPhone.fill(member.phone);
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     //await this.tfn.click();
     //await this.tfn.fill(tfns.tfn);
-    await this.address1.fill(pensions.address);
+    await this.address1.fill(member.address);
     await this.city.click();
-    await this.city.fill(pensions.city);
+    await this.city.fill(member.city);
     await this.state.click();
     await this.stateSelect.click();
-    await this.postcode.fill(pensions.postcode);
+    await this.postcode.fill(member.postcode);
     await this.preferredContactName.fill(this.memberGivenName);
     await this.residencyStatus.click();
     await this.residencyStatusSelect.click();
@@ -282,10 +282,10 @@ export class PensionShellAccount extends BasePage {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
-    await this.memberAccountNumber.fill(pensions.AccNumber);
-    await this.USI.fill(pensions.USI);
+    await this.memberAccountNumber.fill(member.AccNumber);
+    await this.USI.fill(member.USI);
     await this.USI.press('Tab');
-    await this.enterAmount.fill(pensions.Amount);
+    await this.enterAmount.fill(member.Amount);
     await this.sleep(1000);
     await this.saveFundDetails.click();
     await this.nextStep.click();
@@ -301,7 +301,7 @@ export class PensionShellAccount extends BasePage {
 
   async addMemberBeneficiaries() {
     await this.addNewBeneficiary.click();
-    await this.beneficiaryName.fill(pensions.beneficiary);
+    await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryRelation.click();
     await this.beneficiaryRelationSelect.click();
     await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
@@ -310,11 +310,11 @@ export class PensionShellAccount extends BasePage {
     await this.select_gender.click();
     await this.countrySelect.click();
     await this.selectCountry.click();
-    await this.beneficiaryAddress1.fill(pensions.address);
-    await this.beneficiaryCity.fill(pensions.city);
+    await this.beneficiaryAddress1.fill(member.address);
+    await this.beneficiaryCity.fill(member.city);
     await this.beneficiaryState.click();
     await this.beneficiaryStateSelect.click();
-    await this.beneficiaryPostcode.fill(pensions.postcode);
+    await this.beneficiaryPostcode.fill(member.postcode);
     await this.beneficiarySave.click();
     await this.nextStep.click();
   }
@@ -335,12 +335,12 @@ export class PensionShellAccount extends BasePage {
     await this.page.evaluate(() => window.scrollBy(0, window.innerHeight));
     await this.bsb.scrollIntoViewIfNeeded();
     await this.bsb.click();
-    await this.bsb.fill(pensions.BSBNumber);
+    await this.bsb.fill(member.BSBNumber);
     await this.banks.click();
     await this.accountName.click();
-    await this.accountName.fill(pensions.AccountName);
+    await this.accountName.fill(member.AccountName);
     await this.accountNo.click();
-    await this.accountNo.fill(pensions.AccountNumber);
+    await this.accountNo.fill(member.AccountNumber);
     await this.search_option.click();
     await this.pension_payment.click();
     await this.drop_down.click();

@@ -25,5 +25,6 @@ test("ABP Rollover Out Commutation - Full exit", async ({ pensionAccountPage, pe
     await pensionAccountPage.createShellAccount(uniqueSurname);
     await pensionTransactionPage.selectMember(uniqueSurname);
     await pensionTransactionPage.rollInTransaction();
+    await pensionTransactionPage.rollOutTransaction();
 
 })

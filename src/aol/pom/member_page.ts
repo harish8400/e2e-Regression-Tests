@@ -2,6 +2,8 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { TFN } from "../data/tfn";
 import { DateUtils } from "../../utils/date_utils";
+import { UtilsAOL } from "../utils_aol";
+import * as member from "../data/member.json";
 
 export class MemberPage extends BasePage { 
 
@@ -73,8 +75,8 @@ export class MemberPage extends BasePage {
 
     this.processesLink = page.getByRole('link', { name: 'Processes' });
 
-    this.memberGivenName = this.randomName();
-    this.memberSurname = this.randomSurname(5);
+    this.memberGivenName = UtilsAOL.randomName();
+    this.memberSurname = UtilsAOL.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -142,20 +144,20 @@ export class MemberPage extends BasePage {
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
         await this.surname.fill(this.memberSurname);
-        await this.dob.fill('01/01/2000');
+        await this.dob.fill(member.dob);
         await this.gender.click();
         await this.genderSelect.click();
-        await this.emailAddress.fill('anilkumar.shanthalingappa@grow.inc');
-        await this.primaryPhone.fill('61412345678');
+        await this.emailAddress.fill(member.email);
+        await this.primaryPhone.fill(member.phone);
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
         await this.tfn.click();
         await this.tfn.fill(tfns.tfn);
-        await this.address1.fill('11 high street');
-        await this.city.fill('Sydney');
+        await this.address1.fill(member.address);
+        await this.city.fill(member.city);
         await this.state.click();
         await this.stateSelect.click();
-        await this.postcode.fill('2000');
+        await this.postcode.fill(member.postcode);
         await this.preferredContactName.fill(this.memberGivenName);
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
@@ -173,10 +175,10 @@ export class MemberPage extends BasePage {
         await this.addFund.click();
         await this.addFundSelect.click();
         await this.addFundSelectOption.click();
-        await this.memberAccountNumber.fill('AUS-ACC-102030');
-        await this.USI.fill('STA0100AU');
+        await this.memberAccountNumber.fill(member.AccNumber);
+        await this.USI.fill(member.USI);
         await this.USI.press('Tab');
-        await this.enterAmount.fill('50000');
+        await this.enterAmount.fill(member.Amount);
         await this.sleep(1000);
         await this.saveFundDetails.click();
         await this.nextStep.click();
@@ -192,7 +194,7 @@ export class MemberPage extends BasePage {
         
         //Beneficiaries
         await this.addNewBeneficiary.click();
-        await this.beneficiaryName.fill('Rose');
+        await this.beneficiaryName.fill(member.names[0]);
         await this.beneficiaryName.press('Tab');
         await this.beneficiaryType.click();
         await this.beneficiaryRelation.click();
@@ -213,21 +215,5 @@ export class MemberPage extends BasePage {
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
-
-    randomSurname(length: number) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-          counter += 1;
-        }
-        return result;
-    }
-
-    randomName(){
-        let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver' ];
-        return names[Math.floor(Math.random()*names.length)]
-    }
+    
 }
