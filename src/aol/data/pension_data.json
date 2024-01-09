@@ -1,5 +1,7 @@
 {
     "pension": {
-        "ABP_Commutation_Rolout_Fullexit_Member_Number": "1234"
+        "ABP_Commutation_Rolout_Fullexit_Member_Number": "1234",
+        "Rollin_And_Verify_Cash_Investment": "9020356",
+        "Pension_Drawdown_Proportional_Order": "4F653-188-2"
     }
 }

@@ -8,7 +8,12 @@ export class Navbar extends BasePage {
     readonly membersLink: Locator;
     readonly addMemberButton: Locator; 
     readonly productOptionDropDown: Locator;
-    readonly productSelection: Locator
+    readonly productSelection: Locator;
+
+    readonly FilterClick: Locator;
+    readonly FilterOption: Locator;
+    readonly FilterOptionInput: Locator;
+    readonly BtnApply: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -18,6 +23,11 @@ export class Navbar extends BasePage {
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
         this.productSelection = page.getByText('HESTA for Mercy');
+
+        this.FilterClick = page.getByRole('button', { name: 'FILTER' });
+        this.FilterOption = page.getByText('Member Number', { exact: true });
+        this.FilterOptionInput = page.getByRole('textbox').first();
+        this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     }
 
     async navigateToDashboard(){
@@ -39,6 +49,14 @@ export class Navbar extends BasePage {
 
     async selectMember(member: string){
         //await this.page.reload();
+
+        //Filter member
+        await this.FilterClick.click();
+        await this.FilterOption.click();
+        await this.FilterOptionInput.fill(member);
+        await this.BtnApply.click();
+
+        //Select and click on member details
         await expect(this.page.getByRole('cell', { name: member }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: member }).first().click();
     }

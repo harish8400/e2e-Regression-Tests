@@ -8,6 +8,8 @@ test("Manual Roll-in - Pension Member", async ({ navBar, pensionAccountPage, pen
     test.setTimeout(600000);
     await allure.suite("Pension");
 
+    await navBar.selectProduct();
+    await navBar.navigateToPensionMemberPage();
     let uniqueSurname = UtilsAOL.randomSurname(5);
     await pensionAccountPage.createShellAccount(uniqueSurname);
     await navBar.selectMember(uniqueSurname);
