@@ -7,3 +7,5 @@ dist/
 /playwright/
 .vscode/settings.json
 \nplaywright/.auth
+allure-report/
+allure-results/

@@ -10,7 +10,7 @@ export class PensionShellAccount extends BasePage {
 
 
   readonly navbar: Navbar;
-  readonly addMemberButton: Locator; 
+  readonly addMemberButton: Locator;
 
   //Add Member
   readonly title: Locator;
@@ -210,8 +210,8 @@ export class PensionShellAccount extends BasePage {
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
   }
 
-  async navigateToPensionMemberPage(){
-    await this.navbar.navigateToPensionMemberPage();
+  async navigateToPensionMemberPage() {
+    await this.navbar.navigateToPensionMembersPage();
   }
 
   async addMemberPersonalDetails(uniqueSurname: string) {
@@ -269,7 +269,7 @@ export class PensionShellAccount extends BasePage {
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryRelation.click();
     await this.beneficiaryRelationSelect.click();
-    await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.beneficiaryEffectiveDate.fill(member.beneficiaryDOB);
     await this.beneficiaryEffectiveDate.press('Tab');
     await this.gender_select.click();
     await this.select_gender.click();
@@ -322,7 +322,7 @@ export class PensionShellAccount extends BasePage {
   }
 
   async createAccount() {
-    
+
     await this.createAcc.click();
 
     //Review case process steps, approve/retry or exit on exception
@@ -355,8 +355,8 @@ export class PensionShellAccount extends BasePage {
     await expect(this.verifyShellAccountCreation).toBeVisible();
   }
 
-  async createShellAccount(uniqueSurname : string){
-    
+  async createShellAccount(uniqueSurname: string) {
+
     await this.addMemberButton.click();
     await this.addMemberPersonalDetails(uniqueSurname);
     await this.addMemberConsolidation();

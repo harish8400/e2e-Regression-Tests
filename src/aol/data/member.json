@@ -1,5 +1,5 @@
 {
-    "dob": "16/06/1959",
+    "dob": "16/06/1955",
     "email": "pharish.kumar@grow.inc",
     "phone":"61412345678",
     "address":"11 high street",
@@ -9,6 +9,7 @@
     "USI":"STA0100AU",
     "Amount":"50000",
     "beneficiary":"John",
+    "beneficiaryDOB":"16/06/2000",
     "BSBNumber":"032-000",
     "AccountName":"InTest",
     "AccountNumber":"123456",

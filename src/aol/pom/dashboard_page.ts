@@ -1,6 +1,5 @@
 import { ElementHandle, Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
-import { AddCase } from "./component/addcase";
 import * as caseManagement from "../data/case_data.json";
 import { DateUtils } from "../../utils/date_utils";
 import { AssertionError } from "assert";
@@ -9,7 +8,6 @@ import path from "path";
 export class DashboardPage extends BasePage {
 
   readonly addCaseLink: Locator;
-  readonly addCase: AddCase;
   readonly selectProduct: Locator;
   readonly selectHFM: Locator;
   readonly accumulationProduct: Locator;
@@ -67,7 +65,6 @@ export class DashboardPage extends BasePage {
     super(page)
 
     this.addCaseLink = page.getByRole('button', { name: 'add-circle icon Add New Case' });
-    this.addCase = new AddCase(page);
     this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
     this.selectHFM = page.getByText('HESTA for Mercy');
     this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });

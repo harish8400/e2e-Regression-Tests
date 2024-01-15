@@ -4,10 +4,15 @@ import { TFN } from "../data/tfn";
 import { DateUtils } from "../../utils/date_utils";
 import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
+import { ReviewCase } from "./component/review_case";
 
 export class MemberPage extends BasePage { 
 
     readonly processesLink: Locator;
+    readonly accumulationAddMember: Locator;
+    readonly memberInfoTab: Locator;
+    readonly memberCreatedCase: Locator;
+    readonly welcomeLetterTrigger: Locator
 
     readonly title: Locator;
     readonly selectTitle: Locator;
@@ -69,11 +74,17 @@ export class MemberPage extends BasePage {
 
     readonly memberGivenName: string;
     readonly memberSurname: string;
+    readonly reviewCase: ReviewCase;
 
     constructor(page: Page) {
         super(page)
 
+    this.reviewCase = new ReviewCase(page);
     this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
+    this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
+    this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create',exact: true });
+    this.welcomeLetterTrigger = page.getByText('Process step completed with note: New member welcome letter sent.');
 
     this.memberGivenName = UtilsAOL.randomName();
     this.memberSurname = UtilsAOL.randomSurname(5);
@@ -100,7 +111,7 @@ export class MemberPage extends BasePage {
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
     //Employer step
     this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
-    this.employerSelect = page.getByText('woolworths');
+    this.employerSelect = page.getByRole('option').nth(0);
     this.employerStartDate = page.getByPlaceholder('dd/mm/yyyy');
     this.employerSave = page.getByRole('button', { name: 'SAVE' });
     //Consolidate step
@@ -113,7 +124,7 @@ export class MemberPage extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
     //Investment step
     this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
-    this.invSelection = page.getByText('Balanced Growth', { exact: true });
+    this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add' });
     this.profileType = page.locator('#membershipProfile').getByPlaceholder('Select');
@@ -137,8 +148,9 @@ export class MemberPage extends BasePage {
 
     }
 
-    async addNewMember(){
+    async addNewMember(tfnNull: boolean){
         
+        await this.accumulationAddMember.click();
         let tfns = TFN.getValidTFN();
         await this.title.click();
         await this.selectTitle.click();
@@ -151,8 +163,12 @@ export class MemberPage extends BasePage {
         await this.primaryPhone.fill(member.phone);
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
-        await this.tfn.click();
-        await this.tfn.fill(tfns.tfn);
+        
+        if(!tfnNull){
+            await this.tfn.click();
+            await this.tfn.fill(tfns.tfn);
+        }
+        
         await this.address1.fill(member.address);
         await this.city.fill(member.city);
         await this.state.click();
@@ -211,9 +227,18 @@ export class MemberPage extends BasePage {
     }
 
     async selectMember(memberName: string){
+        await this.sleep(2000);
         await this.page.reload();
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
+    }
+
+    async verifyIfWelcomeLetterTriggered(){
+        await this.memberInfoTab.click();
+        await this.memberCreatedCase.click();
+
+        //Check member creation case and approve correspondence
+        await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
     
 }

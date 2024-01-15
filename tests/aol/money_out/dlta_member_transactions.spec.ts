@@ -12,7 +12,7 @@ test("Money Out - Rollover out full exit @fullexit", async ({ dashboardPage, mem
 
     await test.step("Super Member creation", async () => {
         await dashboardPage.navigateToAccumulationAddMember();
-        let addedMember = await memberPage.addNewMember();
+        let addedMember = await memberPage.addNewMember(false);
         await memberPage.selectMember(addedMember);
     })
 

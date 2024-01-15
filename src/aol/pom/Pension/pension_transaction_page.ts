@@ -4,7 +4,6 @@ import { BasePage } from "../../../common/pom/base_page";
 import * as pensions from "../../data/member.json";
 import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
-import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import { Navbar } from "../component/navbar";
 
 export class PensionTransactionPage extends BasePage {
@@ -48,7 +47,9 @@ export class PensionTransactionPage extends BasePage {
   readonly fund: Locator;
   readonly destinationAccountNumber: Locator;
   readonly payFullBalance: Locator;
+  readonly partialBalance: Locator;
   readonly verifyRolloutProcessSuccess: Locator;
+  readonly verifyUNPCommutationProcessSuccess: Locator;
   readonly verfiyRollInProcessSuccess: Locator;
 
   //close Icon
@@ -62,7 +63,6 @@ export class PensionTransactionPage extends BasePage {
   //Exceptions
 
   readonly processException: Locator;
-
 
   constructor(page: Page) {
     super(page)
@@ -106,7 +106,9 @@ export class PensionTransactionPage extends BasePage {
     this.fund = page.getByRole('option', { name: 'Fund' });
     this.destinationAccountNumber = page.getByLabel('Destination account number');
     this.payFullBalance = page.locator('.switch-slider').first();
-    this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sen');
+    this.partialBalance = page.getByText('$ 0.00');
+    this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Commute rollout correspondence sent');
+    this.verifyUNPCommutationProcessSuccess = page.getByText('Process step completed with note: Commute benefit payment correspondence sent');
     this.verfiyRollInProcessSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler');
 
     //close Icon
@@ -166,21 +168,22 @@ export class PensionTransactionPage extends BasePage {
   }
 
   //Pension commutation roll-out
-  async rollOutTransaction() {
+  async commutationRolloverOut(FullExit: boolean) {
 
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.pensionCommutation.click();
+
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    await this.sleep(3000);
+    await this.commutation_rollout.click();
 
     await this.viewCase.click();
     await this.sleep(3000);
     await this.createCase.click();
     await this.sleep(3000);
 
-    await this.commutation_type.click();
-    await this.commutation_type.press('Enter');
-    await this.sleep(3000);
-    await this.commutation_rollout.click();
     await this.payTo.click();
     await this.fund.click();
     await this.USI.fill(pensions.USI);
@@ -188,7 +191,51 @@ export class PensionTransactionPage extends BasePage {
     await this.destinationAccountNumber.press('Tab')
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
-    await this.payFullBalance.click();
+
+    if(FullExit){
+      await this.payFullBalance.click();
+    }else{
+      await this.partialBalance.click();
+      await this.sleep(2000);
+      await this.page.getByPlaceholder('0').fill('10000');
+    }
+    
+    await this.linkCase.click();
+    await this.sleep(3000);
+
+    await this.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+
+  }
+
+  async commutationUNPBenefit(FullExit: boolean) {
+
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.pensionCommutation.click();
+
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    //await this.sleep(3000);
+    await this.page.getByRole('option', { name: 'Commutation - UNP Benefit' }).click();
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
+    await this.page.locator('#gs4__combobox div').first().click();
+    await this.page.getByText('Commutation - UNP Payment').click();
+    await this.page.locator('#gs6__combobox').getByLabel('CloseSelect').click();
+    await this.page.getByText('AustralianSuper Pty Ltd - No').click();
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Enter');
+
+    if (!FullExit) {
+      await this.page.locator('.switch-slider').click();
+      await this.partialBalance.click();
+      await this.sleep(2000);
+      await this.page.getByPlaceholder('0').fill('10000');
+    }
     
     await this.linkCase.click();
     await this.sleep(3000);
@@ -221,13 +268,15 @@ export class PensionTransactionPage extends BasePage {
 
       //Break if there is an process exception
       if (await this.processException.count() > 0) {
-        throw InvalidResultAttributeException;
+        throw new AssertionError({ message: "Case Process has Failed" });
       }
 
       await this.sleep(2000);
-    } while (
-      await successLocator.count() == 0
-    );
+
+    } while ( await successLocator.count() == 0 );
+
+    await expect(successLocator).toBeVisible();
+
   }
 
   async pensionCommence() {

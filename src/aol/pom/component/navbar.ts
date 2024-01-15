@@ -4,6 +4,9 @@ import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class Navbar extends BasePage {
 
+    readonly accumulationProduct: Locator;
+    readonly accumulationMembersLink: Locator;
+
     readonly selectRetirementProduct: Locator;
     readonly membersLink: Locator;
     readonly addMemberButton: Locator; 
@@ -17,6 +20,9 @@ export class Navbar extends BasePage {
 
     constructor(page: Page) {
         super(page);
+
+        this.accumulationProduct = page.locator("(//a[@class='NxLAj'])[1]");
+        this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
         this.membersLink = page.getByRole('link', { name: 'Members' });
@@ -37,10 +43,16 @@ export class Navbar extends BasePage {
     async selectProduct() {
         await this.navigateToDashboard();
         await this.productOptionDropDown.click();
-        await this.page.getByText(ENVIRONMENT_CONFIG.product).click();
+        await this.page.locator('li').filter({ hasText: ENVIRONMENT_CONFIG.product }).click();
     }
 
-    async navigateToPensionMemberPage() {
+    async navigateToAccumulationMembersPage() {
+
+        await this.accumulationProduct.click();
+        await this.accumulationMembersLink.click();
+      }
+
+    async navigateToPensionMembersPage() {
 
         await this.selectRetirementProduct.click();
         await this.membersLink.click();
@@ -49,6 +61,7 @@ export class Navbar extends BasePage {
 
     async selectMember(member: string){
         //await this.page.reload();
+        await this.sleep(2000);
 
         //Filter member
         await this.FilterClick.click();

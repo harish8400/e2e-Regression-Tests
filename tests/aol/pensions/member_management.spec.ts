@@ -9,7 +9,7 @@ test("Create a Pension Shell ABP account - Reached age 65 @pension", async ({ na
     test.setTimeout(600000);
 
     navBar.selectProduct();
-    navBar.navigateToPensionMemberPage();
+    navBar.navigateToPensionMembersPage();
     let uniqueSurname = UtilsAOL.randomSurname(5);
     await pensionAccountPage.createShellAccount(uniqueSurname);
 

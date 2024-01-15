@@ -48,9 +48,36 @@ export class PensionInvestmentPage extends BasePage {
     readonly FilterOptionNameInput: Locator;
     readonly BtnApply: Locator;
     readonly SelectMember: Locator;
+
     readonly PensionTab: Locator;
     readonly BtnEdit: Locator;
     readonly ProDataFirstYear: Locator;
+
+    //specific order
+    readonly SelectMember_SpecificOrder: Locator;
+    readonly PensionDrawdownDetailsEdit: Locator;
+
+
+    readonly ClearButton: Locator;
+    readonly ClickCombobox: Locator;
+    readonly SelectSecificOrder: Locator;
+    readonly ClickOnInputBox: Locator;
+    readonly SelectProduct: Locator;
+
+
+    //Percentage
+
+
+    readonly SelectPercentage: Locator;
+    readonly SelectInputBox: Locator;
+    readonly PercentageInput: Locator;
+    readonly AddButton: Locator;
+
+
+
+
+
+
 
     TotalCash!: string;
 
@@ -115,7 +142,44 @@ export class PensionInvestmentPage extends BasePage {
         this.BtnEdit = page.locator('button').filter({ hasText: 'Edit Content' }).first();
         this.ProDataFirstYear = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
 
+
+
+
+
+        //specific order
+
+        this.SelectMember_SpecificOrder = page.getByText('Gopu').nth(1);
+
+        this.PensionDrawdownDetailsEdit = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
+
+        this.ClearButton = page.getByRole('button', { name: 'Clear Selected' });
+        this.ClickCombobox = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
+        this.SelectSecificOrder = page.getByText('Specified Order');
+
+
+        this.ClickOnInputBox = page.getByRole('textbox', { name: 'Select' });
+
+        this.SelectProduct = page.getByRole('listitem');
+
+        //Percentage
+
+        this.SelectPercentage = page.getByText('Percentage');
+
+        this.SelectInputBox = page.getByRole('textbox', { name: 'Select' });
+
+        //getByRole('listitem')
+
+
+        this.PercentageInput = page.getByRole('textbox').nth(1);//-- fill
+
+
+        this.AddButton = page.getByRole('button', { name: 'Add', exact: true });
+
     }
+
+
+
+
 
     async RolloverInTransaction() {
 
@@ -228,7 +292,7 @@ export class PensionInvestmentPage extends BasePage {
 
     }
 
-//Drawdown Transactions
+    //Drawdown Transactions
     async DrawdownTransactionsProportional() {
 
         // await this.selectProduct.click();
@@ -280,9 +344,129 @@ export class PensionInvestmentPage extends BasePage {
 
         } while (await this.ApproveButtonVisblity.count());
 
-        let updated=  await this.page.getByText('No', { exact: true }).textContent();
+        let updated = await this.page.getByText('No', { exact: true }).textContent();
 
         expect(updated).toEqual('No');
+
+    }
+
+
+    //specific order
+
+    async DrawdownTransactionsSepcificOrder() {
+
+        //await this.selectProduct.click();
+        //await this.selectHFM.click();
+        //await this.sleep(1000);
+        //await this.RetirementIncomeStream.click();
+
+        //await this.Members.click();
+        //await this.sleep(1000);
+
+        //await this.SelectMember_SpecificOrder.click();
+
+        await this.PensionTab.click();
+        await this.PensionDrawdownDetailsEdit.click();
+
+
+        await this.ClearButton.click();
+        await this.ClickCombobox.click();
+
+        await this.SelectSecificOrder.click();
+        await this.ClickOnInputBox.click();
+        await this.SelectProduct.click();
+
+
+        await this.ViewCase.click();
+        await this.sleep(3000);
+        await this.CreateCase.click();
+        await this.sleep(3000);
+        await this.LinkCase.click();
+
+        await this.sleep(6000);
+
+
+        do {
+            //Approve step
+            if (await this.approveProcessStep.count() > 0) {
+                try {
+                    await this.approveProcessStep.click({ timeout: 6000 });
+                }
+                catch (TimeoutException) {
+                }
+            }
+
+            //Retry step
+            if (await this.retryProcessStep.count() > 0) {
+                try {
+                    await this.retryProcessStep.click({ timeout: 6000 });
+                }
+                catch (TimeoutException) {
+                }
+            }
+
+        } while (await this.ApproveButtonVisblity.count());
+
+
+
+    }
+
+
+    async DrawdownTransactionsPercentage() {
+
+        //await this.sleep(1000);
+        //await this.RetirementIncomeStream.click();
+
+        //await this.Members.click();
+        //await this.sleep(1000);
+
+        //await this.SelectMember_SpecificOrder.click();
+
+        await this.PensionTab.click();
+        await this.PensionDrawdownDetailsEdit.click();
+
+
+        await this.ClearButton.click();
+        await this.ClickCombobox.click();
+
+        await this.SelectPercentage.click();
+        await this.SelectInputBox.click();
+
+        await this.SelectProduct.click();
+        await this.PercentageInput.fill('100');
+
+        await this.AddButton.click();
+
+
+        await this.ViewCase.click();
+        await this.sleep(3000);
+        await this.CreateCase.click();
+        await this.sleep(3000);
+        await this.LinkCase.click();
+
+        await this.sleep(6000);
+
+
+        do {
+            //Approve step
+            if (await this.approveProcessStep.count() > 0) {
+                try {
+                    await this.approveProcessStep.click({ timeout: 6000 });
+                }
+                catch (TimeoutException) {
+                }
+            }
+
+            //Retry step
+            if (await this.retryProcessStep.count() > 0) {
+                try {
+                    await this.retryProcessStep.click({ timeout: 6000 });
+                }
+                catch (TimeoutException) {
+                }
+            }
+
+        } while (await this.ApproveButtonVisblity.count());
 
     }
 

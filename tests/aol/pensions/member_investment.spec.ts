@@ -9,12 +9,12 @@ test.beforeEach(async ({ }) => {
 });
 
 /* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
-test("Money gets invested into CASH after roll-in post member creation", async ({ navBar, pensionInvestmentPage }) => {
+test("Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await allure.suite("Pension");
 
         await navBar.selectProduct();
-        await navBar.navigateToPensionMemberPage();
+        await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Rollin_And_Verify_Cash_Investment;
         await navBar.selectMember(member);
 
@@ -25,17 +25,54 @@ test("Money gets invested into CASH after roll-in post member creation", async (
     }
 })
 
-test("Pension draw-down as Proportional", async ({ navBar, pensionInvestmentPage }) => {
+test("Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
 
         await allure.suite("Pension");
 
         await navBar.selectProduct();
-        await navBar.navigateToPensionMemberPage();
+        await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Proportional_Order;
         await navBar.selectMember(member);
 
         await pensionInvestmentPage.DrawdownTransactionsProportional();
+
+    } catch (error) {
+        throw new AssertionError({ message: "Test Execution Failed" });
+    }
+})
+
+
+test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.navigateToPensionMembersPage();
+
+        let member = memberData.pension.Pension_Drawdown_Proportional_Order;
+        await navBar.selectMember(member);
+
+        await pensionInvestmentPage.DrawdownTransactionsSepcificOrder();
+
+    } catch (error) {
+        throw new AssertionError({ message: "Test Execution Failed" });
+    }
+})
+
+test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.navigateToPensionMembersPage();
+
+        let member = memberData.pension.Pension_Drawdown_Proportional_Order;
+        await navBar.selectMember(member);
+
+        await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed" });
