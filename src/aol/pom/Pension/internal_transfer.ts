@@ -1,7 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { AssertionError } from "assert";
-import { AssertionError } from "assert";
 //import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import * as memberData from "../../../aol/data/pension_data.json";
 import { ReviewCase } from "../component/review_case";
@@ -31,8 +30,8 @@ export class InternalTransferPage extends BasePage {
     readonly processException: Locator;
     readonly processID: Locator;
     readonly verifySuccessMessage: Locator;
-    //readonly accountInfo: Locator;
-    //readonly caseTable: Locator;
+    readonly partialBalance: Locator;
+    readonly payFullBalance: Locator;
 
     constructor(page:Page){
         super(page)
@@ -40,14 +39,8 @@ export class InternalTransferPage extends BasePage {
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.processesLink = page.getByRole('link', { name: 'Processes' });
 
-        /* locators for product and member selection */
-        //this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
-        //this.selectHFM = page.getByText('HESTA for Mercy');
-        //this.RetirementIncomeStream = page.locator("(//p[text()='Products' and @type='caption']//following::p[text()='Retirement Income Stream'])[1]");
-        //this.Members = page.locator("(//p[text()='Retirement Income Stream']//following::p[text()='Members'])[1]");
-        //this.MemberGridselection = page.getByText('Glenn').first();
-        //this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
-
+        this.payFullBalance = page.locator('.switch-slider').first();
+        this.partialBalance = page.getByText('$ 0.00');
         this.AccumulationProduct = page.locator("//p[@type='label'][normalize-space()='Accumulation']");
         this.AccumulationMembers = page.getByRole('link', { name: 'Members' });
         this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
@@ -60,9 +53,7 @@ export class InternalTransferPage extends BasePage {
         this.dropdownInternalTransferType = page.locator("(//div[@class='gs__actions'])[2]");
         this.valueInternalTransferType = page.getByRole('option', { name: 'Internal Transfer' });
         this.dropdownSourceProduct = page.locator("//div[@id='sourceProduct']");
-
         this.valueSourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Super' });
-        
         this.sourceAccount = page.locator("//input[@id='sourceMemberNumber']");
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
@@ -74,7 +65,7 @@ export class InternalTransferPage extends BasePage {
     }
 
     /** Internal Transaction from Accumulation to Retirement Income Sream */
-    async transferFromAccumulationToRetirement(){
+    async internalTransferMember(transferType: string){
         
         await this.ButtonTransactions.click();
         await this.ButtonAddTransactions.click();
@@ -88,82 +79,34 @@ export class InternalTransferPage extends BasePage {
         await this.valueInternalTransferType.click();
         await this.dropdownSourceProduct.click();
         await this.sleep(2000);
-        await this.valueSourceProduct.click();
-        await this.sourceAccount.fill(memberData.pension.Internal_Transfer_Accumulation_Source_Account);
+
+        if(transferType == 'Accumulation'){
+            await this.valueSourceProduct.click();
+            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_Accumulation_To_ABP_Source_Account);
+        }
+        else
+        {
+            await this.page.getByRole('option').nth(2).click();
+            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_ABP_To_Accumulation_Source_Account);
+        }
+
         await this.page.keyboard.down('Tab');
         await this.sleep(2000);
+        await this.payFullBalance.click();
+        await this.partialBalance.click();
+        await this.sleep(2000);
+        await this.page.getByPlaceholder('0').fill('5000');
+
         await this.buttonLinkToCase.click();
 
         await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
 
-        // do{
-        //     //Approve step
-        //     if(await this.approveProcessStep.count() > 0)
-        //     {
-        //         try{
-        //             await this.approveProcessStep.click({ timeout: 5000});
-        //         }
-        //         catch (TimeoutException) {
-        //         }
-        //     }
-            
-        //     //Retry step
-        //     if(await this.retryProcessStep.count() > 0 )
-        //     {
-        //         try{
-        //             await this.retryProcessStep.click({ timeout: 5000});
-        //         }
-        //         catch (TimeoutException) {
-        //         }
-        //     }
-
-        //     //assert(await this.processException.count() < 0);
-        //     //Break if there is an process exception
-        //     if (await this.processException.count() > 0){
-        //         throw new AssertionError({message: "Error in Processing Case"});
-        //      }
-
-        // } while(await this.verifyContributionSuccess.count() == 0);
-        
-        // await expect(this.verifyContributionSuccess).toBeVisible();
-
-
+        // Click on sub process
+        await this.sleep(3000);
         await this.processID.click();
         await this.sleep(3000);
 
         await this.reviewCase.reviewCaseProcess(this.verifySuccessMessage);
 
-        // do{
-        //     //Approve step
-        //     if(await this.approveProcessStep.count() > 0)
-        //     {
-        //         try{
-        //             await this.approveProcessStep.click({ timeout: 5000});
-        //         }
-        //         catch (TimeoutException) {
-        //         }
-        //     }
-            
-        //     //Retry step
-        //     if(await this.retryProcessStep.count() > 0 )
-        //     {
-        //         try{
-        //             await this.retryProcessStep.click({ timeout: 5000});
-        //         }
-        //         catch (TimeoutException) {
-        //         }
-        //     }
-
-        //     //assert(await this.processException.count() < 0);
-        //     //Break if there is an process exception
-        //     if (await this.processException.count() > 0){
-        //         throw new AssertionError({message: "Error in Processing Case"});
-        //      }
-
-        // } while(await this.verifySuccessMessage.count() == 0);
-        
-        // await expect(this.verifySuccessMessage).toBeVisible();
-
-        
     }
 }
