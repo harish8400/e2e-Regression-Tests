@@ -67,3 +67,17 @@ test("ABP UNP Commutation - Partial @pension", async ({ navBar, pensionTransacti
 
 })
 
+test("ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage }) => {
+
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    
+    await navBar.selectProduct();
+    await navBar.navigateToPensionMembersPage();
+    let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
+    member = "9020358";
+    await navBar.selectMember(member);
+    await pensionTransactionPage.commutationUNPBenefitReject(false);
+
+})
+

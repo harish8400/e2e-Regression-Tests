@@ -1,14 +1,11 @@
-
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
-import { AssertionError } from "assert";
 import * as memberData from "../../../src/aol/data/pension_data.json";
 
 test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
 });
 
-/* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
 test("Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await allure.suite("Pension");
@@ -21,7 +18,7 @@ test("Money gets invested into CASH after roll-in post member creation @pension"
         await pensionInvestmentPage.RolloverInTransaction();
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed" });
+        throw error;
     }
 })
 
@@ -38,7 +35,7 @@ test("Pension draw-down as Proportional @pension", async ({ navBar, pensionInves
         await pensionInvestmentPage.DrawdownTransactionsProportional();
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed" });
+        throw error;
     }
 })
 
@@ -57,7 +54,7 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
         await pensionInvestmentPage.DrawdownTransactionsSepcificOrder();
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed" });
+        throw error;
     }
 })
 
@@ -75,7 +72,7 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed" });
+        throw error;
     }
 })
 

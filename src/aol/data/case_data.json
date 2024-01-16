@@ -41,9 +41,6 @@
     "Deleted"
   ],
   "EffectiveDate": "Effective Date",
-  "selected_date": "`${DateUtils.ddmmyyyStringDate(0)}`",
-  "time": "`\\d{1,2} ${currentMonth} \\d{4} \\d{1,2}:\\d{2}:\\d{2} (AM|PM)`",
   "Notes": "Added some notes/comments",
-  "Attachements": "Added some attachments",
-  "AddFile": "///home/pharish.kumar/Pictures/SWTM-2088_Atlassian-Git-Cheatsheet.pdf"
+  "Attachements": "Added some attachments"
 }

@@ -6,6 +6,7 @@ export class ReviewCase extends BasePage {
 
     readonly approveProcessStep: Locator;
     readonly retryProcessStep: Locator;
+    readonly rejectProcessStep: Locator;
     readonly processException: Locator;
 
     constructor(page: Page) {
@@ -13,6 +14,7 @@ export class ReviewCase extends BasePage {
 
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
+        this.rejectProcessStep = page.getByRole('button', { name: 'Reject' });
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
         //this.processException = page.getByText('java.lang.IllegalArgumentException');
 
@@ -31,7 +33,6 @@ export class ReviewCase extends BasePage {
             }
           }
     
-          await this.sleep(2000);
           //Retry step
           if (await this.retryProcessStep.count() > 0) {
             try {
@@ -46,7 +47,34 @@ export class ReviewCase extends BasePage {
             throw new AssertionError({ message: "Case Process has Failed" });
           }
     
-          //await this.sleep(2000);
+          await this.sleep(5000);
+    
+        } while ( await successLocator.count() == 0 );
+    
+        await expect(successLocator).toBeVisible();
+    
+      }
+
+      async reviewAndRejectCase(successLocator: Locator){
+
+        //Review case process steps, approve/retry or exit on exception
+        do {
+          
+          //Reject step
+          if (await this.rejectProcessStep.count() > 0) {
+            try {
+              await this.rejectProcessStep.click({ timeout: 5000 });
+            }
+            catch (TimeoutException) {
+            }
+          }
+    
+          //Break if there is an process exception
+          if (await this.processException.count() > 0) {
+            throw new AssertionError({ message: "Case Process has Failed" });
+          }
+    
+          await this.sleep(2000);
     
         } while ( await successLocator.count() == 0 );
     

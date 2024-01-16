@@ -3,8 +3,9 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 
-test.beforeEach(async ({ }) => {
+test.beforeEach(async ({ navBar }) => {
         test.setTimeout(600000);
+        await navBar.selectProduct();
 });
 
 /** Ensure that comments can be added after a case is closed and user can find last updated date time on a case */
@@ -13,7 +14,7 @@ test("Verify comments update on closed cases and date time log @casemanagement",
     try {
         await allure.suite("Case Management");
 
-        await dashboardPage.navigateToCaseManagement();
+        //await dashboardPage.navigateToCaseManagement();
         await dashboardPage.updateClosedCaseWithComment();
         await dashboardPage.verifyClosedCaseUpdateLog();
 
@@ -28,7 +29,7 @@ test("Ensure cases are correctly displayed under Closed Cases tab @casemanagemen
     try {
         await allure.suite("Case Management");
 
-        await dashboardPage.navigateToCaseManagement();
+        //await dashboardPage.navigateToCaseManagement();
         await dashboardPage.navigateToClosedCasesTab();
         await expect(dashboardPage.closedCaseManagementHeading).toContainText('Closed Cases');
         await dashboardPage.verifyCaseManagementTab();
@@ -45,7 +46,7 @@ test("Verify filter option on closed cases @casemanagement", async ({ dashboardP
     try {
         await allure.suite("Case Management");
 
-        await dashboardPage.navigateToCaseManagement();
+        //await dashboardPage.navigateToCaseManagement();
 
         await test.step("Verify filters", async () => {
             await dashboardPage.verifyClosedCasesPageFilters();

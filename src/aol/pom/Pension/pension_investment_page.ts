@@ -177,28 +177,16 @@ export class PensionInvestmentPage extends BasePage {
 
     }
 
-
-
-
-
     async RolloverInTransaction() {
 
-        // await this.selectProduct.click();
-        // await this.selectHFM.click();
-        // await this.sleep(1000);
-        // await this.RetirementIncomeStream.click();
+        // await this.FilterClick.click();
+        // await this.FilterOptionName.click();
+        // await this.FilterOptionNameInput.fill('Ashton');
+        // await this.BtnApply.click();
+        // //await this.SelectMember.click();
 
-        // await this.MemberGridselection.click();
-        // await this.Members.click();
-        // await this.sleep(1000);
-        await this.FilterClick.click();
-        await this.FilterOptionName.click();
-        await this.FilterOptionNameInput.fill('Ashton');
-        await this.BtnApply.click();
-        // await this.SelectMember.click();
-
-        await this.ButtonTransactions.click();
-        await this.sleep(3000);
+        //await this.ButtonTransactions.click();
+        //await this.sleep(3000);
         await this.InvestmentsandBalances.click();
 
         await this.sleep(3000);
@@ -208,7 +196,7 @@ export class PensionInvestmentPage extends BasePage {
         let st = (CashBeforeRolloverIn?.replace(/[^0-9\.-]+/g, ""));
         let cash = 0;
         cash = (Number(st)) + (Number(25000));
-        // cash=getNum(totalbalancetemp);
+        //cash = (Number(st));
 
         await this.ButtonTransactions.click();
         await this.sleep(1000);
@@ -295,19 +283,6 @@ export class PensionInvestmentPage extends BasePage {
     //Drawdown Transactions
     async DrawdownTransactionsProportional() {
 
-        // await this.selectProduct.click();
-        // await this.selectHFM.click();
-        // await this.sleep(1000);
-        // await this.RetirementIncomeStream.click();
-
-        // await this.Members.click();
-        // await this.sleep(1000);
-        // await this.FilterClick.click();
-        // await this.FilterOptionName.click();
-        // await this.FilterOptionNameInput.fill('Nancy');
-        // await this.BtnApply.click();
-        // await this.SelectMember.click();
-
         await this.PensionTab.click();
 
         await this.sleep(5000);
@@ -321,7 +296,6 @@ export class PensionInvestmentPage extends BasePage {
         await this.LinkCase.click();
 
         await this.sleep(5000);
-
 
         do {
             //Approve step
@@ -355,16 +329,6 @@ export class PensionInvestmentPage extends BasePage {
 
     async DrawdownTransactionsSepcificOrder() {
 
-        //await this.selectProduct.click();
-        //await this.selectHFM.click();
-        //await this.sleep(1000);
-        //await this.RetirementIncomeStream.click();
-
-        //await this.Members.click();
-        //await this.sleep(1000);
-
-        //await this.SelectMember_SpecificOrder.click();
-
         await this.PensionTab.click();
         await this.PensionDrawdownDetailsEdit.click();
 
@@ -384,7 +348,6 @@ export class PensionInvestmentPage extends BasePage {
         await this.LinkCase.click();
 
         await this.sleep(6000);
-
 
         do {
             //Approve step
@@ -407,24 +370,13 @@ export class PensionInvestmentPage extends BasePage {
 
         } while (await this.ApproveButtonVisblity.count());
 
-
-
     }
 
 
     async DrawdownTransactionsPercentage() {
 
-        //await this.sleep(1000);
-        //await this.RetirementIncomeStream.click();
-
-        //await this.Members.click();
-        //await this.sleep(1000);
-
-        //await this.SelectMember_SpecificOrder.click();
-
         await this.PensionTab.click();
         await this.PensionDrawdownDetailsEdit.click();
-
 
         await this.ClearButton.click();
         await this.ClickCombobox.click();
@@ -437,7 +389,6 @@ export class PensionInvestmentPage extends BasePage {
 
         await this.AddButton.click();
 
-
         await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
@@ -445,7 +396,6 @@ export class PensionInvestmentPage extends BasePage {
         await this.LinkCase.click();
 
         await this.sleep(6000);
-
 
         do {
             //Approve step

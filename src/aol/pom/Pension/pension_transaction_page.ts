@@ -3,8 +3,8 @@ import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
 import * as pensions from "../../data/member.json";
 import { DateUtils } from "../../../utils/date_utils";
-import { AssertionError } from "assert";
 import { Navbar } from "../component/navbar";
+import { ReviewCase } from "../component/review_case";
 
 export class PensionTransactionPage extends BasePage {
 
@@ -51,6 +51,7 @@ export class PensionTransactionPage extends BasePage {
   readonly verifyRolloutProcessSuccess: Locator;
   readonly verifyUNPCommutationProcessSuccess: Locator;
   readonly verfiyRollInProcessSuccess: Locator;
+  readonly communationUNPReject: Locator;
 
   //close Icon
   readonly close_left: Locator;
@@ -63,10 +64,12 @@ export class PensionTransactionPage extends BasePage {
   //Exceptions
 
   readonly processException: Locator;
+  readonly reviewCase: ReviewCase;
 
   constructor(page: Page) {
     super(page)
 
+    this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
@@ -110,6 +113,7 @@ export class PensionTransactionPage extends BasePage {
     this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Commute rollout correspondence sent');
     this.verifyUNPCommutationProcessSuccess = page.getByText('Process step completed with note: Commute benefit payment correspondence sent');
     this.verfiyRollInProcessSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler');
+    this.communationUNPReject = page.getByText('Step 3 rejected.');
 
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
@@ -163,7 +167,7 @@ export class PensionTransactionPage extends BasePage {
     await this.linkCase.click();
     await this.sleep(3000);
 
-    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
+    await this.reviewCase.reviewCaseProcess(this.verfiyRollInProcessSuccess);
 
   }
 
@@ -197,13 +201,13 @@ export class PensionTransactionPage extends BasePage {
     }else{
       await this.partialBalance.click();
       await this.sleep(2000);
-      await this.page.getByPlaceholder('0').fill('10000');
+      await this.page.getByPlaceholder('0').fill('2000');
     }
     
     await this.linkCase.click();
     await this.sleep(3000);
 
-    await this.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+    await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
 
   }
 
@@ -224,9 +228,46 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
 
     await this.page.locator('#gs4__combobox div').first().click();
+    await this.page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span').click();
+    await this.page.locator('#gs6__combobox').getByLabel('CloseSelect').click();
+    await this.page.getByRole('option').nth(0).click();
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Enter');
+
+    if (!FullExit) {
+      await this.page.locator('.switch-slider').click();
+      await this.partialBalance.click();
+      await this.sleep(2000);
+      await this.page.getByPlaceholder('0').fill('2000');
+    }
+    
+    await this.linkCase.click();
+    await this.sleep(3000);
+
+    await this.reviewCase.reviewCaseProcess(this.verifyUNPCommutationProcessSuccess);
+
+  }
+
+  async commutationUNPBenefitReject(FullExit: boolean) {
+
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.pensionCommutation.click();
+
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    //await this.sleep(3000);
+    await this.page.getByRole('option', { name: 'Commutation - UNP Benefit' }).click();
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
+    await this.page.locator('#gs4__combobox div').first().click();
     await this.page.getByText('Commutation - UNP Payment').click();
     await this.page.locator('#gs6__combobox').getByLabel('CloseSelect').click();
-    await this.page.getByText('AustralianSuper Pty Ltd - No').click();
+    await this.page.getByRole('option').nth(0).click();
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
 
@@ -240,44 +281,11 @@ export class PensionTransactionPage extends BasePage {
     await this.linkCase.click();
     await this.sleep(3000);
 
-    await this.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+    //Check commutation case and verify reject
+    await this.reviewCase.reviewAndRejectCase(this.communationUNPReject);
 
   }
-
-  async reviewCaseProcess(successLocator: Locator){
-
-    //Review case process steps, approve/retry or exit on exception
-    do {
-      //Approve step
-      if (await this.approveProcessStep.count() > 0) {
-        try {
-          await this.approveProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
-
-      //Retry step
-      if (await this.retryProcessStep.count() > 0) {
-        try {
-          await this.retryProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
-
-      //Break if there is an process exception
-      if (await this.processException.count() > 0) {
-        throw new AssertionError({ message: "Case Process has Failed" });
-      }
-
-      await this.sleep(2000);
-
-    } while ( await successLocator.count() == 0 );
-
-    await expect(successLocator).toBeVisible();
-
-  }
+  
 
   async pensionCommence() {
     await this.viewCase.click();
@@ -287,7 +295,7 @@ export class PensionTransactionPage extends BasePage {
     await this.linkCase.click();
     await this.sleep(5000);
 
-    await this.reviewCaseProcess(this.verfiyRollInProcessSuccess);
+    await this.reviewCase.reviewCaseProcess(this.verfiyRollInProcessSuccess);
 
   }
 
@@ -316,37 +324,8 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(5000);
     await this.commence_pension_button.click();
 
-
-
-    //Review case process steps, approve/retry or exit on exception
-    do {
-      //Approve step
-      if (await this.approveProcessStep.count() > 0) {
-        try {
-          await this.approveProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
-
-      //Retry step
-      if (await this.retryProcessStep.count() > 0) {
-        try {
-          await this.retryProcessStep.click({ timeout: 5000 });
-        }
-        catch (TimeoutException) {
-        }
-      }
-
-      //assert(await this.processException.count() < 0);
-      //Break if there is an process exception
-      if (await this.processException.count() > 0) {
-        throw new AssertionError({ message: "Error in Processing Case" });
-      }
-
-    } while (await this.verifyContributionSuccess.count() == 0);
-
-    await expect(this.verifyContributionSuccess).toBeVisible();
+    await  this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+    
   }
 
 }
