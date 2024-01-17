@@ -29,7 +29,7 @@ test("Pension draw-down as Proportional @pension", async ({ navBar, pensionInves
 
         await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
-        let member = memberData.pension.Pension_Drawdown_Proportional_Order;
+        let member = memberData.pension.Pension_Drawdown_Change;
         await navBar.selectMember(member);
 
         await pensionInvestmentPage.DrawdownTransactionsProportional();
@@ -48,7 +48,7 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
         await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
 
-        let member = memberData.pension.Pension_Drawdown_Proportional_Order;
+        let member = memberData.pension.Pension_Drawdown_Change;
         await navBar.selectMember(member);
 
         await pensionInvestmentPage.DrawdownTransactionsSepcificOrder();
@@ -66,7 +66,7 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
         await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
 
-        let member = memberData.pension.Pension_Drawdown_Proportional_Order;
+        let member = memberData.pension.Pension_Drawdown_Change;
         await navBar.selectMember(member);
 
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
@@ -76,3 +76,20 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
     }
 })
 
+test("For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.navigateToPensionMembersPage();
+
+        let member = memberData.pension.Pension_Drawdown_Change;
+        await navBar.selectMember(member);
+
+        await pensionInvestmentPage.VerifyFutureDrawDownOptions();
+
+    } catch (error) {
+        throw error;
+    }
+})
