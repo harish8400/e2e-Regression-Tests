@@ -96,6 +96,15 @@ export class PensionShellAccount extends BasePage {
   readonly drop_down: Locator;
   readonly drop_down_select: Locator;
 
+  //Edit Pension Payment Details
+  readonly pensionTab: Locator;
+  readonly editIcon: Locator;
+  readonly frequency: Locator;
+  readonly frequencyValue: Locator;
+  readonly nextPaymentDate: Locator;
+  readonly annualPaymentMethod: Locator;
+  readonly annualPaymentMethodValue: Locator;
+
   //case
 
   readonly viewCase: Locator;
@@ -103,6 +112,7 @@ export class PensionShellAccount extends BasePage {
   readonly linkCase: Locator;
   readonly approveProcessStep: Locator;
   readonly retryProcessStep: Locator;
+  readonly successMessage: Locator;
   readonly verifyShellAccountCreation: Locator;
   readonly close_left: Locator;
   readonly acknowledgeCheckbox: Locator;
@@ -198,12 +208,22 @@ export class PensionShellAccount extends BasePage {
     this.drop_down = page.getByTitle('Drawdown Option').getByPlaceholder('Select');
     this.drop_down_select = page.locator('li').filter({ hasText: 'Proportional' });
 
+    // Edit Pension Peyment Details for existing member
+    this.pensionTab = page.getByRole('button', { name: 'Pension' });
+    this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
+    this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.frequencyValue = page.getByRole('option', { name: 'Monthly' });
+    this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
+    this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
+
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
     this.createCase = page.getByRole('button', { name: 'Create Case' });
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
+    this.successMessage = page.getByText('Process step completed with note: Pension payment correspondence sent.');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
@@ -367,4 +387,56 @@ export class PensionShellAccount extends BasePage {
     await this.createAccount();
 
   }
+
+    //Edit Pension Payment Details
+    async editPaymentDetails() {
+
+      await this.pensionTab.click();
+      await this.sleep(8000);
+      await this.editIcon.click();
+      await this.sleep(3000)
+      await this.frequency.click();
+      await this.frequencyValue.click();
+      //await this.nextPaymentDate.click();
+      await this.nextPaymentDate.fill(member.paymentDate);
+      await this.annualPaymentMethod.click();
+      await this.annualPaymentMethodValue.click();
+      await this.viewCase.click();
+      await this.sleep(3000);
+      await this.createCase.click();
+      await this.sleep(3000);
+      await this.linkCase.click();
+      await this.sleep(5000);
+  
+      do{
+        //Approve step
+        if(await this.approveProcessStep.count() > 0)
+        {
+            try{
+                await this.approveProcessStep.click({ timeout: 5000});
+            }
+            catch (TimeoutException) {
+            }
+        }
+        
+        //Retry step
+        if(await this.retryProcessStep.count() > 0 )
+        {
+            try{
+                await this.retryProcessStep.click({ timeout: 5000});
+            }
+            catch (TimeoutException) {
+            }
+        }
+  
+        //Break if there is an process exception
+        if (await this.processException.count() > 0){
+            throw new AssertionError({message: "Error in Processing Case"});
+         }
+  
+    } while(await this.successMessage.count() == 0);
+    
+    await expect(this.successMessage).toBeVisible();
+    }
+
 }
