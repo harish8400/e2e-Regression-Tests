@@ -12,6 +12,7 @@ export class Navbar extends BasePage {
     readonly addMemberButton: Locator; 
     readonly productOptionDropDown: Locator;
     readonly productSelection: Locator;
+    readonly selectTTRProduct: Locator;
 
     readonly FilterClick: Locator;
     readonly FilterOption: Locator;
@@ -25,6 +26,8 @@ export class Navbar extends BasePage {
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
+        //this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
+        this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
         this.membersLink = page.getByRole('link', { name: 'Members' });
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
@@ -73,4 +76,12 @@ export class Navbar extends BasePage {
         await expect(this.page.getByRole('cell', { name: member }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: member }).first().click();
     }
+
+    async navigateToTTRMembersPage() {
+
+        await this.selectTTRProduct.click();
+        await this.membersLink.click();
+
+    }
+
 }

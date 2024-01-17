@@ -48,7 +48,7 @@ test("ABP UNP Commutation - Full Exit", async ({ navBar, pensionTransactionPage 
     
     await navBar.selectProduct();
     await navBar.navigateToPensionMembersPage();
-    let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
+    let member = memberData.pension.ABP_UNP_Commutation_Rollout_Fullexit_Member_Number;
     await navBar.selectMember(member);
     await pensionTransactionPage.commutationUNPBenefit(true);
 
@@ -61,7 +61,7 @@ test("ABP UNP Commutation - Partial @pension", async ({ navBar, pensionTransacti
     
     await navBar.selectProduct();
     await navBar.navigateToPensionMembersPage();
-    let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
+    let member = memberData.pension.ABP_UNP_Commutation_Rollout_Fullexit_Member_Number;
     await navBar.selectMember(member);
     await pensionTransactionPage.commutationUNPBenefit(false);
 
@@ -81,3 +81,50 @@ test("ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pen
 
 })
 
+test("ABP Death Benefit Payment @pension", async ({ navBar }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.navigateToTTRMembersPage();
+
+        //for Vangaurd member
+       //let member = memberData.pension_vangaurd.Pension_Drawdown_Proportional_Order;
+
+       //For Hesta MemberId for UAT
+        let member = memberData.pension.death_benefit_member_number;
+        await navBar.selectMember(member);
+
+        //await pensionInvestmentPage.DeathBenefitTrasection();
+
+    } catch (error) {
+        throw error
+    }
+})
+
+test("TTR RLO Commutation - Full Exit @pensiondemo", async ({ navBar, pensionTransactionPage }) => {
+
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    
+    await navBar.selectProduct();
+    await navBar.navigateToTTRMembersPage();
+    let member = memberData.pension.TTR_Commutation_Rollout_Fullexit_Member_Number;
+    await navBar.selectMember(member);
+    await pensionTransactionPage.commutationRolloverOut(false);
+
+})
+
+test("TTR RLO Commutation - Partial @pensiondemo", async ({ navBar, pensionTransactionPage }) => {
+
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    
+    await navBar.selectProduct();
+    await navBar.navigateToTTRMembersPage();
+    let member = memberData.pension.TTR_Commutation_Rollout_Fullexit_Member_Number;
+    await navBar.selectMember(member);
+    await pensionTransactionPage.commutationRolloverOut(false);
+
+})

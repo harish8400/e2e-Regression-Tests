@@ -173,14 +173,6 @@ export class DashboardPage extends BasePage {
     await this.accumulationAddMember.click();
   }
 
-  async navigateToMembers() {
-    await this.selectProduct.click();
-    await this.selectHFM.click();
-    await this.accumulationProduct.isVisible();
-    await this.accumulationProduct.click();
-    await this.accumulationMembersLink.click();
-  }
-
   async verifyCaseManagementTabs() {
 
     try 

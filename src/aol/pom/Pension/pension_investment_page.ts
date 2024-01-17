@@ -1,9 +1,11 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { DateUtils } from "../../../utils/date_utils";
+import { ReviewCase } from "../component/review_case";
 
 export class PensionInvestmentPage extends BasePage {
 
+    readonly reviewCase: ReviewCase;
     readonly processesLink: Locator;
     readonly RetirementIncomeStream: Locator;
     readonly Members: Locator;
@@ -64,129 +66,93 @@ export class PensionInvestmentPage extends BasePage {
     readonly ClickOnInputBox: Locator;
     readonly SelectProduct: Locator;
 
-
     //Percentage
-
-
     readonly SelectPercentage: Locator;
     readonly SelectInputBox: Locator;
     readonly PercentageInput: Locator;
     readonly AddButton: Locator;
-
-
-
-
-
-
-
     TotalCash!: string;
-
 
     constructor(page: Page) {
         super(page)
 
-        this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.reviewCase = new ReviewCase(page);
+    this.processesLink = page.getByRole('link', { name: 'Processes' });
 
-        this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
-        this.selectHFM = page.getByText('HESTA for Mercy');
+    this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
+    this.selectHFM = page.getByText('HESTA for Mercy');
 
-        this.RetirementIncomeStream = page.locator("(//p[text()='Products' and @type='caption']//following::p[text()='Retirement Income Stream'])[1]");
-        this.Members = page.locator("(//p[text()='Retirement Income Stream']//following::p[text()='Members'])[1]");
-        this.MemberGridselection = page.getByText('Zele').first();
-        this.InvestmentsandBalances = page.getByRole('button', { name: 'Investments and Balances' });
-        this.CashBalanceBeforetRolloverIn = page.locator("(//table[@class='el-table__body']//following::div[text()='Cash']//following::td//div)");
+    this.RetirementIncomeStream = page.locator("(//p[text()='Products' and @type='caption']//following::p[text()='Retirement Income Stream'])[1]");
+    this.Members = page.locator("(//p[text()='Retirement Income Stream']//following::p[text()='Members'])[1]");
+    this.MemberGridselection = page.getByText('Zele').first();
+    this.InvestmentsandBalances = page.getByRole('button', { name: 'Investments and Balances' });
+    this.CashBalanceBeforetRolloverIn = page.locator("(//table[@class='el-table__body']//following::div[text()='Cash']//following::td//div)");
 
-        this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
-        this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
-        this.OptionRolloverIn = page.getByText('Rollover In');
+    this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
+    this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
+    this.OptionRolloverIn = page.getByText('Rollover In');
 
-        this.FundUSI = page.getByLabel('Fund USI *');
-        this.AccountNumber = page.getByLabel('Account number *');
+    this.FundUSI = page.getByLabel('Fund USI *');
+    this.AccountNumber = page.getByLabel('Account number *');
 
-        this.paymentReceivedDate = page.locator('input[name="paymentReceivedDate"]');
+    this.paymentReceivedDate = page.locator('input[name="paymentReceivedDate"]');
 
-        this.effectiveDate = page.locator('input[name="effectiveDate"]');
+    this.effectiveDate = page.locator('input[name="effectiveDate"]');
 
-        this.PaymentReference = page.getByText('Payment Reference');
+    this.PaymentReference = page.getByText('Payment Reference');
 
-        this.PaymentAmount = page.getByText('Payment Amount *');
-        this.InputPaymentAmount = page.getByText('$ 0.00').first();
+    this.PaymentAmount = page.getByText('Payment Amount *');
+    this.InputPaymentAmount = page.getByText('$ 0.00').first();
 
-        this.UntaxedComponent = page.getByText('$ 0.00').first();
-        this.InputUntaxedComponent = page.getByLabel('Untaxed Component *');
+    this.UntaxedComponent = page.getByText('$ 0.00').first();
+    this.InputUntaxedComponent = page.getByLabel('Untaxed Component *');
 
-        this.TaxedComponent = page.getByText('$ 0.00').nth(1);
-        this.InputTaxedComponent = page.getByLabel('Taxed Component *', { exact: true });
+    this.TaxedComponent = page.getByText('$ 0.00').nth(1);
+    this.InputTaxedComponent = page.getByLabel('Taxed Component *', { exact: true });
 
-        this.PreservedAmount = page.getByText('0.00', { exact: true }).nth(1);
-        this.InputPreservedAmount = page.getByLabel('Preserved Amount *', { exact: true });
+    this.PreservedAmount = page.getByText('0.00', { exact: true }).nth(1);
+    this.InputPreservedAmount = page.getByLabel('Preserved Amount *', { exact: true });
 
-        this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
-        this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
-        this.ApproveButtonVisblity = page.locator("(//button//span[text()=' Approve '])");
+    this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
+    this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
+    this.ApproveButtonVisblity = page.locator("(//button//span[text()=' Approve '])");
 
-        this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-        this.RolloverOption = page.getByText('Client-RTR');
-        this.ViewCase = page.getByRole('button', { name: 'View Cases' });
-        this.CreateCase = page.getByRole('button', { name: 'Create Case' });
-        this.LinkCase = page.getByRole('button', { name: 'Link to Case' });
+    this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
+    this.RolloverOption = page.getByText('Client-RTR');
+    this.ViewCase = page.getByRole('button', { name: 'View Cases' });
+    this.CreateCase = page.getByRole('button', { name: 'Create Case' });
+    this.LinkCase = page.getByRole('button', { name: 'Link to Case' });
 
-        //DrawDown 
+    //DrawDown 
 
-        this.FilterClick = page.getByRole('button', { name: 'FILTER' });
-        this.FilterOptionName = page.getByText('Name', { exact: true });
-        this.FilterOptionNameInput = page.getByRole('textbox').first();
-        this.BtnApply = page.getByRole('button', { name: 'APPLY' });
-        this.SelectMember = page.getByText('Ashton', { exact: true });
-        this.PensionTab = page.getByRole('button', { name: 'Pension' });
-        this.BtnEdit = page.locator('button').filter({ hasText: 'Edit Content' }).first();
-        this.ProDataFirstYear = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
+    this.FilterClick = page.getByRole('button', { name: 'FILTER' });
+    this.FilterOptionName = page.getByText('Name', { exact: true });
+    this.FilterOptionNameInput = page.getByRole('textbox').first();
+    this.BtnApply = page.getByRole('button', { name: 'APPLY' });
+    this.SelectMember = page.getByText('Ashton', { exact: true });
+    this.PensionTab = page.getByRole('button', { name: 'Pension' });
+    this.BtnEdit = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.ProDataFirstYear = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
 
+    //specific order
+    this.SelectMember_SpecificOrder = page.getByText('Gopu').nth(1);
+    this.PensionDrawdownDetailsEdit = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
+    this.ClearButton = page.getByRole('button', { name: 'Clear Selected' });
+    this.ClickCombobox = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
+    this.SelectSecificOrder = page.getByText('Specified Order');
+    this.ClickOnInputBox = page.getByRole('textbox', { name: 'Select' });
+    this.SelectProduct = page.getByRole('listitem');
 
-
-
-
-        //specific order
-
-        this.SelectMember_SpecificOrder = page.getByText('Gopu').nth(1);
-
-        this.PensionDrawdownDetailsEdit = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
-
-        this.ClearButton = page.getByRole('button', { name: 'Clear Selected' });
-        this.ClickCombobox = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-        this.SelectSecificOrder = page.getByText('Specified Order');
-
-
-        this.ClickOnInputBox = page.getByRole('textbox', { name: 'Select' });
-
-        this.SelectProduct = page.getByRole('listitem');
-
-        //Percentage
-
-        this.SelectPercentage = page.getByText('Percentage');
-
-        this.SelectInputBox = page.getByRole('textbox', { name: 'Select' });
-
-        //getByRole('listitem')
-
-
-        this.PercentageInput = page.getByRole('textbox').nth(1);//-- fill
-
-
-        this.AddButton = page.getByRole('button', { name: 'Add', exact: true });
+    //Percentage
+    this.SelectPercentage = page.getByText('Percentage');
+    this.SelectInputBox = page.getByRole('textbox', { name: 'Select' });
+    this.PercentageInput = page.getByRole('textbox').nth(1);//-- fill
+    this.AddButton = page.getByRole('button', { name: 'Add', exact: true });
 
     }
 
     async RolloverInTransaction() {
 
-        // await this.FilterClick.click();
-        // await this.FilterOptionName.click();
-        // await this.FilterOptionNameInput.fill('Ashton');
-        // await this.BtnApply.click();
-        // //await this.SelectMember.click();
-
-        //await this.ButtonTransactions.click();
-        //await this.sleep(3000);
         await this.InvestmentsandBalances.click();
 
         await this.sleep(3000);
@@ -417,6 +383,24 @@ export class PensionInvestmentPage extends BasePage {
             }
 
         } while (await this.ApproveButtonVisblity.count());
+
+    }
+
+    async VerifyFutureDrawDownOptions() {
+
+        await this.InvestmentsandBalances.click();
+        const firstTds = await this.page.$$eval(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`, tds => tds.map(td => td.textContent));
+        
+        var test = this.page.locator(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
+        //const testv = test.evaluateAll(());
+
+        const lastColumnElements = await this.page.$$(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
+        const lastColumnTexts: string[] = [];
+
+        for (const element of lastColumnElements) {
+            const lastColumnText = await element.textContent();
+        }
+        console.log(firstTds);
 
     }
 
