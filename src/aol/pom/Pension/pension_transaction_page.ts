@@ -52,6 +52,7 @@ export class PensionTransactionPage extends BasePage {
   readonly verifyUNPCommutationProcessSuccess: Locator;
   readonly verfiyRollInProcessSuccess: Locator;
   readonly communationUNPReject: Locator;
+  readonly verifyRolloutErrorMessage: Locator;
 
   //close Icon
   readonly close_left: Locator;
@@ -114,6 +115,7 @@ export class PensionTransactionPage extends BasePage {
     this.verifyUNPCommutationProcessSuccess = page.getByText('Process step completed with note: Commute benefit payment correspondence sent');
     this.verfiyRollInProcessSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler');
     this.communationUNPReject = page.getByText('Step 3 rejected.');
+    this.verifyRolloutErrorMessage = page.getByText('Process step Process Benefit did not meet conditions.');
 
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
@@ -326,6 +328,44 @@ export class PensionTransactionPage extends BasePage {
 
     await  this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
     
+  }
+
+  async commutationRolloverOutTTR(FullExit: boolean) {
+
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.pensionCommutation.click();
+
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    await this.sleep(3000);
+    await this.commutation_rollout.click();
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
+    await this.payTo.click();
+    await this.fund.click();
+    await this.USI.fill(pensions.USI);
+    await this.destinationAccountNumber.fill(pensions.AccountNumber);
+    await this.destinationAccountNumber.press('Tab')
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Enter');
+
+    if(FullExit){
+      await this.payFullBalance.click();
+    }else{
+      await this.partialBalance.click();
+      await this.sleep(2000);
+      await this.page.getByPlaceholder('0').fill('10');
+    }
+    
+    await this.linkCase.click();
+    await this.sleep(3000);
+    await  this.reviewCase.reviewCaseProcess(this.verifyRolloutErrorMessage);
+
   }
 
 }

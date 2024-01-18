@@ -5,12 +5,14 @@ import * as member from "../../data/member.json";
 import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
 import { UtilsAOL } from "../../utils_aol";
+import { ReviewCase } from "../component/review_case";
 
 export class PensionShellAccount extends BasePage {
 
 
   readonly navbar: Navbar;
   readonly addMemberButton: Locator;
+  readonly reviewCase: ReviewCase;
 
   //Add Member
   readonly title: Locator;
@@ -124,6 +126,7 @@ export class PensionShellAccount extends BasePage {
   constructor(page: Page) {
     super(page)
 
+    this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
 
@@ -407,36 +410,8 @@ export class PensionShellAccount extends BasePage {
       await this.sleep(3000);
       await this.linkCase.click();
       await this.sleep(5000);
-  
-      do{
-        //Approve step
-        if(await this.approveProcessStep.count() > 0)
-        {
-            try{
-                await this.approveProcessStep.click({ timeout: 5000});
-            }
-            catch (TimeoutException) {
-            }
-        }
-        
-        //Retry step
-        if(await this.retryProcessStep.count() > 0 )
-        {
-            try{
-                await this.retryProcessStep.click({ timeout: 5000});
-            }
-            catch (TimeoutException) {
-            }
-        }
-  
-        //Break if there is an process exception
-        if (await this.processException.count() > 0){
-            throw new AssertionError({message: "Error in Processing Case"});
-         }
-  
-    } while(await this.successMessage.count() == 0);
-    
-    await expect(this.successMessage).toBeVisible();
+      await  this.reviewCase.reviewCaseProcess(this.successMessage);
+      await expect(this.successMessage).toBeVisible();
     }
 
 }
