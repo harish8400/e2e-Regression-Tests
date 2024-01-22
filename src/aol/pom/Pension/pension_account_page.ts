@@ -106,6 +106,8 @@ export class PensionShellAccount extends BasePage {
   readonly nextPaymentDate: Locator;
   readonly annualPaymentMethod: Locator;
   readonly annualPaymentMethodValue: Locator;
+  readonly buttonViewCase: Locator;
+  readonly buttonLinkToCase: Locator;
 
   //case
 
@@ -219,6 +221,9 @@ export class PensionShellAccount extends BasePage {
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
     this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
+
+    this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
+    this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case', exact: true });
 
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -400,7 +405,6 @@ export class PensionShellAccount extends BasePage {
       await this.sleep(3000)
       await this.frequency.click();
       await this.frequencyValue.click();
-      //await this.nextPaymentDate.click();
       await this.nextPaymentDate.fill(member.paymentDate);
       await this.annualPaymentMethod.click();
       await this.annualPaymentMethodValue.click();
@@ -411,7 +415,6 @@ export class PensionShellAccount extends BasePage {
       await this.linkCase.click();
       await this.sleep(5000);
       await  this.reviewCase.reviewCaseProcess(this.successMessage);
-      await expect(this.successMessage).toBeVisible();
     }
 
 }

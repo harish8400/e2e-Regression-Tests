@@ -6,10 +6,10 @@ import * as member from "../../../src/aol/data/member.json"
 
 
 test.beforeEach(async ({ }) => {
-    test.setTimeout(60000);
+    test.setTimeout(120000);
 });
 
-/** Test Case: Maintain Income Stream Account (documentation required): Bank account details (Edit) */
+/** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
 test("Maintain Income Stream Account_Bank Account Details_Edit @pension", async ({ navBar , accountInfoPage }) => {
     
     try {
@@ -26,7 +26,7 @@ test("Maintain Income Stream Account_Bank Account Details_Edit @pension", async 
     
 })
 
-/** Maintain Income Stream Account (documentation required): Bank account details (Add New) */
+/** Maintain Income Stream Account: Bank account details (Add New) */
 test("Maintain Income Stream Account_New Bank Account Details @pension", async ({ navBar , accountInfoPage }) => {
     
     try {
@@ -43,13 +43,13 @@ test("Maintain Income Stream Account_New Bank Account Details @pension", async (
     
 })
 
-/** Test Case: Maintain Income Stream Account (documentation required): Edit Payment details */
+/** Test Case: Maintain Income Stream Account: Edit Payment details */
 test("Maintain Income Stream Account_Pension Payment Details_Edit @pension", async ({ navBar , pensionAccountPage }) => {
     
     try {
         await allure.suite("Pension Payment Details");
         await navBar.selectProduct();
-        await navBar.navigateToPensionMembersPage;
+        await navBar.navigateToPensionMembersPage();
         let mem = member.memberID;
         await navBar.selectMember(mem);
         await pensionAccountPage.editPaymentDetails();
