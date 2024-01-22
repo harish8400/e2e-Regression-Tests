@@ -17,5 +17,11 @@ export class UtilsAOL {
         let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver', 'Jason', 'Floyd', 'Andrew', 'Ricky', 'Gerald'];
         return names[Math.floor(Math.random() * names.length)]
     }
-    
+
 }
+
+export enum products{
+    H4M = 'HESTA for Mercy',
+    Vanguard = 'Vanguard Super',
+    AE = 'Australian Ethical Super'
+  }

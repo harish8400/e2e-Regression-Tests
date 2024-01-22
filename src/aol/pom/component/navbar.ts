@@ -44,9 +44,14 @@ export class Navbar extends BasePage {
     }
 
     async selectProduct() {
+        //select product from command or environment config file
+        let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+        console.log(`Test running for proudct '${product}'`)
+        process.env.PRODUCT = product;
+
         await this.navigateToDashboard();
         await this.productOptionDropDown.click();
-        await this.page.locator('li').filter({ hasText: ENVIRONMENT_CONFIG.product }).click();
+        await this.page.locator('li').filter({ hasText: product }).click();
     }
 
     async navigateToAccumulationMembersPage() {

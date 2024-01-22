@@ -2,7 +2,7 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { TFN } from "../data/tfn";
 import { DateUtils } from "../../utils/date_utils";
-import { UtilsAOL } from "../utils_aol";
+import { UtilsAOL, products } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 
@@ -34,6 +34,7 @@ export class MemberPage extends BasePage {
     readonly preferredContactName: Locator;
     readonly residencyStatus: Locator;
     readonly residencyStatusSelect: Locator;
+    readonly dateJoined: Locator;
     readonly nextStep: Locator;
     //Employer
     readonly employer: Locator;
@@ -108,6 +109,7 @@ export class MemberPage extends BasePage {
     this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
+    this.dateJoined = page.getByTitle('Date Joined').getByPlaceholder('dd/mm/yyyy');
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
     //Employer step
     this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
@@ -177,6 +179,11 @@ export class MemberPage extends BasePage {
         await this.preferredContactName.fill(this.memberGivenName);
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
+
+        if(process.env.PRODUCT != products.H4M ){
+            await this.dateJoined.fill(member.dateJoined);
+        }
+
         await this.nextStep.click();
         
         //Employer details
