@@ -128,3 +128,16 @@ test("TTR RLO Commutation - Partial @pensiondemo", async ({ navBar, pensionTrans
     await pensionTransactionPage.commutationRolloverOut(false);
 
 })
+
+test("Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage }) => {
+
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    
+    await navBar.selectProduct();
+    await navBar.navigateToTTRMembersPage();
+    let member = memberData.pension.TTR_Commutation_Rollout_Fullexit_Member_Number;
+    await navBar.selectMember(member);
+    await pensionTransactionPage.commutationRolloverOutTTR(false);
+
+})

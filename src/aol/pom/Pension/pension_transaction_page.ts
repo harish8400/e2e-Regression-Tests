@@ -359,7 +359,7 @@ export class PensionTransactionPage extends BasePage {
     }else{
       await this.partialBalance.click();
       await this.sleep(2000);
-      await this.page.getByPlaceholder('0').fill('10');
+      await this.page.getByPlaceholder('0').fill('1000');
     }
     
     await this.linkCase.click();
