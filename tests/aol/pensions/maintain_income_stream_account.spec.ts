@@ -43,8 +43,8 @@ test("Maintain Income Stream Account_New Bank Account Details @pension", async (
     
 })
 
-/** Test Case: Maintain Income Stream Account: Edit Payment details */
-test("Maintain Income Stream Account_Pension Payment Details_Edit @pension", async ({ navBar , pensionAccountPage }) => {
+/** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
+test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Monthly' @pension", async ({ navBar , pensionAccountPage }) => {
     
     try {
         await allure.suite("Pension Payment Details");
@@ -52,8 +52,42 @@ test("Maintain Income Stream Account_Pension Payment Details_Edit @pension", asy
         await navBar.navigateToPensionMembersPage();
         let mem = member.memberID;
         await navBar.selectMember(mem);
-        await pensionAccountPage.editPaymentDetails();
-        console.log("Test Execution Completed: Bank Account Details are updated successfully");
+        await pensionAccountPage.editPaymentDetails('Monthly');
+        console.log("Test Execution Completed: pension payment details updated successfully");
+    } catch (Error) {
+        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+    }
+    
+})
+
+/** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
+test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Quarterly' @pension", async ({ navBar , pensionAccountPage }) => {
+    
+    try {
+        await allure.suite("Pension Payment Details");
+        await navBar.selectProduct();
+        await navBar.navigateToPensionMembersPage();
+        let mem = member.memberID;
+        await navBar.selectMember(mem);
+        await pensionAccountPage.editPaymentDetails('Quarterly');
+        console.log("Test Execution Completed: pension payment details updated successfully");
+    } catch (Error) {
+        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+    }
+    
+})
+
+/** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
+test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Annually' @pension", async ({ navBar , pensionAccountPage }) => {
+    
+    try {
+        await allure.suite("Pension Payment Details");
+        await navBar.selectProduct();
+        await navBar.navigateToPensionMembersPage();
+        let mem = member.memberID;
+        await navBar.selectMember(mem);
+        await pensionAccountPage.editPaymentDetails('Annually');
+        console.log("Test Execution Completed: pension payment details updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }

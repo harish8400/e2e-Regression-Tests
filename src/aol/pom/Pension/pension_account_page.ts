@@ -6,6 +6,7 @@ import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
 import { UtilsAOL } from "../../utils_aol";
 import { ReviewCase } from "../component/review_case";
+import { DashboardPage } from "../dashboard_page";
 
 export class PensionShellAccount extends BasePage {
 
@@ -87,6 +88,13 @@ export class PensionShellAccount extends BasePage {
   readonly annual_payment: Locator;
   readonly select_payment: Locator;
 
+  //Pension Commencement
+  readonly editButton: Locator;
+  readonly Pro_rataYes: Locator;
+  readonly eligibilityType: Locator;
+  readonly eligibility_65orOlder: Locator;
+  readonly firstPaymentDate: Locator;
+
   //Bank Acc
 
   readonly bsb: Locator;
@@ -102,12 +110,24 @@ export class PensionShellAccount extends BasePage {
   readonly pensionTab: Locator;
   readonly editIcon: Locator;
   readonly frequency: Locator;
-  readonly frequencyValue: Locator;
+  readonly frequencyValue1: Locator;
+  readonly frequencyValue2: Locator;
+  readonly frequencyValue3: Locator;
   readonly nextPaymentDate: Locator;
   readonly annualPaymentMethod: Locator;
   readonly annualPaymentMethodValue: Locator;
   readonly buttonViewCase: Locator;
   readonly buttonLinkToCase: Locator;
+
+  //Investments and Balances
+  readonly investmentsAndBalancesTab: Locator;
+  readonly investmentIDs: Locator
+  readonly drawdownOrder: Locator;
+  readonly drawdowanOption: Locator;
+  readonly dradownOrderValues: Locator;
+  readonly editDrawdown: Locator;
+  readonly tableLocator: Locator;
+  readonly dashboard_page: DashboardPage;
 
   //case
 
@@ -127,7 +147,7 @@ export class PensionShellAccount extends BasePage {
 
   constructor(page: Page) {
     super(page)
-
+    this.dashboard_page = new DashboardPage(page);
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
@@ -217,13 +237,31 @@ export class PensionShellAccount extends BasePage {
     this.pensionTab = page.getByRole('button', { name: 'Pension' });
     this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
     this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
-    this.frequencyValue = page.getByRole('option', { name: 'Monthly' });
+    this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
+    this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
+    this.frequencyValue3 = page.getByRole('option', { name: 'Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
     this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
 
     this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
     this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case', exact: true });
+
+    //Investments & Drawdown Order
+    this.tableLocator = page.locator("(//div[@class='el-table__body-wrapper is-scrolling-none']/table)[5]");
+    this.investmentsAndBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
+    this.investmentIDs = page.locator("(//tbody)[4]/tr/td[2]");
+    this.dradownOrderValues = page.locator("//input[@class='el-input__inner']");
+    this.drawdownOrder = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.drawdowanOption = page.getByText('Specified Order');
+    this.editDrawdown = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
+
+    //pension commencement
+    this.editButton = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.Pro_rataYes = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
+    this.eligibilityType = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.eligibility_65orOlder = page.getByRole('option', { name: 'or older' });
+    this.firstPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
 
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -397,14 +435,22 @@ export class PensionShellAccount extends BasePage {
   }
 
     //Edit Pension Payment Details
-    async editPaymentDetails() {
+    async editPaymentDetails(frequency: string) {
 
       await this.pensionTab.click();
       await this.sleep(8000);
       await this.editIcon.click();
       await this.sleep(3000)
       await this.frequency.click();
-      await this.frequencyValue.click();
+      if(frequency == 'Monthly'){
+        await this.frequencyValue1.click();
+      }
+      else if(frequency == 'Quarterly'){
+        await this.frequencyValue2.click();
+      }
+      else{
+        await this.frequencyValue3.click();
+      }
       await this.nextPaymentDate.fill(member.paymentDate);
       await this.annualPaymentMethod.click();
       await this.annualPaymentMethodValue.click();
