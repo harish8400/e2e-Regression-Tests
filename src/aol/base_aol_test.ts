@@ -8,6 +8,7 @@ import{PensionShellAccount as PensionShellAccountPage} from "./pom/Pension/pensi
 import { Navbar } from './pom/component/navbar';
 import { PensionInvestmentPage } from './pom/Pension/pension_investment_page';
 import { InternalTransferPage } from './pom/Pension/internal_transfer';
+import { AccountInfoPage } from './pom/Pension/account_info';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -19,6 +20,7 @@ type ExtensionFixtures = {
     pensionTransactionPage:PensionTransactionPage
     pensionInvestmentPage: PensionInvestmentPage
     internalTransferPage: InternalTransferPage
+    accountInfoPage: AccountInfoPage
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -57,4 +59,8 @@ export const aolTest = base.extend<ExtensionFixtures>({
     internalTransferPage: async ({ page }, use) => {
         await use(new InternalTransferPage(page));
     },
+    accountInfoPage: async ({ page }, use) => {
+        await use(new AccountInfoPage(page));
+    },
+    
 })
