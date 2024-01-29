@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
 import * as pensions from "../../data/member.json";
@@ -61,6 +61,7 @@ export class PensionTransactionPage extends BasePage {
   readonly pensionTab: Locator;
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
+  readonly pensionCommenceSuccessMessage: Locator;
 
   //Exceptions
 
@@ -116,22 +117,19 @@ export class PensionTransactionPage extends BasePage {
     this.verfiyRollInProcessSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler');
     this.communationUNPReject = page.getByText('Step 3 rejected.');
     this.verifyRolloutErrorMessage = page.getByText('Process step Process Benefit did not meet conditions.');
-
+    this.pensionCommenceSuccessMessage = page.getByText('Process step completed with note: Pension account commencement correspondence sent.');
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
 
 
     //Pension commencement
     this.pensionTab = page.getByRole('button', { name: 'Pension' })
-    this.check_box = page.getByText('I acknowledge that by');
-    this.commence_pension_button = page.locator('//*[@type="button"]/following::span[text()=" COMMENCE PENSION "]');
+    this.check_box = page.locator('.checkbox-indicator');
+    this.commence_pension_button = page.getByRole('button', { name: 'COMMENCE PENSION' });
   }
 
   /** Member Rollin, adds a contribution to member account */
   async rollInTransaction() {
-    // await this.navigateToPensionMemberPage();
-    // await this.sleep(2000);
-    // await this.memberTransactionTab.scrollIntoViewIfNeeded();
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.memberAddContribution.click()
@@ -290,14 +288,19 @@ export class PensionTransactionPage extends BasePage {
   
 
   async pensionCommence() {
+    await this.pensionTab.click();
+    this.sleep(5000);
     await this.viewCase.click();
     await this.sleep(5000);
     await this.createCase.click();
     await this.sleep(5000);
     await this.linkCase.click();
     await this.sleep(5000);
-
-    await this.reviewCase.reviewCaseProcess(this.verfiyRollInProcessSuccess);
+    await this.check_box.scrollIntoViewIfNeeded();
+    await this.check_box.click();
+    await this.commence_pension_button.click();
+    this.sleep(3000);
+    await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
 
   }
 
