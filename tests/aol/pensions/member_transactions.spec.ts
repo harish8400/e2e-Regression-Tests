@@ -1,6 +1,7 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import * as memberData from "../../../src/aol/data/pension_data.json";
+import * as member from "../../../src/aol/data/member.json";
 
 test("Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage }) => {
 
@@ -140,4 +141,14 @@ test("Lump sum withdrawals from pre-retirement income streams are not permitted 
     await navBar.selectMember(member);
     await pensionTransactionPage.commutationRolloverOutTTR(false);
 
+})
+
+test("verify H4M pension commencement with PTB @pension", async ({ navBar, pensionTransactionPage }) => {
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    await navBar.selectProduct();
+    await navBar.navigateToPensionMembersPage();
+    let mem = member.memberID;
+    await navBar.selectMember(mem);
+    await pensionTransactionPage.pensionCommence();
 })
