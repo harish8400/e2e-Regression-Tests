@@ -81,5 +81,41 @@ export class ReviewCase extends BasePage {
         await expect(successLocator).toBeVisible();
     
       }
+
+      async approveAndVerifyError(successLocator: Locator){
+
+        //Review case process steps, approve/retry or exit on exception
+        do {
+          //Approve step
+          if (await this.approveProcessStep.count() > 0) {
+            try {
+              await this.approveProcessStep.click({ timeout: 5000 });
+            }
+            catch (TimeoutException) {
+            }
+          }
+    
+          //Retry step
+          if (await this.retryProcessStep.count() > 0) {
+            try {
+              await this.retryProcessStep.click({ timeout: 5000 });
+            }
+            catch (TimeoutException) {
+            }
+          }
+    
+          //Break if there is an process exception
+          if (await this.processException.count() > 0) {
+            //throw new AssertionError({ message: "Case Process has Failed" });
+            break;
+          }
+    
+          await this.sleep(5000);
+    
+        } while ( await successLocator.count() == 0 );
+    
+        await expect(successLocator).toBeVisible();
+    
+      }
     
 }

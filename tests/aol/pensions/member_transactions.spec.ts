@@ -7,6 +7,7 @@ test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
     await navBar.selectProduct();
 });
+import * as member from "../../../src/aol/data/member.json";
 
 test("Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage }) => {
 
@@ -145,4 +146,26 @@ test("ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPa
     } catch (error) {
         throw error
     }
+})
+test("Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage }) => {
+
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    
+    await navBar.selectProduct();
+    await navBar.navigateToTTRMembersPage();
+    let member = memberData.pension.TTR_Commutation_Rollout_Fullexit_Member_Number;
+    await navBar.selectMember(member);
+    await pensionTransactionPage.commutationRolloverOutTTR(false);
+
+})
+
+test("verify H4M pension commencement with PTB @pension", async ({ navBar, pensionTransactionPage }) => {
+    test.setTimeout(600000);
+    await allure.suite("Pension");
+    await navBar.selectProduct();
+    await navBar.navigateToPensionMembersPage();
+    let mem = member.memberID;
+    await navBar.selectMember(mem);
+    await pensionTransactionPage.pensionCommence();
 })
