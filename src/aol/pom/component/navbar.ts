@@ -46,7 +46,7 @@ export class Navbar extends BasePage {
     async selectProduct() {
         //select product from command or environment config file
         let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
-        console.log(`Test running for proudct '${product}'`)
+        console.log(`Test running for product '${product}'`)
         process.env.PRODUCT = product;
 
         await this.navigateToDashboard();

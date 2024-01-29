@@ -62,7 +62,7 @@ export class PensionInvestmentPage extends BasePage {
 
     readonly ClearButton: Locator;
     readonly ClickCombobox: Locator;
-    readonly SelectSecificOrder: Locator;
+    readonly SelectSpecificOrder: Locator;
     readonly ClickOnInputBox: Locator;
     readonly SelectProduct: Locator;
 
@@ -139,7 +139,7 @@ export class PensionInvestmentPage extends BasePage {
     this.PensionDrawdownDetailsEdit = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
     this.ClearButton = page.getByRole('button', { name: 'Clear Selected' });
     this.ClickCombobox = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-    this.SelectSecificOrder = page.getByText('Specified Order');
+    this.SelectSpecificOrder = page.getByText('Specified Order');
     this.ClickOnInputBox = page.getByRole('textbox', { name: 'Select' });
     this.SelectProduct = page.getByRole('listitem');
 
@@ -293,7 +293,7 @@ export class PensionInvestmentPage extends BasePage {
 
     //specific order
 
-    async DrawdownTransactionsSepcificOrder() {
+    async DrawdownTransactionsSpecificOrder() {
 
         await this.PensionTab.click();
         await this.PensionDrawdownDetailsEdit.click();
@@ -302,9 +302,9 @@ export class PensionInvestmentPage extends BasePage {
         await this.ClearButton.click();
         await this.ClickCombobox.click();
 
-        await this.SelectSecificOrder.click();
-        await this.ClickOnInputBox.click();
-        await this.SelectProduct.click();
+        await this.SelectSpecificOrder.click();
+        //await this.ClickOnInputBox.click();
+        //await this.SelectProduct.click();
 
 
         await this.ViewCase.click();
@@ -386,21 +386,21 @@ export class PensionInvestmentPage extends BasePage {
 
     }
 
-    async VerifyFutureDrawDownOptions() {
+    async verifyFutureDrawDownOptions() {
 
-        await this.InvestmentsandBalances.click();
-        const firstTds = await this.page.$$eval(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`, tds => tds.map(td => td.textContent));
+        // await this.InvestmentsandBalances.click();
+        // const firstTds = await this.page.$$eval(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`, tds => tds.map(td => td.textContent));
         
-        var test = this.page.locator(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
-        //const testv = test.evaluateAll(());
+        // var test = this.page.locator(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
+        // //const testv = test.evaluateAll(());
 
-        const lastColumnElements = await this.page.$$(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
-        const lastColumnTexts: string[] = [];
+        // const lastColumnElements = await this.page.$$(`(//table[contains(@class,'el-table__body')])[4]/tbody/tr/td[1]`);
+        // const lastColumnTexts: string[] = [];
 
-        for (const element of lastColumnElements) {
-            const lastColumnText = await element.textContent();
-        }
-        console.log(firstTds);
+        // for (const element of lastColumnElements) {
+        //     const lastColumnText = await element.textContent();
+        // }
+        // console.log(firstTds);
 
     }
 

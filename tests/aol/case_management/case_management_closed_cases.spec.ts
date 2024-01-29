@@ -6,15 +6,15 @@ import { AssertionError } from "assert";
 test.beforeEach(async ({ navBar }) => {
         test.setTimeout(600000);
         await navBar.selectProduct();
+        await allure.suite("Case Management");
+        await allure.parentSuite(process.env.PRODUCT!);
 });
 
 /** Ensure that comments can be added after a case is closed and user can find last updated date time on a case */
 test("Verify comments update on closed cases and date time log @casemanagement", async ({ dashboardPage }) => {
 
     try {
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
+        
         await dashboardPage.updateClosedCaseWithComment();
         await dashboardPage.verifyClosedCaseUpdateLog();
 
@@ -27,9 +27,7 @@ test("Verify comments update on closed cases and date time log @casemanagement",
 /** Ensure cases are correctly displayed under Closed Cases tab */
 test("Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
     try {
-        await allure.suite("Case Management");
 
-        //await dashboardPage.navigateToCaseManagement();
         await dashboardPage.navigateToClosedCasesTab();
         await expect(dashboardPage.closedCaseManagementHeading).toContainText('Closed Cases');
         await dashboardPage.verifyCaseManagementTab();
@@ -44,9 +42,6 @@ test("Ensure cases are correctly displayed under Closed Cases tab @casemanagemen
 /** Ensure filtering is available on Closed Cases in Case Management & user can filter on multiple parameters */
 test("Verify filter option on closed cases @casemanagement", async ({ dashboardPage }) => {
     try {
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
 
         await test.step("Verify filters", async () => {
             await dashboardPage.verifyClosedCasesPageFilters();

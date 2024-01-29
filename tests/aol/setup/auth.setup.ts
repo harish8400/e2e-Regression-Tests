@@ -1,10 +1,13 @@
 import { test as setup, expect } from '@playwright/test';
 import { Admins } from '../../../src/aol/data/admins';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
+import { allure } from "allure-playwright";
 
 const authFile = 'playwright/.auth/user.json';
 
 setup('authenticate', async ({ page }) => {
+
+    await allure.parentSuite("Login");
 
     let admin = Admins.getAdminByUsername("admin@tinasuper.com");
     // Perform authentication steps. Replace these actions with your own.

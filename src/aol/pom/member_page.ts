@@ -2,7 +2,7 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { TFN } from "../data/tfn";
 import { DateUtils } from "../../utils/date_utils";
-import { UtilsAOL, products } from "../utils_aol";
+import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 
@@ -180,7 +180,7 @@ export class MemberPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
 
-        if(process.env.PRODUCT != products.H4M ){
+        if(process.env.PRODUCT != UtilsAOL.Product["HESTA for Mercy"]){
             await this.dateJoined.fill(member.dateJoined);
         }
 
@@ -230,6 +230,7 @@ export class MemberPage extends BasePage {
         //Create account
         await this.createAccount.click();
         await this.sleep(5000);
+
         return this.memberSurname;
     }
 

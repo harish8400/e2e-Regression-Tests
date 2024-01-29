@@ -32,7 +32,8 @@ test("Rollover In Personal contribution", async ({ navBar, memberPage, memberTra
 
     await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember('Nancy');
+    let addedMember = await memberPage.addNewMember(false);
+    await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
 
 })
@@ -42,7 +43,8 @@ test("Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
     await allure.suite("Money Out");
 
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember('Alexis');
+    let addedMember = await memberPage.addNewMember(false);
+    await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
     await memberTransactionPage.memberRolloverOut();
     
