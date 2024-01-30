@@ -7,21 +7,14 @@ import { AssertionError } from "assert";
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
     await navBar.selectProduct();
+    await allure.suite("Case Management");
+    await allure.parentSuite(process.env.PRODUCT!);
 });
-
-test("Test @prodtest",async () => {
-    let prod = process.env.PRODUCT;
-    console.log(prod);
-})
 
 /* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
 test("Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
     try {
-        let prod = process.env.PRODUCTS;
 
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
         let expectedOutcomes = ['Processing', 'Error', 'Success'];
         // Add new case and verify outcome
         await dashboardPage.addNewCase(expectedOutcomes);
@@ -37,9 +30,7 @@ test("Verify new case creation without assigning to a member @casemanagement", a
 test("Create adhoc case and assign to user @casemanagement", async ({ dashboardPage }) => {
 
     try {
-        await allure.suite("Case Management");
 
-        //await dashboardPage.navigateToCaseManagement();
         //Create shell case and assign to a user
         await dashboardPage.createShellCaseAndAsssignToUser();
         //Verify log of username, date and time when case is closed
@@ -56,9 +47,7 @@ test("Create adhoc case and assign to user @casemanagement", async ({ dashboardP
 test("Ensure that user can find exact created and updated date time of a case @casemanagement", async ({ dashboardPage }) => {
 
     try {
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
+        
         await dashboardPage.verifyCreatedAndUpdatedDatetime();
         console.log('Test Execution Success : Ensure that user can find exact created and updated date time of a case')
 
@@ -72,7 +61,6 @@ test("Ensure that user can find exact created and updated date time of a case @c
 test("Verify the primary statuses of open cases @casemanagement", async ({ dashboardPage }) => {
     
     try {
-        await allure.suite("Case Management");
 
         //await dashboardPage.navigateToCaseManagement();
         await dashboardPage.verifyOpencaseStatuses({ dashboardPage });
@@ -88,7 +76,6 @@ test("Verify the primary statuses of open cases @casemanagement", async ({ dashb
 /* Ensure cases are correctly displayed under Open Cases tab with following tabs: Open Cases, Closed Cases, On Hold, SLA */
 test("Verify that open cases are displayed correctly @casemanagement", async ({ dashboardPage }) => {
     try {
-        await allure.suite("Case Management");
 
         //await dashboardPage.navigateToCaseManagement();
         expect(await dashboardPage.casemanagement.innerText()).toBe('Case Management');
@@ -104,9 +91,6 @@ test("Verify that open cases are displayed correctly @casemanagement", async ({ 
 /* Ensure filtering is available on Open Cases in Case Management & user can filter on multiple parameters */
 test("Verify filter option on open cases @casemanagement", async ({ dashboardPage }) => { 
     try {
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
 
         // verify if all filters are displayed correctly
         await test.step("Verify filters", async () => {
@@ -135,11 +119,7 @@ test("Verify filter option on open cases @casemanagement", async ({ dashboardPag
 
 test("Verify that an existing case can be updated by assigning to a user @casemanagement", async ({ dashboardPage }) => { 
     try {
-        await allure.suite("Case Management");
 
-        //await dashboardPage.navigateToCaseManagement();
-
-        //await dashboardPage.open();
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
         await dashboardPage.box_select();
@@ -166,9 +146,6 @@ test("Verify that an existing case can be updated by assigning to a user @casema
 
 test("Verify that an existing case can be updated by adding notes/comments @casemanagement", async ({ dashboardPage }) => { 
     try {
-        await allure.suite("Case Management");
-
-        //await dashboardPage.navigateToCaseManagement();
 
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);
@@ -193,9 +170,6 @@ test("Verify that an existing case can be updated by adding notes/comments @case
 test("Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => { 
 
     try {
-
-        await allure.suite("Case Management");
-        //await dashboardPage.navigateToCaseManagement();
 
         await dashboardPage.clickOnFilter();
         await dashboardPage.clickOnOutcomeItem(caseManagement.ToAssign);

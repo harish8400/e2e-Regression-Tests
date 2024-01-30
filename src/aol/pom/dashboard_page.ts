@@ -153,9 +153,9 @@ export class DashboardPage extends BasePage {
       let actualOutcome = await this.page.getByRole('row', { name: `${caseRef}` }).locator('span').nth(2).textContent();
       expect(expectedOutcome).toContain(actualOutcome);
     }
-    catch(Exception)
+    catch(Error)
     {
-      throw new AssertionError({message: 'Verification of new case outcome has failed'});
+      throw Error;
     }
   }
 

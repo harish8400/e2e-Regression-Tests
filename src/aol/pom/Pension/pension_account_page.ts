@@ -10,9 +10,9 @@ import { DashboardPage } from "../dashboard_page";
 
 export class PensionShellAccount extends BasePage {
 
-
   readonly navbar: Navbar;
   readonly addMemberButton: Locator;
+  readonly shellAccountCreationSuccess: Locator;
   readonly reviewCase: ReviewCase;
 
   //Add Member
@@ -152,6 +152,7 @@ export class PensionShellAccount extends BasePage {
     this.navbar = new Navbar(page);
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
 
+    this.shellAccountCreationSuccess = page.getByText('Roll-ins are complete.');
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
     //Add member
     this.memberGivenName = UtilsAOL.randomName();
@@ -387,9 +388,8 @@ export class PensionShellAccount extends BasePage {
     await this.acknowledgeCheckbox.click();
   }
 
-  async createAccount() {
-
-    await this.createAcc.click();
+  //To be deleted
+  async createAccountCaseProcess() {
 
     //Review case process steps, approve/retry or exit on exception
     do {
@@ -430,37 +430,8 @@ export class PensionShellAccount extends BasePage {
     await this.addMemberBeneficiaries();
     await this.addMemberPensionDetails();
     await this.initCreateCase();
-    await this.createAccount();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
   }
-
-    //Edit Pension Payment Details
-    async editPaymentDetails(frequency: string) {
-
-      await this.pensionTab.click();
-      await this.sleep(8000);
-      await this.editIcon.click();
-      await this.sleep(3000)
-      await this.frequency.click();
-      if(frequency == 'Monthly'){
-        await this.frequencyValue1.click();
-      }
-      else if(frequency == 'Quarterly'){
-        await this.frequencyValue2.click();
-      }
-      else{
-        await this.frequencyValue3.click();
-      }
-      await this.nextPaymentDate.fill(member.paymentDate);
-      await this.annualPaymentMethod.click();
-      await this.annualPaymentMethodValue.click();
-      await this.viewCase.click();
-      await this.sleep(3000);
-      await this.createCase.click();
-      await this.sleep(3000);
-      await this.linkCase.click();
-      await this.sleep(5000);
-      await  this.reviewCase.reviewCaseProcess(this.successMessage);
-    }
-
 }
