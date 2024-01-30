@@ -9,7 +9,7 @@ import { Navbar } from './pom/component/navbar';
 import { PensionInvestmentPage } from './pom/Pension/pension_investment_page';
 import { InternalTransferPage } from './pom/Pension/internal_transfer';
 import { AccountInfoPage } from './pom/Pension/account_info';
-import { RelatedInformationPage } from './pom/related_information_page';
+import { RelatedInformationPage } from './pom/member/related_information_page';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;

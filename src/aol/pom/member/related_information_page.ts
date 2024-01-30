@@ -1,22 +1,22 @@
 import { Locator, Page, expect } from '@playwright/test';
-import { BasePage } from '../../common/pom/base_page';
-import { ReviewCase } from './component/review_case'
+import { BasePage } from '../../../common/pom/base_page';
+import { ReviewCase } from '../component/review_case'
 
 export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
     
-    //Edit Correspondance
-    readonly editCorrespondanceButton: Locator;
-    readonly correspondanceDropdown: Locator;
-    readonly correspondaceOptionInactive: Locator;
+    //Edit Correspondence
+    readonly editCorrespondenceButton: Locator;
+    readonly correspondenceDropdown: Locator;
+    readonly correspondeceOptionInactive: Locator;
     readonly reasonDropdown: Locator;
     readonly inactiveReason1: Locator;
     readonly inactiveReason2: Locator;
     readonly inactiveReason3: Locator;
-    readonly correspondanceSuccessMessage: Locator;
+    readonly correspondenceSuccessMessage: Locator;
 
-    readonly correspondanceStatus: Locator;
+    readonly correspondenceStatus: Locator;
 
     //Case Review
     readonly viewCase: Locator;
@@ -35,17 +35,17 @@ export class RelatedInformationPage extends BasePage {
         this.reviewCase = new ReviewCase(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
 
-        //edit correspondance
+        //edit correspondence
         this.relatedInformationTab = page.getByRole('button', { name: 'Related Information', exact: true });
-        this.editCorrespondanceButton = page.locator('div').filter({ hasText: /^Manage Case - CorrespondenceEdit ContentSend correspondence status Active$/ }).getByRole('button');
-        this.correspondanceDropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
-        this.correspondaceOptionInactive = page.getByRole('option', { name: 'Inactive' });
+        this.editCorrespondenceButton = page.locator('div').filter({ hasText: /^Manage Case - CorrespondenceEdit ContentSend correspondence status Active$/ }).getByRole('button');
+        this.correspondenceDropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+        this.correspondeceOptionInactive = page.getByRole('option', { name: 'Inactive' });
         this.reasonDropdown = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
         this.inactiveReason1 = page.getByRole('option', { name: 'Lost member' });
         this.inactiveReason2 = page.getByRole('option', { name: 'Member death' });
         this.inactiveReason3 = page.getByRole('option', { name: 'Member exited' });
-        this.correspondanceSuccessMessage = page.getByText('Processed Payment.');
-        this.correspondanceStatus = page.getByText('Send correspondence status Inactive');
+        this.correspondenceSuccessMessage = page.getByText('Processed Payment.');
+        this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
 
         //case review
         this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -56,11 +56,11 @@ export class RelatedInformationPage extends BasePage {
 
     }
 
-    async editCorrespondance(inactiveReason: string){
+    async editCorrespondence(inactiveReason: string){
         await this.relatedInformationTab.click();
-        await this.editCorrespondanceButton.click();
-        await this.correspondanceDropdown.click();
-        await this.correspondaceOptionInactive.click();
+        await this.editCorrespondenceButton.click();
+        await this.correspondenceDropdown.click();
+        await this.correspondeceOptionInactive.click();
         await this.reasonDropdown.click();
 
         if(inactiveReason == 'Lost Member'){
@@ -79,6 +79,6 @@ export class RelatedInformationPage extends BasePage {
         await this.sleep(9000);
         await this.linkCase.click();
         await this.sleep(6000);
-        await expect(this.correspondanceStatus).toBeVisible();
+        await expect(this.correspondenceStatus).toBeVisible();
     }
 }
