@@ -25,7 +25,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly approveProcessStep: Locator;
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
-
+    readonly transitionToRetirement: Locator;
     //Rollover Out
     readonly rolloverOut: Locator;
     readonly payTo: Locator;
@@ -37,8 +37,14 @@ export class MemberTransactionsPage extends BasePage {
     readonly verifyRolloutProcessSuccess: Locator;
     readonly memberOverview: Locator;
     readonly exitStatus: Locator;
-
+    readonly trasitionMembers: Locator;
     readonly processException: Locator;
+    // Member Termination
+    readonly accumulationFirstMember: Locator;
+    readonly relationshipBtn: Locator;
+    readonly relationshipEditBtn: Locator;
+    readonly employerEndDate: Locator;
+    readonly viewCases: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -64,7 +70,15 @@ export class MemberTransactionsPage extends BasePage {
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
         this.verifyContributionSuccess = page.getByText('Process step completed with note: Member contribution payload sent.');
-
+        this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
+        this.trasitionMembers = page.getByRole('link', { name: 'Members' }); 
+        // Member Termination   
+         this.accumulationFirstMember = page.locator('td > .cell').first();
+         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
+         this.relationshipEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
+         this.employerEndDate = page.locator('input[name="linkBroken"]'); 
+         this.viewCases = page.getByRole('button', { name: 'View Cases' });    
+ 
         //Rollover out
         this.rolloverOut = page.getByText('Rollover Out');
         this.payTo = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
@@ -81,6 +95,7 @@ export class MemberTransactionsPage extends BasePage {
         this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sen');
         this.memberOverview = page.getByRole('button', { name: 'Overview' });
         this.exitStatus = page.getByRole('cell', { name: 'Exited', exact: true });
+        
     }
 
     /** Member Rollin, adds a contribution to member account */
@@ -141,6 +156,35 @@ export class MemberTransactionsPage extends BasePage {
         await expect(this.verifyContributionSuccess).toBeVisible();
     }
 
+     /** Member Termination for Current Date */
+     async employmentTerminationForCurrentDate() {
+        await this.sleep(5000);
+        //await this.accumulationFirstMember.click();
+        await this.relationshipBtn.click({ timeout: 5000});
+        await this.relationshipEditBtn.click({ timeout: 5000});
+        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.viewCases.click({ timeout: 5000});
+        await this.createCase.click({ timeout: 5000});
+        await this.linkCase.click();
+        }
+/** Member Termination for Earlier Date */
+        async employmentTerminationForEarlierDate(date: string) {
+            await this.sleep(10000);
+           // await this.accumulationFirstMember.click();
+            await this.transitionToRetirement.click({ timeout: 5000});
+            await this.relationshipEditBtn.click({ timeout: 5000});
+            await this.employerEndDate.fill(date);
+            await this.viewCases.click({ timeout: 5000});
+            await this.createCase.click({ timeout: 5000});
+            await this.linkCase.click();
+            }
+
+            async trasitionToRetirement() {
+                await this.sleep(10000);
+               // await this.accumulationFirstMember.click();
+                await this.transitionToRetirement.click({ timeout: 5000});
+                await this.trasitionMembers.click();
+                }
     /** Member Rollout, perform rollout and exits member */
     async memberRolloverOut() {
 

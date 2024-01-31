@@ -9,6 +9,9 @@ import { ReviewCase } from "../component/review_case";
 import { DashboardPage } from "../dashboard_page";
 
 export class PensionShellAccount extends BasePage {
+  editPaymentDetails(arg0: string) {
+      throw new Error("Method not implemented.");
+  }
 
   readonly navbar: Navbar;
   readonly addMemberButton: Locator;
