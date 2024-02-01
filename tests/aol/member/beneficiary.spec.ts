@@ -8,11 +8,9 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("Add new non binding nomination on an existing account with all portion matched to 100%", async ({ loginPage, navBar, beneficiaryPage}) => {
+test("Add new non binding nomination on an existing account with all portion matched to 100%", async ({ loginPage, navBar, beneficiaryPage }) => {
 
     await allure.suite("Member");
-
-    test.setTimeout(600000);
 
     try {
         //await loginPage.navigateTo();
@@ -27,11 +25,9 @@ test("Add new non binding nomination on an existing account with all portion mat
 })
 
 
-test("Add new Binding lapsing nomination on an existing account with all portion matched to 100%", async ({ loginPage, navBar, beneficiaryPage}) => {
+test("Add new Binding lapsing nomination on an existing account with all portion matched to 100%", async ({ loginPage, navBar, beneficiaryPage }) => {
 
     await allure.suite("Member");
-
-    test.setTimeout(600000);
 
     try {
         //await loginPage.navigateTo();
@@ -45,12 +41,9 @@ test("Add new Binding lapsing nomination on an existing account with all portion
     }
 })
 
-test("Non binding or Binding lapsing nomination cannot be updated if total portion is not equal to 100%", async ({ loginPage, navBar, beneficiaryPage}) => {
+test("Non binding or Binding lapsing nomination cannot be updated if total portion is not equal to 100%", async ({ loginPage, navBar, beneficiaryPage }) => {
 
     await allure.suite("Member");
-
-    test.setTimeout(600000);
-
     try {
         //await loginPage.navigateTo();
         //await loginPage.doLogin("admin@tinasuper.com","tinaArena");
