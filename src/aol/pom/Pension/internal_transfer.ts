@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { AssertionError } from "assert";
 //import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
@@ -84,10 +84,14 @@ export class InternalTransferPage extends BasePage {
             await this.valueSourceProduct.click();
             await this.sourceAccount.fill(memberData.pension.Internal_Transfer_Accumulation_To_ABP_Source_Account);
         }
-        else
+        else if(transferType == 'ABP')
         {
             await this.page.getByRole('option').nth(2).click();
             await this.sourceAccount.fill(memberData.pension.Internal_Transfer_ABP_To_Accumulation_Source_Account);
+        }
+        else{
+            await this.page.getByRole('option', { name: 'HESTA for Mercy Transition to' }).click();
+            await this.sourceAccount.fill(memberData.pension.Source_Account);
         }
 
         await this.page.keyboard.down('Tab');

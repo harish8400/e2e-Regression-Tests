@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from '../../../common/pom/base_page';
 import { ReviewCase } from '../component/review_case'
+import { DateUtils } from '../../../utils/date_utils';
 
 export class RelatedInformationPage extends BasePage {
 
@@ -15,8 +16,14 @@ export class RelatedInformationPage extends BasePage {
     readonly inactiveReason2: Locator;
     readonly inactiveReason3: Locator;
     readonly correspondenceSuccessMessage: Locator;
-
     readonly correspondenceStatus: Locator;
+
+    //Condition of Release
+    readonly addConditionOfRelease_button: Locator;
+    readonly conditionForRelease_dropdown: Locator;
+    readonly option_65orOlder: Locator;
+    readonly expiryDate: Locator;
+    readonly confirmationMessage: Locator;
 
     //Case Review
     readonly viewCase: Locator;
@@ -46,6 +53,13 @@ export class RelatedInformationPage extends BasePage {
         this.inactiveReason3 = page.getByRole('option', { name: 'Member exited' });
         this.correspondenceSuccessMessage = page.getByText('Processed Payment.');
         this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
+
+        //Condition of Release
+        this.addConditionOfRelease_button = page.getByRole('button', { name: 'add-circle icon Add Condition' });
+        this.conditionForRelease_dropdown = page.getByRole('combobox', { name: 'Search for option' });
+        this.option_65orOlder = page.getByRole('option', { name: 'or Older' });
+        this.expiryDate = page.getByPlaceholder('dd/mm/yyyy');
+        this.confirmationMessage = page.getByText('1. Create or Update Condition');
 
         //case review
         this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -80,5 +94,20 @@ export class RelatedInformationPage extends BasePage {
         await this.linkCase.click();
         await this.sleep(6000);
         await expect(this.correspondenceStatus).toBeVisible();
+    }
+
+    async addConditionOfRelease(){
+        await this.relatedInformationTab.click();
+        await this.sleep(3000);
+        await this.addConditionOfRelease_button.click();
+        await this.viewCase.click();
+        await this.sleep(3000);
+        await this.createCase.click();
+        await this.conditionForRelease_dropdown.click();
+        await this.option_65orOlder.click();
+        await this.expiryDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.linkCase.click();
+        await this.sleep(5000);
+        expect(this.confirmationMessage).toBeVisible();
     }
 }
