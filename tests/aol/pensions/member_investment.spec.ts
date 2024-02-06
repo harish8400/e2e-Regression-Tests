@@ -1,6 +1,7 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import * as memberData from "../../../src/aol/data/pension_data.json";
+import { UtilsAOL } from "../../../src/aol/utils_aol";
 //import { product } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ }) => {
@@ -50,12 +51,12 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
         await navBar.navigateToPensionMembersPage();
 
         let member = memberData.pension.Pension_Drawdown_Change;
-        // switch (process.env.PRODUCT!) {
-        //    case product.Vanguard.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        //     case product.AE.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        // }
+        switch (process.env.PRODUCT!) {
+            case UtilsAOL.Product["Vanguard Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+            case UtilsAOL.Product["Australian Ethical Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+        }
 
         await navBar.selectMember(member);
 
@@ -75,12 +76,12 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
         await navBar.navigateToPensionMembersPage();
 
         let member = memberData.pension.Pension_Drawdown_Change;
-        // switch (process.env.PRODUCT!) {
-        //     case product.Vanguard.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        //     case product.AE.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        // }
+        switch (process.env.PRODUCT!) {
+            case UtilsAOL.Product["Vanguard Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+            case UtilsAOL.Product["Australian Ethical Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+        }
 
         await navBar.selectMember(member);
 
@@ -100,12 +101,12 @@ test("For future drawdown Members should not be able to select any investment op
         await navBar.navigateToPensionMembersPage();
 
         let member = memberData.pension.Pension_Drawdown_Change;
-        // switch (process.env.PRODUCT!) {
-        //     case product.Vanguard.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        //     case product.AE.toString():
-        //         member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        // }
+        switch (process.env.PRODUCT!) {
+            case UtilsAOL.Product["Vanguard Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+            case UtilsAOL.Product["Australian Ethical Super"]:
+                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
+        }
 
         await navBar.selectMember(member);
 
