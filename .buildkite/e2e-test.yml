@@ -1,0 +1,11 @@
+# agents:
+#     queue: '${DEPLOY_AGENTS_QUEUE}'
+env:
+  ENVIRONMENT: "poc"
+  DEPLOY_AGENTS_QUEUE: "${DEPLOY_AGENTS_QUEUE}"
+
+steps:
+  - label: "Pension E2E Test"
+    agents:
+      queue: "${DEPLOY_AGENTS_QUEUE}"
+    command: "buildkite-signed-pipeline upload .buildkite/pension-test.yml"

@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "npx playwright install",
     "test": "npx playwright test",
+    "test:pension": "npx playwright test tests/aol/pension",
     "report": "npx playwright show-report"
   },
   "author": "",
