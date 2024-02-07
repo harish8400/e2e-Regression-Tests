@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
 import * as pensions from "../../data/member.json";
@@ -31,6 +31,12 @@ export class PensionTransactionPage extends BasePage {
   readonly rollIn_type: Locator;
   readonly eligible_serviceDate: Locator;
   readonly verifyContributionSuccess: Locator;
+  readonly transactionsHistoryFilter: Locator;
+  readonly filterCategory_Type: Locator;
+  readonly selectFilterType: Locator;
+  readonly filterType_PTB: Locator;
+  readonly applyButton: Locator;
+  readonly transactionType_PTB: Locator;
 
   //case
 
@@ -163,6 +169,12 @@ export class PensionTransactionPage extends BasePage {
     this.pensionTab = page.getByRole('button', { name: 'Pension' })
     this.check_box = page.locator('.checkbox-indicator');
     this.commence_pension_button = page.getByRole('button', { name: 'COMMENCE PENSION' });
+    this.transactionsHistoryFilter = page.getByRole('button', { name: 'FILTER' });
+    this.filterCategory_Type = page.locator("//div[@class='filter-list-item'][normalize-space()='Type']");
+    this.selectFilterType = page.getByRole('textbox', { name: 'Select' });
+    this.filterType_PTB = page.locator("//span[normalize-space()='PTB']");
+    this.applyButton = page.getByRole('button', { name: 'APPLY' });
+    this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
 
     ///Death Benifits
 
@@ -586,6 +598,24 @@ export class PensionTransactionPage extends BasePage {
     await this.linkCase.click();
     await this.sleep(3000);
     await  this.reviewCase.reviewCaseProcess(this.verifyRolloutErrorMessage);
+
+  }
+
+  async verifyPTBtransaction(PTB: boolean){
+    await this.memberTransactionTab.click();
+    await this.transactionsHistoryFilter.click();
+    await this.sleep(3000);
+    await this.filterCategory_Type.click();
+    await this.selectFilterType.click();
+    await this.selectFilterType.fill('PTB');
+    await this.filterType_PTB.click();
+    await this.applyButton.click();
+    await this.sleep(3000);
+    if(PTB){
+    await this.transactionType_PTB.scrollIntoViewIfNeeded();
+    expect(this.transactionType_PTB).toBeVisible();
+    }
+    await this.reviewCase.captureScreenshot();
 
   }
 

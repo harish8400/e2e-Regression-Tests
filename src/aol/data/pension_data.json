@@ -10,6 +10,8 @@
         "Internal_Transfer_Accumulation_To_ABP_Source_Account": "9010795",
         "Internal_Transfer_ABP_To_Accumulation_Destination_Account": "9010833",
         "Internal_Transfer_ABP_To_Accumulation_Source_Account": "4F653-14-2",
+        "Internal_Transfer_TTR_To_ABP_Source_Account": "564888567",
+        "Internal_Transfer_TTR_To_ABP_Destination_Account": "9020373",
         "death_benefit_member_number":"4F653-14-2"
     },
     "pension_uat": {
