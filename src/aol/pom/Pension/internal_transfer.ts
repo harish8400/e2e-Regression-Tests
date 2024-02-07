@@ -1,7 +1,5 @@
 import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
-//import { AssertionError } from "assert";
-//import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import * as memberData from "../../../aol/data/pension_data.json";
 import { ReviewCase } from "../component/review_case";
 
@@ -90,8 +88,8 @@ export class InternalTransferPage extends BasePage {
             await this.sourceAccount.fill(memberData.pension.Internal_Transfer_ABP_To_Accumulation_Source_Account);
         }
         else{
-            await this.page.getByRole('option', { name: 'HESTA for Mercy Transition to' }).click();
-            await this.sourceAccount.fill(memberData.pension.Source_Account);
+            await this.page.getByRole('option').first().click();
+            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_TTR_To_ABP_Source_Account);
         }
 
         await this.page.keyboard.down('Tab');

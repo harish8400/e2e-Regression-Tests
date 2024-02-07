@@ -6,6 +6,7 @@ import { DateUtils } from '../../../utils/date_utils';
 export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
+    readonly clipBoardIcon: Locator;
     
     //Edit Correspondence
     readonly editCorrespondenceButton: Locator;
@@ -41,6 +42,7 @@ export class RelatedInformationPage extends BasePage {
 
         this.reviewCase = new ReviewCase(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
+        this.clipBoardIcon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
         //edit correspondence
         this.relatedInformationTab = page.getByRole('button', { name: 'Related Information', exact: true });
@@ -109,5 +111,6 @@ export class RelatedInformationPage extends BasePage {
         await this.linkCase.click();
         await this.sleep(5000);
         expect(this.confirmationMessage).toBeVisible();
+        await this.clipBoardIcon.click();
     }
 }

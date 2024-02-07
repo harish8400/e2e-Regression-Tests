@@ -51,13 +51,13 @@ test("Retirement Transition process with PTB @pension", async ({ navBar , intern
         await navBar.selectProduct();
         await navBar.navigateToTTRMembersPage();
 
-        let sourceAcc = memberData.pension.Source_Account;
+        let sourceAcc = memberData.pension.Internal_Transfer_TTR_To_ABP_Source_Account;
         await navBar.selectMember(sourceAcc);
         await pensionTransactionPage.verifyPTBtransaction(true);
 
         //navigating to ABP destination member and initiating internal transfer from source TTR to ABP
         await navBar.navigateToPensionMembersPage();
-        const destAcc = memberData.pension.Destination_Account;
+        const destAcc = memberData.pension.Internal_Transfer_TTR_To_ABP_Destination_Account;
         await navBar.selectMember(destAcc);
         await internalTransferPage.internalTransferMember('TTR');
         console.log("Test Execution Completed: Internal Transfer from Accumulation to TTR is successful");
@@ -76,14 +76,14 @@ test("Retirement Transition process with CoR and No PTB @pension", async ({ navB
 
         //navigating to TTR source member and adding condition of release
         await navBar.navigateToTTRMembersPage();
-        const sourceMember = memberData.pension.Source_Account;
+        const sourceMember = memberData.pension.Internal_Transfer_TTR_To_ABP_Source_Account;
         await navBar.selectMember(sourceMember);
         await pensionTransactionPage.verifyPTBtransaction(false);
         await relatedInformationPage.addConditionOfRelease();
 
         //navigating to ABP destination member and initiating internal transfer from source TTR to ABP
         await navBar.navigateToPensionMembersPage();
-        const destMember = memberData.pension.Destination_Account;
+        const destMember = memberData.pension.Internal_Transfer_TTR_To_ABP_Destination_Account;
         await navBar.selectMember(destMember);
         await internalTransferPage.internalTransferMember('TTR');
         console.log("Test Execution Completed: Internal Transfer from Accumulation to TTR is successful");
