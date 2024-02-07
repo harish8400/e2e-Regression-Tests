@@ -5,5 +5,5 @@ env:
 
 steps:
   - label: ":test_tube: Playwright test"
-    branches: 'main'
+    branches: 'aol'
     command: 'buildkite-signed-pipeline upload .buildkite/e2e-test.yml'  

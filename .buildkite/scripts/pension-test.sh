@@ -10,4 +10,4 @@ echo "NPM Install"
 #npm ci
 
 echo "Running Pension tests"
-npm run test:pension
+npm run test:playwright test
