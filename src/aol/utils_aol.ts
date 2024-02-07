@@ -24,15 +24,12 @@ export class UtilsAOL {
         return names[Math.floor(Math.random() * names.length)]
     }
 
-    //static product = 'HESTA for Mercy|Vanguard Super|Australian Ethical Super';
-
     static Product = {
         "HESTA for Mercy": "HESTA for Mercy",
         "Vanguard Super": "Vanguard Super",
         "Australian Ethical Super": "Australian Ethical Super",
       } as const;
 
-    //static Direction = ODirection;
 }
 
 

@@ -1,21 +1,9 @@
 env:
   COMPOSE_FILE: "./buildkite.docker-compose.yml"
+  DEPLOY_AGENTS_QUEUE: "grow-tina-dev-quality"
+      
 
 steps:
   - label: ":test_tube: Playwright test"
-    artifact_paths:
-      - "playwright-report/**/*"
-    plugins:
-      - docker-compose#v4.12.0:
-          run: e2e_tests
-          volumes:
-            - "./playwright-report:/e2e/playwright-report"
-          command: ["${TEST_OPTIONS}"]  
-          env:
-            - BUILDKITE
-            - AWS_ACCESS_KEY_ID
-            - AWS_SECRET_ACCESS_KEY
-            - AWS_SESSION_TOKEN
-            - AWS_REGION     
-    agents:
-      queue: "grow-tina-dev-quality"
+    branches: 'aol'
+    command: 'buildkite-signed-pipeline upload .buildkite/e2e-test.yml'  

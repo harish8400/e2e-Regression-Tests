@@ -1,7 +1,8 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import * as memberData from "../../../src/aol/data/pension_data.json";
-import { product } from "../../../src/aol/utils_aol";
+import { UtilsAOL } from "../../../src/aol/utils_aol";
+//import { product } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
@@ -51,9 +52,9 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case product.Vanguard.toString():
+            case UtilsAOL.Product["Vanguard Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case product.AE.toString():
+            case UtilsAOL.Product["Australian Ethical Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 
@@ -76,9 +77,9 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case product.Vanguard.toString():
+            case UtilsAOL.Product["Vanguard Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case product.AE.toString():
+            case UtilsAOL.Product["Australian Ethical Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 
@@ -101,9 +102,9 @@ test("For future drawdown Members should not be able to select any investment op
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case product.Vanguard.toString():
+            case UtilsAOL.Product["Vanguard Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case product.AE.toString():
+            case UtilsAOL.Product["Australian Ethical Super"]:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 

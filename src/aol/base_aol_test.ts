@@ -9,6 +9,9 @@ import { Navbar } from './pom/component/navbar';
 import { PensionInvestmentPage } from './pom/Pension/pension_investment_page';
 import { InternalTransferPage } from './pom/Pension/internal_transfer';
 import { AccountInfoPage } from './pom/Pension/account_info';
+import { BeneficiaryPage } from './pom/beneficiary_page';
+import { InsurancePage } from './pom/insurance_page';
+
 import { RelatedInformationPage } from './pom/member/related_information_page';
 
 type ExtensionFixtures = {
@@ -22,6 +25,8 @@ type ExtensionFixtures = {
     pensionInvestmentPage: PensionInvestmentPage
     internalTransferPage: InternalTransferPage
     accountInfoPage: AccountInfoPage
+    beneficiaryPage: BeneficiaryPage
+    insurancePage: InsurancePage
     relatedInformationPage: RelatedInformationPage;
 }
 
@@ -63,6 +68,12 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     accountInfoPage: async ({ page }, use) => {
         await use(new AccountInfoPage(page));
+    },
+    beneficiaryPage: async ({ page }, use) => {
+        await use(new BeneficiaryPage(page));
+    },
+    insurancePage: async ({ page }, use) => {
+        await use(new InsurancePage(page));
     },
     relatedInformationPage: async ({ page }, use) => {
         await use(new RelatedInformationPage(page));
