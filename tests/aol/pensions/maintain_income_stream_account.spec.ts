@@ -1,7 +1,6 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test";
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
-//import * as memberData from "../../../src/aol/data/pension_data.json";
 import * as member from "../../../src/aol/data/member.json"
 
 

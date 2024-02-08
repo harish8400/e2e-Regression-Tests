@@ -2,6 +2,7 @@ import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { UtilsAOL } from "../../../src/aol/utils_aol";
 import * as memberData from "../../../src/aol/data/pension_data.json";
+import { FUND } from "../../../constants";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -29,9 +30,9 @@ test("Manual Roll-in - Pension Member @pension @pensiondemo @pensiondemovanguard
 
     let member = memberData.pension.Manual_Rollin;
     switch (process.env.PRODUCT) {
-        case UtilsAOL.Product["Vanguard Super"]:
+        case FUND.VANGUARD:
             member = memberData.pension_vangaurd.Manual_Rollin;
-        case UtilsAOL.Product["Australian Ethical Super"]:
+        case FUND.AE:
             member = memberData.pension_vangaurd.Manual_Rollin;
     }
 
@@ -51,9 +52,9 @@ test(`Pension draw-down as Specific order @pension @pensiondemo @pensiondemovang
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT) {
-            case UtilsAOL.Product["Vanguard Super"]:
+            case FUND.VANGUARD:
             member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case UtilsAOL.Product["Australian Ethical Super"]:
+            case FUND.AE:
             member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
         
@@ -76,9 +77,9 @@ test("ABP Rollover Out Commutation - Partial @pensiondemo", async ({ navBar, pen
 
     let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
     switch (process.env.PRODUCT!) {
-        case UtilsAOL.Product["Vanguard Super"]:
+        case FUND.VANGUARD:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
-        case UtilsAOL.Product["Australian Ethical Super"]:
+        case FUND.AE:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
     }
     await navBar.selectMember(member);
@@ -98,9 +99,9 @@ test("ABP Rollover Out Commutation - Full exit @pensiondemo", async ({ navBar, p
 
     let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
     switch (process.env.PRODUCT!) {
-        case UtilsAOL.Product["Vanguard Super"]:
+        case FUND.VANGUARD:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
-        case UtilsAOL.Product["Australian Ethical Super"]:
+        case FUND.AE:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
     }
 

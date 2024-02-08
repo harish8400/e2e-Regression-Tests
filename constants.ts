@@ -148,3 +148,9 @@ export const INVESTMENT_OPTIONS = {
         }
     }
 }
+
+export const enum FUND {
+    HESTA = "HESTA for Mercy",
+    VANGUARD = "Vanguard Super",
+    AE = "Australian Ethical Super"
+};

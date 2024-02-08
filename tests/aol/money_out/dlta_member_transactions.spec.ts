@@ -14,7 +14,7 @@ test("Money Out - Rollover out full exit @fullexit", async ({ dashboardPage, mem
 
     await test.step("Super Member creation", async () => {
         await dashboardPage.navigateToAccumulationAddMember();
-        let addedMember = await memberPage.addNewMember(false);
+        let addedMember = await memberPage.addNewMember(false, true);
         await memberPage.selectMember(addedMember);
     })
 
@@ -32,7 +32,7 @@ test("Rollover In Personal contribution", async ({ navBar, memberPage, memberTra
 
     await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
-    let addedMember = await memberPage.addNewMember(false);
+    let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
 
@@ -43,7 +43,7 @@ test("Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
     await allure.suite("Money Out");
 
     await navBar.navigateToAccumulationMembersPage();
-    let addedMember = await memberPage.addNewMember(false);
+    let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
     await memberTransactionPage.memberRolloverOut();
