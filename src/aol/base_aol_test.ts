@@ -12,6 +12,7 @@ import { AccountInfoPage } from './pom/Pension/account_info';
 import { BeneficiaryPage } from './pom/beneficiary_page';
 import { InsurancePage } from './pom/insurance_page';
 
+import { RelatedInformationPage } from './pom/member/related_information_page';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -26,6 +27,7 @@ type ExtensionFixtures = {
     accountInfoPage: AccountInfoPage
     beneficiaryPage: BeneficiaryPage
     insurancePage: InsurancePage
+    relatedInformationPage: RelatedInformationPage;
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -72,6 +74,9 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     insurancePage: async ({ page }, use) => {
         await use(new InsurancePage(page));
+    },
+    relatedInformationPage: async ({ page }, use) => {
+        await use(new RelatedInformationPage(page));
     },
     
 })

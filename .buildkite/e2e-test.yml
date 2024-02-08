@@ -1,7 +1,7 @@
 # agents:
 #     queue: '${DEPLOY_AGENTS_QUEUE}'
 env:
-  ENVIRONMENT: "poc"
+  ENVIRONMENT: "dev"
   DEPLOY_AGENTS_QUEUE: "${DEPLOY_AGENTS_QUEUE}"
 
 steps:
