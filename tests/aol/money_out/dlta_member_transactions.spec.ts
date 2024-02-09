@@ -1,5 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -7,14 +8,14 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs self triggered rollout full exit on a member */
-test("Money Out - Rollover out full exit @fullexit", async ({ dashboardPage, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Money Out - Rollover out full exit", async ({ dashboardPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");
 
     await test.step("Super Member creation", async () => {
         await dashboardPage.navigateToAccumulationAddMember();
-        let addedMember = await memberPage.addNewMember(false);
+        let addedMember = await memberPage.addNewMember(false, true);
         await memberPage.selectMember(addedMember);
     })
 
@@ -28,22 +29,22 @@ test("Money Out - Rollover out full exit @fullexit", async ({ dashboardPage, mem
 
 })
 
-test("Rollover In Personal contribution", async ({ navBar, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Rollover In Personal contribution", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
-    let addedMember = await memberPage.addNewMember(false);
+    let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
 
 })
 
-test("Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
 
     await navBar.navigateToAccumulationMembersPage();
-    let addedMember = await memberPage.addNewMember(false);
+    let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
     await memberTransactionPage.memberRolloverOut();

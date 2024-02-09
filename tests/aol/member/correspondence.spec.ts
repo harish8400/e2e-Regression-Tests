@@ -1,12 +1,13 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import * as member from "../../../src/aol/data/member.json"
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
 });
 
-test("Stop Correspondence", async ({ navBar , relatedInformationPage }) => {
+test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage }) => {
     
     try {
         await allure.suite("Pension");
