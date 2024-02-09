@@ -33,3 +33,27 @@ test("Verify filter options are displayed correctly", async ({  navBar,insurance
         throw error;
     }
 })
+
+test("Update Insurance Category @Insurance", async ({ navBar, insurancePage }) => {
+
+    try {
+        await navBar.selectProduct();
+        await insurancePage.accumulationDropDown.click();
+        await insurancePage.editInsurance();
+        
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("New Insurance Category @Insurance", async ({ navBar, insurancePage }) => {
+
+    try {
+        await navBar.selectProduct();
+        await insurancePage.accumulationDropDown.click();
+        await insurancePage.newInsurance();
+        
+    } catch (error) {
+        throw error;
+    }
+})

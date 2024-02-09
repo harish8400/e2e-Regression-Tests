@@ -161,3 +161,13 @@ test("verify H4M pension commencement with PTB @pension", async ({ navBar, pensi
     await pensionTransactionPage.verifyPTBtransaction(true);
     await pensionTransactionPage.pensionCommence();
 })
+
+test("update CRN @pension", async ({ navBar, accountInfoPage }) => {
+    
+    await allure.suite("Pension");
+    await allure.parentSuite(process.env.PRODUCT!);
+    
+    await navBar.navigateToAccumulationMembersPage();
+    await navBar.selectMember(member.memberID);
+    await accountInfoPage.updateCRN();
+})

@@ -116,3 +116,31 @@ test("For future drawdown Members should not be able to select any investment op
         throw error;
     }
 })
+
+test("Add Investment Pricing", async ({ navBar, investmentsAndPricing }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.accumulationProduct.click();
+        await investmentsAndPricing.addInvestmentPrice();
+
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("Investment product update", async ({ navBar, investmentsAndPricing }) => {
+    try {
+
+        await allure.suite("Pension");
+
+        await navBar.selectProduct();
+        await navBar.accumulationProduct.click();
+        await investmentsAndPricing.editInvestment();
+
+    } catch (error) {
+        throw error;
+    }
+})
