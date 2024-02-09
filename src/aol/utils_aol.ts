@@ -1,9 +1,4 @@
-export enum products{
-    'HESTA for Mercy',
-    'Vanguard Super',
-    'Australian Ethical Superguard'
-}
-
+import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
 
 export class UtilsAOL {
 
@@ -23,16 +18,9 @@ export class UtilsAOL {
         let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver', 'Jason', 'Floyd', 'Andrew', 'Ricky', 'Gerald'];
         return names[Math.floor(Math.random() * names.length)]
     }
-
-    static Product = {
-        "HESTA for Mercy": "HESTA for Mercy",
-        "Vanguard Super": "Vanguard Super",
-        "Australian Ethical Super": "Australian Ethical Super",
-      } as const;
-
 }
 
-
-  
-  
-  
+export function fundName() {
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+    return product;
+}

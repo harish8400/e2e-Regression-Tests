@@ -1,14 +1,15 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import * as memberData from "../../../src/aol/data/pension_data.json";
-import { UtilsAOL } from "../../../src/aol/utils_aol";
-//import { product } from "../../../src/aol/utils_aol";
+import { FUND } from "../../../constants";
+import { fundName } from "../../../src/aol/utils_aol";
+//import { product }from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
 });
 
-test("Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage }) => {
+test(fundName()+"-Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await allure.suite("Pension");
 
@@ -24,7 +25,7 @@ test("Money gets invested into CASH after roll-in post member creation @pension"
     }
 })
 
-test("Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
+test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
 
         await allure.suite("Pension");
@@ -41,8 +42,7 @@ test("Pension draw-down as Proportional @pension", async ({ navBar, pensionInves
     }
 })
 
-
-test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
+test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
 
         await allure.suite("Pension");
@@ -52,9 +52,9 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case UtilsAOL.Product["Vanguard Super"]:
+            case FUND.VANGUARD:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case UtilsAOL.Product["Australian Ethical Super"]:
+            case FUND.AE:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 
@@ -67,7 +67,7 @@ test("Pension draw-down as Specific order @pension", async ({ navBar, pensionInv
     }
 })
 
-test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
+test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
 
         await allure.suite("Pension");
@@ -77,9 +77,9 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case UtilsAOL.Product["Vanguard Super"]:
+            case FUND.VANGUARD:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case UtilsAOL.Product["Australian Ethical Super"]:
+            case FUND.AE:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 
@@ -92,7 +92,7 @@ test("Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestm
     }
 })
 
-test("For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage }) => {
+test(fundName()+"-For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
 
         await allure.suite("Pension");
@@ -102,9 +102,9 @@ test("For future drawdown Members should not be able to select any investment op
 
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
-            case UtilsAOL.Product["Vanguard Super"]:
+            case FUND.VANGUARD:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case UtilsAOL.Product["Australian Ethical Super"]:
+            case FUND.AE:
                 member = memberData.pension_vangaurd.Pension_Drawdown_Change;
         }
 

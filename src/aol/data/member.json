@@ -19,7 +19,6 @@
     "beneficiaryDOB":"16/06/2000",
     "BSBNumber":"032-000",
     "AccountName":"InTest",
-    "EmployementTerminationMember":"AE-10006",
     "PensionMembershipAccountNumber":"9020227",
     "AccountNumber":"123456",
     "CRN":"103675704651001506",
@@ -33,6 +32,13 @@
       "Michelle", "Alan", "Glenn", "Linda", "Gotham", "Lille", "Steve", "Rose", "Ramsey", "Zele", "Simon", "Nathan", "Ashton", "Kyle", "Kane", "Jamie", "Oliver"
     ],
     "PaymentReference":"ABP-Full",
-    "EligibleServiceDate":"1/7/2023"
-    
+    "EligibleServiceDate":"1/7/2023",
+    "Employment": {
+      "EmployementTerminationMember_Hesta":"AE-10006",
+      "EmployementTerminationMember_Vanguard":"AE-10006"
+    },
+    "Beneficiary": {
+      "PensionMembershipAccountNumber_Hesta":"9020227",
+      "PensionMembershipAccountNumber_Vanguard":"9020227"
+    }
   }

@@ -1,8 +1,8 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import * as memberData from "../../../src/aol/data/pension_data.json";
-import { UtilsAOL } from "../../../src/aol/utils_aol";
 import * as member from "../../../src/aol/data/member.json";
+import { FUND } from "../../../constants";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -18,9 +18,9 @@ test("Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransac
 
     let member = memberData.pension.Manual_Rollin;
     switch (process.env.PRODUCT!) {
-        case UtilsAOL.Product["Vanguard Super"]:
+        case FUND.VANGUARD:
             member = memberData.pension_vangaurd.Manual_Rollin;
-        case UtilsAOL.Product["Australian Ethical Super"]:
+        case FUND.AE:
             member = memberData.pension_vangaurd.Manual_Rollin;
     }
 
@@ -38,9 +38,9 @@ test("ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pension
 
     let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
     switch (process.env.PRODUCT!) {
-        case UtilsAOL.Product["Vanguard Super"]:
+        case FUND.VANGUARD:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
-        case UtilsAOL.Product["Australian Ethical Super"]:
+        case FUND.AE:
             member = memberData.pension_vangaurd.ABP_Commutation_Rollout_Fullexit_Member_Number;
     }
     await navBar.selectMember(member);
@@ -80,7 +80,7 @@ test("ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pen
     await allure.parentSuite(process.env.PRODUCT!);
     
     await navBar.navigateToPensionMembersPage();
-    let member = memberData.pension.ABP_Commutation_Rollout_Fullexit_Member_Number;
+    let member = memberData.pension.ABP_UNP_Commutation_Rollout_Fullexit_Member_Number;
     member = "9020358";
     await navBar.selectMember(member);
     await pensionTransactionPage.commutationUNPBenefitReject(false);
