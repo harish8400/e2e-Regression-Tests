@@ -1,6 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
-import { selectedProduct } from "../../../src/aol/utils_aol";
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -10,7 +10,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs member creation tests */
-test(selectedProduct()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered", async ({ memberPage, navBar }) => {
+test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered", async ({ memberPage, navBar }) => {
 
     try {
 
@@ -25,7 +25,7 @@ test(selectedProduct()+"-Verify a new Active Member Account is created successfu
 
 })
 
-test(selectedProduct()+"-Verify new member creation without TFN and welcome letter is triggered", async ({ memberPage, navBar }) => {
+test(fundName()+"-Verify new member creation without TFN and welcome letter is triggered", async ({ memberPage, navBar }) => {
 
     try {
 
@@ -40,7 +40,7 @@ test(selectedProduct()+"-Verify new member creation without TFN and welcome lett
 
 })
 
-test(selectedProduct()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful", async ({ memberPage, navBar }) => {
+test(fundName()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful", async ({ memberPage, navBar }) => {
 
     try {
 

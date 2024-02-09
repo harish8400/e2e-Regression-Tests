@@ -2,13 +2,14 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 import * as memberData from "../../../src/aol/data/pension_data.json";
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ }) => {
     test.setTimeout(600000);
 });
 
 
-test("Internal Transfer from Accumulation to TTR", async ({ navBar , internalTransferPage }) => {
+test(fundName()+"-Internal Transfer from Accumulation to TTR", async ({ navBar , internalTransferPage }) => {
     
     try {
         await allure.suite("Pension");
@@ -24,7 +25,7 @@ test("Internal Transfer from Accumulation to TTR", async ({ navBar , internalTra
     
 })
 
-test("Internal Transfer from TTR to Accumulation", async ({ navBar , internalTransferPage }) => {
+test(fundName()+"-Internal Transfer from TTR to Accumulation", async ({ navBar , internalTransferPage }) => {
     
     try {
         await allure.suite("Pension");
@@ -42,7 +43,7 @@ test("Internal Transfer from TTR to Accumulation", async ({ navBar , internalTra
     
 })
 
-test("Retirement Transition process with PTB @pension", async ({ navBar , internalTransferPage, pensionTransactionPage }) => {
+test(fundName()+"-Retirement Transition process with PTB @pension", async ({ navBar , internalTransferPage, pensionTransactionPage }) => {
     
     try {
         await allure.suite("Pension");
@@ -67,7 +68,7 @@ test("Retirement Transition process with PTB @pension", async ({ navBar , intern
     
 })
 
-test("Retirement Transition process with CoR and No PTB @pension", async ({ navBar , internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
+test(fundName()+"-Retirement Transition process with CoR and No PTB @pension", async ({ navBar , internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
     
     try {
         await allure.suite("Pension");

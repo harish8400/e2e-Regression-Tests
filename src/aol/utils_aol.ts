@@ -20,7 +20,7 @@ export class UtilsAOL {
     }
 }
 
-export function selectedProduct() {
+export function fundName() {
     let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
     return product;
 }

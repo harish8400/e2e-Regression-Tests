@@ -2,6 +2,7 @@ import { aolTest as test } from "../../../src/aol/base_aol_test";
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 import * as member from "../../../src/aol/data/member.json"
+import { fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ }) => {
@@ -9,7 +10,7 @@ test.beforeEach(async ({ }) => {
 });
 
 /** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
-test("Maintain Income Stream Account_Bank Account Details_Edit @pension", async ({ navBar , accountInfoPage }) => {
+test(fundName()+"-Maintain Income Stream Account_Bank Account Details_Edit @pension", async ({ navBar , accountInfoPage }) => {
     
     try {
         await allure.suite("Bank Account Details");
@@ -26,7 +27,7 @@ test("Maintain Income Stream Account_Bank Account Details_Edit @pension", async 
 })
 
 /** Maintain Income Stream Account: Bank account details (Add New) */
-test("Maintain Income Stream Account_New Bank Account Details @pension", async ({ navBar , accountInfoPage }) => {
+test(fundName()+"-Maintain Income Stream Account_New Bank Account Details @pension", async ({ navBar , accountInfoPage }) => {
     
     try {
         await allure.suite("Bank Account Details");
@@ -43,7 +44,7 @@ test("Maintain Income Stream Account_New Bank Account Details @pension", async (
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
-test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Monthly' @pension", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"-Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Monthly' @pension", async ({ navBar , pensionAccountPage }) => {
     
     try {
         await allure.suite("Pension Payment Details");
@@ -60,7 +61,7 @@ test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Mon
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
-test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Quarterly' @pension", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"-Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Quarterly' @pension", async ({ navBar , pensionAccountPage }) => {
     
     try {
         await allure.suite("Pension Payment Details");
@@ -77,7 +78,7 @@ test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Qua
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
-test("Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Annually' @pension", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"-Maintain Income Stream Account_Pension Payment Details_Edit Frequency 'Annually' @pension", async ({ navBar , pensionAccountPage }) => {
     
     try {
         await allure.suite("Pension Payment Details");

@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import { allure } from "allure-playwright";
 import * as caseManagement from '../../../src/aol/data/case_data.json';
 import { AssertionError } from "assert";
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -12,7 +13,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
-test("Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
     try {
 
         let expectedOutcomes = ['Processing', 'Error', 'Success'];
@@ -27,7 +28,7 @@ test("Verify new case creation without assigning to a member @casemanagement", a
 })
 
 /** Verify that adhoc case can be created and assigned to an existing member */
-test("Create adhoc case and assign to user @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Create adhoc case and assign to user @casemanagement", async ({ dashboardPage }) => {
 
     try {
 
@@ -44,7 +45,7 @@ test("Create adhoc case and assign to user @casemanagement", async ({ dashboardP
 })
 
 /* Ensure that user can find exact created and updated date time of a case */
-test("Ensure that user can find exact created and updated date time of a case @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure that user can find exact created and updated date time of a case @casemanagement", async ({ dashboardPage }) => {
 
     try {
         
@@ -58,7 +59,7 @@ test("Ensure that user can find exact created and updated date time of a case @c
 })
 
 /* Ensure that primary statuses of the cases are: Pending, In Progress, In Review, On Hold (Open Cases) and Closed, Deleted (Closed Cases) */
-test("Verify the primary statuses of open cases @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Verify the primary statuses of open cases @casemanagement", async ({ dashboardPage }) => {
     
     try {
 
@@ -74,7 +75,7 @@ test("Verify the primary statuses of open cases @casemanagement", async ({ dashb
 })
 
 /* Ensure cases are correctly displayed under Open Cases tab with following tabs: Open Cases, Closed Cases, On Hold, SLA */
-test("Verify that open cases are displayed correctly @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Verify that open cases are displayed correctly @casemanagement", async ({ dashboardPage }) => {
     try {
 
         //await dashboardPage.navigateToCaseManagement();
@@ -89,7 +90,7 @@ test("Verify that open cases are displayed correctly @casemanagement", async ({ 
 })
 
 /* Ensure filtering is available on Open Cases in Case Management & user can filter on multiple parameters */
-test("Verify filter option on open cases @casemanagement", async ({ dashboardPage }) => { 
+test(fundName()+"-Verify filter option on open cases @casemanagement", async ({ dashboardPage }) => { 
     try {
 
         // verify if all filters are displayed correctly
@@ -117,7 +118,7 @@ test("Verify filter option on open cases @casemanagement", async ({ dashboardPag
     }
 })
 
-test("Verify that an existing case can be updated by assigning to a user @casemanagement", async ({ dashboardPage }) => { 
+test(fundName()+"-Verify that an existing case can be updated by assigning to a user @casemanagement", async ({ dashboardPage }) => { 
     try {
 
         await dashboardPage.clickOnFilter();
@@ -144,7 +145,7 @@ test("Verify that an existing case can be updated by assigning to a user @casema
     }
 })
 
-test("Verify that an existing case can be updated by adding notes/comments @casemanagement", async ({ dashboardPage }) => { 
+test(fundName()+"-Verify that an existing case can be updated by adding notes/comments @casemanagement", async ({ dashboardPage }) => { 
     try {
 
         await dashboardPage.clickOnFilter();
@@ -167,7 +168,7 @@ test("Verify that an existing case can be updated by adding notes/comments @case
     }
 })
 
-test("Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => { 
+test(fundName()+"-Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => { 
 
     try {
 
