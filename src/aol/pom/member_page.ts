@@ -154,8 +154,7 @@ export class MemberPage extends BasePage {
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
         
         await this.accumulationAddMember.click();
-        let tfns = UtilsAOL.getValidTFN();
-        tfns = 233062054;
+        let tfn = UtilsAOL.generateValidTFN();
         await this.title.click();
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
@@ -170,7 +169,7 @@ export class MemberPage extends BasePage {
         
         if(!tfnNull){
             await this.tfn.click();
-            await this.tfn.fill(`${tfns}`);
+            await this.tfn.fill(`${tfn}`);
         }
         
         await this.address1.fill(member.address);

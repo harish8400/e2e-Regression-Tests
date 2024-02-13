@@ -19,39 +19,33 @@ export class UtilsAOL {
         return names[Math.floor(Math.random() * names.length)]
     }
 
-    static getValidTFN() {
-        let isValidTFN = false;
-        let validTFN;
-
+    static generateValidTFN(): number {
+        let isValidTFN: boolean = false;
+        let validTFN: number = 0;
         while (!isValidTFN) {
             validTFN = UtilsAOL.generateTFN();
             isValidTFN = `${validTFN}`.startsWith('2');
         }
-
         return validTFN;
     }
 
-    static generateTFN() {
-        const weights = [10, 7, 8, 4, 6, 3, 5, 2, 1];
-        let tfn = Math.floor(100000000 + Math.random() * 900000000);
-        let tfnStr = `${tfn}`;
-        let sum = 0;
-        let zero = 13;
-      
+    static generateTFN(): number {
+        const weights: number[] = [10, 7, 8, 4, 6, 3, 5, 2, 1];
+        let tfn: number = Math.floor(100000000 + Math.random() * 900000000);
+        let tfnStr: string = `${tfn}`;
+        let sum: number = 0;
+        let zero: number = 13;
         while (zero) {
-          tfn = parseInt(tfn.toString(), 10) + 1;
-          tfnStr = `${tfn}`;
-      
-          for (let i = 0; i < tfnStr.length; i++) {
-            sum += parseInt(tfnStr.substring(i, 1)) * weights[i];
-          }
-      
-          zero = sum % 11;
-          sum = 0;
+            tfn = parseInt(tfnStr, 10) + 1;
+            tfnStr = `${tfn}`;
+            for (let i = 0; i < tfnStr.length; i++) {
+                sum += parseInt(tfnStr.substr(i, 1), 10) * weights[i];
+            }
+            zero = sum % 11;
+            sum = 0;
         }
-      
         return tfn;
-      }
+    }
 }
 
 export function fundName() {
