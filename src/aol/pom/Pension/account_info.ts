@@ -1,7 +1,8 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import * as member from "../../data/member.json"
 import { ReviewCase } from "../component/review_case";
+import { DateUtils } from "../../../utils/date_utils";
 
 export class AccountInfoPage extends BasePage{
 
@@ -16,6 +17,13 @@ export class AccountInfoPage extends BasePage{
     readonly accountNUmberField: Locator;
     readonly purposeDropdown: Locator;
     readonly purposeOption: Locator;
+
+    //Edit CRN
+    readonly editCRN: Locator;
+    readonly CRN_Field: Locator;
+    readonly eligibleServiceDate: Locator;
+    readonly verifyCRN: Locator;
+    readonly CRN_SuccessMessage: Locator;
 
     //approval process step
     readonly viewCasesButton: Locator;
@@ -40,6 +48,13 @@ export class AccountInfoPage extends BasePage{
         this.accountNameField = page.getByLabel('Account Name');
         this.purposeDropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
         this.purposeOption = page.getByRole('option', { name: 'Pension Payment' });
+
+        //Edit CRN
+        this.editCRN = page.locator('button').filter({ hasText: 'Edit Content' });
+        this.CRN_Field = page.getByLabel('CRN');
+        this.eligibleServiceDate = page.locator('input[name="eligibleServiceDate"]');
+        this.verifyCRN = page.getByText(member.CRN);
+        this.CRN_SuccessMessage = page.getByText('Updated member.');
 
         //Approval Process step
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
@@ -87,7 +102,6 @@ export class AccountInfoPage extends BasePage{
         await this.accountNameField.click();
         await this.accountNameField.fill(member.AccountName);
         await this.sleep(5000);
-        //await this.accountNUmberField.click();
         await this.accountNUmberField.fill(member.AccountNumber);
         await this.purposeDropdown.click();
         await this.sleep(5000);
@@ -100,5 +114,21 @@ export class AccountInfoPage extends BasePage{
         await this.sleep(10000);
         await this.reviewCase.reviewCaseProcess(this.NewBankAcc_successMessage);
 
+    }
+
+    //CRN Update
+    async updateCRN(){
+        await this.accountInfo.click();
+        await this.sleep(3000);
+        await this.editCRN.click();
+        await this.CRN_Field.fill(member.CRN);
+        await this.eligibleServiceDate.fill(DateUtils.ddmmyyyStringDate(0));
+        await this.viewCasesButton.click();
+        await this.createCaseButton.click();
+        await this.sleep(5000);
+        await this.buttonLinkToCase.click();
+        await this.reviewCase.reviewCaseProcess(this.CRN_SuccessMessage);
+        await this.CRN_SuccessMessage.scrollIntoViewIfNeeded();
+        await expect(this.verifyCRN).toBeVisible();
     }
 }

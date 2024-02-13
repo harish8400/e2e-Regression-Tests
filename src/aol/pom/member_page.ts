@@ -5,6 +5,7 @@ import { DateUtils } from "../../utils/date_utils";
 import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
+import { FUND } from "../../../constants";
 
 export class MemberPage extends BasePage { 
 
@@ -150,10 +151,11 @@ export class MemberPage extends BasePage {
 
     }
 
-    async addNewMember(tfnNull: boolean){
+    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
         
         await this.accumulationAddMember.click();
-        let tfns = TFN.getValidTFN();
+        let tfns = UtilsAOL.getValidTFN();
+        tfns = 233062054;
         await this.title.click();
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
@@ -168,7 +170,7 @@ export class MemberPage extends BasePage {
         
         if(!tfnNull){
             await this.tfn.click();
-            await this.tfn.fill(tfns.tfn);
+            await this.tfn.fill(`${tfns}`);
         }
         
         await this.address1.fill(member.address);
@@ -180,8 +182,8 @@ export class MemberPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
 
-        if(process.env.PRODUCT != UtilsAOL.Product["HESTA for Mercy"]){
-            await this.dateJoined.fill(member.dateJoined);
+        if(process.env.PRODUCT != FUND.HESTA && dateJoinedFundEarlier){
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
         }
 
         await this.nextStep.click();
@@ -216,16 +218,18 @@ export class MemberPage extends BasePage {
         await this.nextStep.click();
         
         //Beneficiaries
-        await this.addNewBeneficiary.click();
-        await this.beneficiaryName.fill(member.names[0]);
-        await this.beneficiaryName.press('Tab');
-        await this.beneficiaryType.click();
-        await this.beneficiaryRelation.click();
-        await this.beneficiaryRelationSelect.click();
-        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.beneficiaryEffectiveDate.press('Tab');
-        await this.beneficiaryPercentage.fill('100');
-        await this.beneficiarySave.click();
+        if(addBeneficiary){
+            await this.addNewBeneficiary.click();
+            await this.beneficiaryName.fill(member.names[0]);
+            await this.beneficiaryName.press('Tab');
+            await this.beneficiaryType.click();
+            await this.beneficiaryRelation.click();
+            await this.beneficiaryRelationSelect.click();
+            await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+            await this.beneficiaryEffectiveDate.press('Tab');
+            await this.beneficiaryPercentage.fill('100');
+            await this.beneficiarySave.click();
+        }
         
         //Create account
         await this.createAccount.click();
