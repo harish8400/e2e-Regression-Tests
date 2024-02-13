@@ -5,21 +5,19 @@ import { FUND } from "../../../constants";
 import { fundName } from "../../../src/aol/utils_aol";
 //import { product }from "../../../src/aol/utils_aol";
 
-test.beforeEach(async ({ }) => {
+test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
+    await navBar.selectProduct();
+    await allure.suite("Pension");
+    await allure.parentSuite(process.env.PRODUCT!);
 });
 
 test(fundName()+"-Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Rollin_And_Verify_Cash_Investment;
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.RolloverInTransaction();
-
     } catch (error) {
         throw error;
     }
@@ -27,16 +25,10 @@ test(fundName()+"-Money gets invested into CASH after roll-in post member creati
 
 test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Change;
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.DrawdownTransactionsProportional();
-
     } catch (error) {
         throw error;
     }
@@ -44,12 +36,7 @@ test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, 
 
 test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
-
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
             case FUND.VANGUARD:
@@ -69,12 +56,7 @@ test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar
 
 test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
-
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
             case FUND.VANGUARD:
@@ -94,12 +76,7 @@ test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pe
 
 test(fundName()+"-For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.navigateToPensionMembersPage();
-
         let member = memberData.pension.Pension_Drawdown_Change;
         switch (process.env.PRODUCT!) {
             case FUND.VANGUARD:

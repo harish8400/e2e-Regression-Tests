@@ -42,7 +42,8 @@ export class PensionInvestmentPage extends BasePage {
 
     readonly approveProcessStep: Locator;
     readonly retryProcessStep: Locator;
-    readonly ApproveButtonVisblity: Locator;
+    readonly rollInSuccess: Locator;
+    readonly pensionDrawdownUpdateSuccess: Locator;
 
     //drawdown proposal
     readonly FilterClick: Locator;
@@ -115,7 +116,8 @@ export class PensionInvestmentPage extends BasePage {
 
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
-    this.ApproveButtonVisblity = page.locator("(//button//span[text()=' Approve '])");
+    this.rollInSuccess = page.getByText('Processed Roll In.');
+    this.pensionDrawdownUpdateSuccess = page.getByText('Processed insert pension history.');
 
     this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.RolloverOption = page.getByText('Client-RTR');
@@ -145,8 +147,8 @@ export class PensionInvestmentPage extends BasePage {
 
     //Percentage
     this.SelectPercentage = page.getByText('Percentage');
-    this.SelectInputBox = page.getByRole('textbox', { name: 'Select' });
-    this.PercentageInput = page.getByRole('textbox').nth(1);//-- fill
+    this.SelectInputBox = page.getByRole('main').getByPlaceholder('Select');
+    this.PercentageInput = page.getByRole('textbox').nth(2);//-- fill
     this.AddButton = page.getByRole('button', { name: 'Add', exact: true });
 
     }
@@ -203,32 +205,8 @@ export class PensionInvestmentPage extends BasePage {
         await this.RolloverOption.click();
 
         await this.LinkCase.click();
-
-
-        await this.sleep(5000);
-
-
-
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-        } while (await this.ApproveButtonVisblity.count());
+        await this.sleep(3000);
+        await this.reviewCase.reviewCaseProcess(this.rollInSuccess);
 
         await this.sleep(1000);
         await this.InvestmentsandBalances.click();
@@ -248,142 +226,52 @@ export class PensionInvestmentPage extends BasePage {
 
     //Drawdown Transactions
     async DrawdownTransactionsProportional() {
-
         await this.PensionTab.click();
-
-        await this.sleep(5000);
+        await this.sleep(3000);
         await this.BtnEdit.click();
-        await this.ProDataFirstYear.click();
-
         await this.ViewCase.click();
-        await this.sleep(1000);
+        await this.sleep(3000);
         await this.CreateCase.click();
-        await this.sleep(2000);
+        await this.sleep(3000);
+        await this.ProDataFirstYear.click();
         await this.LinkCase.click();
-
-        await this.sleep(5000);
-
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-        } while (await this.ApproveButtonVisblity.count());
-
-        let updated = await this.page.getByText('No', { exact: true }).textContent();
-
-        expect(updated).toEqual('No');
-
+        await this.sleep(2000);
+        await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
     }
 
-
     //specific order
-
     async DrawdownTransactionsSpecificOrder() {
-
         await this.PensionTab.click();
         await this.PensionDrawdownDetailsEdit.click();
-
-
-        await this.ClearButton.click();
-        await this.ClickCombobox.click();
-
-        await this.SelectSpecificOrder.click();
-        //await this.ClickOnInputBox.click();
-        //await this.SelectProduct.click();
-
-
         await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
+        await this.ClearButton.click();
+        await this.ClickCombobox.click();
+        await this.SelectSpecificOrder.click();
         await this.LinkCase.click();
-
-        await this.sleep(6000);
-
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-        } while (await this.ApproveButtonVisblity.count());
-
+        await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
     }
 
 
     async DrawdownTransactionsPercentage() {
-
         await this.PensionTab.click();
         await this.PensionDrawdownDetailsEdit.click();
-
-        await this.ClearButton.click();
-        await this.ClickCombobox.click();
-
-        await this.SelectPercentage.click();
-        await this.SelectInputBox.click();
-
-        await this.SelectProduct.click();
-        await this.PercentageInput.fill('100');
-
-        await this.AddButton.click();
-
         await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
+        await this.ClearButton.click();
+        await this.ClickCombobox.click();
+        await this.SelectPercentage.click();
+        await this.SelectInputBox.click();
+        await this.SelectProduct.click();
+        await this.PercentageInput.click();
+        await this.PercentageInput.fill('100');
+        await this.AddButton.click();
         await this.LinkCase.click();
-
-        await this.sleep(6000);
-
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-        } while (await this.ApproveButtonVisblity.count());
-
+        await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
     }
 
     async verifyFutureDrawDownOptions() {

@@ -6,6 +6,7 @@ import { DateUtils } from "../../../utils/date_utils";
 import { Navbar } from "../component/navbar";
 import { ReviewCase } from "../component/review_case";
 import * as member from "../../data/member.json";
+import { UtilsAOL } from "../../utils_aol";
 
 export class PensionTransactionPage extends BasePage {
 
@@ -110,6 +111,7 @@ export class PensionTransactionPage extends BasePage {
     readonly personalDetailsDODUpdateSuccess: Locator;
     readonly ButtonAddTransactions: Locator;
     readonly ButtonTransactions: Locator;
+    readonly deathBenefitTransactionSuccess: Locator;
 
   constructor(page: Page) {
     super(page)
@@ -212,7 +214,7 @@ export class PensionTransactionPage extends BasePage {
     this.personalDetailsDODUpdateSuccess = page.getByText('Updated member.');
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
-
+    this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
   }
 
   /** Member Rollin, adds a contribution to member account */
@@ -353,7 +355,7 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
 
     await this.page.locator('#gs4__combobox div').first().click();
-    await this.page.getByText('Commutation - UNP Payment').click();
+    await this.page.getByRole('option', { name: 'Commutation - UNP Payment' }).click();
     await this.page.locator('#gs6__combobox').getByLabel('CloseSelect').click();
     await this.page.getByRole('option').nth(0).click();
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
@@ -380,42 +382,19 @@ export class PensionTransactionPage extends BasePage {
         await this.OverviewTab.click();
         await this.OverViewEditButton.click();
 
-        let isDODavilable= await this.DOD.textContent;
-        if(isDODavilable== null)
+        let isDODavilable= await this.DOD.textContent();
+        if(isDODavilable == '')
         {
-
-            await this.DOD.click();
-            await this.DOD.fill('22/01/2002');
-
             await this.viewCase.click();
             await this.sleep(3000);
             await this.createCase.click();
             await this.sleep(3000);
+            await this.DOD.click();
+            await this.DOD.fill(`${DateUtils.ddmmyyyStringDate(-1)}`);
+            await this.DOD.press('Tab');
             await this.linkCase.click();
-
             await this.sleep(3000);
-
-            do {
-                //Approve step
-                if (await this.approveProcessStep.count() > 0) {
-                    try {
-                        await this.approveProcessStep.click({ timeout: 6000 });
-                    }
-                    catch (TimeoutException) {
-                    }
-                }
-
-                //Retry step
-                if (await this.retryProcessStep.count() > 0) {
-                    try {
-                        await this.retryProcessStep.click({ timeout: 6000 });
-                    }
-                    catch (TimeoutException) {
-                    }
-                }
-
-            } while (await this.personalDetailsDODUpdateSuccess.count());
-
+            await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
         }
         
         // locator update todo for vanguard and AE
@@ -423,97 +402,57 @@ export class PensionTransactionPage extends BasePage {
         await this.ButtonTransactions.click();
         await this.sleep(1000);
         await this.ButtonAddTransactions.click();
-
         await this.BenefitPayment.click();
-        await this.SearchOptionComboBox.click();
-        await this.DeathBenifitsOption.click();
-
-
-        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-
-        await this.ShareOfBeneit.click();
-        await this.ShareOfBeneitInput.fill('100');
-
-
-        await this.PaymentType.click();
-        await this.PaymentTypeInput.click();
-        await this.RelationShip.click();
-        await this.RelationShipInput.click();
-
-        await this.Title.click();
-        await this.InputTitle.click();
-
-        await this.FirstName.click();
-        await this.FirstName.fill('fsdf');
-
-        await this.LastName.click();
-        await this.LastName.fill('fsdfdfds');
-
-        await this.DateOfBirth.click();
-        await this.DateOfBirth.fill('30/01/2002');
-
-        // await this.DateOfBirthInput.click();
-
-        await this.City_Town.click();
-        await this.City_Town.fill('rrrrr');
-
-        await this.ResidentialAddress.click();
-        await this.ResidentialAddress.fill('nkdslnklsdf');
-
-
-        await this.State.click();
-        await this.StateInput.click();
-
-        await this.CheckboxKYC.click();
-        await this.PostCode.click();
-        await this.PostCode.fill('1234');
-
-        await this.TFN.click();
-        await this.TFN.fill('517 993 852');
-        await this.AccountName.click();
-        await this.AccountName.fill('dfdd');
-        await this.sleep(1000);
-
-        await this.BSBNumber.click();
-        await this.BSBNumber.fill(member.BSBNumber);
-        await this.BSBNumber.press('Enter');
-
-
-        //await this.AccountNumber1.click();
-        await this.sleep(2000);
-
-        await this.AccountNumber1.fill('12');
-        await this.sleep(3000);
 
         await this.viewCase.click();
         await this.sleep(3000);
         await this.createCase.click();
         await this.sleep(3000);
+        
+        await this.SearchOptionComboBox.click();
+        await this.DeathBenifitsOption.click();
+        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.effectiveDate.press('Tab');
+        await this.ShareOfBeneit.click();
+        await this.ShareOfBeneitInput.fill('100');
+        await this.PaymentType.click();
+        await this.PaymentTypeInput.click();
+        await this.RelationShip.click();
+        await this.RelationShipInput.click();
+        await this.Title.click();
+        await this.InputTitle.click();
+        let beneficiaryName = UtilsAOL.randomName();
+        await this.FirstName.click();
+        await this.FirstName.fill(`${beneficiaryName}`);
+        let randomSurname = UtilsAOL.randomSurname(5);
+        await this.LastName.click();
+        await this.LastName.fill(`${randomSurname}`);
+        await this.DateOfBirth.click();
+        await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0,50)}`);
+        await this.City_Town.click();
+        await this.City_Town.fill(member.city);
+        await this.ResidentialAddress.click();
+        await this.ResidentialAddress.fill(member.address);
+        await this.State.click();
+        await this.StateInput.click();
+        await this.CheckboxKYC.click();
+        await this.PostCode.click();
+        await this.PostCode.fill(member.postcode);
+        await this.TFN.click();
+        //await this.TFN.fill(`${UtilsAOL.generateTFN()}`);
+        await this.TFN.fill("261299101");
+        await this.AccountName.click();
+        await this.AccountName.fill(`${beneficiaryName}`);
+        await this.sleep(1000);
+        await this.BSBNumber.click();
+        await this.BSBNumber.fill(member.BSBNumber);
+        await this.BSBNumber.press('Enter');
+        await this.sleep(2000);
+        await this.AccountNumber1.fill(member.AccountNumber);
+        await this.sleep(3000);
         await this.linkCase.click();
-
-        await this.sleep(6000);
-
-
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 6000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-        } while (await this.personalDetailsDODUpdateSuccess.count());
+        await this.sleep(3000);
+        await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
   }
   
 
