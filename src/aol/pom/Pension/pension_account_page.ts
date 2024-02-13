@@ -421,13 +421,17 @@ export class PensionShellAccount extends BasePage {
     await expect(this.verifyShellAccountCreation).toBeVisible();
   }
 
-  async createShellAccount(uniqueSurname: string) {
+  async createShellAccount(uniqueSurname: string, addBeneficiary: boolean = false) {
 
     await this.addMemberButton.click();
     await this.addMemberPersonalDetails(uniqueSurname);
     await this.addMemberConsolidation();
     await this.addMemberInvestments();
-    await this.addMemberBeneficiaries();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+      await this.nextStep.click();
+    }
     await this.addMemberPensionDetails();
     await this.initCreateCase();
     await this.createAcc.click();

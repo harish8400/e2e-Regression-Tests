@@ -105,6 +105,7 @@ export class RelatedInformationPage extends BasePage {
         await this.viewCase.click();
         await this.sleep(3000);
         await this.createCase.click();
+        await this.sleep(3000);
         await this.conditionForRelease_dropdown.click();
         await this.option_65orOlder.click();
         await this.expiryDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);

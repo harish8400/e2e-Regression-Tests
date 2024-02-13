@@ -28,9 +28,9 @@ export class DateUtils {
     }
 
     /**format example: 24/11/2023 */
-    static ddmmyyyStringDate(dayToAdd: number) {
+    static ddmmyyyStringDate(dayToAdd: number, age:number = 0) {
         let date = new Date();
-        return `${date.getDate() + dayToAdd}/${date.getMonth() + 1}/${date.getFullYear()}`
+        return `${date.getDate() + dayToAdd}/${date.getMonth() + 1}/${date.getFullYear() - age}`
     }
 
 }

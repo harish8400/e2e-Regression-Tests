@@ -95,6 +95,7 @@ export class InternalTransferPage extends BasePage {
         await this.page.keyboard.down('Tab');
         await this.sleep(2000);
         await this.payFullBalance.click();
+        await this.sleep(2000);
         await this.partialBalance.click();
         await this.sleep(2000);
         await this.page.getByPlaceholder('0').fill('5000');

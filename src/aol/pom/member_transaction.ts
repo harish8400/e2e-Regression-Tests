@@ -161,20 +161,22 @@ export class MemberTransactionsPage extends BasePage {
         //await this.accumulationFirstMember.click();
         await this.relationshipBtn.click({ timeout: 5000 });
         await this.relationshipEditBtn.click({ timeout: 5000 });
-        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.viewCases.click({ timeout: 5000 });
         await this.createCase.click({ timeout: 5000 });
+        await this.sleep(3000);
+        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.linkCase.click();
     }
     /** Member Termination for Earlier Date */
     async employmentTerminationForEarlierDate() {
         await this.sleep(3000);
         // await this.accumulationFirstMember.click();
-        await this.transitionToRetirement.click({ timeout: 5000 });
+        await this.relationshipBtn.click({ timeout: 5000 });
         await this.relationshipEditBtn.click({ timeout: 5000 });
-        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(-2)}`);
         await this.viewCases.click({ timeout: 5000 });
-        await this.createCase.click({ timeout: 5000 });
+        await this.createCase.click({ timeout: 5000 })
+        await this.sleep(3000);;
+        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(-2)}`);
         await this.linkCase.click();
     }
 
