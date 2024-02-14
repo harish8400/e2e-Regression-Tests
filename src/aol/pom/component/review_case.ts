@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { AssertionError } from "assert";
+import { allure } from "allure-playwright";
 
 export class ReviewCase extends BasePage {
 
@@ -50,7 +51,7 @@ export class ReviewCase extends BasePage {
           await this.sleep(5000);
     
         } while ( await successLocator.count() == 0 );
-    
+        await successLocator.scrollIntoViewIfNeeded();
         await expect(successLocator).toBeVisible();
     
       }
@@ -116,6 +117,11 @@ export class ReviewCase extends BasePage {
     
         await expect(successLocator).toBeVisible();
     
+      }
+
+      async captureScreenshot(screenShotName: string = 'screenshot'){
+        //await this.page.screenshot({path: screenShotName+'.png' });
+        allure.attachment('Screenshot', await this.page.screenshot({ fullPage:true }), 'image/png');
       }
     
 }

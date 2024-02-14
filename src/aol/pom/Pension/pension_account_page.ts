@@ -9,9 +9,6 @@ import { ReviewCase } from "../component/review_case";
 import { DashboardPage } from "../dashboard_page";
 
 export class PensionShellAccount extends BasePage {
-  editPaymentDetails(arg0: string) {
-      throw new Error("Method not implemented.");
-  }
 
   readonly navbar: Navbar;
   readonly addMemberButton: Locator;
@@ -243,7 +240,7 @@ export class PensionShellAccount extends BasePage {
     this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
     this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
     this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
-    this.frequencyValue3 = page.getByRole('option', { name: 'Annually', exact: true });
+    this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
     this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
@@ -273,7 +270,7 @@ export class PensionShellAccount extends BasePage {
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
-    this.successMessage = page.getByText('Process step completed with note: Pension payment correspondence sent.');
+    this.successMessage = page.getByText('Processed insert pension history');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
@@ -424,17 +421,49 @@ export class PensionShellAccount extends BasePage {
     await expect(this.verifyShellAccountCreation).toBeVisible();
   }
 
-  async createShellAccount(uniqueSurname: string) {
+  async createShellAccount(uniqueSurname: string, addBeneficiary: boolean = false) {
 
     await this.addMemberButton.click();
     await this.addMemberPersonalDetails(uniqueSurname);
     await this.addMemberConsolidation();
     await this.addMemberInvestments();
-    await this.addMemberBeneficiaries();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+      await this.nextStep.click();
+    }
     await this.addMemberPensionDetails();
     await this.initCreateCase();
     await this.createAcc.click();
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
   }
+
+  async editPaymentDetails(frequency?: string) {
+    await this.pensionTab.click();
+    await this.sleep(8000);
+    await this.editIcon.click();
+    await this.sleep(3000)
+    await this.frequency.click();
+    if (frequency == 'Bi-Annualy') {
+      await this.frequencyValue3.click();
+    }
+    else if (frequency == 'Quartely') {
+      await this.frequencyValue2.click();
+    }
+    else {
+      await this.frequencyValue3.click();
+    }
+    await this.nextPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(15)}`);
+    await this.annualPaymentMethod.click();
+    await this.annualPaymentMethodValue.click();
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+    await this.linkCase.click();
+    await this.sleep(5000);
+    await this.reviewCase.reviewCaseProcess(this.successMessage);
+  }
+  
 }
