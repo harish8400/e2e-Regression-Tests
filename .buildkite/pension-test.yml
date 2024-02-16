@@ -5,7 +5,7 @@ env:
     ENVIRONMENT: '${ENVIRONMENT}'
 
 steps:
-    - label: ':test_tube: Pension Tests'
+    - label: ':test_tube: Playwright test'
       command: './buildkite/scripts/pension-test.sh'
       artifact_paths:
           - 'playwright-report/**/*'

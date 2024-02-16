@@ -8,7 +8,6 @@ import { FUND } from "../../../constants";
 
 export class MemberPage extends BasePage { 
 
-    readonly processesLink: Locator;
     readonly accumulationAddMember: Locator;
     readonly memberInfoTab: Locator;
     readonly memberCreatedCase: Locator;
@@ -73,6 +72,12 @@ export class MemberPage extends BasePage {
     readonly beneficiarySave: Locator;
     readonly createAccount: Locator;
 
+    //approve member creation process
+    readonly processeslink: Locator
+    readonly memberCreateProcessRow: Locator
+    readonly memberCreateReviewRow: Locator
+    readonly memberActivityData: Locator
+
     readonly memberGivenName: string;
     readonly memberSurname: string;
     readonly reviewCase: ReviewCase;
@@ -81,7 +86,6 @@ export class MemberPage extends BasePage {
         super(page)
 
     this.reviewCase = new ReviewCase(page);
-    this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
     this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
     this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create',exact: true });
@@ -147,14 +151,18 @@ export class MemberPage extends BasePage {
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
     this.createAccount = page.getByRole('button', { name: 'Create Account' });
+    //MemberCreateProcess
+    this.processeslink = page.getByRole('link', { name: 'Processes' });
+    this.memberCreateProcessRow = page.getByLabel('Member - Create', { exact: true }).first();
+    this.memberCreateReviewRow = page.getByRole('cell', { name: 'In Review' });
+    this.memberActivityData = page.getByRole('button', { name: 'Activity Data' });
 
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
         
         await this.accumulationAddMember.click();
-        let tfns = UtilsAOL.getValidTFN();
-        tfns = 233062054;
+        let tfn = UtilsAOL.generateValidTFN();
         await this.title.click();
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
@@ -169,7 +177,7 @@ export class MemberPage extends BasePage {
         
         if(!tfnNull){
             await this.tfn.click();
-            await this.tfn.fill(`${tfns}`);
+            await this.tfn.fill(`${tfn}`);
         }
         
         await this.address1.fill(member.address);
@@ -251,5 +259,15 @@ export class MemberPage extends BasePage {
         //Check member creation case and approve correspondence
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
-    
+
+    async approveMemberCreationProcess(surName: string){
+        await this.processeslink.click();
+        await this.memberCreateProcessRow.click();
+        //await this.page.locator('button').filter({ hasText: `Member - CreateRun on${DateUtils.ddMMMyyyStringDate(new Date())}` }).first();
+        await this.memberCreateReviewRow.click();
+        await this.memberActivityData.click();
+        await expect(this.page.getByText(`Surname:${surName}`)).toBeVisible();
+        await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
+    }
+
 }

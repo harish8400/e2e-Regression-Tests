@@ -439,8 +439,8 @@ export class PensionTransactionPage extends BasePage {
         await this.PostCode.click();
         await this.PostCode.fill(member.postcode);
         await this.TFN.click();
-        //await this.TFN.fill(`${UtilsAOL.generateTFN()}`);
-        await this.TFN.fill("261299101");
+        let tfn = UtilsAOL.generateValidTFN();
+        await this.TFN.fill(`${tfn}`);
         await this.AccountName.click();
         await this.AccountName.fill(`${beneficiaryName}`);
         await this.sleep(1000);
