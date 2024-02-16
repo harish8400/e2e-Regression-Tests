@@ -2,6 +2,7 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import * as member from "../data/member.json";
 import { DateUtils } from "../../utils/date_utils";
+import * as priceData from "../../../data/hfm_accum_prices.json"
 
 export class InvestmentsAndPricing extends BasePage {
     readonly investmentsLink: Locator;
@@ -16,6 +17,10 @@ export class InvestmentsAndPricing extends BasePage {
     readonly redemptionPrice: Locator;
     readonly midPrice: Locator;
     readonly saveButton: Locator;
+    readonly filterButton: Locator;
+    readonly filterReferenceDate: Locator;
+    readonly filterReferenceDateInput: Locator;
+    readonly filterApplyButton: Locator;
     readonly investmentsRow: Locator;
 
     readonly investmentName: Locator;
@@ -31,9 +36,12 @@ export class InvestmentsAndPricing extends BasePage {
     readonly addButton: Locator;
     readonly save_Button: Locator;
 
+    readonly today: Date;
+
     constructor(page: Page){
         super(page)
 
+        this.today = new Date();
         this.investmentsLink = page.getByRole('link', { name: 'Investments & Pricing' });
         this.pricingTab = page.getByRole('button', { name: 'Pricing' });
         this.addInvestmentPrice_button = page.getByRole('button', { name: 'ADD INVESTMENT PRICE' });
@@ -46,6 +54,10 @@ export class InvestmentsAndPricing extends BasePage {
         this.redemptionPrice = page.locator("(//input[@class='el-input__inner'])[6]");
         this.midPrice = page.locator("(//input[@class='el-input__inner'])[7]")
         this.saveButton = page.getByRole('button', { name: 'SAVE' });
+        this.filterButton = page.getByRole('button', { name: 'FILTER' });
+        this.filterReferenceDate = page.getByText('Investment Date Reference');
+        this.filterReferenceDateInput = page.getByPlaceholder('dd/mm/yyyy').first();
+        this.filterApplyButton = page.getByRole('button', { name: 'APPLY' });
         this.investmentsRow = page.getByRole("row").nth(1);
 
         this.investmentName = page.getByText(member.InvestmentNameToBeUpdated, { exact: true });
@@ -75,12 +87,16 @@ export class InvestmentsAndPricing extends BasePage {
         await this.custodianName_option.click();
         await this.referenceDate.click();
         await this.referenceDate.fill(DateUtils.ddmmyyyStringDate(0));
-        await this.applicationPrice.fill(member.applicationPrice);
-        await this.redemptionPrice.fill(member.redemptionPrice);
-        await this.midPrice.fill(member.midPrice);
+        await this.applicationPrice.fill(priceData.prices[2].applicationPrice.toString());
+        await this.redemptionPrice.fill(priceData.prices[2].redemptionPrice.toString());
+        await this.midPrice.fill(priceData.prices[2].midPrice.toString());
         await this.saveButton.click();
-        const date = DateUtils.ddmmmyyyyStringDate();
-        console.log(this.investmentName.allInnerTexts());
+        await this.filterButton.click();
+        await this.filterReferenceDate.click();
+        await this.filterReferenceDateInput.fill(DateUtils.ddmmyyyStringDate(0));
+        await this.filterApplyButton.click();
+        await this.sleep(2000);
+        const date = DateUtils.ddMMMyyyStringDate(this.today);
         await expect(this.investmentsRow).toContainText(member.investmentName && date);
     }
 

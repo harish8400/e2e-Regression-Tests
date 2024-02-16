@@ -92,11 +92,6 @@ export class InsurancePage extends BasePage {
         this.gender_Intersex = page.getByText('IntersexIntersex');
         this.gender_NotStated = page.getByText('Not StatedNot Stated');
         this.occupation = page.getByPlaceholder('Occupation', { exact: true });
-        // this.occupationStatus = page.getByPlaceholder('Occupation status');
-        // this.occupationStatus_FullTime = page.getByText('Full TimeFull Time');
-        // this.occupationStatus_PartTime = page.getByText('Part TimePart Time');
-        // this.occupationStatus_Casual = page.getByText('CasualCasual');
-        // this.occupationStatus_Contractor = page.getByText('ContractorContractor');
         this.commencementConditions = page.getByLabel('Commencement conditions *');
         this.commencementCondition_FirstContribution = page.getByText('First contributionFirst');
         this.reinstatement_Period = page.locator("//input[@id='reinstatementPeriod']/preceding-sibling::div");
@@ -153,7 +148,7 @@ export class InsurancePage extends BasePage {
         await this.maxCoverage.click();
         await this.maxCoverageField.fill('100000');
         await this.minAge.click();
-        await this.minAgeField.fill('65');
+        await this.minAgeField.fill('25');
         await this.maxAge.click();
         await this.maxAgeField.fill('66')
         await this.gender.click();

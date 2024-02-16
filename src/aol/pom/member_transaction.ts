@@ -1,8 +1,8 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
-import { AssertionError } from "assert";
+import { ReviewCase } from "./component/review_case";
 
 export class MemberTransactionsPage extends BasePage {
 
@@ -12,7 +12,8 @@ export class MemberTransactionsPage extends BasePage {
     readonly memberAddTransaction: Locator;
     readonly memberAddContribution: Locator;
     readonly memberContributionType: Locator;
-    readonly memberContributionTypeSelection: Locator;
+    readonly memberContributionType_personal: Locator;
+    readonly memberContributionType_salarySacrifise: Locator;
     readonly paymentReference: Locator;
     readonly paymentReceivedDate: Locator;
     readonly effectiveDate: Locator;
@@ -45,10 +46,12 @@ export class MemberTransactionsPage extends BasePage {
     readonly relationshipEditBtn: Locator;
     readonly employerEndDate: Locator;
     readonly viewCases: Locator;
+    readonly reviewCase: ReviewCase;
 
     constructor(page: Page) {
         super(page)
 
+        this.reviewCase = new ReviewCase(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
         //Rollover In
@@ -56,8 +59,9 @@ export class MemberTransactionsPage extends BasePage {
         this.memberTransactionTab = page.getByRole('button', { name: 'Transactions' });
         this.memberAddTransaction = page.getByRole('button', { name: 'ADD TRANSACTION' });
         this.memberAddContribution = page.getByText('Contribution', { exact: true });
-        this.memberContributionType = page.locator("(//div[@class='gs__selected-options'])[2]");
-        this.memberContributionTypeSelection = page.getByRole('option', { name: 'Personal', exact: true }).locator('span');
+        this.memberContributionType = page.locator("(//div[@class='gs__selected-options'])[2]")
+        this.memberContributionType_personal = page.getByRole('option', { name: 'Personal', exact: true }).locator('span');
+        this.memberContributionType_salarySacrifise = page.getByRole('option', { name: 'Salary Sacrifice' });
         this.paymentReference = page.getByLabel('Payment Reference *');
         this.paymentReceivedDate = page.locator('input[name="paymentReceivedDate"]');
         this.effectiveDate = page.locator('input[name="effectiveDate"]');
@@ -69,7 +73,7 @@ export class MemberTransactionsPage extends BasePage {
         this.linkCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
-        this.verifyContributionSuccess = page.getByText('Process step completed with note: Member contribution payload sent.');
+        this.verifyContributionSuccess = page.getByText('Processed contribution for member.');
         this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
         this.trasitionMembers = page.getByRole('link', { name: 'Members' });
         // Member Termination   
@@ -99,7 +103,7 @@ export class MemberTransactionsPage extends BasePage {
     }
 
     /** Member Rollin, adds a contribution to member account */
-    async memberRolloverIn() {
+    async memberRolloverIn(contributionType?: String) {
         await this.memberHFMFundLink.click();
         await this.memberTransactionTab.click();
         await this.memberAddTransaction.click();
@@ -110,7 +114,12 @@ export class MemberTransactionsPage extends BasePage {
         await this.sleep(3000);
 
         await this.memberContributionType.click();
-        await this.memberContributionTypeSelection.click();
+        if(contributionType == 'Salary Sacrifise'){
+            await this.memberContributionType_salarySacrifise.click();
+        }
+        else{
+            await this.memberContributionType_personal.click();
+        }
         await this.paymentReference.fill('PA');
         await this.paymentReceivedDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.paymentReceivedDate.press('Tab');
@@ -122,37 +131,8 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
+        await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
 
-        //TO DO remove duplicate
-        //Review case process steps, approve/retry or exit on exception
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
-
-            //assert(await this.processException.count() < 0);
-            //Break if there is an process exception
-            if (await this.processException.count() > 0) {
-                throw new AssertionError({ message: "Error in Processing Case" });
-            }
-
-        } while (await this.verifyContributionSuccess.count() == 0);
-
-        await expect(this.verifyContributionSuccess).toBeVisible();
     }
 
     /** Member Termination for Current Date */

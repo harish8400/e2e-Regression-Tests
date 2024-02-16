@@ -1,6 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
-import { TFN } from "../data/tfn";
 import { DateUtils } from "../../utils/date_utils";
 import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";

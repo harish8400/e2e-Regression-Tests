@@ -1,5 +1,5 @@
 {
-    "memberID":"MER-PEN-450880",
+    "memberID":"9010866",
     "paymentDate":"02/02/2024",
     "dob": "16/06/1955",
     "email": "pharish.kumar@grow.inc",
@@ -22,10 +22,7 @@
     "PensionMembershipAccountNumber":"9020227",
     "AccountNumber":"123456",
     "CRN":"103675704651001506",
-    "investmentName": "Australian Shares (AESAUS)",
-    "applicationPrice": "1.7374",
-    "redemptionPrice": "1.7374",
-    "midPrice": "1.7374",
+    "investmentName": "Australian Shares (SASIA)",
     "InvestmentNameToBeUpdated": "Australian Shares",
     "NewInvestmentName": "Australian_Shares",
     "names":[
