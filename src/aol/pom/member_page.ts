@@ -1,13 +1,17 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
-import { TFN } from "../data/tfn";
-import { ProcessPage } from "./process_page";
 import { DateUtils } from "../../utils/date_utils";
+import { UtilsAOL } from "../utils_aol";
+import * as member from "../data/member.json";
+import { ReviewCase } from "./component/review_case";
+import { FUND } from "../../../constants";
 
 export class MemberPage extends BasePage { 
 
-    readonly processPage: ProcessPage;
-    readonly processesLink: Locator;
+    readonly accumulationAddMember: Locator;
+    readonly memberInfoTab: Locator;
+    readonly memberCreatedCase: Locator;
+    readonly welcomeLetterTrigger: Locator
 
     readonly title: Locator;
     readonly selectTitle: Locator;
@@ -29,6 +33,7 @@ export class MemberPage extends BasePage {
     readonly preferredContactName: Locator;
     readonly residencyStatus: Locator;
     readonly residencyStatusSelect: Locator;
+    readonly dateJoined: Locator;
     readonly nextStep: Locator;
     //Employer
     readonly employer: Locator;
@@ -67,17 +72,27 @@ export class MemberPage extends BasePage {
     readonly beneficiarySave: Locator;
     readonly createAccount: Locator;
 
+    //approve member creation process
+    readonly processeslink: Locator
+    readonly memberCreateProcessRow: Locator
+    readonly memberCreateReviewRow: Locator
+    readonly memberActivityData: Locator
+
     readonly memberGivenName: string;
     readonly memberSurname: string;
+    readonly reviewCase: ReviewCase;
 
     constructor(page: Page) {
         super(page)
 
-    this.processesLink = page.getByRole('link', { name: 'Processes' });
-    this.processPage = new ProcessPage(page);
+    this.reviewCase = new ReviewCase(page);
+    this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
+    this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
+    this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create',exact: true });
+    this.welcomeLetterTrigger = page.getByText('Process step completed with note: New member welcome letter sent.');
 
-    this.memberGivenName = this.randomName();
-    this.memberSurname = this.randomSurname(5);
+    this.memberGivenName = UtilsAOL.randomName();
+    this.memberSurname = UtilsAOL.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -98,10 +113,11 @@ export class MemberPage extends BasePage {
     this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
+    this.dateJoined = page.getByTitle('Date Joined').getByPlaceholder('dd/mm/yyyy');
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
     //Employer step
     this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
-    this.employerSelect = page.getByText('woolworths');
+    this.employerSelect = page.getByRole('option').nth(0);
     this.employerStartDate = page.getByPlaceholder('dd/mm/yyyy');
     this.employerSave = page.getByRole('button', { name: 'SAVE' });
     //Consolidate step
@@ -114,7 +130,7 @@ export class MemberPage extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
     //Investment step
     this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
-    this.invSelection = page.getByText('Balanced Growth', { exact: true });
+    this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add' });
     this.profileType = page.locator('#membershipProfile').getByPlaceholder('Select');
@@ -135,33 +151,48 @@ export class MemberPage extends BasePage {
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
     this.createAccount = page.getByRole('button', { name: 'Create Account' });
+    //MemberCreateProcess
+    this.processeslink = page.getByRole('link', { name: 'Processes' });
+    this.memberCreateProcessRow = page.getByLabel('Member - Create', { exact: true }).first();
+    this.memberCreateReviewRow = page.getByRole('cell', { name: 'In Review' });
+    this.memberActivityData = page.getByRole('button', { name: 'Activity Data' });
 
     }
 
-    async addNewMember(){
+    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
         
-        let tfns = TFN.getValidTFN();
+        await this.accumulationAddMember.click();
+        let tfn = UtilsAOL.generateValidTFN();
         await this.title.click();
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
         await this.surname.fill(this.memberSurname);
-        await this.dob.fill('01/01/2000');
+        await this.dob.fill(member.dob);
         await this.gender.click();
         await this.genderSelect.click();
-        await this.emailAddress.fill('anilkumar.shanthalingappa@grow.inc');
-        await this.primaryPhone.fill('61412345678');
+        await this.emailAddress.fill(member.email);
+        await this.primaryPhone.fill(member.phone);
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
-        await this.tfn.click();
-        await this.tfn.fill(tfns.tfn);
-        await this.address1.fill('11 high street');
-        await this.city.fill('Sydney');
+        
+        if(!tfnNull){
+            await this.tfn.click();
+            await this.tfn.fill(`${tfn}`);
+        }
+        
+        await this.address1.fill(member.address);
+        await this.city.fill(member.city);
         await this.state.click();
         await this.stateSelect.click();
-        await this.postcode.fill('2000');
+        await this.postcode.fill(member.postcode);
         await this.preferredContactName.fill(this.memberGivenName);
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
+
+        if(process.env.PRODUCT != FUND.HESTA && dateJoinedFundEarlier){
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
+        }
+
         await this.nextStep.click();
         
         //Employer details
@@ -176,10 +207,10 @@ export class MemberPage extends BasePage {
         await this.addFund.click();
         await this.addFundSelect.click();
         await this.addFundSelectOption.click();
-        await this.memberAccountNumber.fill('AUS-ACC-102030');
-        await this.USI.fill('STA0100AU');
+        await this.memberAccountNumber.fill(member.AccNumber);
+        await this.USI.fill(member.USI);
         await this.USI.press('Tab');
-        await this.enterAmount.fill('50000');
+        await this.enterAmount.fill(member.Amount);
         await this.sleep(1000);
         await this.saveFundDetails.click();
         await this.nextStep.click();
@@ -194,43 +225,49 @@ export class MemberPage extends BasePage {
         await this.nextStep.click();
         
         //Beneficiaries
-        await this.addNewBeneficiary.click();
-        await this.beneficiaryName.fill('Rose');
-        await this.beneficiaryName.press('Tab');
-        await this.beneficiaryType.click();
-        await this.beneficiaryRelation.click();
-        await this.beneficiaryRelationSelect.click();
-        await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.beneficiaryEffectiveDate.press('Tab');
-        await this.beneficiaryPercentage.fill('100');
-        await this.beneficiarySave.click();
+        if(addBeneficiary){
+            await this.addNewBeneficiary.click();
+            await this.beneficiaryName.fill(member.names[0]);
+            await this.beneficiaryName.press('Tab');
+            await this.beneficiaryType.click();
+            await this.beneficiaryRelation.click();
+            await this.beneficiaryRelationSelect.click();
+            await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+            await this.beneficiaryEffectiveDate.press('Tab');
+            await this.beneficiaryPercentage.fill('100');
+            await this.beneficiarySave.click();
+        }
         
         //Create account
         await this.createAccount.click();
         await this.sleep(5000);
+
         return this.memberSurname;
     }
 
     async selectMember(memberName: string){
+        await this.sleep(2000);
         await this.page.reload();
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
 
-    randomSurname(length: number) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-          counter += 1;
-        }
-        return result;
+    async verifyIfWelcomeLetterTriggered(){
+        await this.memberInfoTab.click();
+        await this.memberCreatedCase.click();
+
+        //Check member creation case and approve correspondence
+        await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
 
-    randomName(){
-        let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver' ];
-        return names[Math.floor(Math.random()*names.length)]
+    async approveMemberCreationProcess(surName: string){
+        await this.processeslink.click();
+        await this.memberCreateProcessRow.click();
+        //await this.page.locator('button').filter({ hasText: `Member - CreateRun on${DateUtils.ddMMMyyyStringDate(new Date())}` }).first();
+        await this.memberCreateReviewRow.click();
+        await this.memberActivityData.click();
+        await expect(this.page.getByText(`Surname:${surName}`)).toBeVisible();
+        await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
+
 }

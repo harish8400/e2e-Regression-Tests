@@ -1,12 +1,19 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../../common/pom/base_page";
-//import { TFN } from "../data/tfn";
-import * as pensions from "../data/pensions.json";
-import { DateUtils } from "../../utils/date_utils";
+import { BasePage } from "../../../common/pom/base_page";
+import { Navbar } from "../component/navbar";
+import * as member from "../../data/member.json";
+import { DateUtils } from "../../../utils/date_utils";
 import { AssertionError } from "assert";
+import { UtilsAOL } from "../../utils_aol";
+import { ReviewCase } from "../component/review_case";
+import { DashboardPage } from "../dashboard_page";
 
 export class PensionShellAccount extends BasePage {
 
+  readonly navbar: Navbar;
+  readonly addMemberButton: Locator;
+  readonly shellAccountCreationSuccess: Locator;
+  readonly reviewCase: ReviewCase;
 
   //Add Member
   readonly title: Locator;
@@ -71,7 +78,6 @@ export class PensionShellAccount extends BasePage {
   readonly beneficiaryPostcode: Locator;
   readonly beneficiarySave: Locator;
 
-
   //pensions
   readonly payment_frequency_select: Locator;
   readonly payment_frequency: Locator;
@@ -81,6 +87,13 @@ export class PensionShellAccount extends BasePage {
   readonly select_eligibility: Locator;
   readonly annual_payment: Locator;
   readonly select_payment: Locator;
+
+  //Pension Commencement
+  readonly editButton: Locator;
+  readonly Pro_rataYes: Locator;
+  readonly eligibilityType: Locator;
+  readonly eligibility_65orOlder: Locator;
+  readonly firstPaymentDate: Locator;
 
   //Bank Acc
 
@@ -93,6 +106,29 @@ export class PensionShellAccount extends BasePage {
   readonly drop_down: Locator;
   readonly drop_down_select: Locator;
 
+  //Edit Pension Payment Details
+  readonly pensionTab: Locator;
+  readonly editIcon: Locator;
+  readonly frequency: Locator;
+  readonly frequencyValue1: Locator;
+  readonly frequencyValue2: Locator;
+  readonly frequencyValue3: Locator;
+  readonly nextPaymentDate: Locator;
+  readonly annualPaymentMethod: Locator;
+  readonly annualPaymentMethodValue: Locator;
+  readonly buttonViewCase: Locator;
+  readonly buttonLinkToCase: Locator;
+
+  //Investments and Balances
+  readonly investmentsAndBalancesTab: Locator;
+  readonly investmentIDs: Locator
+  readonly drawdownOrder: Locator;
+  readonly drawdowanOption: Locator;
+  readonly dradownOrderValues: Locator;
+  readonly editDrawdown: Locator;
+  readonly tableLocator: Locator;
+  readonly dashboard_page: DashboardPage;
+
   //case
 
   readonly viewCase: Locator;
@@ -100,27 +136,27 @@ export class PensionShellAccount extends BasePage {
   readonly linkCase: Locator;
   readonly approveProcessStep: Locator;
   readonly retryProcessStep: Locator;
+  readonly successMessage: Locator;
   readonly verifyShellAccountCreation: Locator;
   readonly close_left: Locator;
-  readonly checkbox: Locator;
+  readonly acknowledgeCheckbox: Locator;
   readonly createAcc: Locator
 
- 
-
-
-
   //Exceptions
-
   readonly processException: Locator;
-
 
   constructor(page: Page) {
     super(page)
+    this.dashboard_page = new DashboardPage(page);
+    this.reviewCase = new ReviewCase(page);
+    this.navbar = new Navbar(page);
+    this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
 
+    this.shellAccountCreationSuccess = page.getByText('Roll-ins are complete.');
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
     //Add member
-    this.memberGivenName = this.randomName();
-    this.memberSurname = this.randomSurname(5);
+    this.memberGivenName = UtilsAOL.randomName();
+    this.memberSurname = UtilsAOL.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
     this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
@@ -153,8 +189,8 @@ export class PensionShellAccount extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
     //Investment step
-    this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
-    this.invSelection = page.getByText('IS Australian Shares', { exact: true });
+    this.invSelect = page.getByRole('textbox', { name: 'Select' });
+    this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
     this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add' });
@@ -183,7 +219,7 @@ export class PensionShellAccount extends BasePage {
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
     this.proRata = page.getByText('Yes').first();
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
+    this.select_eligibility = page.locator('li').filter({ hasText: '65 or older' });
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
 
@@ -198,112 +234,96 @@ export class PensionShellAccount extends BasePage {
     this.drop_down = page.getByTitle('Drawdown Option').getByPlaceholder('Select');
     this.drop_down_select = page.locator('li').filter({ hasText: 'Proportional' });
 
+    // Edit Pension Peyment Details for existing member
+    this.pensionTab = page.getByRole('button', { name: 'Pension' });
+    this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
+    this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
+    this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
+    this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
+    this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
+    this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
+
+    this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
+    this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case', exact: true });
+
+    //Investments & Drawdown Order
+    this.tableLocator = page.locator("(//div[@class='el-table__body-wrapper is-scrolling-none']/table)[5]");
+    this.investmentsAndBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
+    this.investmentIDs = page.locator("(//tbody)[4]/tr/td[2]");
+    this.dradownOrderValues = page.locator("//input[@class='el-input__inner']");
+    this.drawdownOrder = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.drawdowanOption = page.getByText('Specified Order');
+    this.editDrawdown = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
+
+    //pension commencement
+    this.editButton = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.Pro_rataYes = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
+    this.eligibilityType = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.eligibility_65orOlder = page.getByRole('option', { name: 'or older' });
+    this.firstPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
+
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
     this.createCase = page.getByRole('button', { name: 'Create Case' });
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
+    this.successMessage = page.getByText('Processed insert pension history');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
-    this.checkbox = page.locator('.checkbox-indicator');
+    this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
-
- 
-
   }
 
-  randomSurname(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
+  async navigateToPensionMemberPage() {
+    await this.navbar.navigateToPensionMembersPage();
   }
 
-  randomName() {
-    let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver','Gopu','Dilip','Anil','Harish','Pooja','sreekar','yathindra','Teja'];
-    return names[Math.floor(Math.random() * names.length)]
-  }
-  
- async select_member(memberName: string) {
-    let memberExists = false;
-    let retries = 3; // Set a limit for the number of retries
-
-    while (!memberExists && retries > 0) {
-        await this.sleep(3000);
-        await this.page.reload();
-        await this.sleep(5000);
-
-        console.log(`Selecting member: ${memberName}`); // Log the member name being selected
-
-        // Check if the member exists in the table
-        memberExists = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`, { timeout: 5000, state: 'visible' })
-            .then(() => true)
-            .catch(() => false);
-
-        if (memberExists) {
-            const memberElement = await this.page.waitForSelector(`//*[contains(text(), "${memberName}")]`);
-            await memberElement.click();
-        } else {
-            console.log(`Member "${memberName}" not found in the table. Retrying...`);
-            retries--; // Decrement the retries count
-            await this.sleep(2000); // Adjust the delay as needed
-        }
-    }
-
-    if (!memberExists) {
-        console.log(`Member "${memberName}" not found after retries.`);
-    }
-}
- 
-  async addNewMember() {
+  async addMemberPersonalDetails(uniqueSurname: string) {
 
     //let tfns = TFN.getValidTFN();
     await this.title.click();
     await this.selectTitle.click();
     await this.givenName.fill(this.memberGivenName);
-    await this.surname.fill(this.memberSurname);
-    await this.dob.fill(pensions.dob);
+    await this.surname.fill(uniqueSurname);
+    await this.dob.fill(member.dob);
     await this.gender.click();
     await this.genderSelect.click();
-    await this.emailAddress.fill(pensions.email);
-    await this.primaryPhone.fill(pensions.phone);
+    await this.emailAddress.fill(member.email);
+    await this.primaryPhone.fill(member.phone);
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     //await this.tfn.click();
     //await this.tfn.fill(tfns.tfn);
-    await this.address1.fill(pensions.address);
+    await this.address1.fill(member.address);
     await this.city.click();
-    await this.city.fill(pensions.city);
+    await this.city.fill(member.city);
     await this.state.click();
     await this.stateSelect.click();
-    await this.postcode.fill(pensions.postcode);
+    await this.postcode.fill(member.postcode);
     await this.preferredContactName.fill(this.memberGivenName);
     await this.residencyStatus.click();
     await this.residencyStatusSelect.click();
     await this.nextStep.click();
-    return this.memberSurname;
+    //return this.memberSurname;
   }
 
-  async consolidation() {
+  async addMemberConsolidation() {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
-    await this.memberAccountNumber.fill(pensions.AccNumber);
-    await this.USI.fill(pensions.USI);
+    await this.memberAccountNumber.fill(member.AccNumber);
+    await this.USI.fill(member.USI);
     await this.USI.press('Tab');
-    await this.enterAmount.fill(pensions.Amount);
+    await this.enterAmount.fill(member.Amount);
     await this.sleep(1000);
     await this.saveFundDetails.click();
     await this.nextStep.click();
   }
 
-  async investments() {
+  async addMemberInvestments() {
     await this.invSelect.click();
     await this.invSelection.click();
     await this.invPercentage.fill('100');
@@ -311,35 +331,31 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async beneficiaries() {
+  async addMemberBeneficiaries() {
     await this.addNewBeneficiary.click();
-    await this.beneficiaryName.fill(pensions.beneficiary);
+    await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryRelation.click();
     await this.beneficiaryRelationSelect.click();
-    await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.beneficiaryEffectiveDate.fill(member.beneficiaryDOB);
     await this.beneficiaryEffectiveDate.press('Tab');
     await this.gender_select.click();
     await this.select_gender.click();
     await this.countrySelect.click();
     await this.selectCountry.click();
-    await this.beneficiaryAddress1.fill(pensions.address);
-    await this.beneficiaryCity.fill(pensions.city);
+    await this.beneficiaryAddress1.fill(member.address);
+    await this.beneficiaryCity.fill(member.city);
     await this.beneficiaryState.click();
     await this.beneficiaryStateSelect.click();
-    await this.beneficiaryPostcode.fill(pensions.postcode);
+    await this.beneficiaryPostcode.fill(member.postcode);
     await this.beneficiarySave.click();
     await this.nextStep.click();
   }
 
-  async waitForTimeout(milliseconds: number) {
-    await this.page.waitForTimeout(milliseconds); // Wait for the specified duration in milliseconds
-  }
-
-  async pensionDetails() {
+  async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
     await this.PensionPaymentDate.click();
-    await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyy_StringDate(10)}`);
+    await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
     await this.proRata.hover();
     await this.proRata.click();
@@ -347,40 +363,33 @@ export class PensionShellAccount extends BasePage {
     await this.select_eligibility.click();
     await this.annual_payment.click();
     await this.select_payment.click();
-    await this.waitForTimeout(5000);
+    await this.sleep(5000);
     await this.page.evaluate(() => window.scrollBy(0, window.innerHeight));
     await this.bsb.scrollIntoViewIfNeeded();
     await this.bsb.click();
-    await this.bsb.fill(pensions.BSBNumber);
+    await this.bsb.fill(member.BSBNumber);
     await this.banks.click();
     await this.accountName.click();
-    await this.accountName.fill(pensions.AccountName);
+    await this.accountName.fill(member.AccountName);
     await this.accountNo.click();
-    await this.accountNo.fill(pensions.AccountNumber);
+    await this.accountNo.fill(member.AccountNumber);
     await this.search_option.click();
     await this.pension_payment.click();
     await this.drop_down.click();
     await this.drop_down_select.click();
 
   }
-  async case_process() {
+
+  async initCreateCase() {
     await this.viewCase.click();
-    await this.sleep(5000);
-    await this.createCase.click();
-    await this.sleep(5000)
-
-  }
-
-  async clickOnClosedIcon() {
     await this.sleep(3000);
-    await this.close_left.click();
+    await this.createCase.click();
+    await this.sleep(3000);
+    await this.acknowledgeCheckbox.click();
   }
 
-  async check_box() {
-    await this.checkbox.click();
-  }
-  async create_account() {
-    await this.createAcc.click();
+  //To be deleted
+  async createAccountCaseProcess() {
 
     //Review case process steps, approve/retry or exit on exception
     do {
@@ -402,7 +411,6 @@ export class PensionShellAccount extends BasePage {
         }
       }
 
-      //assert(await this.processException.count() < 0);
       //Break if there is an process exception
       if (await this.processException.count() > 0) {
         throw new AssertionError({ message: "Error in Processing Case" });
@@ -412,5 +420,50 @@ export class PensionShellAccount extends BasePage {
 
     await expect(this.verifyShellAccountCreation).toBeVisible();
   }
-   
+
+  async createShellAccount(uniqueSurname: string, addBeneficiary: boolean = false) {
+
+    await this.addMemberButton.click();
+    await this.addMemberPersonalDetails(uniqueSurname);
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+      await this.nextStep.click();
+    }
+    await this.addMemberPensionDetails();
+    await this.initCreateCase();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+  }
+
+  async editPaymentDetails(frequency?: string) {
+    await this.pensionTab.click();
+    await this.sleep(8000);
+    await this.editIcon.click();
+    await this.sleep(3000)
+    await this.frequency.click();
+    if (frequency == 'Bi-Annualy') {
+      await this.frequencyValue3.click();
+    }
+    else if (frequency == 'Quartely') {
+      await this.frequencyValue2.click();
+    }
+    else {
+      await this.frequencyValue3.click();
+    }
+    await this.nextPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(15)}`);
+    await this.annualPaymentMethod.click();
+    await this.annualPaymentMethodValue.click();
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+    await this.linkCase.click();
+    await this.sleep(5000);
+    await this.reviewCase.reviewCaseProcess(this.successMessage);
+  }
+  
 }

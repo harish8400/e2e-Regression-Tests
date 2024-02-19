@@ -6,15 +6,16 @@
   "scripts": {
     "postinstall": "npx playwright install",
     "test": "npx playwright test",
+    "test:pension": "npx playwright test tests/aol/pension",
     "report": "npx playwright show-report"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.405.0",
-    "@playwright/test": "^1.40.0",
-    "@types/node": "^20.3.1",
-    "allure-playwright": "^2.9.2",
+    "@playwright/test": "^1.41.0",
+    "@types/node": "^20.11.16",
+    "allure-playwright": "^2.10.0",
     "async-wait-until": "^2.0.12"
   },
   "dependencies": {

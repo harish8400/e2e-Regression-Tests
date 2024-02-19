@@ -1,0 +1,30 @@
+agents:
+    queue: '${DEPLOY_AGENTS_QUEUE}'
+
+env:
+    ENVIRONMENT: '${ENVIRONMENT}'
+
+steps:
+    - label: ':test_tube: Playwright test'
+      command: './buildkite/scripts/pension-test.sh'
+      artifact_paths:
+          - 'playwright-report/**/*'
+      plugins:
+          - docker-compose#v4.14.0:
+                run: app
+                config:
+                    - ./buildkite.docker-compose.yml
+                mount-checkout: true
+                volumes:
+                    - './playwright-report:/workdir/allure-report'
+                env:
+                    - BUILDKITE_ANALYTICS_TOKEN
+                    - ENVIRONMENT
+                    - BUILDKITE
+                    - AWS_ACCESS_KEY_ID
+                    - AWS_SECRET_ACCESS_KEY
+                    - AWS_SESSION_TOKEN
+                    - AWS_REGION
+          - test-collector#v1.0.0:
+                files: 'playwright-report/results.xml'
+                format: 'junit'
