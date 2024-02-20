@@ -7,7 +7,7 @@ export class MemberOverView extends BasePage{
     readonly processesLink: Locator;
     readonly reviewCase: ReviewCase;
     readonly processException: Locator;
-    readonly HFMSuperTab: Locator;
+    readonly memberAccumulationAccount_Tab: Locator;
 
     readonly overViewTab: Locator;
     readonly TFNStatusValid: Locator;
@@ -33,8 +33,7 @@ export class MemberOverView extends BasePage{
         this.reviewCase = new ReviewCase(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.processesLink = page.getByRole('link', { name: 'Processes' });
-        this.HFMSuperTab = page.getByRole('button', { name: 'HESTA for Mercy Super' }).first();
-
+        this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
         this.overViewTab = page.getByRole('button', { name: 'Overview' });
         this.TFNStatusValid = page.locator('div').filter({ hasText: /^TFN Valid$/ });
         this.TFNStatus_NotSupplied = page.locator('div').filter({ hasText: /^TFN Not Supplied$/ }).locator('div').first();

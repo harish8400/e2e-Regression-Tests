@@ -7,7 +7,8 @@ export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
     readonly clipBoardIcon: Locator;
-    readonly hestaForMercyTab: Locator;
+    //readonly hestaForMercyTab: Locator;
+    readonly memberAccumulationAccount_Tab: Locator;
     
     //Edit Correspondence
     readonly editCorrespondenceButton: Locator;
@@ -61,7 +62,8 @@ export class RelatedInformationPage extends BasePage {
         this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
 
         //Verification Information
-        this.hestaForMercyTab = page.getByRole('button', { name: 'HESTA for Mercy Super' });
+        //this.hestaForMercyTab = page.getByRole('button', { name: 'HESTA for Mercy Super' });
+        this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
         this.superTickVerificationRow = page.getByRole('row').nth(5);
 
         //Condition of Release
@@ -124,7 +126,7 @@ export class RelatedInformationPage extends BasePage {
     }
 
     async verifySuperTickStatus(){
-        await this.hestaForMercyTab.click();
+        await this.memberAccumulationAccount_Tab.click();
         await this.relatedInformationTab.click();
         await this.sleep(3000);
         await this.superTickVerificationRow.scrollIntoViewIfNeeded();

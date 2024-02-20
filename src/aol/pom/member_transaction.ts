@@ -13,7 +13,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly memberAddContribution: Locator;
     readonly memberContributionType: Locator;
     readonly memberContributionType_personal: Locator;
-    readonly memberContributionType_salarySacrifise: Locator;
+    readonly memberContributionType_salarySacrifice: Locator;
     readonly paymentReference: Locator;
     readonly paymentReceivedDate: Locator;
     readonly effectiveDate: Locator;
@@ -61,7 +61,7 @@ export class MemberTransactionsPage extends BasePage {
         this.memberAddContribution = page.getByText('Contribution', { exact: true });
         this.memberContributionType = page.locator("(//div[@class='gs__selected-options'])[2]")
         this.memberContributionType_personal = page.getByRole('option', { name: 'Personal', exact: true }).locator('span');
-        this.memberContributionType_salarySacrifise = page.getByRole('option', { name: 'Salary Sacrifice' });
+        this.memberContributionType_salarySacrifice = page.getByRole('option', { name: 'Salary Sacrifice' });
         this.paymentReference = page.getByLabel('Payment Reference *');
         this.paymentReceivedDate = page.locator('input[name="paymentReceivedDate"]');
         this.effectiveDate = page.locator('input[name="effectiveDate"]');
@@ -115,7 +115,7 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.memberContributionType.click();
         if(contributionType == 'Salary Sacrifise'){
-            await this.memberContributionType_salarySacrifise.click();
+            await this.memberContributionType_salarySacrifice.click();
         }
         else{
             await this.memberContributionType_personal.click();

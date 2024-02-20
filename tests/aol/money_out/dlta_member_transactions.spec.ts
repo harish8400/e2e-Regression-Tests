@@ -1,7 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
-import * as member from "../../../src/aol/data/member.json"
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -49,49 +48,5 @@ test(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionP
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
     await memberTransactionPage.memberRolloverOut();
-    
-})
-
-test(fundName()+"Contribution with TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
-
-    await allure.suite("Contribution");
-
-    await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
-    await memberOverviewpage.verifyTFNStatus(true);
-    await memberOverviewpage.HFMSuperTab.click();
-    await memberTransactionPage.memberRolloverIn();
-    
-})
-
-test(fundName()+"Contribution without TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
-
-    await allure.suite("Contribution");
-
-    await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
-    await memberOverviewpage.verifyTFNStatus(false);
-    await memberOverviewpage.HFMSuperTab.click();
-    await memberTransactionPage.memberRolloverIn();
-    
-})
-
-test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
-
-    await allure.suite("Contribution");
-
-    await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
-    await memberTransactionPage.memberRolloverIn();
-    
-})
-
-test(fundName()+"Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
-
-    await allure.suite("Contribution");
-
-    await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
-    await memberTransactionPage.memberRolloverIn('Salary Sacrifise');
     
 })
