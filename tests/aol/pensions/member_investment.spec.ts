@@ -38,15 +38,7 @@ test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar
     try {
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Change;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case FUND.AE:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        }
-
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
 
     } catch (error) {
@@ -58,15 +50,7 @@ test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pe
     try {
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Change;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case FUND.AE:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        }
-
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {
