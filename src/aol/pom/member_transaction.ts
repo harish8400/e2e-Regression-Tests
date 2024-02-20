@@ -3,6 +3,7 @@ import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import { ReviewCase } from "./component/review_case";
+import { MemberOverView } from "./member/member_overview";
 
 export class MemberTransactionsPage extends BasePage {
 
@@ -47,11 +48,13 @@ export class MemberTransactionsPage extends BasePage {
     readonly employerEndDate: Locator;
     readonly viewCases: Locator;
     readonly reviewCase: ReviewCase;
+    readonly memberOverViewPage: MemberOverView;
 
     constructor(page: Page) {
         super(page)
 
         this.reviewCase = new ReviewCase(page);
+        this.memberOverViewPage = new MemberOverView(page)
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
         //Rollover In
@@ -104,7 +107,7 @@ export class MemberTransactionsPage extends BasePage {
 
     /** Member Rollin, adds a contribution to member account */
     async memberRolloverIn(contributionType?: String) {
-        await this.memberHFMFundLink.click();
+        await this.memberOverViewPage.memberAccumulationAccount_Tab.click();
         await this.memberTransactionTab.click();
         await this.memberAddTransaction.click();
         await this.memberAddContribution.click();
@@ -128,6 +131,7 @@ export class MemberTransactionsPage extends BasePage {
         await this.contributionAmount.fill('10000');
         await this.governmentContribution.click();
         await this.governmentContributionConfirm.click();
+        await this.sleep(3000);
 
         await this.linkCase.click();
         await this.sleep(5000);
