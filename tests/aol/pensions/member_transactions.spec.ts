@@ -4,6 +4,11 @@ import * as memberData from "../../../src/aol/data/pension_data.json";
 import * as member from "../../../src/aol/data/member.json";
 import { FUND } from "../../../constants";
 import { fundName } from "../../../src/aol/utils_aol";
+import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -23,6 +28,10 @@ test(fundName()+"-Manual Roll-in - Pension Member @pension", async ({ navBar, pe
     }
     await navBar.selectMember(member);
     await pensionTransactionPage.rollInTransaction();
+    let rollinId = await pensionTransactionPage.transactionView();
+    let rollinTransactionId = rollinId!.split(":")[1];
+    const apiRequestContext: APIRequestContext = await initDltaApiContext();
+    await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
 })
 
 test(fundName()+"-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage }) => {
@@ -39,10 +48,17 @@ test(fundName()+"-ABP Rollover Out Commutation - Partial @pension", async ({ nav
 })
 
 test(fundName()+"-ABP UNP Commutation - Partial @pension", async ({ navBar, pensionTransactionPage }) => {
+    await allure.suite("Pension");
+    await allure.parentSuite(process.env.PRODUCT!);
+
     await navBar.navigateToPensionMembersPage();
     let member = memberData.pension.ABP_Commutation_Rollover_And_UNP_Partial_Member_Number;
     await navBar.selectMember(member);
     await pensionTransactionPage.commutationUNPBenefit(false);
+    let paymentId = await pensionTransactionPage.paymentView();
+    let paymentTransactionId = paymentId!.split(":")[1];
+    const apiRequestContext: APIRequestContext = await initDltaApiContext();
+    await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
 })
 
 test(fundName()+"-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage }) => {
@@ -111,4 +127,77 @@ test(fundName()+"Verify the updating of member's CRN in the account details @pen
     await navBar.navigateToAccumulationMembersPage();
     await navBar.selectMember(member.memberID);
     await accountInfoPage.updateCRN();
+})
+
+//API Integration
+
+test(fundName() + "-@APIcommutation Payment Full Exit @API", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+    try {
+
+        await navBar.navigateToPensionMembersPage();
+        const apiRequestContext: APIRequestContext = await initDltaApiContext();
+        let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        let caseId = await pensionAccountPage.ProcessTab();
+        let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+        let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+        await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+        await MemberApiHandler.validateCommutation(apiRequestContext, linearId.id);
+        await pensionAccountPage.reload();
+        await MemberApiHandler.rpbpPayments(apiRequestContext, linearId.id);
+        await pensionTransactionPage.commutationUNPBenefit(true);
+        let paymentId = await pensionTransactionPage.paymentView();
+        let paymentTransactionId = paymentId!.split(":")[1];
+        await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName() + "@API-commutation RollOut Full Exit", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+    try {
+
+        await navBar.navigateToPensionMembersPage();
+        const apiRequestContext: APIRequestContext = await initDltaApiContext();
+        let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        let caseId = await pensionAccountPage.ProcessTab();
+        let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+        let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+        await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
+        await MemberApiHandler.validateCommutation(apiRequestContext, linearId.id);
+        await pensionAccountPage.reload();
+        await MemberApiHandler.rpbpPayments(apiRequestContext, linearId.id);
+        await MemberApiHandler.getMemberDetails(apiRequestContext, linearId.id)
+            .then(async (linearIdDetails) => {
+                if (linearIdDetails.id) {
+                    console.log('fundName:', linearIdDetails.fundName, linearIdDetails.tfn);
+                    return MemberApiHandler.memberIdentity(apiRequestContext, linearId.id, {
+                        tfn: linearIdDetails.tfn,
+                        dob: linearIdDetails.dob,
+                        givenName: linearIdDetails.givenName,
+                        fundName: linearIdDetails.fundName,
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                throw error;
+            });
+        await pensionTransactionPage.commutationRolloverOut(true);
+        await MemberApiHandler.fetchMemberSummary(apiRequestContext, linearId.id);
+        await pensionTransactionPage.paymentView();
+    } catch (error) {
+        throw error;
+    }
 })

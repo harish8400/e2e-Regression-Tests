@@ -1,0 +1,216 @@
+
+{
+    "prices": [
+      {
+        "applicationPrice": 1.5850,
+        "investmentId": "SESGA",
+        "midPrice": 1.5840,
+        "redemptionPrice": 1.5830,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3690,
+        "investmentId": "SHGDA",
+        "midPrice": 1.3688,
+        "redemptionPrice": 1.3686,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.7440,
+        "investmentId": "SGDA",
+        "midPrice": 1.7430,
+        "redemptionPrice": 1.7420,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2789,
+        "investmentId": "SBDA",
+        "midPrice": 1.2779,
+        "redemptionPrice": 1.2769,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.5678,
+        "investmentId": "SCDA",
+        "midPrice": 1.5668,
+        "redemptionPrice": 1.5658,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.6481,
+        "investmentId": "SCRFA",
+        "midPrice": 1.6471,
+        "redemptionPrice": 1.6461,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4858,
+        "investmentId": "SAFIA",
+        "midPrice": 1.4853,
+        "redemptionPrice": 1.4848,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.6786,
+        "investmentId": "SIFIA",
+        "midPrice": 1.6780,
+        "redemptionPrice": 1.6774,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3585,
+        "investmentId": "SEMSA",
+        "midPrice": 1.3565,
+        "redemptionPrice": 1.3545,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3889,
+        "investmentId": "SISCA",
+        "midPrice": 1.3886,
+        "redemptionPrice": 1.3883,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.1696,
+        "investmentId": "SISHA",
+        "midPrice": 1.1661,
+        "redemptionPrice": 1.1626,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.5898,
+        "investmentId": "SISA",
+        "midPrice": 1.5882,
+        "redemptionPrice": 1.5866,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2696,
+        "investmentId": "SASIA",
+        "midPrice": 1.2677,
+        "redemptionPrice": 1.2658,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+  
+      {
+        "applicationPrice": 1.5488,
+        "investmentId": "SESGP",
+        "midPrice": 1.5468,
+        "redemptionPrice": 1.5448,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.1519,
+        "investmentId": "SHGDP",
+        "midPrice": 1.1518,
+        "redemptionPrice": 1.1517,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.8266,
+        "investmentId": "SGDP",
+        "midPrice": 1.8255,
+        "redemptionPrice": 1.8244,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.1699,
+        "investmentId": "SBDP",
+        "midPrice": 1.1666,
+        "redemptionPrice": 1.1633,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3270,
+        "investmentId": "SCDP",
+        "midPrice": 1.3269,
+        "redemptionPrice": 1.3268,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.6564,
+        "investmentId": "SCRFP",
+        "midPrice": 1.6554,
+        "redemptionPrice": 1.6544,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3278,
+        "investmentId": "SAFIP",
+        "midPrice": 1.3274,
+        "redemptionPrice": 1.3270,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4188,
+        "investmentId": "SIFIP",
+        "midPrice": 1.4185,
+        "redemptionPrice": 1.4182,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2297,
+        "investmentId": "SEMSP",
+        "midPrice": 1.2281,
+        "redemptionPrice": 1.2265,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2285,
+        "investmentId": "SISCP",
+        "midPrice": 1.2278,
+        "redemptionPrice": 1.2271,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4169,
+        "investmentId": "SISHP",
+        "midPrice": 1.4166,
+        "redemptionPrice": 1.4163,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4245,
+        "investmentId": "SISP",
+        "midPrice": 1.4238,
+        "redemptionPrice": 1.4231,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 2.6488,
+        "investmentId": "SASIP",
+        "midPrice": 2.6466,
+        "redemptionPrice": 2.6444,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      }
+    
+  
+    ]
+  }
