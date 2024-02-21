@@ -1,5 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -9,24 +10,18 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test("Verify that the insurance page is displayed correctly", async ({  navBar,insurancePage }) => {
-
-    await allure.suite("Insurance");
+test(fundName()+"Verify that the insurance page is displayed correctly", async ({ insurancePage }) => {
 
     try {
-        await navBar.selectProduct();
         await insurancePage.clickOnInsuranceLink();
     } catch (error) {
         throw error;
     }
 })
 
-test("Verify filter options are displayed correctly", async ({  navBar,insurancePage }) => {
-
-    await allure.suite("Insurance");
+test(fundName()+"Verify filter options are displayed correctly", async ({ insurancePage }) => {
 
     try {
-        await navBar.selectProduct();
         await insurancePage.clickOnInsuranceLink();
         await insurancePage.clickOnFilter();
     } catch (error) {
@@ -34,10 +29,9 @@ test("Verify filter options are displayed correctly", async ({  navBar,insurance
     }
 })
 
-test("Update Insurance Category @Insurance", async ({ navBar, insurancePage }) => {
+test(fundName()+"Verify that user can update Insurance category @Insurance", async ({ insurancePage }) => {
 
     try {
-        await navBar.selectProduct();
         await insurancePage.accumulationDropDown.click();
         await insurancePage.editInsurance();
         
@@ -46,10 +40,9 @@ test("Update Insurance Category @Insurance", async ({ navBar, insurancePage }) =
     }
 })
 
-test("New Insurance Category @Insurance", async ({ navBar, insurancePage }) => {
+test(fundName()+"Verify that user can create new Insurance category @Insurance", async ({ insurancePage }) => {
 
     try {
-        await navBar.selectProduct();
         await insurancePage.accumulationDropDown.click();
         await insurancePage.newInsurance();
         

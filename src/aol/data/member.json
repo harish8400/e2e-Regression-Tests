@@ -1,5 +1,6 @@
 {
     "memberID":"464591486",
+    "memberIDwithTFN": "464591486",
     "paymentDate":"02/02/2024",
     "dob": "16/06/1955",
     "email": "pharish.kumar@grow.inc",
@@ -22,12 +23,6 @@
     "PensionMembershipAccountNumber":"9020227",
     "AccountNumber":"123456",
     "CRN":"103675704651001506",
-    "investmentName": "Australian Shares (AESAUS)",
-    "applicationPrice": "1.7374",
-    "redemptionPrice": "1.7374",
-    "midPrice": "1.7374",
-    "InvestmentNameToBeUpdated": "Australian Shares",
-    "NewInvestmentName": "Australian_Shares",
     "names":[
       "Michelle", "Alan", "Glenn", "Linda", "Gotham", "Lille", "Steve", "Rose", "Ramsey", "Zele", "Simon", "Nathan", "Ashton", "Kyle", "Kane", "Jamie", "Oliver"
     ],

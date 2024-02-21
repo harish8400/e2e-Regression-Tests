@@ -11,9 +11,9 @@ import { InternalTransferPage } from './pom/Pension/internal_transfer';
 import { AccountInfoPage } from './pom/Pension/account_info';
 import { BeneficiaryPage } from './pom/beneficiary_page';
 import { InsurancePage } from './pom/insurance_page';
-
 import { RelatedInformationPage } from './pom/member/related_information_page';
-import { InvestmentsAndPricing } from './pom/investments_and_pricing';
+import { InvestmentsAndPricing } from './pom/investment_and_pricing_page';
+import { MemberOverView } from './pom/member/member_overview';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -30,6 +30,7 @@ type ExtensionFixtures = {
     insurancePage: InsurancePage
     relatedInformationPage: RelatedInformationPage;
     investmentsAndPricing: InvestmentsAndPricing;
+    memberOverviewpage: MemberOverView;
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -83,5 +84,7 @@ export const aolTest = base.extend<ExtensionFixtures>({
     investmentsAndPricing: async ({ page }, use) => {
         await use(new InvestmentsAndPricing(page));
     },
-    
+    memberOverviewpage: async ({ page }, use) => {
+        await use(new MemberOverView(page));
+    },
 })

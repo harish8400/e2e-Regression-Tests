@@ -7,6 +7,8 @@ export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
     readonly clipBoardIcon: Locator;
+    //readonly hestaForMercyTab: Locator;
+    readonly memberAccumulationAccount_Tab: Locator;
     
     //Edit Correspondence
     readonly editCorrespondenceButton: Locator;
@@ -18,6 +20,9 @@ export class RelatedInformationPage extends BasePage {
     readonly inactiveReason3: Locator;
     readonly correspondenceSuccessMessage: Locator;
     readonly correspondenceStatus: Locator;
+
+    //verification information
+    readonly superTickVerificationRow: Locator;
 
     //Condition of Release
     readonly addConditionOfRelease_button: Locator;
@@ -55,6 +60,11 @@ export class RelatedInformationPage extends BasePage {
         this.inactiveReason3 = page.getByRole('option', { name: 'Member exited' });
         this.correspondenceSuccessMessage = page.getByText('Processed Payment.');
         this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
+
+        //Verification Information
+        //this.hestaForMercyTab = page.getByRole('button', { name: 'HESTA for Mercy Super' });
+        this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
+        this.superTickVerificationRow = page.getByRole('row').nth(5);
 
         //Condition of Release
         this.addConditionOfRelease_button = page.getByRole('button', { name: 'add-circle icon Add Condition' });
@@ -113,5 +123,13 @@ export class RelatedInformationPage extends BasePage {
         await this.sleep(5000);
         expect(this.confirmationMessage).toBeVisible();
         await this.clipBoardIcon.click();
+    }
+
+    async verifySuperTickStatus(){
+        await this.memberAccumulationAccount_Tab.click();
+        await this.relatedInformationTab.click();
+        await this.sleep(3000);
+        await this.superTickVerificationRow.scrollIntoViewIfNeeded();
+        await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
     }
 }

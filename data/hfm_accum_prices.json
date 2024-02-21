@@ -1,4 +1,7 @@
 {
+    "investmentName": "Australian Shares (SASIA)",
+    "InvestmentNameToBeUpdated": "Australian Shares",
+    "NewInvestmentName": "Australian_Shares",
     "prices": [
         {
             "applicationPrice": 1.8641,
