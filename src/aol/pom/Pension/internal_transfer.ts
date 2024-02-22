@@ -2,6 +2,7 @@ import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import * as memberData from "../../../aol/data/pension_data.json";
 import { ReviewCase } from "../component/review_case";
+import { FUND } from "../../../../constants";
 
 export class InternalTransferPage extends BasePage {
     readonly processesLink: Locator;
@@ -25,11 +26,14 @@ export class InternalTransferPage extends BasePage {
     readonly approveProcessStep: Locator;
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
+    readonly verifyContributionSuccessVG: Locator;
     readonly processException: Locator;
     readonly processID: Locator;
     readonly verifySuccessMessage: Locator;
     readonly partialBalance: Locator;
     readonly payFullBalance: Locator;
+    readonly valueSourceProductVG: Locator;
+    readonly verifySuccessMessageVG: Locator;
 
     constructor(page:Page){
         super(page)
@@ -52,13 +56,16 @@ export class InternalTransferPage extends BasePage {
         this.valueInternalTransferType = page.getByRole('option', { name: 'Internal Transfer' });
         this.dropdownSourceProduct = page.locator("//div[@id='sourceProduct']");
         this.valueSourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Super' });
+        this.valueSourceProductVG = page.getByRole('option').filter({hasText: 'Accumulation'});
         this.sourceAccount = page.locator("//input[@id='sourceMemberNumber']");
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
         this.verifyContributionSuccess = page.getByText('Internal transfer out sub process initiated.');
+        this.verifyContributionSuccessVG = page.getByText('Process step completed with note: Internal Transfer Out validated');
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
+        this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
         
     }
 
@@ -79,7 +86,11 @@ export class InternalTransferPage extends BasePage {
         await this.sleep(2000);
 
         if(transferType == 'Accumulation'){
-            await this.valueSourceProduct.click();
+            if(process.env.PRODUCT == FUND.HESTA){
+                await this.valueSourceProduct.click();
+            }else{
+                await this.valueSourceProductVG.click();
+            }
             await this.sourceAccount.fill(memberData.pension.Internal_Transfer_Accumulation_To_ABP_Source_Account);
         }
         else if(transferType == 'ABP')
@@ -102,14 +113,21 @@ export class InternalTransferPage extends BasePage {
 
         await this.buttonLinkToCase.click();
 
-        await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+        if(process.env.PRODUCT == FUND.HESTA){
+            await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+        }else{
+            await this.reviewCase.reviewCaseProcess(this.verifySuccessMessageVG);
+        }
 
         // Click on sub process
         await this.sleep(3000);
         await this.processID.click();
         await this.sleep(3000);
 
-        await this.reviewCase.reviewCaseProcess(this.verifySuccessMessage);
-
+        if(process.env.PRODUCT == FUND.HESTA){
+            await this.reviewCase.reviewCaseProcess(this.verifySuccessMessage);
+        }else{
+            await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccessVG);
+        }
     }
 }

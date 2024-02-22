@@ -106,10 +106,7 @@ test(fundName()+"-verify H4M pension commencement with PTB @pension", async ({ n
     await pensionTransactionPage.pensionCommence();
 })
 
-test("update CRN @pension", async ({ navBar, accountInfoPage }) => {
-    
-    await allure.suite("Pension");
-    await allure.parentSuite(process.env.PRODUCT!);
+test(fundName()+"Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage }) => {
     
     await navBar.navigateToAccumulationMembersPage();
     await navBar.selectMember(member.memberID);

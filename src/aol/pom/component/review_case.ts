@@ -51,7 +51,7 @@ export class ReviewCase extends BasePage {
           await this.sleep(5000);
     
         } while ( await successLocator.count() == 0 );
-        await successLocator.scrollIntoViewIfNeeded();
+        //await successLocator.scrollIntoViewIfNeeded();
         await expect(successLocator).toBeVisible();
     
       }
@@ -119,8 +119,7 @@ export class ReviewCase extends BasePage {
     
       }
 
-      async captureScreenshot(screenShotName: string = 'screenshot'){
-        //await this.page.screenshot({path: screenShotName+'.png' });
+      async captureScreenshot(_screenShotName: string = 'screenshot'){
         allure.attachment('Screenshot', await this.page.screenshot({ fullPage:true }), 'image/png');
       }
     

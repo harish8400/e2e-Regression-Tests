@@ -3,7 +3,6 @@ import { allure } from "allure-playwright";
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import { FUND } from "../../../constants";
 import { fundName } from "../../../src/aol/utils_aol";
-//import { product }from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -38,15 +37,7 @@ test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar
     try {
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Change;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case FUND.AE:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        }
-
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
 
     } catch (error) {
@@ -58,15 +49,7 @@ test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pe
     try {
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Pension_Drawdown_Change;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-            case FUND.AE:
-                member = memberData.pension_vangaurd.Pension_Drawdown_Change;
-        }
-
         await navBar.selectMember(member);
-
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {
@@ -94,29 +77,19 @@ test(fundName()+"-For future drawdown Members should not be able to select any i
     }
 })
 
-test("Add Investment Pricing", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify if user can add investment price for Investment product", async ({ navBar, investmentsAndPricing }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.addInvestmentPrice();
-
     } catch (error) {
         throw error;
     }
 })
 
-test("Investment product update", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify edit/updating an existing investment product", async ({ navBar, investmentsAndPricing }) => {
     try {
-
-        await allure.suite("Pension");
-
-        await navBar.selectProduct();
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.editInvestment();
-
     } catch (error) {
         throw error;
     }

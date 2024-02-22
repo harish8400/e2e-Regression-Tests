@@ -33,9 +33,4 @@ export class DateUtils {
         return `${date.getDate() + dayToAdd}/${date.getMonth() + 1}/${date.getFullYear() - age}`
     }
 
-    static ddmmmyyyyStringDate(){
-        let date = new Date();
-        return `${date.toLocaleString('en-US', { day: '2-digit' })} ${date.toLocaleString('en-US', { month: 'short' })} ${date.getFullYear()}`
-    }
-
 }
