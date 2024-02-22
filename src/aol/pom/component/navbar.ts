@@ -35,7 +35,7 @@ export class Navbar extends BasePage {
 
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
         this.FilterOption = page.getByText('Member Number', { exact: true });
-        this.FilterOptionInput = page.getByRole('textbox').first();
+        this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     }
 

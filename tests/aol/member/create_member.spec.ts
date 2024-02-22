@@ -5,6 +5,7 @@ import { FUND } from "../../../constants";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -66,7 +67,7 @@ test(fundName()+"-Verify creation of a new active member account with Date Joine
 })
 
 
-test(fundName() + "-@API-Verify creation of a new active member account", async ({ navBar, accountInfoPage }) => {
+test(fundName() + "-Verify creation of a new active member account@API-accumulation", async ({ navBar, accountInfoPage }) => {
 
     try {
 
@@ -82,6 +83,8 @@ test(fundName() + "-@API-Verify creation of a new active member account", async 
         let caseGroupId = caseId!.trim();
 
         await MemberApiHandler.approveProcess(apiRequestContext,caseGroupId!);
+        let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+        await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
 
     } catch (error) {

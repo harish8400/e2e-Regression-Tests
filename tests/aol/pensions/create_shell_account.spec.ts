@@ -28,7 +28,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     await memberPage.selectMember(uniqueSurname);
 })
 
-test(fundName() + "-Pensionshell Account @shell", async ({ navBar, pensionAccountPage }) => {
+test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage }) => {
 
     try {
 
@@ -41,10 +41,11 @@ test(fundName() + "-Pensionshell Account @shell", async ({ navBar, pensionAccoun
         await new Promise(resolve => setTimeout(resolve, 10000));
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(memberNo);
-        let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
-        await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+         await navBar.selectMember(memberNo);
+         let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+         await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+         await pensionAccountPage.reload();
     } catch (error) {
         throw error;
     }

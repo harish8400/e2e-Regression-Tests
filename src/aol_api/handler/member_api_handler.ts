@@ -1,5 +1,6 @@
 import { APIRequestContext } from '@playwright/test';
 import { MemberApi } from '../member_api';
+import { RollinApi } from '../rollin_api';
 
 
 export class MemberApiHandler {
@@ -33,9 +34,9 @@ export class MemberApiHandler {
         return payments.rpbpPayments(memberId!);
     }
 
-    static async validateCommutation(apiRequestContext: APIRequestContext, memberId?: string) {
-        const commutation = new MemberApi(apiRequestContext);
-        return commutation.validateCommutation(memberId!);
+    static async validateCommutation(apiRequestContext: APIRequestContext, memberId?: string, amount?: number) {
+        const commutation = new RollinApi(apiRequestContext);
+        return commutation.validateCommutation(memberId!, amount!);
     }
 
     static async getMemberDetails(apiRequestContext: APIRequestContext, linearId?: string) {

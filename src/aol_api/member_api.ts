@@ -3,7 +3,8 @@ import { BaseDltaAolApi } from './base_dlta_aol';
 import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
-
+ let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
+    let path = `/product/${productId}/process`;
 export class MemberApi extends BaseDltaAolApi {
 
   readonly today: Date;
@@ -23,8 +24,7 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createMember(fundProductId: string): Promise<{ memberNo: string, fundProductId: string }> {
-    let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-    let path = `/product/${productId}/process`;
+   
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
@@ -126,7 +126,6 @@ export class MemberApi extends BaseDltaAolApi {
       expect(response.status()).toBe(201);
       let responseBody = await response.json();
       expect(responseBody).toBeTruthy();
-
     } catch (error) {
       console.error(error);
     }
@@ -251,7 +250,6 @@ export class MemberApi extends BaseDltaAolApi {
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
     let MemberNo: string = responseBody.initialData.memberData.memberNo;
-    console.log(`Created Pensionshell Account with memberNo: ${MemberNo}`);
     return { memberNo: MemberNo, fundProductId: fundProductId };
   }
 
@@ -275,6 +273,7 @@ export class MemberApi extends BaseDltaAolApi {
     };
     let response = await this.put(path, JSON.stringify(data));
     let responseBody = await response.json();
+    console.log(responseBody)
     let resultLinearId = responseBody?.linearId?.id || null;
     return { linearId: resultLinearId };
   }
@@ -293,22 +292,6 @@ export class MemberApi extends BaseDltaAolApi {
     let responseBody = await response.json();
     let resultLinearId = responseBody?.linearId?.id || null;
     return { linearId: resultLinearId };
-  }
-
-
-  async validateCommutation(linearId: string): Promise<{ linearId: string }> {
-    let path = `member/${linearId}/commutation/validate`;
-    let data = {
-      "commutationType": "BENEFIT",
-      "commutationAmount": 0,
-      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
-      "whole": true
-    }
-    let response = await this.post(path, JSON.stringify(data));
-    let responseBody = await response.json();
-    console.log(responseBody);
-    let LinearId = responseBody?.linearId?.id || null;
-    return { linearId: LinearId };
   }
 
   async getMemberDetails(linearId: string): Promise<{ id: string, fundName: string, tfn: string, givenName: string, dob: string }> {
@@ -338,8 +321,8 @@ export class MemberApi extends BaseDltaAolApi {
 
       let response = await this.post(path, JSON.stringify(data));
       let responseBody = await response.json();
-      console.log('Request Data:', data);
-      console.log('Response Body:', responseBody);
+      const member = responseBody.member;
+      expect(member.active).toBe(true);
 
       if (responseBody?.linearId?.id) {
         let LinearId = responseBody.linearId.id;
@@ -360,9 +343,10 @@ export class MemberApi extends BaseDltaAolApi {
     let response = await this.get(path);
     let responseBody = await response.json();
     let status = responseBody?.active || false;
+    let exitReason = responseBody?.exitReason || null;
+    expect(exitReason).toBe('ROLLOUT');
     return { status };
   }
 
-
-
-}
+  
+}  

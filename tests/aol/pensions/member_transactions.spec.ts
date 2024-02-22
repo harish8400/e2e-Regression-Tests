@@ -131,7 +131,7 @@ test(fundName()+"Verify the updating of member's CRN in the account details @pen
 
 //API Integration
 
-test(fundName() + "-@APIcommutation Payment Full Exit @API", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
     try {
 
         await navBar.navigateToPensionMembersPage();
@@ -146,8 +146,8 @@ test(fundName() + "-@APIcommutation Payment Full Exit @API", async ({ navBar, pe
         await navBar.selectMember(memberNo);
         let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
-        await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
-        await MemberApiHandler.validateCommutation(apiRequestContext, linearId.id);
+        let {amount} = await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+        await MemberApiHandler.validateCommutation(apiRequestContext, linearId.id, amount);
         await pensionAccountPage.reload();
         await MemberApiHandler.rpbpPayments(apiRequestContext, linearId.id);
         await pensionTransactionPage.commutationUNPBenefit(true);
@@ -159,9 +159,10 @@ test(fundName() + "-@APIcommutation Payment Full Exit @API", async ({ navBar, pe
     }
 })
 
-test(fundName() + "@API-commutation RollOut Full Exit", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+test(fundName() + "-commutation RollOut Full Exit @API-Rollout", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
     try {
-
+        await allure.suite("Pension");
+        await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
         const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
