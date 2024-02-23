@@ -23,7 +23,7 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
 test(fundName()+"Contribution without TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    let addedMember = await memberPage.addNewMember(false, true);
+    let addedMember = await memberPage.addNewMember(true, true);
     await memberPage.selectMember(addedMember);
     await memberOverviewpage.verifyTFNStatus(false);
     await memberOverviewpage.memberAccumulationAccount_Tab.click();
