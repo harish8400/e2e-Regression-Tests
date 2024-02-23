@@ -3,6 +3,10 @@ import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import { fundName } from "../../../src/aol/utils_aol";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -80,4 +84,38 @@ test(fundName()+"-Retirement Transition process with CoR and No PTB @pension", a
         throw error;
     }
     
+})
+
+//API Integration -InternalTransferOut
+
+test(fundName() + "-Internal Transfer Out @API-Internal", async ({ navBar, pensionAccountPage ,internalTransferPage}) => {
+
+    try {
+
+        await allure.suite("Pension");
+        await allure.parentSuite(process.env.PRODUCT!);
+        await navBar.navigateToPensionMembersPage();
+        const apiRequestContext: APIRequestContext = await initDltaApiContext();
+        let { memberNo,surname } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        let caseId = await pensionAccountPage.ProcessTab();
+        let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+        let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+        let  {amount}= await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
+        await MemberApiHandler.internalTransferOutvalidation(apiRequestContext, linearId.id,amount)
+        await pensionAccountPage.reload();
+        await new Promise(resolve => setTimeout(resolve, 3000));
+         await internalTransferPage.internalTransferProcess(true,true);
+         await navBar.selectMemberSurName(surname);
+         await internalTransferPage.internalTransferMemberOut('ABP',memberNo);
+         await MemberApiHandler.fetchMemberSummary(apiRequestContext, linearId.id);
+         
+    } catch (error) {
+        throw error;
+    }
 })

@@ -196,7 +196,6 @@ test(fundName() + "-commutation RollOut Full Exit @API-Rollout", async ({ navBar
                 throw error;
             });
         await pensionTransactionPage.commutationRolloverOut(true);
-        await MemberApiHandler.fetchMemberSummary(apiRequestContext, linearId.id);
         await pensionTransactionPage.paymentView();
     } catch (error) {
         throw error;

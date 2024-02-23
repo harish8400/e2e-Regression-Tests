@@ -32,7 +32,9 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
 
     try {
 
-       await navBar.navigateToPensionMembersPage();
+        await allure.suite("Pension");
+        await allure.parentSuite(process.env.PRODUCT!);
+        await navBar.navigateToPensionMembersPage();
         const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         let caseId = await pensionAccountPage.ProcessTab();
@@ -41,10 +43,10 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
         await new Promise(resolve => setTimeout(resolve, 10000));
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();
-         await navBar.selectMember(memberNo);
-         let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
-         await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+        await navBar.selectMember(memberNo);
+        let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+        await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
          await pensionAccountPage.reload();
     } catch (error) {
         throw error;

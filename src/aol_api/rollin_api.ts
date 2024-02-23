@@ -8,15 +8,15 @@ import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 export class RollinApi extends BaseDltaAolApi {
 
   readonly today: Date;
-  
+
 
   constructor(apiRequestContext: APIRequestContext) {
     super(apiRequestContext);
     this.today = new Date();
   }
 
-  async createRollin(linearId: string):  Promise<{ linearId: string, memberNo: string ,amount: number }> {
-    let {investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
+  async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
+    let { investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let path = `member/${linearId}/rollin`;
     let data = {
       "paymentReference": "InternalTransfer_902010134",
@@ -41,7 +41,7 @@ export class RollinApi extends BaseDltaAolApi {
       "caseReference": null,
       "targetInvestments": [
         {
-            id: investmentId,
+          id: investmentId,
           "percent": 100
         }
       ]
@@ -55,10 +55,10 @@ export class RollinApi extends BaseDltaAolApi {
     let Id = responseBody?.linearId?.id || null;
     let memberNo = responseBody?.memberNo || null;
     let amount = responseBody?.amount || 0;
-    return { linearId: Id, memberNo: memberNo ,amount: amount };
+    return { linearId: Id, memberNo: memberNo, amount: amount };
   }
 
-  async validateCommutation(linearId: string ,amount: number): Promise<{ linearId: string }> {
+  async validateCommutation(linearId: string, amount: number): Promise<{ linearId: string }> {
     let path = `member/${linearId}/commutation/validate`;
     let data = {
       "commutationType": "BENEFIT",
@@ -71,6 +71,21 @@ export class RollinApi extends BaseDltaAolApi {
     console.log(responseBody);
     let Id = responseBody?.linearId?.id || null;
     return { linearId: Id };
+  }
+
+  async internalTransferOutvalidation(linearId: string,amount: number): Promise<{ linearId: string }> {
+    let path = `member/${linearId}/transfer/out/validate`;
+    let data = {
+      "amount": amount,
+      "memberId": linearId,
+      "whole": true,
+      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+    };
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    console.log(responseBody);
+    let resultLinearId = responseBody?.linearId?.id || null;
+    return { linearId: resultLinearId };
   }
 
 }

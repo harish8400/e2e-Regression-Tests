@@ -39,6 +39,13 @@ export class MemberApiHandler {
         return commutation.validateCommutation(memberId!, amount!);
     }
 
+    static async internalTransferOutvalidation(apiRequestContext: APIRequestContext, memberId?: string, amount?: number) {
+        const transferOut = new RollinApi(apiRequestContext);
+        return transferOut.internalTransferOutvalidation(memberId!, amount!);
+    }
+
+
+
     static async getMemberDetails(apiRequestContext: APIRequestContext, linearId?: string) {
         const memberApi = new MemberApi(apiRequestContext);
         return memberApi.getMemberDetails(linearId!);
