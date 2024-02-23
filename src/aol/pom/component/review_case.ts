@@ -61,7 +61,7 @@ export class ReviewCase extends BasePage {
 
       async reviewAndRejectCase(successLocator: Locator){
 
-        console.log('Case ID: ' + this.caseID.textContent());
+        console.log('Case ID: ' + await this.caseID.textContent());
         //Review case process steps, approve/retry or exit on exception
         do {
           
