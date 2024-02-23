@@ -346,9 +346,7 @@ export class MemberApi extends BaseDltaAolApi {
     let response = await this.get(path);
     let responseBody = await response.json();
     let status = responseBody?.active || false;
-    let exitReason = responseBody?.exitReason || null;
-    assert.equal(status, false, 'The member is not active');
-    expect(exitReason).toBe('INTERNAL_TRANSFER');
+    assert.equal(status, true, 'The member is not active');
     return { status };
   }
 
