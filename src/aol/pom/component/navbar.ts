@@ -35,7 +35,7 @@ export class Navbar extends BasePage {
 
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
         this.FilterOption = page.getByText('Member Number', { exact: true });
-        this.FilterOptionInput = page.getByRole('textbox').first();
+        this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     }
 
@@ -68,9 +68,9 @@ export class Navbar extends BasePage {
     }
 
     async selectMember(member: string){
-        //await this.page.reload();
-        await this.sleep(2000);
-
+        await this.sleep(3000);
+        await this.page.reload();
+        
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
