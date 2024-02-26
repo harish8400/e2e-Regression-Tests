@@ -3,16 +3,18 @@ import { MemberApi } from '../member_api';
 import { RollinApi } from '../rollin_api';
 
 
+
 export class MemberApiHandler {
     static async createMember(apiRequestContext: APIRequestContext, fundProductId?: string) {
         const memberCreation = new MemberApi(apiRequestContext);
         return memberCreation.createMember(fundProductId!);
     }
 
-    static async approveProcess(apiRequestContext: APIRequestContext, caseGroupId?: string) {
+    static async approveProcess(apiRequestContext: APIRequestContext, caseGroupId?: string, notes: string = "E2E auto test - approve") {
         const approval = new MemberApi(apiRequestContext);
-        return approval.approveProcess(caseGroupId!);
+        return approval.approveProcess(caseGroupId!, notes);
     }
+    
 
     static async createPensionShellAccount(apiRequestContext: APIRequestContext, fundProductId?: string) {
         const shellaccountCreation = new MemberApi(apiRequestContext);
@@ -62,7 +64,8 @@ export class MemberApiHandler {
         const summary = await details.fetchMemberSummary(linearId);
         return summary;
     }
-
-
+    
 
 }
+
+  

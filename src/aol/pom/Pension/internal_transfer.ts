@@ -5,6 +5,8 @@ import { ReviewCase } from "../component/review_case";
 import { FUND } from "../../../../constants";
 import { DateUtils } from "../../../utils/date_utils";
 import * as member from "../../data/member.json";
+import { error } from "console";
+
 
 export class InternalTransferPage extends BasePage {
     readonly processesLink: Locator;
@@ -88,6 +90,13 @@ export class InternalTransferPage extends BasePage {
     readonly beneficiarySave: Locator;
     readonly createAccount: Locator;
 
+    //process 
+    readonly memberaccount: Locator;
+    readonly review:Locator;
+    readonly verifycreationVG: Locator;
+    readonly verifyVGMember:Locator
+    readonly valueSourceProduct_VG:Locator;
+
 
     constructor(page: Page) {
         super(page)
@@ -147,6 +156,7 @@ export class InternalTransferPage extends BasePage {
         this.USI = page.getByLabel('USI *');
         this.enterAmount = page.getByPlaceholder('0');
         this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
+
         //Investment step
         this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
         this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
@@ -154,6 +164,7 @@ export class InternalTransferPage extends BasePage {
         this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
         this.profileType = page.locator('#membershipProfile').getByPlaceholder('Select');
         this.profileTypeSelect = page.getByText('My Super', { exact: true });
+
         //Beneficiaries step
         this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
         this.beneficiaryName = page.getByLabel('Beneficiary Name *');
@@ -170,6 +181,13 @@ export class InternalTransferPage extends BasePage {
         this.beneficiaryPostcode = page.getByLabel('Postcode *');
         this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
         this.createAccount = page.getByRole('button', { name: 'Create Account' });
+
+        //process 
+        this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
+        this.review = page.locator('//span[text()="In Review"]');
+        this.verifycreationVG = page.locator('(//p[text()="Unauthorised"])[1]');
+        this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
+        this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
 
 
     }
@@ -256,11 +274,11 @@ export class InternalTransferPage extends BasePage {
         if (process.env.PRODUCT === FUND.HESTA && dateJoinedFundEarlier) {
             await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
         } else if (process.env.PRODUCT === FUND.VANGUARD && dateJoinedFundEarlier) {
-            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(+1)}`);
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
         }
-        
+
         await this.nextStep.click();
-        
+
 
         //Employer details
         await this.employer.click();
@@ -311,6 +329,28 @@ export class InternalTransferPage extends BasePage {
 
     }
 
+    async ProcessTab() {
+        await this.processesLink.click();
+        await this.sleep(3000);
+        await this.memberaccount.click();
+        await this.review.click();
+        await this.page.reload();
+        await this.sleep(3000);
+        await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
+       
+        if(this.verifycreationVG){
+            await this.sleep(3000);
+            await this.processID.click();
+            await this.reviewCase.reviewCaseProcess(this.verifyVGMember);
+        }else{
+            throw error;
+        }
+    }
+    
+        
+    
+    
+
     async internalTransferMemberOut(transferType: string, memberNo: String) {
 
         await this.ButtonTransactions.click();
@@ -326,11 +366,13 @@ export class InternalTransferPage extends BasePage {
         await this.dropdownSourceProduct.click();
         await this.sleep(2000);
 
-        if (transferType == 'ABP') {
+        if (process.env.PRODUCT == FUND.HESTA && transferType == 'ABP') {
             await this.valueSourceProduct.click();
-        } else {
-            await this.valueSourceProductVG.click();
+        } else if (process.env.PRODUCT == FUND.VANGUARD && transferType == 'ABP') {
+            await this.valueSourceProduct_VG.click();
+            
         }
+
         await this.sourceAccount.fill(memberNo.toString());
         await this.page.keyboard.down('Tab');
         await this.sleep(2000);
@@ -342,9 +384,10 @@ export class InternalTransferPage extends BasePage {
 
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
-        } else {
+        } else if (process.env.PRODUCT == FUND.VANGUARD) {
             await this.reviewCase.reviewCaseProcess(this.verifySuccessMessageVG);
         }
+
 
         // Click on sub process
         await this.sleep(3000);
