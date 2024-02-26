@@ -15,7 +15,7 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
     await memberPage.selectMember(member.memberIDwithTFN);
     await memberOverviewpage.verifyTFNStatus(true);
     await memberOverviewpage.memberAccumulationAccount_Tab.click();
-    await memberTransactionPage.memberRolloverIn();
+    await memberTransactionPage.memberRolloverIn('Personal',true);
     
 })
 
@@ -29,7 +29,7 @@ test(fundName()+"Contribution without TFN - Verify if contribution is processed 
     
 })
 
-test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
+test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     await memberPage.selectMember(member.memberID);
@@ -37,10 +37,34 @@ test(fundName()+"Personal Contribution - Verify if contribution is processed suc
     
 })
 
-test(fundName()+"Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
+test(fundName()+"Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     await memberPage.selectMember(member.memberID);
     await memberTransactionPage.memberRolloverIn('Salary Sacrifise');
+    
+})
+
+test(fundName()+"Super Guaranty Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    await memberPage.selectMember(member.memberID);
+    await memberTransactionPage.memberRolloverIn('Super Guaranty');
+    
+})
+
+test(fundName()+"Spouse Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    await memberPage.selectMember(member.memberID);
+    await memberTransactionPage.memberRolloverIn('Spouse');
+    
+})
+
+test(fundName()+"Retirement Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    await memberPage.selectMember(member.memberID);
+    await memberTransactionPage.memberRolloverIn('Retirement');
     
 })
