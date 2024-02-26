@@ -1,5 +1,5 @@
 import { allure } from "allure-playwright";
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import * as member from "../../../src/aol/data/member.json";
 import { FUND } from "../../../constants";
@@ -10,6 +10,12 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
 
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
+
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
     await navBar.selectProduct();
@@ -17,7 +23,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage }) => {
+test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage,apiRequestContext }) => {
     await navBar.navigateToPensionMembersPage();
     let member = memberData.pension.Manual_Rollin;
     switch (process.env.PRODUCT!) {
@@ -30,7 +36,6 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, 
     await pensionTransactionPage.rollInTransaction();
     let rollinId = await pensionTransactionPage.transactionView();
     let rollinTransactionId = rollinId!.split(":")[1];
-    const apiRequestContext: APIRequestContext = await initDltaApiContext();
     await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
 })
 
@@ -47,7 +52,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     await pensionTransactionPage.commutationRolloverOut(false);
 })
 
-test(fundName() + "-ABP UNP Commutation - Partial @pension", async ({ navBar, pensionTransactionPage }) => {
+test(fundName() + "-ABP UNP Commutation - Partial @pension", async ({ navBar, pensionTransactionPage,apiRequestContext }) => {
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
 
@@ -57,7 +62,6 @@ test(fundName() + "-ABP UNP Commutation - Partial @pension", async ({ navBar, pe
     await pensionTransactionPage.commutationUNPBenefit(false);
     let paymentId = await pensionTransactionPage.paymentView();
     let paymentTransactionId = paymentId!.split(":")[1];
-    const apiRequestContext: APIRequestContext = await initDltaApiContext();
     await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
 })
 
@@ -131,11 +135,10 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
 //API Integration
 
-test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar, pensionTransactionPage, pensionAccountPage,apiRequestContext }) => {
     try {
 
         await navBar.navigateToPensionMembersPage();
-        const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         let caseId = await pensionAccountPage.ProcessTab();
         let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
@@ -159,12 +162,11 @@ test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar
     }
 })
 
-test(fundName() + "-commutation RollOut Full Exit @API-Rollout", async ({ navBar, pensionTransactionPage, pensionAccountPage }) => {
+test(fundName() + "-commutation RollOut Full Exit @API-Rollout", async ({ navBar, pensionTransactionPage, pensionAccountPage,apiRequestContext }) => {
     try {
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
-        const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         let caseId = await pensionAccountPage.ProcessTab();
         let caseGroupId = caseId.replace('Copy to clipboard', '').trim();

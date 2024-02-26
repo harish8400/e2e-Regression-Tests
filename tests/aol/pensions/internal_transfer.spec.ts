@@ -1,4 +1,4 @@
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 import * as memberData from "../../../src/aol/data/pension_data.json";
@@ -8,6 +8,11 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
 
+export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -89,14 +94,13 @@ test(fundName() + "-Retirement Transition process with CoR and No PTB @pension",
 
 //API Integration -InternalTransferOut For Hesta
 
-test(fundName() + "-Internal Transfer Out @API-Hesta", async ({ navBar, pensionAccountPage, internalTransferPage }) => {
+test(fundName() + "-Internal Transfer Out @API-Hesta", async ({ navBar, pensionAccountPage, internalTransferPage,apiRequestContext }) => {
 
     try {
 
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
-        const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo, surname } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         let caseId = await pensionAccountPage.ProcessTab();
         let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
@@ -123,14 +127,13 @@ test(fundName() + "-Internal Transfer Out @API-Hesta", async ({ navBar, pensionA
 
 //For Vanguard 
 
-test(fundName() + "-Internal Transfer Out @API-VG", async ({ navBar, pensionAccountPage, internalTransferPage }) => {
+test(fundName() + "-Internal Transfer Out @API-VG", async ({ navBar, pensionAccountPage, internalTransferPage,apiRequestContext }) => {
 
     try {
 
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
-        const apiRequestContext: APIRequestContext = await initDltaApiContext();
         let { memberNo, surname } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         let caseId = await pensionAccountPage.ProcessTab();
         let caseStatusId = caseId.replace('Copy to clipboard', '').trim();
