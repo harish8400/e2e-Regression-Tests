@@ -12,7 +12,8 @@ test.beforeEach(async ({ navBar }) => {
 test(fundName()+"Contribution with TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberIDwithTFN);
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
     await memberOverviewpage.verifyTFNStatus(true);
     await memberOverviewpage.memberAccumulationAccount_Tab.click();
     await memberTransactionPage.memberRolloverIn();
@@ -22,7 +23,8 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
 test(fundName()+"Contribution without TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
+    let addedMember = await memberPage.addNewMember(true, true);
+    await memberPage.selectMember(addedMember);
     await memberOverviewpage.verifyTFNStatus(false);
     await memberOverviewpage.memberAccumulationAccount_Tab.click();
     await memberTransactionPage.memberRolloverIn();
@@ -32,7 +34,8 @@ test(fundName()+"Contribution without TFN - Verify if contribution is processed 
 test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
     
 })
@@ -40,7 +43,8 @@ test(fundName()+"Personal Contribution - Verify if contribution is processed suc
 test(fundName()+"Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    await memberPage.selectMember(member.memberID);
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn('Salary Sacrifise');
     
 })
