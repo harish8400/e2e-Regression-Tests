@@ -256,18 +256,22 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
 
-  async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string }> {
+  async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
     let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
-    let path = `/product/${fundProductId}/member/number?memberNo=${memberNo}&${queryParams.toString()}`;
+    let path = `/product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString() ? `&${queryParams.toString()}` : ''}`;
     let response = await this.get(path);
     let responseBody = await response.json();
     let id = responseBody?.linearId?.id || null;
     let fundName = responseBody?.fundName || null;
+    let memberNumber = responseBody?.memberNo || null;
 
-    return { id, fundName };
-  }
+    return { id, fundName, memberNo: memberNumber };
+}
+
+
+
 
   async commencePensionMember(linearId: string): Promise<{ linearId: string }> {
     let path = `member/${linearId}/commence`;
@@ -348,6 +352,38 @@ export class MemberApi extends BaseDltaAolApi {
     let status = responseBody?.active || false;
     assert.equal(status, true, 'The member is not active');
     return { status };
+  }
+
+  async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {
+    let data = {
+      templateReference: "memberTransfer",
+      initialData: {
+        type: "PTB",
+        memberId: linearId,
+        amount: 12500,
+        targetInvestments: [
+          {
+            id: "CASH",
+            percent: 100
+          }
+        ],
+        effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
+        paymentReceivedDate: `${DateUtils.localISOStringDate(this.today)}`,
+        investmentOrigins: [
+          {
+            id: "HE47",
+            amount: 12500
+          }
+        ]
+      }
+    };
+
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    let LinearId = responseBody?.linearId?.id || null;
+    let MemberNo = responseBody?.memberNo;
+
+    return { linearId: LinearId, memberNo: MemberNo };
   }
 
 

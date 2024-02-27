@@ -1,5 +1,5 @@
 import { allure } from "allure-playwright";
-import { aolTest as base } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test";
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import * as member from "../../../src/aol/data/member.json";
 import { FUND } from "../../../constants";
@@ -7,8 +7,10 @@ import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
 import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 
-export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+
+export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
         await use(await initDltaApiContext());
     },
@@ -108,12 +110,15 @@ test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are no
     await pensionTransactionPage.commutationRolloverOutTTR(false);
 })
 
-test(fundName()+"-verify H4M pension commencement with PTB @pension", async ({ navBar, pensionTransactionPage }) => {
-    await navBar.navigateToPensionMembersPage();
-    let mem = member.memberID;
-    await navBar.selectMember(mem);
-    await pensionTransactionPage.verifyPTBtransaction(true);
-    await pensionTransactionPage.pensionCommence();
+test(fundName()+"-verify H4M pension commencement with PTB @pension", async ({ navBar,pensionTransactionPage,apiRequestContext }) => {
+    await navBar.navigateToTTRMembersPage();
+    //let mem = member.memberID;
+    const { id: linearId, memberNo } = await MemberApiHandler.fetchMemberDetails(apiRequestContext, 'memberNo');
+    
+     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId);
+      await navBar.selectMember(memberNo);
+      await pensionTransactionPage.verifyPTBtransaction(true);
+      await pensionTransactionPage.pensionCommence();
 })
 
 test(fundName()+"Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage }) => {

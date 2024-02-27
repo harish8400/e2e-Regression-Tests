@@ -65,6 +65,11 @@ export class MemberApiHandler {
         return summary;
     }
     
+    static async ptbTransactions(apiRequestContext: APIRequestContext, memberId?: string) {
+        const transactions = new MemberApi(apiRequestContext);
+        return transactions.ptbTransactions(memberId!); 
+    }
+    
 
 }
 
