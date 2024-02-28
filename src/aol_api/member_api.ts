@@ -1,4 +1,4 @@
-import { APIRequestContext, expect } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { BaseDltaAolApi } from './base_dlta_aol';
 import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
@@ -25,7 +25,7 @@ export class MemberApi extends BaseDltaAolApi {
     this.firstPensionPaymentDate.setDate(this.commencementDate.getDate() + 15);
   }
 
-  async createMember(fundProductId: string): Promise<{ memberNo: string, fundProductId: string }> {
+  async createMember(fundProductId: string): Promise<{ memberId: string, memberNo: string, fundProductId: string }> {
 
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
@@ -107,31 +107,36 @@ export class MemberApi extends BaseDltaAolApi {
 
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
-    let MemberNo: string = responseBody.initialData.memberData.memberNo;
-    console.log(`Created member with memberNo: ${MemberNo}`);
-    return { memberNo: MemberNo, fundProductId: fundProductId };
-  }
+    let memberId: string = responseBody.linearId?.id || null;
+    let MemberNo: string  = responseBody.initialData.memberData.memberNo;
+    console.log(`Created member with memberNo: ${MemberNo} and memberId: ${memberId}`);
+    return { memberId, memberNo: MemberNo, fundProductId: fundProductId };
+}
 
 
-  async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve") {
-    let path = `case/group/${caseGroupId}/approve`;
-    try {
+
+async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
+  let path = `case/group/${caseGroupId}/approve`;
+  try {
       let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
       let fundProductId = productId;
       let data = {
-        fundProductId: fundProductId,
-        notes: notes,
-        effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
+          fundProductId: fundProductId,
+          notes: notes,
+          effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
       };
 
       let response = await this.post(path, JSON.stringify(data));
-      expect(response.status()).toBe(201);
-      let responseBody = await response.json();
-      expect(responseBody).toBeTruthy();
-    } catch (error) {
+      if (response.status() !== 201) {
+          const responseBody = await response.json();
+          throw new Error(`Failed to approve process. ${responseBody.error?.message}`);
+      }
+  } catch (error) {
       console.error(error);
-    }
+      throw error; 
   }
+}
+
 
   async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string }> {
     let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
@@ -260,7 +265,7 @@ export class MemberApi extends BaseDltaAolApi {
     let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
-    let path = `/product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString() ? `&${queryParams.toString()}` : ''}`;
+    let path = `/product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
     let response = await this.get(path);
     let responseBody = await response.json();
     let id = responseBody?.linearId?.id || null;

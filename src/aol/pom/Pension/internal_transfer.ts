@@ -5,7 +5,7 @@ import { ReviewCase } from "../component/review_case";
 import { FUND } from "../../../../constants";
 import { DateUtils } from "../../../utils/date_utils";
 import * as member from "../../data/member.json";
-import { error } from "console";
+
 
 
 export class InternalTransferPage extends BasePage {
@@ -92,10 +92,11 @@ export class InternalTransferPage extends BasePage {
 
     //process 
     readonly memberaccount: Locator;
-    readonly review:Locator;
+    readonly review: Locator;
     readonly verifycreationVG: Locator;
-    readonly verifyVGMember:Locator
-    readonly valueSourceProduct_VG:Locator;
+    readonly verifyVGMember: Locator
+    readonly valueSourceProduct_VG: Locator;
+    readonly summary:Locator;
 
 
     constructor(page: Page) {
@@ -188,6 +189,8 @@ export class InternalTransferPage extends BasePage {
         this.verifycreationVG = page.locator('(//p[text()="Unauthorised"])[1]');
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
+        this.summary = page.getByRole('button', { name: 'Member Summary' });
+       
 
 
     }
@@ -336,20 +339,16 @@ export class InternalTransferPage extends BasePage {
         await this.review.click();
         await this.page.reload();
         await this.sleep(3000);
+        const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+        await caseId.waitFor();
+        let id = await caseId.textContent();
         await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
-       
-        if(this.verifycreationVG){
-            await this.sleep(3000);
-            await this.processID.click();
-            await this.reviewCase.reviewCaseProcess(this.verifyVGMember);
-        }else{
-            throw error;
-        }
+        return id!.trim();
     }
-    
-        
-    
-    
+
+
+
+
 
     async internalTransferMemberOut(transferType: string, memberNo: String) {
 
@@ -370,7 +369,7 @@ export class InternalTransferPage extends BasePage {
             await this.valueSourceProduct.click();
         } else if (process.env.PRODUCT == FUND.VANGUARD && transferType == 'ABP') {
             await this.valueSourceProduct_VG.click();
-            
+
         }
 
         await this.sourceAccount.fill(memberNo.toString());
@@ -401,6 +400,13 @@ export class InternalTransferPage extends BasePage {
         }
     }
 
+    async memberSummary() {
+        await this.summary.click();
+        await this.sleep(3000);
+        let memberBalance = await this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
+        let balance = memberBalance.textContent();
+        return balance;
+    }
 
 
 

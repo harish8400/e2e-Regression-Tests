@@ -35,6 +35,10 @@ export class AccountInfoPage extends BasePage {
     readonly EditBankAcc_successMessage: Locator;
     readonly NewBankAcc_successMessage: Locator;
 
+    readonly processesLink: Locator;
+    readonly memberaccount: Locator;
+    readonly review: Locator;
+
     constructor(page: Page) {
         super(page)
         this.reviewCase = new ReviewCase(page);
@@ -65,6 +69,12 @@ export class AccountInfoPage extends BasePage {
         this.viewCasesButton = page.getByRole('button', { name: 'View Cases' });
         this.createCaseButton = page.getByRole('button', { name: 'Create Case' });
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
+
+        //process
+
+        this.processesLink = page.getByRole('link', { name: 'Processes' });
+        this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
+        this.review = page.locator('//span[text()="In Review"]');
 
     }
 
@@ -140,6 +150,19 @@ export class AccountInfoPage extends BasePage {
         let id = caseId.textContent();
         return id!;
         //caseId.click();
+    }
+
+    async ProcessTab() {
+        await this.processesLink.click();
+        await this.sleep(3000);
+        await this.memberaccount.click();
+        await this.review.click();
+        await this.page.reload();
+        await this.sleep(3000);
+        const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+        await caseId.waitFor();
+        let id = await caseId.textContent();
+        return id!.trim();
     }
 
 }

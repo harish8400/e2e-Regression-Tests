@@ -16,6 +16,8 @@ import { initDltaApiContext } from '../aol_api/base_dlta_aol';
 import { RelatedInformationPage } from './pom/member/related_information_page';
 import { InvestmentsAndPricing } from './pom/investment_and_pricing_page';
 import { MemberOverView } from './pom/member/member_overview';
+import { CaseApi } from '../aol_api/case_api';
+import {ProcessApi } from '../aol_api/process_api';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -35,6 +37,8 @@ type ExtensionFixtures = {
     memberOverviewpage: MemberOverView;
     transactions:Transactions
     dltaApiRequestContext: APIRequestContext;
+    caseApi: CaseApi;
+    processApi: ProcessApi;
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -96,5 +100,12 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     transactions: async ({ dltaApiRequestContext }, use) => {
         await use(new Transactions(dltaApiRequestContext));
+    },
+    processApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new ProcessApi(dltaApiRequestContext));
+    },
+
+    caseApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new CaseApi(dltaApiRequestContext));
     },
 })
