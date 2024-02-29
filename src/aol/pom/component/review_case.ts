@@ -9,6 +9,7 @@ export class ReviewCase extends BasePage {
     readonly retryProcessStep: Locator;
     readonly rejectProcessStep: Locator;
     readonly processException: Locator;
+    readonly caseID: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -17,12 +18,14 @@ export class ReviewCase extends BasePage {
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
         this.rejectProcessStep = page.getByRole('button', { name: 'Reject' });
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
+        this.caseID = page.locator(`(//span[@class='inline-block align-middle text-xs font-semibold'])[1]`);
         //this.processException = page.getByText('java.lang.IllegalArgumentException');
 
     }
 
     async reviewCaseProcess(successLocator: Locator){
 
+      console.log('Case ID: ' + await this.caseID.textContent());
         //Review case process steps, approve/retry or exit on exception
         do {
           //Approve step
@@ -51,13 +54,14 @@ export class ReviewCase extends BasePage {
           await this.sleep(5000);
     
         } while ( await successLocator.count() == 0 );
-        await successLocator.scrollIntoViewIfNeeded();
+        //await successLocator.scrollIntoViewIfNeeded();
         await expect(successLocator).toBeVisible();
     
       }
 
       async reviewAndRejectCase(successLocator: Locator){
 
+        console.log('Case ID: ' + await this.caseID.textContent());
         //Review case process steps, approve/retry or exit on exception
         do {
           
@@ -83,6 +87,7 @@ export class ReviewCase extends BasePage {
     
       }
 
+      // to do - delete if not referenced
       async approveAndVerifyError(successLocator: Locator){
 
         //Review case process steps, approve/retry or exit on exception
@@ -119,8 +124,7 @@ export class ReviewCase extends BasePage {
     
       }
 
-      async captureScreenshot(screenShotName: string = 'screenshot'){
-        //await this.page.screenshot({path: screenShotName+'.png' });
+      async captureScreenshot(_screenShotName: string = 'screenshot'){
         allure.attachment('Screenshot', await this.page.screenshot({ fullPage:true }), 'image/png');
       }
     

@@ -3,7 +3,7 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import * as member from "../../../src/aol/data/member.json";
 import { FUND } from "../../../constants";
-import { fundName } from "../../../src/aol/utils_aol";
+import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -12,16 +12,11 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage }) => {
+test(fundName()+"-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, memberPage }) => {
     await navBar.navigateToPensionMembersPage();
-    let member = memberData.pension.Manual_Rollin;
-    switch (process.env.PRODUCT!) {
-        case FUND.VANGUARD:
-            member = memberData.pension_vangaurd.Manual_Rollin;
-        case FUND.AE:
-            member = memberData.pension_vangaurd.Manual_Rollin;
-    }
-    await navBar.selectMember(member);
+    let uniqueSurname = UtilsAOL.randomSurname(5);
+    await pensionAccountPage.createShellAccount(uniqueSurname);
+    await memberPage.selectMember(uniqueSurname);
     await pensionTransactionPage.rollInTransaction();
 })
 
@@ -106,10 +101,7 @@ test(fundName()+"-verify H4M pension commencement with PTB @pension", async ({ n
     await pensionTransactionPage.pensionCommence();
 })
 
-test("update CRN @pension", async ({ navBar, accountInfoPage }) => {
-    
-    await allure.suite("Pension");
-    await allure.parentSuite(process.env.PRODUCT!);
+test(fundName()+"Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage }) => {
     
     await navBar.navigateToAccumulationMembersPage();
     await navBar.selectMember(member.memberID);

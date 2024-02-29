@@ -12,7 +12,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test(fundName()+"-Internal Transfer from Accumulation to TTR", async ({ navBar , internalTransferPage }) => {
+test(fundName()+"-Internal Transfer from Accumulation to ABP", async ({ navBar , internalTransferPage }) => {
     
     try {
         await navBar.navigateToPensionMembersPage();
