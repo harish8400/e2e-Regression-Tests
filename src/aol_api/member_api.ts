@@ -5,8 +5,10 @@ import { DateUtils } from '../utils/date_utils';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 import * as assert from 'assert';
 
+
+
 let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-let path = `/product/${productId}/process`;
+let path = `product/${productId}/process`;
 export class MemberApi extends BaseDltaAolApi {
 
   readonly today: Date;
@@ -138,9 +140,9 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
 }
 
 
-  async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string }> {
+  async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string ,processId: string }> {
     let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-    let path = `/product/${productId}/process`;
+    let path = `product/${productId}/process`;
 
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
@@ -256,8 +258,9 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
 
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
+    let processId:string = responseBody?.linearId?.id || null;
     let MemberNo: string = responseBody.initialData.memberData.memberNo;
-    return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId };
+    return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId ,processId};
   }
 
 
@@ -265,7 +268,7 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
     let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
-    let path = `/product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
+    let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
     let response = await this.get(path);
     let responseBody = await response.json();
     let id = responseBody?.linearId?.id || null;
@@ -307,7 +310,7 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
   }
 
   async getMemberDetails(linearId: string): Promise<{ id: string, fundName: string, tfn: string, givenName: string, dob: string }> {
-    let path = `/member/${linearId}`;
+    let path = `member/${linearId}`;
     let response = await this.get(path);
     let responseBody = await response.json();
     let id = responseBody?.linearId?.id || null;
@@ -351,7 +354,7 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
 
 
   async fetchMemberSummary(linearId: string): Promise<{ status: boolean }> {
-    let path = `/member/${linearId}/summary`;
+    let path = `member/${linearId}/summary`;
     let response = await this.get(path);
     let responseBody = await response.json();
     let status = responseBody?.active || false;
@@ -391,5 +394,5 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
     return { linearId: LinearId, memberNo: MemberNo };
   }
 
-
+  
 }
