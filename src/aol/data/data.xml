@@ -33,7 +33,7 @@
         <electronicErrorMessaging>true</electronicErrorMessaging>
         <noOfParts>1</noOfParts>
         <senderAbn>84111122223</senderAbn>
-        <senderName>Zele</senderName>
+        <senderName>Jason</senderName>
       </headers>
       <content>
         <sender>
@@ -42,8 +42,8 @@
             <value>David Alexander Baxter Superannuation Fund</value>
           </organisationName>
           <personName>
-            <firstName>member</firstName>
-            <lastName>surname</lastName>
+            <firstName>SFirstname</firstName>
+            <lastName>SLastname</lastName>
           </personName>
           <emailAddress>
             <emailAddressUsage>Contact</emailAddressUsage>
@@ -85,9 +85,9 @@
         </employer>
         <member>
           <name>
-            <title>Mr.</title>
-            <firstName>[newFirstName]</firstName>
-            <lastName>[newLastName]</lastName>
+            <title>Ms.</title>
+            <firstName>Gopu</firstName>
+            <lastName>Balu</lastName>
           </name>
           <gender>MALE</gender>
           <dob>

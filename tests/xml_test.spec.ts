@@ -1,14 +1,88 @@
-import path from 'path';
-import { aolTest as test } from '../src/aol/base_aol_test';
-import { UtilsAOL } from '../src/aol/utils_aol';
+import { allure } from "allure-playwright";
+import { test } from "@playwright/test";
+import SftpClient from 'ssh2-sftp-client';
+import path from "path";
 import { readXml, validateXmlChanges } from '../src/utils/xml_utils';
-import { Builder } from 'xml2js';
+import { Builder } from "xml2js";
 import * as fs from 'fs';
+import { UtilsAOL } from "../src/aol/utils_aol";
 
 
-let xmlFilePath = path.join(__dirname, '../src/aol/data/xml_files/data.xml');
+test.beforeEach(async ({}) => {
+  test.setTimeout(600000);
+  await allure.suite("Pension");
+  await allure.parentSuite(process.env.PRODUCT!);
+});
+
+
+let xmlFilePath = path.join(__dirname, '../src/aol/data/data.xml');
 let member = UtilsAOL.randomName();
 let surname = UtilsAOL.randomSurname(5);
+
+
+test("SFTP Test -To download the file", async () => {
+  async function main() {
+    const sftp = new SftpClient();
+    const privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
+    const privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
+    console.log('Private Key Content:', privateKeyContent);
+    try {
+      await sftp.connect({
+        host: 'superchoice-sftp.dev.tinasuper.com',
+        port: 22,
+        username: 'saturn-dev-contribution',
+        password: 'oghaim8aeNgei1aeho',
+        privateKey: privateKeyContent,
+        passphrase: 'oghaim8aeNgei1aeho'
+      });
+      // Perform SFTP operations here
+      await sftp.fastGet('/home/saturn-dev-contribution/inbox/data.xml', path.join(__dirname, '../src/aol/data/data.xml'));
+      console.log('File downloaded successfully.');
+    } catch (err: any) {
+      console.error('Error:', err.message);
+    } finally {
+      await sftp.end();
+    }
+  }
+
+  await main();
+});
+
+test("SFTP Test -To upload the file", async () => {
+  async function main() {
+    const sftp = new SftpClient();
+    const privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
+    const privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
+    console.log('Private Key Content:', privateKeyContent);
+    try {
+      await sftp.connect({
+        host: 'superchoice-sftp.dev.tinasuper.com',
+        port: 22,
+        username: 'saturn-dev-contribution',
+        password: 'oghaim8aeNgei1aeho',
+        privateKey: privateKeyContent,
+        passphrase: 'oghaim8aeNgei1aeho'
+      });
+      
+      // Local file path to upload
+      const localFilePath = path.join(__dirname, '../src/aol/data/data.xml');
+      
+      // Remote file path where the file will be uploaded
+      const remoteFilePath = '/home/saturn-dev-contribution/inbox/data_change.xml';
+      
+      // Perform SFTP upload operation
+      await sftp.fastPut(localFilePath, remoteFilePath);
+      console.log('File uploaded successfully.');
+    } catch (err: any) {
+      console.error('Error:', err.message);
+    } finally {
+      await sftp.end();
+    }
+  }
+
+  await main();
+});
+
 
 test('xml file validation', async ({ }) => {
   // Read existing values from the XML file
@@ -48,8 +122,8 @@ test('xml file validation', async ({ }) => {
       if (content.member && content.member.name) {
         // Ensure that content.member.name is defined
         content.member.name.title = 'Mr.';
-        content.member.name.firstName = 'John'; 
-        content.member.name.lastName = 'Doe'; 
+        content.member.name.firstName = 'John';
+        content.member.name.lastName = 'Doe';
       } else {
         console.error('content.member.name is undefined or null.');
       }
