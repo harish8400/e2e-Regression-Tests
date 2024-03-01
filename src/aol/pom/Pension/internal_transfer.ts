@@ -275,7 +275,7 @@ export class InternalTransferPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
         if (process.env.PRODUCT === FUND.HESTA && dateJoinedFundEarlier) {
-            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         } else if (process.env.PRODUCT === FUND.VANGUARD && dateJoinedFundEarlier) {
             await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
         }
@@ -403,8 +403,11 @@ export class InternalTransferPage extends BasePage {
     async memberSummary() {
         await this.summary.click();
         await this.sleep(3000);
-        let memberBalance = await this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
+        let memberBalance = this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
+        memberBalance.scrollIntoViewIfNeeded();
         let balance = memberBalance.textContent();
+        await this.ButtonTransactions.click();
+        await this.sleep(3000);
         return balance;
     }
 

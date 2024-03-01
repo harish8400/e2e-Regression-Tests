@@ -144,11 +144,13 @@ export class PensionShellAccount extends BasePage {
 
   //Exceptions
   readonly processException: Locator;
+  readonly abpScreen:Locator;
 
    //process link
    readonly processesLink: Locator;
    readonly shellaccount:Locator;
    readonly review:Locator;
+   readonly transactionsTab:Locator;
 
   constructor(page: Page) {
     super(page)
@@ -285,6 +287,8 @@ export class PensionShellAccount extends BasePage {
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
     this.review = page.locator('//span[text()="In Review"]');
+    this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
+    this.transactionsTab = page.locator('//button[text()="Transactions"]');
   }
 
   async navigateToPensionMemberPage() {
@@ -481,12 +485,13 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000);
     await this.shellaccount.click();
     await this.review.click();
-    await this.sleep(3000);
-    const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
-    await caseId.waitFor();
-    
-    let id = await caseId.textContent();
-    return id!.trim(); 
+    await this.sleep(3000)
 }
   
+  async retirement(){
+    await this.abpScreen.click();
+    await this.sleep(3000);
+    await this.transactionsTab.click();
+
+  }
 }

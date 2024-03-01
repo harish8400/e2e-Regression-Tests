@@ -74,7 +74,7 @@ export class AccountInfoPage extends BasePage {
 
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
-        this.review = page.locator('//span[text()="In Review"]');
+        this.review = page.locator('//span[text()="In Progress"]');
 
     }
 
@@ -142,15 +142,6 @@ export class AccountInfoPage extends BasePage {
         await expect(this.verifyCRN).toBeVisible();
     }
 
-    async accountInfoTab() {
-        await this.sleep(3000);
-        await this.accountInfo.click();
-        let caseId = this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]");
-        caseId.scrollIntoViewIfNeeded();
-        let id = caseId.textContent();
-        return id!;
-        //caseId.click();
-    }
 
     async ProcessTab() {
         await this.processesLink.click();

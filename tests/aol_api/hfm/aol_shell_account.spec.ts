@@ -28,10 +28,11 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
-        let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-        let caseId = await pensionAccountPage.ProcessTab();
-        let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId);
+        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();

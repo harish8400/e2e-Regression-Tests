@@ -27,7 +27,7 @@ export class MemberApi extends BaseDltaAolApi {
     this.firstPensionPaymentDate.setDate(this.commencementDate.getDate() + 15);
   }
 
-  async createMember(fundProductId: string): Promise<{ memberId: string, memberNo: string, fundProductId: string }> {
+  async createMember(fundProductId: string): Promise<{ memberId: string, memberNo: string, fundProductId: string, processId: string }> {
 
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
@@ -110,37 +110,38 @@ export class MemberApi extends BaseDltaAolApi {
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
     let memberId: string = responseBody.linearId?.id || null;
-    let MemberNo: string  = responseBody.initialData.memberData.memberNo;
+    let MemberNo: string = responseBody.initialData.memberData.memberNo;
+    let processId: string = responseBody?.linearId?.id || null;
     console.log(`Created member with memberNo: ${MemberNo} and memberId: ${memberId}`);
-    return { memberId, memberNo: MemberNo, fundProductId: fundProductId };
-}
+    return { memberId, memberNo: MemberNo, fundProductId: fundProductId, processId };
+  }
 
 
 
-async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
-  let path = `case/group/${caseGroupId}/approve`;
-  try {
+  async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
+    let path = `case/group/${caseGroupId}/approve`;
+    try {
       let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
       let fundProductId = productId;
       let data = {
-          fundProductId: fundProductId,
-          notes: notes,
-          effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
+        fundProductId: fundProductId,
+        notes: notes,
+        effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
       };
 
       let response = await this.post(path, JSON.stringify(data));
       if (response.status() !== 201) {
-          const responseBody = await response.json();
-          throw new Error(`Failed to approve process. ${responseBody.error?.message}`);
+        const responseBody = await response.json();
+        throw new Error(`Failed to approve process. ${responseBody.error?.message}`);
       }
-  } catch (error) {
+    } catch (error) {
       console.error(error);
-      throw error; 
+      throw error;
+    }
   }
-}
 
 
-  async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string ,processId: string }> {
+  async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
     let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let path = `product/${productId}/process`;
 
@@ -258,9 +259,9 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
 
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
-    let processId:string = responseBody?.linearId?.id || null;
+    let processId: string = responseBody?.linearId?.id || null;
     let MemberNo: string = responseBody.initialData.memberData.memberNo;
-    return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId ,processId};
+    return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId, processId };
   }
 
 
@@ -276,10 +277,7 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
     let memberNumber = responseBody?.memberNo || null;
 
     return { id, fundName, memberNo: memberNumber };
-}
-
-
-
+  }
 
   async commencePensionMember(linearId: string): Promise<{ linearId: string }> {
     let path = `member/${linearId}/commence`;
@@ -313,14 +311,14 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
     let path = `member/${linearId}`;
     let response = await this.get(path);
     let responseBody = await response.json();
-    let id = responseBody?.linearId?.id || null;
+    let id = responseBody?.identity?.id || null;
     let fundName = responseBody?.member?.fund || null;
     let tfn = responseBody?.identity?.tfn || null;
     let givenName = responseBody?.identity?.givenName || null;
     let dob = responseBody?.identity?.dob || null;
+    console.log(dob,fundName,tfn,givenName)
     return { id, fundName, tfn, givenName, dob };
   }
-
   async memberIdentity(linearId: string, memberDetails: { tfn: string, dob: string, givenName: string, fundName: string }): Promise<{ linearId: string, tfn: string, givenName: string, dob: string }> {
     try {
       let path = `identity/${linearId}/identity/check`;
@@ -333,25 +331,18 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
         fundName: memberDetails.fundName,
         effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
       };
-
       let response = await this.post(path, JSON.stringify(data));
       let responseBody = await response.json();
+      console.log(responseBody);
       const member = responseBody.member;
       assert.strictEqual(member.active, true, 'The member is active');
-
-      if (responseBody?.linearId?.id) {
-        let LinearId = responseBody.linearId.id;
+        let LinearId = responseBody.identity.id;
         return { linearId: LinearId, tfn: memberDetails.tfn, givenName: memberDetails.givenName, dob: memberDetails.dob };
-      } else {
-        console.error('Unexpected response format:', responseBody);
-        throw new Error('Unexpected response format');
-      }
     } catch (error) {
       console.error('Error:', error);
       throw error;
     }
   }
-
 
   async fetchMemberSummary(linearId: string): Promise<{ status: boolean }> {
     let path = `member/${linearId}/summary`;
@@ -394,5 +385,25 @@ async approveProcess(caseGroupId: string, notes: string = "E2E auto test - appro
     return { linearId: LinearId, memberNo: MemberNo };
   }
 
-  
+  async getCaseGroupId(processId: String) {
+    let path = `process/${processId}/case`;
+
+    try {
+      let response = await this.get(path);
+      let responseBody = await response.json();
+      if (responseBody.data.length > 0) {
+        return responseBody.data[0].caseGroupId;
+      } else {
+        throw new Error('No data found for the given processId');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error fetching caseGroupId:', error.message);
+        throw error;
+      } else {
+        throw new Error('Unknown error occurred');
+      }
+    }
+  }
+
 }

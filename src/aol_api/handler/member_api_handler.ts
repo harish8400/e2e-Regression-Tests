@@ -14,7 +14,7 @@ export class MemberApiHandler {
         const approval = new MemberApi(apiRequestContext);
         return approval.approveProcess(caseGroupId!, notes);
     }
-    
+
 
     static async createPensionShellAccount(apiRequestContext: APIRequestContext, fundProductId?: string) {
         const shellaccountCreation = new MemberApi(apiRequestContext);
@@ -46,13 +46,10 @@ export class MemberApiHandler {
         return transferOut.internalTransferOutvalidation(memberId!, amount!);
     }
 
-
-
     static async getMemberDetails(apiRequestContext: APIRequestContext, linearId?: string) {
         const memberApi = new MemberApi(apiRequestContext);
         return memberApi.getMemberDetails(linearId!);
     }
-
     static async memberIdentity(apiRequestContext: APIRequestContext, memberId?: string, memberDetails?: { tfn: string, dob: string, givenName: string, fundName: string }) {
         const identity = new MemberApi(apiRequestContext);
         const details = memberDetails || await identity.getMemberDetails(memberId!);
@@ -64,13 +61,18 @@ export class MemberApiHandler {
         const summary = await details.fetchMemberSummary(linearId);
         return summary;
     }
-    
+
     static async ptbTransactions(apiRequestContext: APIRequestContext, memberId?: string) {
         const transactions = new MemberApi(apiRequestContext);
-        return transactions.ptbTransactions(memberId!); 
+        return transactions.ptbTransactions(memberId!);
     }
-    
+
+    static async getCaseGroupId(apiRequestContext: APIRequestContext, processId?: string) {
+        const Id = new MemberApi(apiRequestContext);
+        return Id.getCaseGroupId(processId!);
+    }
+
 
 }
 
-  
+

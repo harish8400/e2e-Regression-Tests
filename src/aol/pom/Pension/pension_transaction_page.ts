@@ -221,9 +221,6 @@ export class PensionTransactionPage extends BasePage {
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
     this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
 
-    //Transactions view 
-    this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
-    this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
 
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
