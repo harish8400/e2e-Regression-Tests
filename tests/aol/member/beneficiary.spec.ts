@@ -15,7 +15,7 @@ test(fundName()+"- Add new non binding nomination on an existing account with al
 
     try {
         await navBar.navigateToAccumulationMembersPage();
-        await memberPage.selectMember("MER-ACC-356170");
+        await memberPage.selectMember("9010103");
         await beneficiaryPage.addNewNonBindingNominationOnExistingAccount();
         await beneficiaryPage.beneficiaryInputFileds();
     } catch (error) {
@@ -28,7 +28,7 @@ test(fundName()+"-Add new Binding lapsing nomination on an existing account with
 
     try {
         await navBar.navigateToAccumulationMembersPage();
-        await memberPage.selectMember("MER-ACC-356170");
+        await memberPage.selectMember("9010105");
         await beneficiaryPage.addNewNonBindingNominationOnExistingAccount();
         await beneficiaryPage.bindinglapsingInputFileds();
     } catch (error) {
@@ -40,7 +40,7 @@ test(fundName()+"-Non binding or Binding lapsing nomination cannot be updated if
 
     try {
         await navBar.navigateToAccumulationMembersPage();
-        await memberPage.selectMember("MER-ACC-356170");
+        await memberPage.selectMember("9010106");
         await beneficiaryPage.addNewNonBindingNominationOnExistingAccount();
         await beneficiaryPage.beneficiaryInputIsNotEqualToHundredPercent();
     } catch (error) {

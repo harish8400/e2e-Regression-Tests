@@ -1,12 +1,12 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
-import * as member from "../../../src/aol/data/member.json"
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
     await allure.suite("Money_In");
     await navBar.selectProduct();
+    await allure.parentSuite(process.env.PRODUCT!);
 });
 
 test(fundName()+"Contribution with TFN - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {

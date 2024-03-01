@@ -33,8 +33,8 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP", async ({ navBar
 
 })
 
-test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar, internalTransferPage }) => {
-
+test(fundName()+"-Internal Transfer from ABP to Accumulation", async ({ navBar , internalTransferPage }) => {
+    
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.pension.Internal_Transfer_ABP_To_Accumulation_Destination_Account;
@@ -46,8 +46,8 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar
 
 })
 
-test(fundName() + "-Retirement Transition process with PTB @pension", async ({ navBar, internalTransferPage, pensionTransactionPage }) => {
-
+test(fundName()+"-Validate Retirement Transition process is successful where PTB transaction is processed on TTR account prior to conversion", async ({ navBar , internalTransferPage, pensionTransactionPage }) => {
+    
     try {
         //navigating to TTR source member and verifying PTB
         await navBar.selectProduct();
@@ -62,15 +62,14 @@ test(fundName() + "-Retirement Transition process with PTB @pension", async ({ n
         const destAcc = memberData.pension.Internal_Transfer_TTR_To_ABP_Destination_Account;
         await navBar.selectMember(destAcc);
         await internalTransferPage.internalTransferMember('TTR');
-        console.log("Test Execution Completed: Internal Transfer from Accumulation to TTR is successful");
     } catch (error) {
         throw error;
     }
 
 })
 
-test(fundName() + "-Retirement Transition process with CoR and No PTB @pension", async ({ navBar, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
-
+test(fundName()+"-Validate Retirement Transition process completes successfully on TTR account with CoR and NO PTB transaction", async ({ navBar , internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
+    
     try {
         //navigating to TTR source member and adding condition of release
         await navBar.navigateToTTRMembersPage();

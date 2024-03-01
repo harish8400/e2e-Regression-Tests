@@ -1,5 +1,5 @@
 {
-    "memberID":"464591486",
+    "memberID":"9020107",
     "memberIDwithTFN": "464591486",
     "paymentDate":"02/02/2024",
     "dob": "16/06/1955",
@@ -29,11 +29,11 @@
     "PaymentReference":"ABP-Full",
     "EligibleServiceDate":"1/7/2023",
     "Employment": {
-      "EmployementTerminationMember_Hesta":"MER-ACC-356170",
+      "EmployementTerminationMember_Hesta":"D576B-48-1",
       "EmployementTerminationMember_Vanguard":"AE-10006"
     },
     "Beneficiary": {
-      "PensionMembershipAccountNumber_Hesta":"MER-PEN-450888",
+      "PensionMembershipAccountNumber_Hesta":"9020102",
       "PensionMembershipAccountNumber_Vanguard":"9020227"
     }
   }
