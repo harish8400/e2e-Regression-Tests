@@ -1,0 +1,108 @@
+{
+    "prices": [
+      {
+        "applicationPrice": 1.5488,
+        "investmentId": "SESGP",
+        "midPrice": 1.5468,
+        "redemptionPrice": 1.5448,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.1519,
+        "investmentId": "SHGDP",
+        "midPrice": 1.1518,
+        "redemptionPrice": 1.1517,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.8266,
+        "investmentId": "SGDP",
+        "midPrice": 1.8255,
+        "redemptionPrice": 1.8244,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.1699,
+        "investmentId": "SBDP",
+        "midPrice": 1.1666,
+        "redemptionPrice": 1.1633,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3270,
+        "investmentId": "SCDP",
+        "midPrice": 1.3269,
+        "redemptionPrice": 1.3268,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.6564,
+        "investmentId": "SCRFP",
+        "midPrice": 1.6554,
+        "redemptionPrice": 1.6544,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.3278,
+        "investmentId": "SAFIP",
+        "midPrice": 1.3274,
+        "redemptionPrice": 1.3270,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4188,
+        "investmentId": "SIFIP",
+        "midPrice": 1.4185,
+        "redemptionPrice": 1.4182,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2297,
+        "investmentId": "SEMSP",
+        "midPrice": 1.2281,
+        "redemptionPrice": 1.2265,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.2285,
+        "investmentId": "SISCP",
+        "midPrice": 1.2278,
+        "redemptionPrice": 1.2271,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4169,
+        "investmentId": "SISHP",
+        "midPrice": 1.4166,
+        "redemptionPrice": 1.4163,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 1.4245,
+        "investmentId": "SISP",
+        "midPrice": 1.4238,
+        "redemptionPrice": 1.4231,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      },
+      {
+        "applicationPrice": 2.6488,
+        "investmentId": "SASIP",
+        "midPrice": 2.6466,
+        "redemptionPrice": 2.6444,
+        "referenceDate": "{{referenceDate}}",
+        "traderName": "OU=StateStreet-Custodian, O=Grow Super Ops Pty Ltd, L=Sydney, ST=New South Wales, C=AU"
+      }
+    ]
+  }

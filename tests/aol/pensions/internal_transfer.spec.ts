@@ -1,8 +1,16 @@
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
 import * as memberData from "../../../src/aol/data/pension_data.json";
 import { fundName } from "../../../src/aol/utils_aol";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+
+export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -12,8 +20,8 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test(fundName()+"-Internal Transfer from Accumulation to ABP", async ({ navBar , internalTransferPage }) => {
-    
+test(fundName() + "-Internal Transfer from Accumulation to ABP", async ({ navBar, internalTransferPage }) => {
+
     try {
         await navBar.navigateToPensionMembersPage();
         let member = memberData.pension.Internal_Transfer_Accumulation_To_ABP_Destination_Account;
@@ -22,11 +30,11 @@ test(fundName()+"-Internal Transfer from Accumulation to ABP", async ({ navBar ,
     } catch (Error) {
         throw Error;
     }
-    
+
 })
 
-test(fundName()+"-Internal Transfer from TTR to Accumulation", async ({ navBar , internalTransferPage }) => {
-    
+test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar, internalTransferPage }) => {
+
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.pension.Internal_Transfer_ABP_To_Accumulation_Destination_Account;
@@ -35,11 +43,11 @@ test(fundName()+"-Internal Transfer from TTR to Accumulation", async ({ navBar ,
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Internal Transfer from Accumulation to TTR has failed" });
     }
-    
+
 })
 
-test(fundName()+"-Retirement Transition process with PTB @pension", async ({ navBar , internalTransferPage, pensionTransactionPage }) => {
-    
+test(fundName() + "-Retirement Transition process with PTB @pension", async ({ navBar, internalTransferPage, pensionTransactionPage }) => {
+
     try {
         //navigating to TTR source member and verifying PTB
         await navBar.selectProduct();
@@ -58,11 +66,11 @@ test(fundName()+"-Retirement Transition process with PTB @pension", async ({ nav
     } catch (error) {
         throw error;
     }
-    
+
 })
 
-test(fundName()+"-Retirement Transition process with CoR and No PTB @pension", async ({ navBar , internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
-    
+test(fundName() + "-Retirement Transition process with CoR and No PTB @pension", async ({ navBar, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
+
     try {
         //navigating to TTR source member and adding condition of release
         await navBar.navigateToTTRMembersPage();
@@ -79,5 +87,6 @@ test(fundName()+"-Retirement Transition process with CoR and No PTB @pension", a
     } catch (error) {
         throw error;
     }
-    
+
 })
+

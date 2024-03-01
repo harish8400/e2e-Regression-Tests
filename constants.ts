@@ -90,8 +90,7 @@ export const enum AUTH_USER_FILENAME {
 export const FUND_IDS = {
     MERCY: {
         FUND_ID: "15fa2659-f1bb-552c-b50f-627531e6bc56",
-        PRODUCT_ID:
-        {
+        PRODUCT_ID: {
             ACCUMULATION: "7ca21238-2031-59c7-b334-0d24f72eb6a0",
             RETIREMENT: "6583c561-2bfd-57f2-8648-abb1e33fd3c2",
             TTR: "37583907-459d-5158-9b69-16cb9b619abb"
@@ -99,16 +98,52 @@ export const FUND_IDS = {
     },
     VANGUARD: {
         FUND_ID: "c9d996a5-a7b8-5686-970f-1efb4a3720cb",
-        PRODUCT_ID:
-        {
-            ACCUMULATION: "f4e4bf41-1351-52e5-8cbd-39105264d3e1"
+        PRODUCT_ID: {
+            ACCUMULATION: "f4e4bf41-1351-52e5-8cbd-39105264d3e1",
+            RETIREMENT: "52bc7ff5-0ad9-520f-bd45-308e03aedbcb",
+            TTR: "85a3990c-c88b-5c24-a1e0-4299c5c5aebe"
         }
     }
-}
-
+};
 export const INVESTMENT_OPTIONS = {
     MERCY: {
         ACCUMULATION: {
+            BALANCED_GROWTH: {
+                NAME: "Balanced Growth",
+                ID: "HE46"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "HE53"
+            },
+            PROPERTY_AND_INFRASTRUCTURE: {
+                NAME: "Property and Infrastructure",
+                ID: "HE48"
+            },
+            DIVERSIFIED_BONDS: {
+                NAME: "Diversified Bonds",
+                ID: "HE56"
+            }
+        },
+        RETIREMENT: {
+            BALANCED_GROWTH: {
+                NAME: "IS Balanced Growth",
+                ID: "HE35"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "IS Australian Shares",
+                ID: "HE42"
+            },
+            PROPERTY_AND_INFRASTRUCTURE: {
+                NAME: "IS Property and Infrastructure",
+                ID: "HE44"
+            },
+            DIVERSIFIED_BONDS: {
+                NAME: "IS Diversified Bonds",
+                ID: "HEDB"
+            }
+        },
+        TTR: {
             BALANCED_GROWTH: {
                 NAME: "Balanced Growth",
                 ID: "HE46"
@@ -145,7 +180,43 @@ export const INVESTMENT_OPTIONS = {
                 NAME: "Growth",
                 ID: "Cash"
             }
-        }
+        },
+        TTR: {
+            ETHICALLY_CONSCIOUS_GROWTH: {
+                NAME: "Ethically Conscious Growth",
+                ID: "SESGP"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "SCDP"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "SAFIP"
+            },
+            CASH: {
+                NAME: "Growth",
+                ID: "SGDA"
+            }
+        },
+        RETIREMENT: {
+            ETHICALLY_CONSCIOUS_GROWTH: {
+                NAME: "Ethically Conscious Growth",
+                ID: "SESGP"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "SCDP"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Fixed Interest",
+                ID: "SAFIP"
+            },
+            CASH: {
+                NAME: "Growth",
+                ID: "SGDP"
+            }
+        },
     }
 }
 
