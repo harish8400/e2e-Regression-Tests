@@ -94,6 +94,7 @@ export class BeneficiaryPage extends BasePage {
   }
 
   async bindinglapsingInputFileds() {
+    await this.sleep(3000);
     await this.viewCase.click({ timeout: 5000 });
     await this.createCase.click({ timeout: 5000 });
     await this.beneficiaryName.fill(member.beneficiary);

@@ -15,11 +15,13 @@
     "@aws-sdk/client-ssm": "^3.405.0",
     "@playwright/test": "^1.41.0",
     "@types/node": "^20.11.16",
+    "@types/jsonwebtoken": "^9.0.5",
     "allure-playwright": "^2.10.0",
     "async-wait-until": "^2.0.12"
   },
   "dependencies": {
     "allure-commandline": "^2.24.1",
-    "fast-csv": "^4.3.6"
+    "fast-csv": "^4.3.6",
+    "jsonwebtoken": "^9.0.2"
   }
 }

@@ -79,39 +79,44 @@ export class PensionTransactionPage extends BasePage {
 
   //Death Benefit transaction
 
-    readonly BenefitPayment: Locator;
-    readonly SearchOptionComboBox: Locator;
-    readonly DeathBenifitsOption: Locator;
-    readonly ShareOfBeneit: Locator;
-    readonly ShareOfBeneitInput: Locator;
-    readonly PaymentType: Locator;
-    readonly PaymentTypeInput: Locator;
-    readonly RelationShip: Locator;
-    readonly RelationShipInput: Locator;
-    readonly Title: Locator;
-    readonly InputTitle: Locator;
-    readonly FirstName: Locator;
-    readonly LastName: Locator;
-    readonly DateOfBirth: Locator;
-    readonly DateOfBirthInput: Locator;
-    readonly City_Town: Locator;
-    readonly State: Locator;
-    readonly StateInput: Locator;
-    readonly ResidentialAddress: Locator;
-    readonly CheckboxKYC: Locator;
-    readonly PostCode: Locator;
-    readonly TFN: Locator;
-    readonly BSBNumber: Locator;
-    readonly AccountName: Locator;
-    readonly AccountNumber1: Locator;
-    readonly OverviewTab: Locator;
-    readonly OverViewEditButton: Locator;
-    readonly DOD: Locator;
-    readonly HESTAforMercyRetirementTab: Locator;
-    readonly personalDetailsDODUpdateSuccess: Locator;
-    readonly ButtonAddTransactions: Locator;
-    readonly ButtonTransactions: Locator;
-    readonly deathBenefitTransactionSuccess: Locator;
+  readonly BenefitPayment: Locator;
+  readonly SearchOptionComboBox: Locator;
+  readonly DeathBenifitsOption: Locator;
+  readonly ShareOfBeneit: Locator;
+  readonly ShareOfBeneitInput: Locator;
+  readonly PaymentType: Locator;
+  readonly PaymentTypeInput: Locator;
+  readonly RelationShip: Locator;
+  readonly RelationShipInput: Locator;
+  readonly Title: Locator;
+  readonly InputTitle: Locator;
+  readonly FirstName: Locator;
+  readonly LastName: Locator;
+  readonly DateOfBirth: Locator;
+  readonly DateOfBirthInput: Locator;
+  readonly City_Town: Locator;
+  readonly State: Locator;
+  readonly StateInput: Locator;
+  readonly ResidentialAddress: Locator;
+  readonly CheckboxKYC: Locator;
+  readonly PostCode: Locator;
+  readonly TFN: Locator;
+  readonly BSBNumber: Locator;
+  readonly AccountName: Locator;
+  readonly AccountNumber1: Locator;
+  readonly OverviewTab: Locator;
+  readonly OverViewEditButton: Locator;
+  readonly DOD: Locator;
+  readonly HESTAforMercyRetirementTab: Locator;
+  readonly personalDetailsDODUpdateSuccess: Locator;
+  readonly ButtonAddTransactions: Locator;
+  readonly ButtonTransactions: Locator;
+  readonly deathBenefitTransactionSuccess: Locator;
+
+  //Transactions view 
+  readonly TransactioReference: Locator;
+  readonly BenefitPaymentId: Locator;
+
 
   constructor(page: Page) {
     super(page)
@@ -152,7 +157,7 @@ export class PensionTransactionPage extends BasePage {
     this.pensionCommutation = page.getByText('Pension Commutation', { exact: true });
     this.commutation_type = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('CloseSelect');
     this.commutation_rollout = page.getByRole('option', { name: 'Commutation - Rollover Out' });
-    this.payTo = page.locator('#gs4__combobox div').first();
+    this.payTo = page.locator('//label[@for="payTo"]/following::div[@class="gs__selected-options"]');
     this.fund = page.getByRole('option', { name: 'Fund' });
     this.destinationAccountNumber = page.getByLabel('Destination account number');
     this.payFullBalance = page.locator('.switch-slider').first();
@@ -215,6 +220,15 @@ export class PensionTransactionPage extends BasePage {
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
     this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
+
+    //Transactions view 
+    this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
+    this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
+
+    //Transactions view 
+    this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
+    this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
+
   }
 
   /** Member Rollin, adds a contribution to member account */
@@ -286,14 +300,14 @@ export class PensionTransactionPage extends BasePage {
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
 
-    if(FullExit){
+    if (FullExit) {
       await this.payFullBalance.click();
-    }else{
+    } else {
       await this.partialBalance.click();
       await this.sleep(2000);
       await this.page.getByPlaceholder('0').fill('2000');
     }
-    
+
     await this.linkCase.click();
     await this.sleep(3000);
 
@@ -317,9 +331,9 @@ export class PensionTransactionPage extends BasePage {
     await this.createCase.click();
     await this.sleep(3000);
 
-    await this.page.locator('#gs4__combobox div').first().click();
+    await this.page.locator('(//span[text()="*"])[2]/following::input').click();
     await this.page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span').click();
-    await this.page.locator('#gs6__combobox').getByLabel('CloseSelect').click();
+    await this.page.locator('//label[@for="bankAccount"]/following::div[@class="gs__selected-options"]').getByLabel('CloseSelect').click();
     await this.page.getByRole('option').nth(0).click();
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
@@ -330,7 +344,7 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(2000);
       await this.page.getByPlaceholder('0').fill('2000');
     }
-    
+
     await this.linkCase.click();
     await this.sleep(3000);
 
@@ -367,7 +381,7 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(2000);
       await this.page.getByPlaceholder('0').fill('1000');
     }
-    
+
     await this.linkCase.click();
     await this.sleep(3000);
 
@@ -376,85 +390,84 @@ export class PensionTransactionPage extends BasePage {
 
   }
 
-  async deathBenefitTransaction() { 
-        
-        await this.sleep(3000);
-        await this.OverviewTab.click();
-        await this.OverViewEditButton.click();
+  async deathBenefitTransaction() {
 
-        let isDODavilable= await this.DOD.textContent();
-        if(isDODavilable == '')
-        {
-            await this.viewCase.click();
-            await this.sleep(3000);
-            await this.createCase.click();
-            await this.sleep(3000);
-            await this.DOD.click();
-            await this.DOD.fill(`${DateUtils.ddmmyyyStringDate(-1)}`);
-            await this.DOD.press('Tab');
-            await this.linkCase.click();
-            await this.sleep(3000);
-            await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
-        }
-        
-        // locator update todo for vanguard and AE
-        await this.HESTAforMercyRetirementTab.click();
-        await this.ButtonTransactions.click();
-        await this.sleep(1000);
-        await this.ButtonAddTransactions.click();
-        await this.BenefitPayment.click();
+    await this.sleep(3000);
+    await this.OverviewTab.click();
+    await this.OverViewEditButton.click();
 
-        await this.viewCase.click();
-        await this.sleep(3000);
-        await this.createCase.click();
-        await this.sleep(3000);
-        
-        await this.SearchOptionComboBox.click();
-        await this.DeathBenifitsOption.click();
-        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.effectiveDate.press('Tab');
-        await this.ShareOfBeneit.click();
-        await this.ShareOfBeneitInput.fill('100');
-        await this.PaymentType.click();
-        await this.PaymentTypeInput.click();
-        await this.RelationShip.click();
-        await this.RelationShipInput.click();
-        await this.Title.click();
-        await this.InputTitle.click();
-        let beneficiaryName = UtilsAOL.randomName();
-        await this.FirstName.click();
-        await this.FirstName.fill(`${beneficiaryName}`);
-        let randomSurname = UtilsAOL.randomSurname(5);
-        await this.LastName.click();
-        await this.LastName.fill(`${randomSurname}`);
-        await this.DateOfBirth.click();
-        await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0,50)}`);
-        await this.City_Town.click();
-        await this.City_Town.fill(member.city);
-        await this.ResidentialAddress.click();
-        await this.ResidentialAddress.fill(member.address);
-        await this.State.click();
-        await this.StateInput.click();
-        await this.CheckboxKYC.click();
-        await this.PostCode.click();
-        await this.PostCode.fill(member.postcode);
-        await this.TFN.click();
-        let tfn = UtilsAOL.generateValidTFN();
-        await this.TFN.fill(`${tfn}`);
-        await this.AccountName.click();
-        await this.AccountName.fill(`${beneficiaryName}`);
-        await this.sleep(1000);
-        await this.BSBNumber.click();
-        await this.BSBNumber.fill(member.BSBNumber);
-        await this.BSBNumber.press('Enter');
-        await this.sleep(2000);
-        await this.AccountNumber1.fill(member.AccountNumber);
-        await this.sleep(3000);
-        await this.linkCase.click();
-        await this.sleep(3000);
-        await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
+    let isDODavilable = await this.DOD.textContent();
+    if (isDODavilable == '') {
+      await this.viewCase.click();
+      await this.sleep(3000);
+      await this.createCase.click();
+      await this.sleep(3000);
+      await this.DOD.click();
+      await this.DOD.fill(`${DateUtils.ddmmyyyStringDate(-1)}`);
+      await this.DOD.press('Tab');
+      await this.linkCase.click();
+      await this.sleep(3000);
+      await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
+    }
+
+    // locator update todo for vanguard and AE
+    await this.HESTAforMercyRetirementTab.click();
+    await this.ButtonTransactions.click();
+    await this.sleep(1000);
+    await this.ButtonAddTransactions.click();
+    await this.BenefitPayment.click();
+
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+
+    await this.SearchOptionComboBox.click();
+    await this.DeathBenifitsOption.click();
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Tab');
+    await this.ShareOfBeneit.click();
+    await this.ShareOfBeneitInput.fill('100');
+    await this.PaymentType.click();
+    await this.PaymentTypeInput.click();
+    await this.RelationShip.click();
+    await this.RelationShipInput.click();
+    await this.Title.click();
+    await this.InputTitle.click();
+    let beneficiaryName = UtilsAOL.randomName();
+    await this.FirstName.click();
+    await this.FirstName.fill(`${beneficiaryName}`);
+    let randomSurname = UtilsAOL.randomSurname(5);
+    await this.LastName.click();
+    await this.LastName.fill(`${randomSurname}`);
+    await this.DateOfBirth.click();
+    await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 50)}`);
+    await this.City_Town.click();
+    await this.City_Town.fill(member.city);
+    await this.ResidentialAddress.click();
+    await this.ResidentialAddress.fill(member.address);
+    await this.State.click();
+    await this.StateInput.click();
+    await this.CheckboxKYC.click();
+    await this.PostCode.click();
+    await this.PostCode.fill(member.postcode);
+    await this.TFN.click();
+    let tfn = UtilsAOL.generateValidTFN();
+    await this.TFN.fill(`${tfn}`);
+    await this.AccountName.click();
+    await this.AccountName.fill(`${beneficiaryName}`);
+    await this.sleep(1000);
+    await this.BSBNumber.click();
+    await this.BSBNumber.fill(member.BSBNumber);
+    await this.BSBNumber.press('Enter');
+    await this.sleep(2000);
+    await this.AccountNumber1.fill(member.AccountNumber);
+    await this.sleep(3000);
+    await this.linkCase.click();
+    await this.sleep(3000);
+    await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
   }
-  
+
 
   async pensionCommence() {
     await this.pensionTab.click();
@@ -482,24 +495,24 @@ export class PensionTransactionPage extends BasePage {
 
     const popup = this.page.locator("//*[@class='el-dialog__header']/span[contains(text(),'Review and Commence Pension')]");
     if (await popup.isVisible()) {
-        // Find and interact with the checkbox inside the popup
-        const checkbox = popup.locator('//*[@id ="checkbox_k5MjYyMjMz" and @type ="checkbox"]'); // Change the locator
-        await checkbox.click();
+      // Find and interact with the checkbox inside the popup
+      const checkbox = popup.locator('//*[@id ="checkbox_k5MjYyMjMz" and @type ="checkbox"]'); // Change the locator
+      await checkbox.click();
 
-        // Wait for some time (adjust this delay as needed)
-        await this.page.waitForTimeout(2000);
+      // Wait for some time (adjust this delay as needed)
+      await this.page.waitForTimeout(2000);
 
-        // Find and click on the 'Create' button in the popup
-        const createButton = popup.locator(''); // Change the locator
-        await createButton.click();
+      // Find and click on the 'Create' button in the popup
+      const createButton = popup.locator(''); // Change the locator
+      await createButton.click();
     }
 
     await this.check_box.click();
     await this.sleep(5000);
     await this.commence_pension_button.click();
 
-    await  this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
-    
+    await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+
   }
 
   async commutationRolloverOutTTR(FullExit: boolean) {
@@ -526,21 +539,21 @@ export class PensionTransactionPage extends BasePage {
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press('Enter');
 
-    if(FullExit){
+    if (FullExit) {
       await this.payFullBalance.click();
-    }else{
+    } else {
       await this.partialBalance.click();
       await this.sleep(2000);
       await this.page.getByPlaceholder('0').fill('1000');
     }
-    
+
     await this.linkCase.click();
     await this.sleep(3000);
-    await  this.reviewCase.reviewCaseProcess(this.verifyRolloutErrorMessage);
+    await this.reviewCase.reviewCaseProcess(this.verifyRolloutErrorMessage);
 
   }
 
-  async verifyPTBtransaction(PTB: boolean){
+  async verifyPTBtransaction(PTB: boolean) {
     await this.memberTransactionTab.click();
     await this.transactionsHistoryFilter.click();
     await this.sleep(3000);
@@ -550,12 +563,39 @@ export class PensionTransactionPage extends BasePage {
     await this.filterType_PTB.click();
     await this.applyButton.click();
     await this.sleep(3000);
-    if(PTB){
-    await this.transactionType_PTB.scrollIntoViewIfNeeded();
-    expect(this.transactionType_PTB).toBeVisible();
+    if (PTB) {
+      await this.transactionType_PTB.scrollIntoViewIfNeeded();
+      expect(this.transactionType_PTB).toBeVisible();
     }
     await this.reviewCase.captureScreenshot();
 
   }
+
+  async transactionView() {
+    await this.sleep(3000);
+    await this.TransactioReference.scrollIntoViewIfNeeded();
+    await this.TransactioReference.click();
+    let transID = this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)");
+    let id = transID.textContent();
+    return id!;
+  }
+
+  async paymentView() {
+    await this.sleep(3000);
+    await this.BenefitPaymentId.scrollIntoViewIfNeeded();
+    await this.sleep(3000);
+    await this.BenefitPaymentId.click();
+
+    let transID = await this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)").textContent();
+    let status = await this.page.locator("//span[@class='font-semibold']/following-sibling::span[1]").innerText();
+    if (status.trim() === "Finalised") {
+      console.log(`Payment ID: ${transID} is Finalised. payment has been  processed.`);
+    } else {
+      throw new Error(`Payment ID ${transID} is not Finalised.`);
+    }
+
+    return transID;
+  }
+
 
 }

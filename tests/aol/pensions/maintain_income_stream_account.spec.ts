@@ -20,8 +20,6 @@ test(fundName()+"- Maintain Income Stream Account (documentation required): Bank
         let mem = member.memberID;
         await navBar.selectMember(mem);
         await accountInfoPage.editBankAccount();
-        //await accountInfoPage.addNewBankAccount();
-        console.log("Test Execution Completed: Bank Account Details are updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }
@@ -36,7 +34,6 @@ test(fundName()+"- Maintain Income Steam Account - Payment details (payment amou
         let mem = member.memberID;
         await navBar.selectMember(mem);
         await pensionAccountPage.editPaymentDetails();
-        console.log("Test Execution Completed: pension payment details updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }
@@ -66,7 +63,6 @@ test(fundName()+"- Verify Pension Payment is executed successful for Quarterly f
         let mem = member.memberID;
         await navBar.selectMember(mem);
         await pensionAccountPage.editPaymentDetails('Quartely');
-        console.log("Test Execution Completed: pension payment details updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }
