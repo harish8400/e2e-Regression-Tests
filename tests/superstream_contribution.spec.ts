@@ -15,7 +15,10 @@ test.beforeEach(async ({}) => {
 });
 
 
-let xmlFilePath = path.join(__dirname, '../src/aol/data/data.xml');
+let xmlFilePath = path.join(__dirname, '../src/aol/data/MRR_20240301_115734_123_Contribution.84111122223.20240301111812555_1.xml');
+let remoteFilePath = '/home/saturn-dev-contribution/inbox/MRR_20240301_115734_123_Contribution.84111122223.20240301111812555_1.xml';
+let privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
+let privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
 let member = UtilsAOL.randomName();
 let surname = UtilsAOL.randomSurname(5);
 
@@ -23,8 +26,6 @@ let surname = UtilsAOL.randomSurname(5);
 test("SFTP Test -To download the file", async () => {
   async function main() {
     const sftp = new SftpClient();
-    const privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
-    const privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
     console.log('Private Key Content:', privateKeyContent);
     try {
       await sftp.connect({
@@ -36,7 +37,7 @@ test("SFTP Test -To download the file", async () => {
         passphrase: 'oghaim8aeNgei1aeho'
       });
       // Perform SFTP operations here
-      await sftp.fastGet('/home/saturn-dev-contribution/inbox/data.xml', path.join(__dirname, '../src/aol/data/data.xml'));
+      await sftp.fastGet(remoteFilePath, xmlFilePath);
       console.log('File downloaded successfully.');
     } catch (err: any) {
       console.error('Error:', err.message);
@@ -51,8 +52,6 @@ test("SFTP Test -To download the file", async () => {
 test("SFTP Test -To upload the file", async () => {
   async function main() {
     const sftp = new SftpClient();
-    const privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
-    const privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
     console.log('Private Key Content:', privateKeyContent);
     try {
       await sftp.connect({
@@ -64,14 +63,10 @@ test("SFTP Test -To upload the file", async () => {
         passphrase: 'oghaim8aeNgei1aeho'
       });
       
-      // Local file path to upload
-      const localFilePath = path.join(__dirname, '../src/aol/data/data.xml');
-      
       // Remote file path where the file will be uploaded
-      const remoteFilePath = '/home/saturn-dev-contribution/inbox/data_change.xml';
       
       // Perform SFTP upload operation
-      await sftp.fastPut(localFilePath, remoteFilePath);
+      await sftp.fastPut(xmlFilePath, remoteFilePath);
       console.log('File uploaded successfully.');
     } catch (err: any) {
       console.error('Error:', err.message);
