@@ -5,6 +5,7 @@ import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handle
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
+import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler";
 
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
@@ -21,7 +22,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext}) => {
+test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext,internalTransferPage,pensionTransactionPage}) => {
 
     try {
 
@@ -41,6 +42,10 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
         await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
          await pensionAccountPage.reload();
+         await internalTransferPage.memberSummary();
+         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+         await pensionTransactionPage.transactionView();
+ 
     } catch (error) {
         throw error;
     }

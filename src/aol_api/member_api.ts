@@ -66,7 +66,7 @@ export class MemberApi extends BaseDltaAolApi {
           beneficiariesList: [
             {
               entityName: 'John Smith',
-              beneficiaryType: 'bindingLapsing',
+              beneficiaryType: 'nonBinding',
               percent: 100,
               relationship: 'spouse',
               binding: true,
@@ -142,9 +142,6 @@ export class MemberApi extends BaseDltaAolApi {
 
 
   async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
-    let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-    let path = `product/${productId}/process`;
-
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
@@ -164,6 +161,7 @@ export class MemberApi extends BaseDltaAolApi {
           dob: '1955-04-16',
           gender: 'M',
           title: 'Dr.',
+          preferredContactMethod: "Digital",
           tfn: tfn,
           citizenshipStatus: 'Resident',
           email: 'pharish.kumar@growsuper.com',
@@ -208,7 +206,7 @@ export class MemberApi extends BaseDltaAolApi {
               addressDetails: [],
               mailingDetails: [],
               documents: [],
-              effectiveDate: null,
+              effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
               endDate: null,
             },
           ],

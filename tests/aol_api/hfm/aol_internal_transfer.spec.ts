@@ -29,10 +29,9 @@ test(fundName() + "-Internal Transfer Out @Hesta", async ({ navBar, pensionAccou
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
         let { memberNo, processId,surname} = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-       
         await pensionAccountPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();

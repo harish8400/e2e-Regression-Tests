@@ -23,7 +23,7 @@ test.beforeEach(async ({ navBar }) => {
 
 
 
-test(fundName() + "-Verify creation of a new active member account@Hesta-accumulation", async ({ navBar, apiRequestContext,accountInfoPage ,internalTransferPage,pensionTransactionPage}) => {
+test(fundName() + "-Verify creation of a new active member account@accumulation", async ({ navBar, apiRequestContext,accountInfoPage ,internalTransferPage,pensionTransactionPage}) => {
 
     try {
 

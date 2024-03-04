@@ -7,6 +7,8 @@ import { Navbar } from "../component/navbar";
 import { ReviewCase } from "../component/review_case";
 import * as member from "../../data/member.json";
 import { UtilsAOL } from "../../utils_aol";
+import { CASE_NOTE, FUND } from "../../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class PensionTransactionPage extends BasePage {
 
@@ -117,6 +119,9 @@ export class PensionTransactionPage extends BasePage {
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
 
+  //Vanguard
+  readonly unathorized: Locator
+
 
   constructor(page: Page) {
     super(page)
@@ -226,6 +231,9 @@ export class PensionTransactionPage extends BasePage {
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
 
+    //vanguard
+    this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
+
   }
 
   /** Member Rollin, adds a contribution to member account */
@@ -307,10 +315,14 @@ export class PensionTransactionPage extends BasePage {
 
     await this.linkCase.click();
     await this.sleep(3000);
+    if (ENVIRONMENT_CONFIG.name === "dev" && process.env.PRODUCT != FUND.HESTA) {
+      await this.reviewCase.reviewCaseProcess(this.unathorized);
 
+    } else {
     await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
 
   }
+}
 
   async commutationUNPBenefit(FullExit: boolean) {
 
@@ -344,8 +356,13 @@ export class PensionTransactionPage extends BasePage {
 
     await this.linkCase.click();
     await this.sleep(3000);
+    if (ENVIRONMENT_CONFIG.name === "dev" && process.env.PRODUCT != FUND.HESTA) {
+      await this.reviewCase.reviewCaseProcess(this.unathorized);
 
-    await this.reviewCase.reviewCaseProcess(this.verifyUNPCommutationProcessSuccess);
+    } else {
+      await this.reviewCase.reviewCaseProcess(this.verifyUNPCommutationProcessSuccess);
+    }
+
 
   }
 

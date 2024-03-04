@@ -2,9 +2,10 @@ import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import * as memberData from "../../../aol/data/pension_data.json";
 import { ReviewCase } from "../component/review_case";
-import { FUND } from "../../../../constants";
+import { CASE_NOTE, FUND } from "../../../../constants";
 import { DateUtils } from "../../../utils/date_utils";
 import * as member from "../../data/member.json";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
 
@@ -186,7 +187,7 @@ export class InternalTransferPage extends BasePage {
         //process 
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
         this.review = page.locator('//span[text()="In Review"]');
-        this.verifycreationVG = page.locator('(//p[text()="Unauthorised"])[1]');
+        this.verifycreationVG = page.locator(CASE_NOTE.UNAUTHORISED);
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
         this.summary = page.getByRole('button', { name: 'Member Summary' });
@@ -277,7 +278,7 @@ export class InternalTransferPage extends BasePage {
         if (process.env.PRODUCT === FUND.HESTA && dateJoinedFundEarlier) {
             await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         } else if (process.env.PRODUCT === FUND.VANGUARD && dateJoinedFundEarlier) {
-            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(1)}`);
         }
 
         await this.nextStep.click();
@@ -342,11 +343,15 @@ export class InternalTransferPage extends BasePage {
         const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
         await caseId.waitFor();
         let id = await caseId.textContent();
-        await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
+       
         return id!.trim();
     }
 
-
+    async vanguard(){
+        if (ENVIRONMENT_CONFIG.name === "dev" && process.env.PRODUCT != FUND.HESTA) {
+            await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
+          } 
+    }
 
 
 
