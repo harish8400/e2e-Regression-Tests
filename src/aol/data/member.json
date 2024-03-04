@@ -30,7 +30,8 @@
     "EligibleServiceDate":"1/7/2023",
     "Employment": {
       "EmployementTerminationMember_Hesta":"MER-ACC-356170",
-      "EmployementTerminationMember_Vanguard":"AE-10006"
+      "EmployementTerminationMember_Vanguard":"AE-10006",
+      "MemberSwitch_Hesta":"9010826"
     },
     "Beneficiary": {
       "PensionMembershipAccountNumber_Hesta":"MER-PEN-450888",

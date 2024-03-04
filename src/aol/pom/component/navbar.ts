@@ -22,7 +22,7 @@ export class Navbar extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.accumulationProduct = page.locator("(//a[@class='NxLAj'])[1]");
+        this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");

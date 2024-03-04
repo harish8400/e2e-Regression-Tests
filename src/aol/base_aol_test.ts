@@ -14,6 +14,7 @@ import { InsurancePage } from './pom/insurance_page';
 import { RelatedInformationPage } from './pom/member/related_information_page';
 import { InvestmentsAndPricing } from './pom/investment_and_pricing_page';
 import { MemberOverView } from './pom/member/member_overview';
+import { EmployerPage } from './pom/employer_page';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -31,6 +32,7 @@ type ExtensionFixtures = {
     relatedInformationPage: RelatedInformationPage;
     investmentsAndPricing: InvestmentsAndPricing;
     memberOverviewpage: MemberOverView;
+    employerPage : EmployerPage
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -86,5 +88,8 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     memberOverviewpage: async ({ page }, use) => {
         await use(new MemberOverView(page));
+    },
+    employerPage: async ({ page }, use) => {
+        await use(new EmployerPage(page));
     },
 })
