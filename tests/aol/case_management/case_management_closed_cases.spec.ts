@@ -12,14 +12,11 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /** Ensure that comments can be added after a case is closed and user can find last updated date time on a case */
-test(fundName()+"-Verify comments update on closed cases and date time log @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure that comments can be added after a case is closed and user can find last updated date time on a case", async ({ dashboardPage }) => {
 
     try {
-        
         await dashboardPage.updateClosedCaseWithComment();
         await dashboardPage.verifyClosedCaseUpdateLog();
-
-        console.log('Test Execution Success : Verify comments update on closed cases and date time log');
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed : Verifying comments update on closed cases and date time log has failed " + error });
     }
