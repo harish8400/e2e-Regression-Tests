@@ -145,6 +145,11 @@ export class PensionShellAccount extends BasePage {
   //Exceptions
   readonly processException: Locator;
 
+   //process link
+   readonly processesLink: Locator;
+   readonly shellaccount:Locator;
+   readonly review:Locator;
+
   constructor(page: Page) {
     super(page)
     this.dashboard_page = new DashboardPage(page);
@@ -275,6 +280,11 @@ export class PensionShellAccount extends BasePage {
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
+
+    //process link
+    this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
+    this.review = page.locator('//span[text()="In Review"]');
   }
 
   async navigateToPensionMemberPage() {
@@ -465,5 +475,18 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(5000);
     await this.reviewCase.reviewCaseProcess(this.successMessage);
   }
+
+  async ProcessTab() {
+    await this.processesLink.click();
+    await this.sleep(3000);
+    await this.shellaccount.click();
+    await this.review.click();
+    await this.sleep(3000);
+    const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+    await caseId.waitFor();
+    
+    let id = await caseId.textContent();
+    return id!.trim(); 
+}
   
 }

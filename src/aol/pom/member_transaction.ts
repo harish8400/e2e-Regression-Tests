@@ -164,7 +164,6 @@ export class MemberTransactionsPage extends BasePage {
     /** Member Termination for Current Date */
     async employmentTerminationForCurrentDate() {
         await this.sleep(3000);
-        //await this.accumulationFirstMember.click();
         await this.relationshipBtn.click({ timeout: 5000 });
         await this.relationshipEditBtn.click({ timeout: 5000 });
         await this.viewCases.click({ timeout: 5000 });
@@ -176,9 +175,9 @@ export class MemberTransactionsPage extends BasePage {
     /** Member Termination for Earlier Date */
     async employmentTerminationForEarlierDate() {
         await this.sleep(3000);
-        // await this.accumulationFirstMember.click();
         await this.relationshipBtn.click({ timeout: 5000 });
         await this.relationshipEditBtn.click({ timeout: 5000 });
+        await this.sleep(2000);
         await this.viewCases.click({ timeout: 5000 });
         await this.createCase.click({ timeout: 5000 })
         await this.sleep(3000);;

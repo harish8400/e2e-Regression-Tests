@@ -1,4 +1,5 @@
 import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
+import { FUND_IDS, INVESTMENT_OPTIONS } from "../../constants";
 
 export class UtilsAOL {
 
@@ -46,9 +47,72 @@ export class UtilsAOL {
         }
         return tfn;
     }
+
+    static memberNumber(prefix: string = 'TTR-', length: number = 9): string {
+        const characters = '0123456789';
+        const charactersLength = characters.length;
+    
+        // Generate a candidate member number
+        let candidateMemberNumber = prefix;
+    
+        for (let i = 0; i < length; i++) {
+            candidateMemberNumber += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+    
+        // Check if the candidate member number is unique
+        while (UtilsAOL.isMemberNumberUsed(candidateMemberNumber)) {
+            // Regenerate if not unique
+            candidateMemberNumber = prefix;
+    
+            for (let i = 0; i < length; i++) {
+                candidateMemberNumber += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+        }
+    
+        return candidateMemberNumber;
+    }
+    
+    // Helper method to check if a member number is already used
+    static isMemberNumberUsed(memberNumber: string): boolean {
+        // Assuming there is an array to store used member numbers
+        const usedMemberNumbers: string[] = []; 
+        return usedMemberNumbers.includes(memberNumber);
+    }
+    static memberIdentityNumber(prefix: string = 'MER-ACC-', length: number = 6): string {
+        let result = prefix;
+        const characters = '0123456789';
+        const charactersLength = characters.length;
+        
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        
+        return result;
+    }
 }
 
 export function fundName() {
     let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
     return product;
+}
+
+export function fundDetails(product: string) {
+
+    let productId, investmentId;
+
+    switch (product) {
+        case 'HESTA for Mercy':
+            productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            break;
+        case 'Vanguard Super':
+            productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
+            investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            break;
+
+        default:
+            throw new Error(`Unsupported product: ${product}`);
+    }
+
+    return { productId, investmentId };
 }

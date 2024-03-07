@@ -2,7 +2,6 @@ import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import * as memberData from "../../../src/aol/data/member.json";
 import { fundName } from "../../../src/aol/utils_aol";
-import { FUND } from "../../../constants";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -16,13 +15,6 @@ test(fundName()+"-Verify an employment termination at current system date is pro
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-        
         await navBar.selectMember(member);
         await memberTransactionPage.employmentTerminationForCurrentDate();
 
@@ -35,13 +27,6 @@ test(fundName()+"-Verify an employment termination with effective date earlier t
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-
         await navBar.selectMember(member);
         await memberTransactionPage.employmentTerminationForEarlierDate();
 
