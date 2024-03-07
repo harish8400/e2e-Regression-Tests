@@ -134,7 +134,7 @@ export class RelatedInformationPage extends BasePage {
         await this.relatedInformationTab.click();
         await this.sleep(3000);
         await this.superTickVerificationRow.scrollIntoViewIfNeeded();
-        if(activeMember=true){
+        if(activeMember==true){
             await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
         }
         else{

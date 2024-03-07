@@ -38,6 +38,8 @@ export class PensionTransactionPage extends BasePage {
   readonly filterType_PTB: Locator;
   readonly applyButton: Locator;
   readonly transactionType_PTB: Locator;
+  readonly transactionType_Insurance: Locator;
+  readonly filterType_INS: Locator;
 
   //case
 
@@ -175,8 +177,10 @@ export class PensionTransactionPage extends BasePage {
     this.filterCategory_Type = page.locator("//div[@class='filter-list-item'][normalize-space()='Type']");
     this.selectFilterType = page.getByRole('textbox', { name: 'Select' });
     this.filterType_PTB = page.locator("//span[normalize-space()='PTB']");
+    this.filterType_INS = page.locator("//span[normalize-space()='INS']");
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
     this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
+    this.transactionType_Insurance = page.getByRole('row',{ name: 'Insurance Premium' });
 
     ///Death Benifits
 
