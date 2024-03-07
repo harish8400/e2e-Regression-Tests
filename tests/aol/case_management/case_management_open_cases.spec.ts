@@ -27,20 +27,37 @@ test(fundName()+"-Verify new case creation without assigning to a member @casema
     }
 })
 
-/** Verify that adhoc case can be created and assigned to an existing member */
-test(fundName()+"-Create adhoc case and assign to user @casemanagement", async ({ dashboardPage }) => {
+/** Verify that adhoc case can be created*/
+test(fundName()+"-Verify that adhoc (shell) cases can be created successfully", async ({ dashboardPage }) => {
 
     try {
+        //Create shell case and assign to a user
+        await dashboardPage.createShellCaseAndAsssignToUser();
+    } catch (error) {
+        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
+    }
+})
 
+/** Verify that adhoc case can be created and assigned to an existing member */
+test(fundName()+"-Verify that adhoc (shell) case can be linked to a member or to an existing case", async ({ dashboardPage }) => {
+
+    try {
+        //Create shell case and assign to a user
+        await dashboardPage.createShellCaseAndAsssignToUser(true);
+    } catch (error) {
+        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
+    }
+})
+
+test(fundName()+"-Verify that if user is able to close case with log of username, date and time when it was closed", async ({ dashboardPage }) => {
+
+    try {
         //Create shell case and assign to a user
         await dashboardPage.createShellCaseAndAsssignToUser();
         //Verify log of username, date and time when case is closed
         await dashboardPage.verifyCaseCloseLog();
-
-        console.log('Test Execution Success : Ensure adhoc case can be created and assigned to an existing member')
-        
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
+        throw error;
     }
 })
 
