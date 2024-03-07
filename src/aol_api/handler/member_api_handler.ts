@@ -72,6 +72,10 @@ export class MemberApiHandler {
         return Id.getCaseGroupId(processId!);
     }
 
+    static async addRollIn(apiRequestContext: APIRequestContext,memberId?: string) {
+        const rollin = new MemberApi(apiRequestContext);
+        return rollin.addRollIn(memberId!);
+    }
 
 }
 

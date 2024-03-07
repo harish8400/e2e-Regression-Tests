@@ -151,6 +151,7 @@ export class PensionShellAccount extends BasePage {
    readonly shellaccount:Locator;
    readonly review:Locator;
    readonly transactionsTab:Locator;
+   readonly abpScreenView:Locator;
 
   constructor(page: Page) {
     super(page)
@@ -196,11 +197,11 @@ export class PensionShellAccount extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
     //Investment step
-    this.invSelect = page.getByRole('textbox', { name: 'Select' });
+    this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
-    this.saveInv = page.getByRole('button', { name: 'Add' });
+    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
@@ -226,7 +227,7 @@ export class PensionShellAccount extends BasePage {
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
     this.proRata = page.getByText('Yes').first();
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: '65 or older' });
+    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
 
@@ -289,6 +290,7 @@ export class PensionShellAccount extends BasePage {
     this.review = page.locator('//span[text()="In Review"]');
     this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
     this.transactionsTab = page.locator('//button[text()="Transactions"]');
+    this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
   }
 
   async navigateToPensionMemberPage() {
@@ -489,9 +491,33 @@ export class PensionShellAccount extends BasePage {
 }
   
   async retirement(){
-    await this.abpScreen.click();
+    await this.sleep(3000)
+    await this.abpScreenView.waitFor();
+    await this.abpScreenView.click();
     await this.sleep(3000);
     await this.transactionsTab.click();
 
   }
+
+  async createShellAccountExistingMember(memberNo:string) {
+    await this.sleep(3000);
+    await this.page.locator('//button[text()="Overview"]').focus();
+    await this.page.locator('//button[text()="Overview"]').click();
+    await this.page.getByRole('button', { name: 'Add new account' }).click();
+    await this.page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]').click();
+    await this.preferredContactMethod.click();
+    await this.preferredContactMethodSelect.click();
+    await this.residencyStatus.click();
+    await this.residencyStatusSelect.click();
+    await this.nextStep.click();
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    await this.nextStep.click();
+    await this.addMemberPensionDetails();
+    await this.initCreateCase();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+  }
+
 }

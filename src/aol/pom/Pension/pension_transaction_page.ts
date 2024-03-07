@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { APIRequestContext, Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 //import { TFN } from "../data/tfn";
 import * as pensions from "../../data/member.json";
@@ -9,6 +9,10 @@ import * as member from "../../data/member.json";
 import { UtilsAOL } from "../../utils_aol";
 import { CASE_NOTE, FUND } from "../../../../constants";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
+import { MemberApiHandler } from "../../../aol_api/handler/member_api_handler";
+import { PensionShellAccount } from "./pension_account_page";
+import { RollinApiHandler } from "../../../aol_api/handler/rollin_api-handler";
+import { TransactionsApiHandler } from "../../../aol_api/handler/transaction_api_handler";
 
 export class PensionTransactionPage extends BasePage {
 
@@ -118,6 +122,7 @@ export class PensionTransactionPage extends BasePage {
   //Transactions view 
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
+  readonly TransactioType: Locator;
 
   //Vanguard
   readonly unathorized: Locator
@@ -183,7 +188,7 @@ export class PensionTransactionPage extends BasePage {
     this.commence_pension_button = page.getByRole('button', { name: 'COMMENCE PENSION' });
     this.transactionsHistoryFilter = page.getByRole('button', { name: 'FILTER' });
     this.filterCategory_Type = page.locator("//div[@class='filter-list-item'][normalize-space()='Type']");
-    this.selectFilterType = page.getByRole('textbox', { name: 'Select' });
+    this.selectFilterType = page.getByRole('tooltip', { name: 'close icon Type Select APPLY' }).getByPlaceholder('Select')
     this.filterType_PTB = page.locator("//span[normalize-space()='PTB']");
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
     this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
@@ -217,7 +222,7 @@ export class PensionTransactionPage extends BasePage {
     this.BSBNumber = page.getByLabel('BSB number');
     this.AccountName = page.getByLabel('Name on account');
     this.AccountNumber1 = page.getByLabel('Account number');
-    this.OverviewTab = page.getByRole('button', { name: 'Overview' });
+    this.OverviewTab = page.locator('//button[text()="Overview"]')
     this.OverViewEditButton = page.locator('div').filter({ hasText: /^Personal detailsEdit Content$/ }).getByRole('button');
     this.DOD = page.locator('input[name="dateOfDeath"]');
     this.HESTAforMercyRetirementTab = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
@@ -230,6 +235,7 @@ export class PensionTransactionPage extends BasePage {
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
+    this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
 
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
@@ -319,10 +325,10 @@ export class PensionTransactionPage extends BasePage {
       await this.reviewCase.reviewCaseProcess(this.unathorized);
 
     } else {
-    await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+      await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
 
+    }
   }
-}
 
   async commutationUNPBenefit(FullExit: boolean) {
 
@@ -407,7 +413,8 @@ export class PensionTransactionPage extends BasePage {
   async deathBenefitTransaction() {
 
     await this.sleep(3000);
-    await this.OverviewTab.click();
+    await this.OverviewTab.focus();
+    await this.sleep(3000);
     await this.OverViewEditButton.click();
 
     let isDODavilable = await this.DOD.textContent();
@@ -416,7 +423,7 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(3000);
       await this.createCase.click();
       await this.sleep(3000);
-      await this.DOD.click();
+      await this.DOD.click({ force: true });
       await this.DOD.fill(`${DateUtils.ddmmyyyStringDate(-1)}`);
       await this.DOD.press('Tab');
       await this.linkCase.click();
@@ -609,6 +616,67 @@ export class PensionTransactionPage extends BasePage {
     }
 
     return transID;
+  }
+
+
+  async shellAccount(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+    const { memberNo, processId, surname } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+
+    // Perform necessary operations related to pension account creation
+    await pensionAccountPage.ProcessTab();
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+    await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    await pensionAccountPage.reload();
+
+    // Navigate to pension members page and select member
+    await navBar.navigateToPensionMembersPage(); 
+    await navBar.selectMember(memberNo);
+
+    // Return relevant data
+    return { memberNo, processId, surname };
+  }
+
+  async process(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+    let { memberNo, surname } = await this.shellAccount(navBar, pensionAccountPage, apiRequestContext);
+
+    // Fetch additional details and perform pension-related actions
+    const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+    await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+    await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+    let { id, fundName, tfn, givenName, dob } = await MemberApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+
+    if (id) {
+      await MemberApiHandler.memberIdentity(apiRequestContext, id, { tfn, dob, givenName, fundName });
+    }
+
+    // Return relevant data
+    return { memberNo, surname ,linearId };
+  }
+
+  async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+    let { linearId } = await this.process(navBar, pensionAccountPage, apiRequestContext);
+    await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id)
+}
+
+  async accumulationAccount(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+    // Process pension account and retrieve necessary data
+    let { memberNo, surname } = await this.process(navBar, pensionAccountPage, apiRequestContext);
+
+    await pensionAccountPage.reload();
+
+    // Return relevant data
+    return { memberNo, surname };
+  }
+
+  async transactions() {
+    await this.sleep(3000);
+    await this.TransactioType.scrollIntoViewIfNeeded();
+    await this.TransactioType.click();
+    let transID = this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)");
+    let id = transID.textContent();
+    return id!;
   }
 
 

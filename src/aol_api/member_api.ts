@@ -1,9 +1,10 @@
-import { APIRequestContext } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import { BaseDltaAolApi } from './base_dlta_aol';
 import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 import * as assert from 'assert';
+import { FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
 
 
 
@@ -28,11 +29,13 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createMember(fundProductId: string): Promise<{ memberId: string, memberNo: string, fundProductId: string, processId: string }> {
-
+    let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+    let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    let path = `product/${productId}/process`;
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
-    let memberNo = UtilsAOL.memberNumber('TTR-', 9);
+    let memberNo = UtilsAOL.memberNumber('MemberNo-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
     let data = {
       templateReference: 'createMember',
@@ -145,7 +148,7 @@ export class MemberApi extends BaseDltaAolApi {
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
-    let memberNo = UtilsAOL.memberNumber('TTR-', 9);
+    let memberNo = UtilsAOL.memberNumber('MemberNo-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
     let data = {
       templateReference: 'createPensionMemberShellAccount',
@@ -156,7 +159,7 @@ export class MemberApi extends BaseDltaAolApi {
           identityNo: identityNo,
           choice: true,
           givenName: member,
-          otherNames: null,
+          otherNames: 'Grow',
           surname: surname,
           dob: '1955-04-16',
           gender: 'M',
@@ -264,7 +267,7 @@ export class MemberApi extends BaseDltaAolApi {
 
 
   async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-    let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
+    let productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
     let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -284,7 +287,6 @@ export class MemberApi extends BaseDltaAolApi {
     };
     let response = await this.put(path, JSON.stringify(data));
     let responseBody = await response.json();
-    console.log(responseBody)
     let resultLinearId = responseBody?.linearId?.id || null;
     return { linearId: resultLinearId };
   }
@@ -352,6 +354,7 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {
+    let path = `member/${linearId}/process`;
     let data = {
       templateReference: "memberTransfer",
       initialData: {
@@ -403,5 +406,52 @@ export class MemberApi extends BaseDltaAolApi {
       }
     }
   }
+
+  async addRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
+
+    let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+    let path = `member/${linearId}/rollin`;
+    let data = {
+        "paymentReference": "InternalTransfer_902010134",
+        "transferringFundABN": "11789425178",
+        "transferringFundUSI": "11789425178799",
+        "transferringClientIdentifier": "902010134",
+        "amount": "50000",
+        "preserved": "50000",
+        "restrictedNonPreserved": "0",
+        "unrestrictedNonPreserved": "0",
+        "kiwiPreserved": "0",
+        "taxed": "50000",
+        "untaxed": "0",
+        "taxFree": "0",
+        "kiwiTaxFree": "0",
+        "type": "RLI",
+        "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
+        "eligibleServicePeriodStartDate": null,
+        "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+        "messageType": null,
+        "historic": true,
+        "caseReference": null,
+        "targetInvestments": [
+            {
+                id: investmentId,
+                "percent": 100
+            }
+        ]
+    };
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    const rollIn = responseBody.rollin;
+    expect(rollIn.type).toBe('RLI');
+    expect(rollIn.name).toBe('Roll In');
+    expect(rollIn.historic).toBe(true);
+    let Id = responseBody?.linearId?.id || null;
+    let memberNo = responseBody?.memberNo || null;
+    let amount = responseBody?.amount || 0;
+    return { linearId: Id, memberNo: memberNo, amount: amount };
+}
+
+  
+
 
 }

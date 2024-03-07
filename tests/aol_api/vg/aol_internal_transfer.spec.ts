@@ -40,7 +40,7 @@ test(fundName() + "-Internal Transfer Out @VG", async ({ navBar, pensionAccountP
     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
     await MemberApiHandler.internalTransferOutvalidation(apiRequestContext, linearId.id, amount)
     await pensionAccountPage.reload();
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
     await internalTransferPage.internalTransferProcess(true, false);
     let Id = await internalTransferPage.ProcessTab();
     Id.replace('Copy to clipboard', '').trim();
@@ -50,9 +50,6 @@ test(fundName() + "-Internal Transfer Out @VG", async ({ navBar, pensionAccountP
     await navBar.navigateToAccumulationMembersPage();
     await navBar.selectMemberSurName(surname);
     await internalTransferPage.internalTransferMemberOut('ABP', memberNo);
-    await MemberApiHandler.fetchMemberSummary(apiRequestContext, linearId.id);
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    await pensionAccountPage.reload();
     await pensionTransactionPage.transactionView();
   } catch (error) {
     throw error;
