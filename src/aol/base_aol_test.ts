@@ -19,6 +19,8 @@ import { MemberOverView } from './pom/member/member_overview';
 import { CaseApi } from '../aol_api/case_api';
 import {ProcessApi } from '../aol_api/process_api';
 import { MemberApi } from '../aol_api/member_api';
+import { RollinApi } from '../aol_api/rollin_api';
+import { ShellAccountApi } from '../aol_api/internal_transfer_in';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -41,6 +43,8 @@ type ExtensionFixtures = {
     caseApi: CaseApi;
     processApi: ProcessApi;
     memberApi: MemberApi;
+    rollinApi:RollinApi;
+    shellAccountApi:ShellAccountApi;
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -112,5 +116,13 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     memberApi: async ({ dltaApiRequestContext }, use) => {
         await use(new MemberApi(dltaApiRequestContext));
+    },
+
+    rollinApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new RollinApi(dltaApiRequestContext));
+    },
+
+    shellAccountApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new ShellAccountApi(dltaApiRequestContext));
     },
 })

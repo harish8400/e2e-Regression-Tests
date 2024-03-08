@@ -238,7 +238,7 @@ export class InternalTransferPage extends BasePage {
             await this.sourceAccount.fill(memberNo.toString());
         }
         else if (transferType == 'TTR') {
-            await this.page.locator("//li[text()='HESTA for Mercy Retirement Income Stream']").click();
+            await this.page.getByRole('option', { name: 'HESTA for Mercy Transition to' }).click();
             await this.sourceAccount.fill(memberNo.toString());
         }
         else{
@@ -445,14 +445,6 @@ export class InternalTransferPage extends BasePage {
 
     }
 
-    async ttrTransferOut(){
-        await this.memberProcessId.scrollIntoViewIfNeeded();
-        await this.memberProcessId.click();
-        await this.sleep(3000);
-        await this.ttrScreen.click();
-        await this.ButtonTransactions.click();
-
-    }
 
 
 

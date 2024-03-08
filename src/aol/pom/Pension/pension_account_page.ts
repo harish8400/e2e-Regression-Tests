@@ -152,6 +152,10 @@ export class PensionShellAccount extends BasePage {
    readonly review:Locator;
    readonly transactionsTab:Locator;
    readonly abpScreenView:Locator;
+   readonly ttrScreenView:Locator;
+   readonly memberOverview:Locator;
+   readonly addAccount:Locator;
+   readonly abp:Locator;
 
   constructor(page: Page) {
     super(page)
@@ -291,6 +295,10 @@ export class PensionShellAccount extends BasePage {
     this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
     this.transactionsTab = page.locator('//button[text()="Transactions"]');
     this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
+    this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
+    this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
+    this.addAccount = page.getByRole('button', { name: 'Add new account' });
+    this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
   }
 
   async navigateToPensionMemberPage() {
@@ -501,10 +509,10 @@ export class PensionShellAccount extends BasePage {
 
   async createShellAccountExistingMember(memberNo:string) {
     await this.sleep(3000);
-    await this.page.locator('//button[text()="Overview"]').focus();
-    await this.page.locator('//button[text()="Overview"]').click();
-    await this.page.getByRole('button', { name: 'Add new account' }).click();
-    await this.page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]').click();
+    await this.memberOverview.waitFor();
+    await this.memberOverview.click();
+    await this.addAccount.click();
+    await this.abp.click();
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     await this.residencyStatus.click();
@@ -519,5 +527,7 @@ export class PensionShellAccount extends BasePage {
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
   }
+
+  
 
 }

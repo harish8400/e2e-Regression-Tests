@@ -71,11 +71,11 @@ test(fundName() + "-Validate Retirement Transition process is successful where P
 
         //Initiating internal transfer from source TTR to ABP
         let { memberNo, surname } = await ShellAccountApiHandler.process(navBar, pensionAccountPage, apiRequestContext);
-        await internalTransferPage.internalTransferProcess(true, false);
+        await pensionAccountPage.createShellAccountExistingMember(memberNo);
+        await pensionAccountPage.reload();
         await navBar.selectMemberSurName(surname);
         await internalTransferPage.internalTransferMember('TTR', memberNo);
-        await internalTransferPage.ttrTransferOut();
-        await pensionTransactionPage.transactions();
+        await pensionTransactionPage.transactionView();
     } catch (error) {
         throw error;
     }
@@ -93,11 +93,11 @@ test(fundName() + "-Validate Retirement Transition process completes successfull
 
         //navigating to ABP destination member and initiating internal transfer from source TTR to ABP
         let { memberNo, surname } = await ShellAccountApiHandler.process(navBar, pensionAccountPage, apiRequestContext);
-        await internalTransferPage.internalTransferProcess(true, false);
+        await pensionAccountPage.createShellAccountExistingMember(memberNo);
+        await pensionAccountPage.reload();
         await navBar.selectMemberSurName(surname);
         await internalTransferPage.internalTransferMember('TTR', memberNo);
-        await internalTransferPage.ttrTransferOut();
-        await pensionTransactionPage.transactions();
+        await pensionTransactionPage.transactionView();
     } catch (error) {
         throw error;
     }
