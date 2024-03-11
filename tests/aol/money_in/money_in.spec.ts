@@ -16,7 +16,7 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
     await memberPage.selectMember(addedMember);
     await memberOverviewpage.verifyTFNStatus(true);
     await memberOverviewpage.memberAccumulationAccount_Tab.click();
-    await memberTransactionPage.memberRolloverIn();
+    await memberTransactionPage.memberRolloverIn('Personal',true);
     
 })
 
@@ -31,20 +31,47 @@ test(fundName()+"Contribution without TFN - Verify if contribution is processed 
     
 })
 
-test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
+test(fundName()+"Personal Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
-    await memberTransactionPage.memberRolloverIn();
+    await memberTransactionPage.memberRolloverIn('Personal Contribution', true);
     
 })
 
-test(fundName()+"Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage }) => {
+test(fundName()+ "Salary Sacrifice Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
-    await memberTransactionPage.memberRolloverIn('Salary Sacrifise');
+    await memberTransactionPage.memberRolloverIn('Salary Sacrifice', true);
+    
+})
+
+test(fundName()+"Super Guarantee Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
+    await memberTransactionPage.memberRolloverIn('Super Guarantee', true);
+    
+})
+
+test(fundName()+"Spouse Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
+    await memberTransactionPage.memberRolloverIn('Spouse',true);
+    
+})
+
+test(fundName()+"Retirement Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+
+    await navBar.navigateToAccumulationMembersPage();
+    let addedMember = await memberPage.addNewMember(false, true);
+    await memberPage.selectMember(addedMember);
+    await memberTransactionPage.memberRolloverIn('Retirement',true);
     
 })

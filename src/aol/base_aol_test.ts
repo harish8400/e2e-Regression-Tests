@@ -18,6 +18,8 @@ import { InvestmentsAndPricing } from './pom/investment_and_pricing_page';
 import { MemberOverView } from './pom/member/member_overview';
 import { CaseApi } from '../aol_api/case_api';
 import {ProcessApi } from '../aol_api/process_api';
+import { MemberApi } from '../aol_api/member_api';
+import { MemberInsurance } from './pom/member/member_insurance';
 import { EmployerPage } from './pom/employer_page';
 
 type ExtensionFixtures = {
@@ -40,6 +42,8 @@ type ExtensionFixtures = {
     dltaApiRequestContext: APIRequestContext;
     caseApi: CaseApi;
     processApi: ProcessApi;
+    memberApi: MemberApi;
+    memberInsurancePage: MemberInsurance;
     employerPage : EmployerPage
 }
 
@@ -109,6 +113,12 @@ export const aolTest = base.extend<ExtensionFixtures>({
 
     caseApi: async ({ dltaApiRequestContext }, use) => {
         await use(new CaseApi(dltaApiRequestContext));
+    },
+    memberApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new MemberApi(dltaApiRequestContext));
+    },
+    memberInsurancePage: async ({ page }, use) => {
+        await use(new MemberInsurance(page));
     },
     employerPage: async ({ page }, use) => {
         await use(new EmployerPage(page));

@@ -64,8 +64,9 @@ export class MemberOverView extends BasePage{
     }
 
     async verifyTFNStatus(status:boolean){
-        await this.sleep(3000);
+        await this.sleep(6000);
         await this.overViewTab.click();
+        await this.sleep(3000);
         if(status==true){
             await expect(this.TFNStatusValid).toBeVisible();
         }

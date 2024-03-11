@@ -1,6 +1,8 @@
 import { Locator, Page, expect,  } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
+import { FUND } from "../../../constants";
+import * as insurance from "../../../src/aol/data/insurance.json";
 
 
 export class InsurancePage extends BasePage {
@@ -21,6 +23,25 @@ export class InsurancePage extends BasePage {
     readonly coolingPeriodField: Locator;
     readonly saveButton: Locator;
     readonly confirmationMessage: Locator;
+
+    
+    readonly categoryNameInputText: Locator;
+    readonly applyButton: Locator;
+    
+    readonly providerDropDown: Locator;
+    readonly hannoverRe: Locator;
+    readonly hannoverReButton: Locator;
+    readonly coverTypeDropDown:Locator;
+    readonly deathText:Locator;
+    readonly cSDefaultTpd:Locator;
+    readonly downArrow:Locator;
+    readonly metLife:Locator;
+    readonly newCategory:Locator;
+    readonly categoryNameField:Locator;
+    readonly providerNameField:Locator;
+    readonly saveCategoryButton:Locator;
+    readonly validationError:Locator;
+    readonly errorMessage:Locator;
 
     //add new category
     readonly addNewCategory: Locator;
@@ -99,6 +120,30 @@ export class InsurancePage extends BasePage {
         this.annualReviewBasis= page.locator('#gs7__combobox div').first();
         this.annualReviewBasis_MemberBirthDate = page.getByRole('option', { name: 'Member\'s birthdate' });
         this.saveCategory = page.getByRole('button', { name: 'Save Category' });
+
+        this.insuranceLink = page.getByRole('link', { name: 'Insurance' });
+        this.accumulationDropDown = page.getByRole('link', { name: 'Accumulation' });
+        this.insuranceText = page.getByRole('heading', { name: 'Insurance' });
+        this.filterTab = page.getByRole('button', { name: 'FILTER' });
+        this.categoryText = page.getByText('Category', { exact: true });
+        this.categoryNameInputText= page.getByRole('textbox');
+        this.applyButton= page.getByRole('button', { name: 'APPLY' });
+        this.provider= page.locator("(//div[@class='filter-list-item'])[2]");
+        this.providerDropDown= page.getByRole('tooltip', { name: 'close icon Provider Provider' }).getByRole('img');
+        this.hannoverRe= page.getByRole('textbox', { name: 'Select' });
+        this.hannoverReButton= page.locator('li').filter({ hasText: /^Hannover Re$/ });
+        this.coverType= page.getByText('Cover Type', { exact: true });
+        this.coverTypeDropDown= page.getByRole('tooltip', { name: 'close icon Cover Type Cover' }).locator('i');
+        this.deathText=page.locator('li').filter({ hasText: /^Death$/ });
+        this.cSDefaultTpd=page.getByLabel('CS Default unit based TPD');
+        this.downArrow=page.getByRole('button', { name: 'arrow-down icon' });
+        this.metLife=page.getByRole('tooltip', { name: 'MetLife' }).getByRole('listitem');
+        this.newCategory=page.getByLabel('Add new category');
+        this.categoryNameField=page.getByText('Category Name *');
+        this.providerNameField=page.getByText('Provider *');
+        this.saveCategoryButton=page.getByRole('button', { name: 'Save Category' });
+        this.validationError=page.locator('div:nth-child(3) > .input-select-container > .inline-block > .block');
+        this.errorMessage=page.getByText('Maximum cover limit must be');
     }
     async clickOnInsuranceLink(){
         await this.accumulationDropDown.click();;
@@ -106,10 +151,13 @@ export class InsurancePage extends BasePage {
         await expect(this.insuranceText).toBeVisible();
       }
       
+      
     async clickOnFilter(){
         await this.filterTab.click();
         await expect(this.categoryText).toBeVisible();
       }
+
+    
 
       async editInsurance(){
         await this.insuranceLink.click();
@@ -168,4 +216,65 @@ export class InsurancePage extends BasePage {
         await this.annualReviewBasis_MemberBirthDate.click();
         await this.saveCategory.click();
       }
+
+      
+
+      async clickOnCsDefaultTPD(){
+        await this.cSDefaultTpd.click();;
+        await this.downArrow.click();
+      }
+      
+      
+      async verifyDefaultDeathCoverCanBeBasedOnCategory(){
+        await this.categoryText.click();
+        let categoryName = insurance.australianEthicalCategoryName;
+        switch (process.env.PRODUCT!) {
+        case FUND.VANGUARD:
+            categoryName = insurance.vanguardSuperCategoryName;
+            break;
+        case FUND.AE:
+            categoryName = insurance.australianEthicalCategoryName;
+            break;
+        case FUND.HESTA:
+            categoryName = insurance.hestaCategoryName;
+            break;
+    }
+        await this.categoryNameInputText.fill(categoryName);
+        await this.applyButton.click();
+        await expect(this.page.getByLabel('CS Default unit based Death')).toContainText('Provider');
+      }
+      async verifyDefaultDeathCoverCanBeBasedOnProvider(){
+        await this.provider.click();
+        await this.providerDropDown.click();
+        await this.metLife.click();
+        await this.applyButton.click();
+       
+        
+      }
+      async verifyDefaultDeathCoverCanBeBasedOnCoverType(){
+        await this.coverType.click();
+        await this.coverTypeDropDown.click();
+        await this.deathText.click();
+        await this.applyButton.click();
+      }
+
+      async clickOnNewCategory(){
+        await this.newCategory.click();
+        
+      }
+
+      async verifyMandtoryFiledsNewCategory(){
+        await expect(this.categoryNameField).toContainText('Category Name');
+        await expect(this.providerNameField).toContainText('Provider');
+        await this.saveCategoryButton.click();
+        await expect(this.validationError).toContainText('This field is required');
+      }
+
+      async validateErrorMessageWithoutAllMandatoryFields(){
+        await this.saveCategoryButton.click();
+        await expect(this.validationError).toContainText('This field is required');
+        await expect(this.errorMessage).toContainText('Maximum cover limit must be greater than the minimum cover limit');
+      }
+
+
 }

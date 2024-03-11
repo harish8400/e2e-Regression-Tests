@@ -14,9 +14,26 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
 
     try {
         await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(member.memberIDwithTFN);
+        await memberOverviewpage.superTickVerification();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(member.memberIDwithTFN);
+        await relatedInformationPage.verifySuperTickStatus(true);
+        
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName()+"Verify that for a member with 'Provisional' status No super tick call is made. @superTick", async ({ navBar, memberOverviewpage, relatedInformationPage }) => {
+
+    try {
+        await navBar.navigateToAccumulationMembersPage();
         await navBar.selectMember(member.memberID);
         await memberOverviewpage.superTickVerification();
-        await relatedInformationPage.verifySuperTickStatus();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(member.memberID);
+        await relatedInformationPage.verifySuperTickStatus(false);
         
     } catch (error) {
         throw error;

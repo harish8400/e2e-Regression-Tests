@@ -50,3 +50,68 @@ test(fundName()+"Verify that user can create new Insurance category @Insurance",
         throw error;
     }
 })
+
+test("Verify that the insurance category Default death cover can be viewed when the user filters the insurance category based on Provider", async ({  navBar,insurancePage }) => {
+
+    await allure.suite("Insurance");
+
+    try {
+        await insurancePage.clickOnInsuranceLink();
+        await insurancePage.clickOnFilter();
+        await insurancePage.verifyDefaultDeathCoverCanBeBasedOnProvider();
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("Verify that the insurance category Default death cover can be viewed when the user filters the insurance category based on Cover Type - Death", async ({  navBar,insurancePage }) => {
+
+    await allure.suite("Insurance");
+
+    try {
+        await insurancePage.clickOnInsuranceLink();
+        await insurancePage.clickOnFilter();
+        await insurancePage.verifyDefaultDeathCoverCanBeBasedOnCoverType();
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("Verify that mandatory fields on the add insurance page are marked with a red asterisk. ", async ({  navBar,insurancePage }) => {
+
+    await allure.suite("Insurance");
+
+    try {
+        await insurancePage.clickOnInsuranceLink();
+        await insurancePage.clickOnNewCategory();
+        await insurancePage.verifyMandtoryFiledsNewCategory();
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("Verify an error is returned when the user selects save without all mandatory field populated", async ({  navBar,insurancePage }) => {
+
+    await allure.suite("Insurance");
+
+    try {
+        await insurancePage.clickOnInsuranceLink();
+        await insurancePage.clickOnNewCategory();
+        await insurancePage.validateErrorMessageWithoutAllMandatoryFields();
+    } catch (error) {
+        throw error;
+    }
+})
+
+test("Verify the fields are displayed correctly", async ({  navBar,insurancePage }) => {
+
+    await allure.suite("Insurance");
+
+    try {
+        await insurancePage.clickOnInsuranceLink();
+        await insurancePage.clickOnFilter();
+        await insurancePage.verifyDefaultDeathCoverCanBeBasedOnCoverType();
+    } catch (error) {
+        throw error;
+    }
+})
