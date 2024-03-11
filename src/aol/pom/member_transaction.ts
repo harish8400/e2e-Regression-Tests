@@ -28,7 +28,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
     readonly transitionToRetirement: Locator;
-    readonly memberContributionType_superGuaranty;
+    readonly memberContributionType_superGuarantee;
     readonly memberContributionType_Spouse;
     readonly memberContributionType_Retirement;
     readonly memberContributionErrorMessage;
@@ -85,7 +85,7 @@ export class MemberTransactionsPage extends BasePage {
         this.trasitionMembers = page.getByRole('link', { name: 'Members' });
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
         this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
-        this.memberContributionType_superGuaranty = page.getByRole('option', { name: 'Super Guarantee' });
+        this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
         this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
@@ -128,8 +128,8 @@ export class MemberTransactionsPage extends BasePage {
         if(contributionType == 'Salary Sacrifice'){
             await this.memberContributionType_salarySacrifice.click();
         }
-        else if(contributionType == 'Super Guaranty'){
-            await this.memberContributionType_superGuaranty.click();
+        else if(contributionType == 'Super Guarantee'){
+            await this.memberContributionType_superGuarantee.click();
         }
         else if(contributionType == 'Retirement'){
             await this.memberContributionType_Retirement.click();

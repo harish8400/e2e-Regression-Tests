@@ -49,12 +49,12 @@ test(fundName()+ "Salary Sacrifice Contribution - Verify if contribution is proc
     
 })
 
-test(fundName()+"Super Guaranty Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
+test(fundName()+"Super Guarantee Contribution - Verify if contribution is processed successfully", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
-    await memberTransactionPage.memberRolloverIn('Super Guaranty', true);
+    await memberTransactionPage.memberRolloverIn('Super Guarantee', true);
     
 })
 
