@@ -80,7 +80,7 @@ export class MemberTransactionsPage extends BasePage {
         this.linkCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
-        this.verifyContributionSuccess = page.getByText("rocessed contribution for member.");
+        this.verifyContributionSuccess = page.getByText("Processed contribution for member.");
         this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
         this.trasitionMembers = page.getByRole('link', { name: 'Members' });
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
