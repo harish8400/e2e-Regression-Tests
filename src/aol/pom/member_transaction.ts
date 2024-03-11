@@ -28,7 +28,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
     readonly transitionToRetirement: Locator;
-    readonly memberContributionType_superGuaranty;
+    readonly memberContributionType_superGuarantee;
     readonly memberContributionType_Spouse;
     readonly memberContributionType_Retirement;
     readonly memberContributionErrorMessage;
@@ -80,13 +80,13 @@ export class MemberTransactionsPage extends BasePage {
         this.linkCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
-        this.verifyContributionSuccess = page.getByText('Processed contribution for member.');
+        this.verifyContributionSuccess = page.getByText("Processed contribution for member.");
         this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
         this.trasitionMembers = page.getByRole('link', { name: 'Members' });
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
         this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
-        this.memberContributionType_superGuaranty = page.getByRole('link', { name: 'Super Guaranty' });
-        this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.");
+        this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
+        this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
@@ -125,11 +125,11 @@ export class MemberTransactionsPage extends BasePage {
         await this.sleep(3000);
 
         await this.memberContributionType.click();
-        if(contributionType == 'Salary Sacrifise'){
+        if(contributionType == 'Salary Sacrifice'){
             await this.memberContributionType_salarySacrifice.click();
         }
-        else if(contributionType == 'Super Guaranty'){
-            await this.memberContributionType_superGuaranty.click();
+        else if(contributionType == 'Super Guarantee'){
+            await this.memberContributionType_superGuarantee.click();
         }
         else if(contributionType == 'Retirement'){
             await this.memberContributionType_Retirement.click();
@@ -152,7 +152,7 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
-        if( TFN == true ){
+        if( TFN==true ){
         await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
         }
         else{
