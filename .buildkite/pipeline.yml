@@ -1,7 +1,9 @@
 env:
   COMPOSE_FILE: "./buildkite.docker-compose.yml"
-  DEPLOY_AGENTS_QUEUE: "grow-tina-dev-quality"
+  DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
       
+agents:
+      queue: "${DEPLOY_AGENTS_QUEUE}"
 
 steps:
   - label: ":test_tube: Playwright test"

@@ -37,7 +37,7 @@ test(fundName()+"Process full exit on member with active insurance", async ({ me
     })
 })
 
-test(fundName()+"Ensure cover can be cancelled via the FE", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage }) => {
+test(fundName()+"Ensure user can delete insurance polices", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage }) => {
 
     await test.step("Super Member creation", async () => {
         await navBar.navigateToAccumulationMembersPage();
