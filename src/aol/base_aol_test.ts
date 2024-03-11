@@ -19,6 +19,7 @@ import { MemberOverView } from './pom/member/member_overview';
 import { CaseApi } from '../aol_api/case_api';
 import {ProcessApi } from '../aol_api/process_api';
 import { MemberApi } from '../aol_api/member_api';
+import { MemberInsurance } from './pom/member/member_insurance';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -41,6 +42,7 @@ type ExtensionFixtures = {
     caseApi: CaseApi;
     processApi: ProcessApi;
     memberApi: MemberApi;
+    memberInsurancePage: MemberInsurance;
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -112,5 +114,8 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     memberApi: async ({ dltaApiRequestContext }, use) => {
         await use(new MemberApi(dltaApiRequestContext));
+    },
+    memberInsurancePage: async ({ page }, use) => {
+        await use(new MemberInsurance(page));
     },
 })

@@ -2,14 +2,16 @@ import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from '../../../common/pom/base_page';
 import { ReviewCase } from '../component/review_case'
 import { DateUtils } from '../../../utils/date_utils';
+import { Navbar } from '../component/navbar';
 
 export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
     readonly clipBoardIcon: Locator;
+
     //readonly hestaForMercyTab: Locator;
     readonly memberAccumulationAccount_Tab: Locator;
-    
+
     //Edit Correspondence
     readonly editCorrespondenceButton: Locator;
     readonly correspondenceDropdown: Locator;
@@ -42,10 +44,14 @@ export class RelatedInformationPage extends BasePage {
     readonly processException: Locator;
     readonly reviewCase: ReviewCase;
 
+    //navigation page
+    readonly navBar: Navbar;
+
     constructor(page: Page){
         super(page)
 
         this.reviewCase = new ReviewCase(page);
+        this.navBar = new Navbar(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.clipBoardIcon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
@@ -62,7 +68,6 @@ export class RelatedInformationPage extends BasePage {
         this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
 
         //Verification Information
-        //this.hestaForMercyTab = page.getByRole('button', { name: 'HESTA for Mercy Super' });
         this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
         this.superTickVerificationRow = page.getByRole('row').nth(5);
 
@@ -125,11 +130,16 @@ export class RelatedInformationPage extends BasePage {
         await this.clipBoardIcon.click();
     }
 
-    async verifySuperTickStatus(){
-        await this.memberAccumulationAccount_Tab.click();
+    async verifySuperTickStatus(activeMember?: boolean){
         await this.relatedInformationTab.click();
         await this.sleep(3000);
         await this.superTickVerificationRow.scrollIntoViewIfNeeded();
-        await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
+        if(activeMember==true){
+            await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
+        }
+        else{
+            const rows = this.superTickVerificationRow;
+            await expect(rows).toHaveCount(0);
+        }
     }
 }
