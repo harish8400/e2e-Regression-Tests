@@ -1,7 +1,7 @@
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from "allure-playwright";
-import * as member from "../../../src/aol/data/member.json"
 import { fundName } from "../../../src/aol/utils_aol";
+import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -11,12 +11,19 @@ test.beforeEach(async ({ navBar }) => {
         
 });
 
-test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage }) => {
+test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage,memberApi,pensionAccountPage }) => {
     
     try {
         await navBar.navigateToPensionMembersPage();
-        let mem = member.memberID
-        await navBar.selectMember(mem);
+        let { memberNo, processId } = await ShellAccountCreationApiHandler.createPensionShellAccount(memberApi);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await ShellAccountCreationApiHandler.getCaseGroupId(memberApi, processId);
+        await ShellAccountCreationApiHandler.approveProcess(memberApi, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
         await relatedInformationPage.editCorrespondence('Lost Member');
     } catch (error) {
         throw error;

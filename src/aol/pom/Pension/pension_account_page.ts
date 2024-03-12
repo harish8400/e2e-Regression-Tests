@@ -144,11 +144,18 @@ export class PensionShellAccount extends BasePage {
 
   //Exceptions
   readonly processException: Locator;
+  readonly abpScreen:Locator;
 
    //process link
    readonly processesLink: Locator;
    readonly shellaccount:Locator;
    readonly review:Locator;
+   readonly transactionsTab:Locator;
+   readonly abpScreenView:Locator;
+   readonly ttrScreenView:Locator;
+   readonly memberOverview:Locator;
+   readonly addAccount:Locator;
+   readonly abp:Locator;
 
   constructor(page: Page) {
     super(page)
@@ -194,11 +201,11 @@ export class PensionShellAccount extends BasePage {
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
     //Investment step
-    this.invSelect = page.getByRole('textbox', { name: 'Select' });
+    this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
-    this.saveInv = page.getByRole('button', { name: 'Add' });
+    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
@@ -224,7 +231,7 @@ export class PensionShellAccount extends BasePage {
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
     this.proRata = page.getByText('Yes').first();
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: '65 or older' });
+    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
 
@@ -285,6 +292,13 @@ export class PensionShellAccount extends BasePage {
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
     this.review = page.locator('//span[text()="In Review"]');
+    this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
+    this.transactionsTab = page.locator('//button[text()="Transactions"]');
+    this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
+    this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
+    this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
+    this.addAccount = page.getByRole('button', { name: 'Add new account' });
+    this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
   }
 
   async navigateToPensionMemberPage() {
@@ -481,12 +495,39 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000);
     await this.shellaccount.click();
     await this.review.click();
-    await this.sleep(3000);
-    const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
-    await caseId.waitFor();
-    
-    let id = await caseId.textContent();
-    return id!.trim(); 
+    await this.sleep(3000)
 }
   
+  async retirement(){
+    await this.sleep(3000)
+    await this.abpScreenView.waitFor();
+    await this.abpScreenView.click();
+    await this.sleep(3000);
+    await this.transactionsTab.click();
+
+  }
+
+  async createShellAccountExistingMember(memberNo:string) {
+    await this.sleep(3000);
+    await this.memberOverview.waitFor();
+    await this.memberOverview.click();
+    await this.addAccount.click();
+    await this.abp.click();
+    await this.preferredContactMethod.click();
+    await this.preferredContactMethodSelect.click();
+    await this.residencyStatus.click();
+    await this.residencyStatusSelect.click();
+    await this.nextStep.click();
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    await this.nextStep.click();
+    await this.addMemberPensionDetails();
+    await this.initCreateCase();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+  }
+
+  
+
 }

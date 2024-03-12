@@ -1,10 +1,10 @@
 import { Locator, Page } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
-import * as memberData from "../../../aol/data/pension_data.json";
 import { ReviewCase } from "../component/review_case";
-import { FUND } from "../../../../constants";
+import { CASE_NOTE, FUND } from "../../../../constants";
 import { DateUtils } from "../../../utils/date_utils";
 import * as member from "../../data/member.json";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
 
@@ -97,6 +97,13 @@ export class InternalTransferPage extends BasePage {
     readonly verifyVGMember: Locator
     readonly valueSourceProduct_VG: Locator;
     readonly summary:Locator;
+    readonly sourceProduct:Locator;
+
+    //transferOut
+
+     readonly memberProcessId :Locator;
+     readonly abpscreenOverview:Locator;
+     readonly ttrScreen:Locator;
 
 
     constructor(page: Page) {
@@ -119,7 +126,8 @@ export class InternalTransferPage extends BasePage {
         this.dropdownInternalTransferType = page.locator("(//div[@class='gs__actions'])[2]");
         this.valueInternalTransferType = page.getByRole('option', { name: 'Internal Transfer' });
         this.dropdownSourceProduct = page.locator("//div[@id='sourceProduct']");
-        this.valueSourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Retirement' })
+        this.valueSourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Super' });
+        this.sourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Retirement' });
         this.valueSourceProductVG = page.getByRole('option').filter({ hasText: 'Accumulation' });
         this.sourceAccount = page.locator("//input[@id='sourceMemberNumber']");
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
@@ -132,7 +140,7 @@ export class InternalTransferPage extends BasePage {
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
 
         //API Integration Internal Transfer 
-        this.overViewTab = page.locator('//button[text()="Overview"]')
+        this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
         this.addAccount = page.getByRole('button', { name: 'Add new account' });
         this.hestaAccount = page.locator('//li[text()="HESTA for Mercy Super"]');
         this.vanguardAccount = page.locator('//li[text()="Vanguard Accumulation"]');
@@ -186,17 +194,23 @@ export class InternalTransferPage extends BasePage {
         //process 
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
         this.review = page.locator('//span[text()="In Review"]');
-        this.verifycreationVG = page.locator('(//p[text()="Unauthorised"])[1]');
+        this.verifycreationVG = page.locator(CASE_NOTE.UNAUTHORISED);
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
         this.summary = page.getByRole('button', { name: 'Member Summary' });
+
+        //transferOut
+
+        this.memberProcessId = page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");
+        this.abpscreenOverview =page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
+        this.ttrScreen = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
        
 
 
     }
 
     /** Internal Transaction from Accumulation to Retirement Income Sream */
-    async internalTransferMember(transferType: string) {
+    async internalTransferMember(transferType: string ,memberNo: String) {
 
         await this.ButtonTransactions.click();
         await this.ButtonAddTransactions.click();
@@ -217,15 +231,19 @@ export class InternalTransferPage extends BasePage {
             } else {
                 await this.valueSourceProductVG.click();
             }
-            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_Accumulation_To_ABP_Source_Account);
+            await this.sourceAccount.fill(memberNo.toString());
         }
         else if (transferType == 'ABP') {
             await this.page.getByRole('option').nth(2).click();
-            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_ABP_To_Accumulation_Source_Account);
+            await this.sourceAccount.fill(memberNo.toString());
         }
-        else {
-            await this.page.getByRole('option').first().click();
-            await this.sourceAccount.fill(memberData.pension.Internal_Transfer_TTR_To_ABP_Source_Account);
+        else if (transferType == 'TTR') {
+            await this.page.getByRole('option', { name: 'HESTA for Mercy Transition to' }).click();
+            await this.sourceAccount.fill(memberNo.toString());
+        }
+        else{
+            await this.page.getByRole('option').nth(2).click();
+            await this.sourceAccount.fill(memberNo.toString());
         }
 
         await this.page.keyboard.down('Tab');
@@ -259,7 +277,8 @@ export class InternalTransferPage extends BasePage {
     async internalTransferProcess(addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
 
         await this.sleep(3000);
-        await this.overViewTab.focus()
+        await this.overViewTab.waitFor();
+        await this.overViewTab.focus();
         await this.overViewTab.click({ force: true });
         await this.addAccount.click();
         await this.sleep(3000);
@@ -275,9 +294,9 @@ export class InternalTransferPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
         if (process.env.PRODUCT === FUND.HESTA && dateJoinedFundEarlier) {
-            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         } else if (process.env.PRODUCT === FUND.VANGUARD && dateJoinedFundEarlier) {
-            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
+            await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(1)}`);
         }
 
         await this.nextStep.click();
@@ -324,6 +343,8 @@ export class InternalTransferPage extends BasePage {
             await this.beneficiaryEffectiveDate.press('Tab');
             await this.beneficiaryPercentage.fill('100');
             await this.beneficiarySave.click();
+
+            
         }
 
         //Create account
@@ -342,11 +363,15 @@ export class InternalTransferPage extends BasePage {
         const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
         await caseId.waitFor();
         let id = await caseId.textContent();
-        await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
+       
         return id!.trim();
     }
 
-
+    async vanguard(){
+        if (ENVIRONMENT_CONFIG.name === "dev" && process.env.PRODUCT != FUND.HESTA) {
+            await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
+          } 
+    }
 
 
 
@@ -366,7 +391,7 @@ export class InternalTransferPage extends BasePage {
         await this.sleep(2000);
 
         if (process.env.PRODUCT == FUND.HESTA && transferType == 'ABP') {
-            await this.valueSourceProduct.click();
+            await this.sourceProduct.click();
         } else if (process.env.PRODUCT == FUND.VANGUARD && transferType == 'ABP') {
             await this.valueSourceProduct_VG.click();
 
@@ -403,10 +428,23 @@ export class InternalTransferPage extends BasePage {
     async memberSummary() {
         await this.summary.click();
         await this.sleep(3000);
-        let memberBalance = await this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
+        let memberBalance = this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
+        memberBalance.scrollIntoViewIfNeeded();
         let balance = memberBalance.textContent();
+        await this.ButtonTransactions.click();
+        await this.sleep(3000);
         return balance;
     }
+
+    async transferOut(){
+        await this.memberProcessId.scrollIntoViewIfNeeded();
+        await this.memberProcessId.click();
+        await this.sleep(3000);
+        await this.abpscreenOverview.click();
+        await this.ButtonTransactions.click();
+
+    }
+
 
 
 

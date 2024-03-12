@@ -33,11 +33,24 @@ test(fundName() + "-Run unit Prices via API for accumulation ", async ({navBar,i
 })
 
 
-test(fundName() + "-Run unit Prices via API for pension accounts ", async ({navBar,investmentsAndPricing }) => {
+test(fundName() + "-Run unit Prices via API for pension accounts-@ABP ", async ({navBar,investmentsAndPricing }) => {
     await navBar.navigateToPensionMembersPage();
     await investmentsAndPricing.investmentsList();
     const apiRequestContext: APIRequestContext = await initDltaApiContext();
-    let productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
+    let productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+    let today = new Date();
+    //today.setDate(today.getDate() + 1); // Enable this line when we want to run for Vanguard
+    let refDate = DateUtils.localISOStringDate(today);
+    await ProductApiHandler.uploadHfmAccumUnitPrices(apiRequestContext, productId, refDate);
+    await investmentsAndPricing.reload();
+})
+
+
+test(fundName() + "-Run unit Prices via API for pension accounts-@TTR ", async ({navBar,investmentsAndPricing }) => {
+    await navBar.navigateToTTRMembersPage();
+    await investmentsAndPricing.investmentsList();
+    const apiRequestContext: APIRequestContext = await initDltaApiContext();
+    let productId = FUND_IDS.VANGUARD.PRODUCT_ID.TTR;
     let today = new Date();
     today.setDate(today.getDate() + 1); // Enable this line when we want to run for Vanguard
     let refDate = DateUtils.localISOStringDate(today);
