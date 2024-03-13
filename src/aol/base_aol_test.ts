@@ -45,6 +45,7 @@ type ExtensionFixtures = {
     memberApi: MemberApi;
     rollinApi:RollinApi;
     shellAccountApi:ShellAccountApi;
+    transactionApi:Transactions
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -124,5 +125,8 @@ export const aolTest = base.extend<ExtensionFixtures>({
 
     shellAccountApi: async ({ dltaApiRequestContext }, use) => {
         await use(new ShellAccountApi(dltaApiRequestContext));
+    },
+    transactionApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new Transactions(dltaApiRequestContext));
     },
 })

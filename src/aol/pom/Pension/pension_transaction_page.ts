@@ -125,6 +125,12 @@ export class PensionTransactionPage extends BasePage {
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
   readonly TransactioType: Locator;
+  readonly paymentDate:Locator;
+  readonly processedDate:Locator;
+  readonly today: Date;
+  readonly componentScreen:Locator;
+  readonly taxableTaxed:Locator;
+  readonly preserved:Locator;
 
   //Vanguard
   readonly unathorized: Locator
@@ -240,6 +246,12 @@ export class PensionTransactionPage extends BasePage {
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
     this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
+    this.paymentDate = page.locator('td:nth-child(4) > .cell').first();
+    this.processedDate = page.locator('td:nth-child(5) > .cell').first();
+    this.today = new Date();
+    this.componentScreen = page.getByRole('button', { name: 'Components' });
+    this.taxableTaxed = page.locator("//p[text()=' Taxable - taxed ']/following-sibling::p");
+    this.preserved = page.locator("//p[text()=' UNP ']/following-sibling::p");
 
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
@@ -607,6 +619,29 @@ export class PensionTransactionPage extends BasePage {
 
   async paymentView() {
     await this.sleep(3000);
+   // Assuming this.today, this.paymentDate, and this.processedDate are Playwright ElementHandles or similar objects
+
+let paymentReceivedDate = await this.paymentDate.textContent();
+let processedPaymentDate = await this.processedDate.textContent();
+
+if (paymentReceivedDate && processedPaymentDate) {
+    const date = DateUtils.ddMMMyyyStringDate(new Date());
+
+    if (date === paymentReceivedDate) {
+        console.log("Today's date and payment received date are equal.");
+    } else {
+        console.log("Today's date and payment received date are not equal.");
+    }
+
+    if (date === processedPaymentDate) {
+        console.log("Today's date and processed payment date are equal.");
+    } else {
+        console.log("Today's date and processed payment date are not equal.");
+    }
+} else {
+    console.log("Payment received date or processed payment date is null or undefined.");
+}
+
     await this.BenefitPaymentId.scrollIntoViewIfNeeded();
     await this.sleep(3000);
     await this.BenefitPaymentId.click();
@@ -614,11 +649,18 @@ export class PensionTransactionPage extends BasePage {
     let transID = await this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)").textContent();
     let status = await this.page.locator("//span[@class='font-semibold']/following-sibling::span[1]").innerText();
     if (status.trim() === "Finalised") {
-      console.log(`Payment ID: ${transID} is Finalised. payment has been  processed.`);
+      console.log(`${transID} is Finalised. payment has been  processed.`);
     } else {
-      throw new Error(`Payment ID ${transID} is not Finalised.`);
+      throw new Error(` ${transID} is not Finalised.`);
     }
 
+    await this.componentScreen.click();
+    let taxAmountValue = await this.taxableTaxed.textContent();
+    const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
+    console.log("Tax amount:", taxAmount);
+    let preservedComponent = await this.preserved.textContent();
+    const unpComponentValue = parseFloat(preservedComponent!.replace(/[^0-9.-]+/g, ""));
+    console.log("Preserved Component:", unpComponentValue);
     return transID;
   }
 
@@ -641,7 +683,7 @@ export class PensionTransactionPage extends BasePage {
     return { memberNo, processId, surname };
   }
 
-  async process(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberPensionShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
     let { memberNo, surname } = await this.shellAccount(navBar, pensionAccountPage, apiRequestContext);
 
     // Fetch additional details and perform pension-related actions
@@ -660,13 +702,13 @@ export class PensionTransactionPage extends BasePage {
   }
 
   async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-    let { linearId } = await this.process(navBar, pensionAccountPage, apiRequestContext);
+    let { linearId } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
     await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id)
 }
 
   async accumulationAccount(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
     // Process pension account and retrieve necessary data
-    let { memberNo, surname } = await this.process(navBar, pensionAccountPage, apiRequestContext);
+    let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
 
     await pensionAccountPage.reload();
 

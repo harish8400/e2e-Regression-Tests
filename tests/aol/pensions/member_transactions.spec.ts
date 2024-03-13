@@ -4,6 +4,7 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
@@ -28,45 +29,51 @@ test(fundName()+"-Manual Roll-in - Pension Member @pension", async ({ navBar, pe
     await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
 })
 
-test(fundName()+"-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage ,pensionAccountPage ,apiRequestContext}) => {
+test(fundName()+"-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage ,pensionAccountPage ,apiRequestContext,transactionApi}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(false);
     await pensionTransactionPage.paymentView();
+    await pensionTransactionPage.paymentView();
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId);
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
 })
 
-test(fundName()+"-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage , pensionAccountPage,apiRequestContext}) => {
+test(fundName()+"-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage , pensionAccountPage,apiRequestContext,transactionApi}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    let memberId =await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationUNPBenefit(false);
     let paymentId = await pensionTransactionPage.paymentView();
     let paymentTransactionId = paymentId!.split(":")[1];
     await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
 })
 
 test(fundName()+"-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage ,pensionAccountPage ,apiRequestContext}) => {
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(false);
     await pensionTransactionPage.paymentView();
 })
 
 test(fundName()+"-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage,pensionAccountPage,apiRequestContext }) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationUNPBenefitReject(false);
 })
 
 test(fundName()+"-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(true);
     await pensionTransactionPage.paymentView();
 })
 
 test(fundName()+"-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationUNPBenefit(true);
     let paymentId = await pensionTransactionPage.paymentView();
     let paymentTransactionId = paymentId!.split(":")[1];
@@ -75,7 +82,7 @@ test(fundName()+"-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensi
 
 test(fundName()+"-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(true);
     await pensionTransactionPage.paymentView();
 })
@@ -83,7 +90,7 @@ test(fundName()+"-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pe
 test(fundName()+"-ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext  }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
         await pensionTransactionPage.deathBenefitTransaction();
     } catch (error) {
         throw error
@@ -92,7 +99,7 @@ test(fundName()+"-ABP Death Benefit Payment @pension", async ({ navBar, pensionT
 
 test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext }) => {
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOutTTR(false);
 })
 

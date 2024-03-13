@@ -64,4 +64,42 @@ export class Transactions extends BaseDltaAolApi {
         return { amount,type,name };
       }
 
+      async getMemberInvestments(linearId: string): Promise<{ id: string, type: string }> {
+        let path = `member/${linearId}/investment`;
+        let response = await this.get(path);
+        let responseBody = await response.json();
+        let id = responseBody?.data[0]?.portfolioId || '';
+        let type = responseBody?.data[0]?.portfolioName || '';
+        expect(id).toEqual(responseBody?.data[0]?.portfolioId);
+        expect(type).toEqual(responseBody?.data[0]?.portfolioName);
+      
+        return { id, type };
+      }
+
+      async getMemberPayment(linearId: string): Promise<{ reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
+        let path = `member/${linearId}/payment`;
+        let response = await this.get(path);
+        let responseBody = await response.json();
+    
+        // Validate the fields
+        let reference = responseBody?.data[0]?.transactionReference || null;
+        let preservedAmount = responseBody?.data[0]?.preserved || null;
+        let restricted = responseBody?.data[0]?.restrictedNonPreserved || null;
+        let unrestricted = responseBody?.data[0]?.unrestrictedNonPreserved || null;
+        let tax = responseBody?.data[0]?.taxed || null;
+    
+        // Perform assertions
+       expect(reference).toEqual(responseBody?.data[0]?.transactionReference);
+	   expect(preservedAmount).toEqual(responseBody?.data[0]?.transactionReference);
+	   expect(restricted).toEqual(responseBody?.data[0]?.transactionReference);
+	   expect(unrestricted).toEqual(responseBody?.data[0]?.transactionReference);
+	   expect(tax).toEqual(responseBody?.data[0]?.transactionReference);
+    
+        // Return the validated fields
+        return { reference, preservedAmount, restricted, unrestricted, tax };
+    }
+
+     
+    
+
 }
