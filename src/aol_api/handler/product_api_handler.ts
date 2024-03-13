@@ -11,7 +11,7 @@ export class ProductApiHandler {
             throw new Error('fundProductId is required');
         }
     
-        const content = DataUtils.getSubstitutedFileContent("hfm_abp_prices.json", new Map([["referenceDate", referenceDate]]));
+        const content = DataUtils.getSubstitutedFileContent("vg_accum_prices.json", new Map([["referenceDate", referenceDate]]));
         const payload = JSON.parse(content) as InvestmentPerformancePayload;
     
         await productApi.postInvestmentPerformance(fundProductId, payload);
