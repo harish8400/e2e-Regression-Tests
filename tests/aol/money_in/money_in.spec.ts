@@ -121,7 +121,7 @@ test(fundName()+"Spouse Contribution - Verify if contribution is processed succe
 
     await test.step("Add Super Guarantee Contribution", async () => {
         await memberPage.selectMember(addedMember);
-        await memberTransactionPage.memberRolloverIn('Super Guarantee', true);
+        await memberTransactionPage.memberRolloverIn('Spouse', true);
     });
     
 })
