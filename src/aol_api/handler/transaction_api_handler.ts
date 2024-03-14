@@ -3,6 +3,7 @@ import { BaseDltaAolApi } from '../base_dlta_aol';
 import { DateUtils } from "../../utils/date_utils";
 
 export class TransactionsApiHandler {
+
     static async fetchTransactionDetails(apiRequestContext: APIRequestContext, rollinId?: string) {
         const transactions = new Transactions(apiRequestContext);
         return transactions.fetchTransactionDetails(rollinId!);
@@ -54,17 +55,17 @@ export class Transactions extends BaseDltaAolApi {
         return responseBody;
     }
 
-    async fetchRollInDetails(linearId: string): Promise<{ amount: string,type:string,name:string }> {
+    async fetchRollInDetails(linearId: string): Promise<{ amount: string, type: string, name: string }> {
         let path = `member/${linearId}/rollin`;
         let response = await this.get(path);
         let responseBody = await response.json();
         let amount = responseBody?.amount || null;
         let type = responseBody?.type || null;
         let name = responseBody?.name || null;
-        return { amount,type,name };
-      }
+        return { amount, type, name };
+    }
 
-      async getMemberInvestments(linearId: string): Promise<{ id: string, type: string }> {
+    async getMemberInvestments(linearId: string): Promise<{ id: string, type: string }> {
         let path = `member/${linearId}/investment`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -72,34 +73,50 @@ export class Transactions extends BaseDltaAolApi {
         let type = responseBody?.data[0]?.portfolioName || '';
         expect(id).toEqual(responseBody?.data[0]?.portfolioId);
         expect(type).toEqual(responseBody?.data[0]?.portfolioName);
-      
-        return { id, type };
-      }
 
-      async getMemberPayment(linearId: string): Promise<{ reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
+        return { id, type };
+    }
+
+    async getMemberPayment(linearId: string): Promise<{ reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
         let path = `member/${linearId}/payment`;
         let response = await this.get(path);
         let responseBody = await response.json();
-    
+
         // Validate the fields
-        let reference = responseBody?.data[0]?.transactionReference || null;
-        let preservedAmount = responseBody?.data[0]?.preserved || null;
-        let restricted = responseBody?.data[0]?.restrictedNonPreserved || null;
-        let unrestricted = responseBody?.data[0]?.unrestrictedNonPreserved || null;
-        let tax = responseBody?.data[0]?.taxed || null;
-    
+        let reference = responseBody?.data[0]?.transactionReference || '';
+        let preservedAmount = responseBody?.data[0]?.preserved || '';
+        let restricted = responseBody?.data[0]?.restrictedNonPreserved || '';
+        let unrestricted = responseBody?.data[0]?.unrestrictedNonPreserved || '';
+        let tax = responseBody?.data[0]?.taxed || '';
+
         // Perform assertions
-       expect(reference).toEqual(responseBody?.data[0]?.transactionReference);
-	   expect(preservedAmount).toEqual(responseBody?.data[0]?.transactionReference);
-	   expect(restricted).toEqual(responseBody?.data[0]?.transactionReference);
-	   expect(unrestricted).toEqual(responseBody?.data[0]?.transactionReference);
-	   expect(tax).toEqual(responseBody?.data[0]?.transactionReference);
-    
-        // Return the validated fields
+        expect(reference).toEqual(responseBody?.data[0]?.transactionReference);
+        expect(typeof parseFloat(preservedAmount)).toBe('number');
+        expect(typeof parseFloat(restricted)).toBe('number');
+        expect(typeof parseFloat(unrestricted)).toBe('number');
+        expect(typeof parseFloat(tax)).toBe('number');
         return { reference, preservedAmount, restricted, unrestricted, tax };
     }
 
-     
-    
+    async getMemberFee(memberId: string): Promise<{ validation: { amount: number, category: string, type: string, name: string, effectiveDate: string } }> {
+        let path = `member/${memberId}/fee`;
+        let response = await this.get(path);
+        let responseBody = await response.json();
+        const { amount, category, type, name, effectiveDate } = responseBody.data[0];
+        expect(typeof parseFloat(amount)).toBe('number');
+        expect(category).toBe("Fee");
+        expect(type).toBe("AFE");
+        expect(name).toBe("Admin Fee");
+        let today = new Date();
+        let exitDateAsDate = new Date(effectiveDate);
+        const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
+        const todayDateOnly = today.toISOString().split('T')[0];
+        expect(exitDateOnly).toEqual(todayDateOnly);
+        return {
+            validation: { amount, category, type, name, effectiveDate }
+        };
+    }
+
+
 
 }

@@ -5,6 +5,7 @@ import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
@@ -34,10 +35,11 @@ test(fundName()+"-ABP Rollover Out Commutation - Partial @pension", async ({ nav
     let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(false);
     await pensionTransactionPage.paymentView();
-    await pensionTransactionPage.paymentView();
     let membersId = memberId.linearId.id;
     await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId);
     await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
 })
 
 test(fundName()+"-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage , pensionAccountPage,apiRequestContext,transactionApi}) => {
@@ -49,13 +51,20 @@ test(fundName()+"-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBa
     await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
     let membersId = memberId.linearId.id;
     await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
 })
 
-test(fundName()+"-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage ,pensionAccountPage ,apiRequestContext}) => {
+test(fundName()+"-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage ,pensionAccountPage ,apiRequestContext,transactionApi}) => {
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
+    let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(false);
     await pensionTransactionPage.paymentView();
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId);
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
 })
 
 test(fundName()+"-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage,pensionAccountPage,apiRequestContext }) => {
@@ -64,27 +73,49 @@ test(fundName()+"-ABP UNP Commutation - Review on Step 3 Validate Commutation  -
     await pensionTransactionPage.commutationUNPBenefitReject(false);
 })
 
-test(fundName()+"-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext,transactionApi}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
+    let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(true);
     await pensionTransactionPage.paymentView();
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId);
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
+    await ShellAccountCreationApiHandler.getMemberFee(transactionApi,membersId);
+    await pensionTransactionPage.memberStatus();
+
 })
 
-test(fundName()+"-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext,transactionApi}) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
+    let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationUNPBenefit(true);
     let paymentId = await pensionTransactionPage.paymentView();
     let paymentTransactionId = paymentId!.split(":")[1];
     await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
+    await ShellAccountCreationApiHandler.getMemberFee(transactionApi,membersId);
+    await pensionTransactionPage.memberStatus();
 })
 
-test(fundName()+"-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+test(fundName()+"-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext ,transactionApi}) => {
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
+   let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
     await pensionTransactionPage.commutationRolloverOut(true);
-    await pensionTransactionPage.paymentView();
+    let paymentId = await pensionTransactionPage.paymentView();
+    let paymentTransactionId = paymentId!.split(":")[1];
+    await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
+    let membersId = memberId.linearId.id;
+    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
+    await pensionTransactionPage.unitPriceValidation();
+    await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
+    await ShellAccountCreationApiHandler.getMemberFee(transactionApi,membersId);
+    await pensionTransactionPage.memberStatus();
 })
 
 test(fundName()+"-ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext  }) => {

@@ -2,7 +2,7 @@ import { APIRequestContext, expect } from '@playwright/test';
 import { BaseDltaAolApi } from './base_dlta_aol';
 
 import { DateUtils } from '../utils/date_utils';
-import { fundDetails } from '../aol/utils_aol';
+import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 
 export class RollinApi extends BaseDltaAolApi {
@@ -18,17 +18,18 @@ export class RollinApi extends BaseDltaAolApi {
   async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
     let { investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
     let path = `member/${linearId}/rollin`;
+    let moneyIn = UtilsAOL.generateMoney();
     let data = {
       "paymentReference": "InternalTransfer_902010134",
       "transferringFundABN": "11789425178",
       "transferringFundUSI": "11789425178799",
       "transferringClientIdentifier": "902010134",
-      "amount": "50000",
-      "preserved": "50000",
+      "amount": moneyIn,
+      "preserved": moneyIn,
       "restrictedNonPreserved": "0",
       "unrestrictedNonPreserved": "0",
       "kiwiPreserved": "0",
-      "taxed": "50000",
+      "taxed": moneyIn,
       "untaxed": "0",
       "taxFree": "0",
       "kiwiTaxFree": "0",

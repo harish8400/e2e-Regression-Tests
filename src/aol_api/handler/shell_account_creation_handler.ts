@@ -52,6 +52,10 @@ export class ShellAccountCreationApiHandler {
         return transactionApi.getMemberPayment(memberId!);
     }
 
+    static async getMemberFee(transactionApi:Transactions, memberId?: string) {
+        return transactionApi.getMemberFee(memberId!);
+    }
+
     
 
 }

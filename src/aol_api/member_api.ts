@@ -150,6 +150,7 @@ export class MemberApi extends BaseDltaAolApi {
     let surname = UtilsAOL.randomSurname(5);
     let memberNo = UtilsAOL.memberNumber('MemberNo-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
+    let dob  =UtilsAOL.generateDOB();
     let data = {
       templateReference: 'createPensionMemberShellAccount',
       filterGroups: [],
@@ -161,7 +162,7 @@ export class MemberApi extends BaseDltaAolApi {
           givenName: member,
           otherNames: 'Grow',
           surname: surname,
-          dob: '1955-04-16',
+          dob: dob,
           gender: 'M',
           title: 'Dr.',
           preferredContactMethod: "Digital",
@@ -348,9 +349,14 @@ export class MemberApi extends BaseDltaAolApi {
     let path = `member/${linearId}/summary`;
     let response = await this.get(path);
     let responseBody = await response.json();
-    let status = responseBody?.active || false;
-    assert.equal(status, true, 'The member is not active');
-    return { status };
+    let { exitDate, exitReason, active } = responseBody;
+    const exitDateAsDate = new Date(exitDate);
+    const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
+    const todayDateOnly = this.today.toISOString().split('T')[0];
+    expect(exitDateOnly).toEqual(todayDateOnly);
+    expect(active).toBe(false);
+    expect(exitReason).toMatch(/^(BENEFIT|ROLLOUT)$/i);
+    return { status: true };
   }
 
   async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {

@@ -31,8 +31,8 @@ export class AccumulationMemberApiHandler {
         return await rollinApi.createRollin(memberId!);
     }
 
-    static async fetchMemberSummary(memberApi: MemberApi, linearId: string): Promise<{ status: boolean }> {
-        return await memberApi.fetchMemberSummary(linearId);
+    static async fetchMemberSummary(memberApi: MemberApi, linearId?: string): Promise<{ status: boolean }> {
+        return await memberApi.fetchMemberSummary(linearId!);
         
     }
 
