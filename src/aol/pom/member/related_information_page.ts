@@ -138,8 +138,8 @@ export class RelatedInformationPage extends BasePage {
             await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
         }
         else{
-            const rows = this.superTickVerificationRow;
-            await expect(rows).toHaveCount(0);
+            let count = await this.superTickVerificationRow.count();
+            expect(count).toEqual(0);
         }
     }
 }
