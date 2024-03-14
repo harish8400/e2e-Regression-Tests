@@ -20,11 +20,11 @@ export class EmployerPage extends BasePage {
     readonly countryArrow: Locator;
     readonly addressLine1: Locator;
     readonly state: Locator;
-    readonly wpn: Locator;
+    readonly abn: Locator;
     readonly partcipating: Locator;
     readonly accumulationProduct: Locator;
     readonly backButton: Locator;
-    readonly wpnTextField: Locator;
+    readonly abnTextField: Locator;
     readonly saveEmployer: Locator;
     readonly firstRowEmployer: Locator;
     readonly editIcon: Locator;
@@ -56,18 +56,16 @@ export class EmployerPage extends BasePage {
     readonly nextStep: Locator;
     readonly memberGivenName: string;
     readonly memberSurname: string;
-    readonly employer:Locator;
-    readonly accumulationAddMember:Locator;
-    readonly testEmployerText:Locator;
+    readonly employer: Locator;
+    readonly accumulationAddMember: Locator;
+    readonly testEmployerText: Locator;
     readonly employername: string;
-    readonly newEmployerText:Locator;
-    readonly abn:Locator;
-    readonly abnTextField:Locator;
+    readonly newEmployerText: Locator;
 
     constructor(page: Page) {
         super(page)
 
-        this.newEmployerText =page.getByRole('heading', { name: 'Add New Employer' });  
+        this.newEmployerText = page.getByRole('heading', { name: 'Add New Employer' });
         this.employername = UtilsAOL.randomSurname(5);
         this.employerLink = page.getByRole('link', { name: 'Employers' });
         this.createNewEmployer = page.getByRole('button', { name: 'add-circle icon Add new' });
@@ -78,13 +76,13 @@ export class EmployerPage extends BasePage {
         this.endDate = page.locator('input[name="endDate"]');
         this.countryArrow = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
         this.addressLine1 = page.getByLabel('Address line 1');
-        this.state = page.getByLabel('State');
-        this.wpn = page.getByRole('option', { name: 'WPN' }).locator('span');
-        this.partcipating = page.getByText('Participating');
+        //this.state = page.getByLabel('State');
+        this.abn = page.getByRole('option', { name: 'ABN' });
+        this.partcipating = page.getByRole('option', { name: 'Associated', exact: true });
         this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
         this.backButton = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
-        this.wpnTextField = page.getByLabel('WPN *');
-        this.abnTextField =page.getByLabel('ABN *');
+        this.abnTextField = page.getByLabel('WPN *');
+        this.abnTextField = page.getByLabel('ABN *');
         this.saveEmployer = page.getByRole('button', { name: 'SAVE EMPLOYER' });
         this.firstRowEmployer = page.getByRole('cell', { name: 'test employer' });
         this.editIcon = page.locator('div').filter({ hasText: /^Employer detailsEdit Content$/ }).getByRole('button');
@@ -105,7 +103,7 @@ export class EmployerPage extends BasePage {
         this.tfn = page.getByTitle('TFN').getByRole('textbox');
         this.address1 = page.getByTitle('Residential Address line 1').getByRole('textbox');
         this.city = page.getByTitle('City/Town').getByRole('textbox');
-        this.state = page.locator('#gs4__combobox div').first();
+        this.state = page.getByTitle('State').getByLabel('Select', { exact: true });
         this.stateSelect = page.getByText('New South Wales');
         this.postcode = page.getByTitle('Postcode').getByRole('textbox');
         this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
@@ -117,44 +115,43 @@ export class EmployerPage extends BasePage {
         this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
         this.memberSurname = UtilsAOL.randomSurname(5);
         this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
-        this.testEmployerText =page.getByText('test employer');
-        this.abn=page.getByRole('option', { name: 'ABN' });
+        this.testEmployerText = page.getByText('test employer');
+        this.abn = page.getByRole('option', { name: 'ABN' });
     }
+
     async createNewemployer() {
-        
+
         await this.accumulationProduct.click();
         await this.employerLink.click();
         await this.createNewEmployer.click();
-        await this.name.fill(this.employername);
-        await this.iDTypeArrow.click();
-        await this.wpn.click();
-        await this.wpnTextField.fill(employer.wpn);
-        await this.employerArrow.click();
-        await this.partcipating.click();
-        await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.newEmployerText.click();
+        await this.name.fill("Test " + this.employername);
         await this.iDTypeArrow.click();
         await this.abn.click();
-        //await this.iDTypeArrow.click();
-        //await this.wpn.click();
         await this.abnTextField.fill(employer.abn);
+        await this.employerArrow.click();
+        await this.partcipating.click();
+        await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(-7)}`);
         await this.saveEmployer.click();
-        //await expect(this.page.getByText('Active Members')).toContainText('Active Members');
-        
+        await this.sleep(3000);
+        await expect(this.page.getByText(this.employername).first()).toBeVisible();
+        return this.employername;
+
     }
 
     async updateNewemployer() {
-        let uniqueSurname = UtilsAOL.randomSurname(5);
+
         await this.accumulationProduct.click();
         await this.employerLink.click();
-        await this.page.getByText(uniqueSurname).click();
+        await this.page.getByText('Test').first().click();
         await this.editIcon.click();
-        await this.associatedText.click();
-        await this.employerArrow.click();
+        await this.name.fill("Test " + this.employername);
         await this.saveButton.click();
+        await expect(this.page.getByText(this.employername)).toBeVisible();
+
     }
 
-    async verifyNewlyAddedMemberUnderSelectMemberInMemberPage() {
+    async verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer: string) {
+
         await this.accumulationAddMember.click();
         let tfns = TFN.getValidTFN();
         await this.title.click();
@@ -168,12 +165,10 @@ export class EmployerPage extends BasePage {
         await this.primaryPhone.fill(member.phone);
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
-        
-       // if(!tfnNull){
-            await this.tfn.click();
-            await this.tfn.fill(tfns.tfn);
-        //}
-        
+
+        await this.tfn.click();
+        await this.tfn.fill(tfns.tfn);
+
         await this.address1.fill(member.address);
         await this.city.fill(member.city);
         await this.state.click();
@@ -183,16 +178,30 @@ export class EmployerPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
 
-        // if(process.env.PRODUCT != FUND.HESTA && dateJoinedFundEarlier){
-        //     await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
-        // }
-
         await this.nextStep.click();
         await this.employer.click();
-        await expect(this.testEmployerText).toContainText('test employer');
+
+        await this.page.getByRole('combobox', { name: 'Search for option' }).locator('div').first().click();
+        await this.page.getByRole('searchbox').fill(newEmployer);
+
+        await expect(this.page.getByRole('option', { name: newEmployer }).first()).toBeVisible();
     }
 
+    async getEmployerTypes() {
 
+        await this.accumulationProduct.click();
+        await this.employerLink.click();
+        await this.createNewEmployer.click();
+        await this.employerArrow.click();
+        let employerTypesOptions = await this.page.getByRole('option').all();
 
+        let employerTypes = [];
+        for(const row of employerTypesOptions){
+            let type = await row.textContent();
+            employerTypes.push(type);
+        }
+        return employerTypes;
+
+    }
 
 }
