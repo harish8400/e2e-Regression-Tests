@@ -12,6 +12,11 @@ export class TransactionsApiHandler {
         const transactions = new Transactions(apiRequestContext);
         return transactions.fetchPaymentDetails(paymentId!);
     }
+
+    static async fetchRollInDetails(apiRequestContext: APIRequestContext, memberId?: string) {
+        const rollins = new Transactions(apiRequestContext);
+        return rollins.fetchRollInDetails(memberId!);
+    }
 }
 
 export class Transactions extends BaseDltaAolApi {
@@ -48,5 +53,15 @@ export class Transactions extends BaseDltaAolApi {
         expect(responseBody.type, `Expected type to be "UNPCBP", and we got ${responseBody.type}`).toEqual("UNPCBP");
         return responseBody;
     }
+
+    async fetchRollInDetails(linearId: string): Promise<{ amount: string,type:string,name:string }> {
+        let path = `member/${linearId}/rollin`;
+        let response = await this.get(path);
+        let responseBody = await response.json();
+        let amount = responseBody?.amount || null;
+        let type = responseBody?.type || null;
+        let name = responseBody?.name || null;
+        return { amount,type,name };
+      }
 
 }

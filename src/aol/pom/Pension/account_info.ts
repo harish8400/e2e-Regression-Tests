@@ -38,6 +38,8 @@ export class AccountInfoPage extends BasePage {
     readonly processesLink: Locator;
     readonly memberaccount: Locator;
     readonly review: Locator;
+    readonly shellaccount:Locator;
+    readonly inReview:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -74,7 +76,9 @@ export class AccountInfoPage extends BasePage {
 
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
-        this.review = page.locator('//span[text()="In Review"]');
+        this.review = page.locator('//span[text()="In Progress"]');
+        this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
+        this.inReview = page.locator('//span[text()="In Review"]');
 
     }
 
@@ -142,21 +146,25 @@ export class AccountInfoPage extends BasePage {
         await expect(this.verifyCRN).toBeVisible();
     }
 
-    async accountInfoTab() {
-        await this.sleep(3000);
-        await this.accountInfo.click();
-        let caseId = this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]");
-        caseId.scrollIntoViewIfNeeded();
-        let id = caseId.textContent();
-        return id!;
-        //caseId.click();
-    }
 
     async ProcessTab() {
         await this.processesLink.click();
         await this.sleep(3000);
         await this.memberaccount.click();
         await this.review.click();
+        await this.page.reload();
+        await this.sleep(3000);
+        const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+        await caseId.waitFor();
+        let id = await caseId.textContent();
+        return id!.trim();
+    }
+
+    async shellAccountProcess() {
+        await this.processesLink.click();
+        await this.sleep(3000);
+        await this.shellaccount.click();
+        await this.inReview.click();
         await this.page.reload();
         await this.sleep(3000);
         const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
