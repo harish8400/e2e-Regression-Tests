@@ -92,7 +92,7 @@ export class UtilsAOL {
 
     static generateDOB(): string {
         const weights: number[] = [1, 4, 5, 1, 2, 1, 2, 1, 2, 1, 2, 1];
-        const year: number = Math.floor(Math.random() * (1965 - 1945 + 1)) + 1945;
+        const year: number = Math.floor(Math.random() * (1957 - 1945 + 1)) + 1945;
         const month: number = Math.floor(Math.random() * 12) + 1
         const day: number = Math.floor(Math.random() * 28) + 1;
         let dob: string = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;

@@ -136,6 +136,9 @@ export class PensionTransactionPage extends BasePage {
   readonly closePopUp: Locator;
   readonly investmentScreen: Locator;
   readonly summary: Locator;
+  readonly activityData:Locator;
+  readonly closeTheData:Locator;
+  readonly adminFeeCase:Locator;
 
 
 
@@ -264,8 +267,9 @@ export class PensionTransactionPage extends BasePage {
     this.closePopUp = page.locator("//span[@class='el-dialog__title']/following-sibling::button[1]");
     this.investmentScreen = page.getByRole('button', { name: 'Investments', exact: true });
     this.summary = page.getByRole('button', { name: 'Member Summary' });
-
-
+    this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
+    this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
+    this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
 
@@ -663,7 +667,9 @@ export class PensionTransactionPage extends BasePage {
     let status = await this.page.locator("//span[@class='font-semibold']/following-sibling::span[1]").innerText();
     if (status.trim() === "Finalised") {
       console.log(`${transID} is Finalised. payment has been  processed.`);
-    } else {
+    } else if(status.trim() === "Pending") {
+      console.log(`${transID}. payment is in pending state.`);
+    }else{
       throw new Error(` ${transID} is not Finalised.`);
     }
 
@@ -689,10 +695,26 @@ export class PensionTransactionPage extends BasePage {
     const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
     const unitPricevalue = await unitPriceTable?.textContent();
     expect(unitPricevalue).toMatch(/\$\d+\.\d{4,}/);
+    await this.sleep(3000);
+    await this.adminFeeCase.focus();
+    await this.adminFeeCase.click();
+    await this.sleep(3000);
+    await this.activityData.scrollIntoViewIfNeeded();
+    await this.activityData.click();
+    const fixedFeeTotal = await this.page.$("(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[1]");
+    const total  = await fixedFeeTotal?.textContent();
+    expect(total).not.toBeNull();
+    const assetBasedFeeTotal = await this.page.$("(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[2]");
+    const feeTotal  = await assetBasedFeeTotal?.textContent();
+    expect(feeTotal).not.toBeNull();
+    await this.sleep(3000);
+    await this. closeTheData.scrollIntoViewIfNeeded();
+    await this. closeTheData.click();
+    await this.sleep(3000);
+    await this.reviewCase.captureScreenshot();
   }
 
   async memberStatus() {
-    await this.closePopUp.click();
     await this.sleep(3000);
     await this.summary.click();
     let accountStatus = await this.page.$("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[3]");

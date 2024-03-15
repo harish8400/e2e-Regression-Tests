@@ -4,6 +4,7 @@ import { BaseDltaAolApi } from './base_dlta_aol';
 import { DateUtils } from '../utils/date_utils';
 import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
+import { INVESTMENT_OPTIONS } from '../../constants';
 
 export class RollinApi extends BaseDltaAolApi {
 
@@ -17,6 +18,7 @@ export class RollinApi extends BaseDltaAolApi {
 
   async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
     let { investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
+    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.BALANCED_GROWTH.ID;
     let path = `member/${linearId}/rollin`;
     let moneyIn = UtilsAOL.generateMoney();
     let data = {
@@ -42,9 +44,13 @@ export class RollinApi extends BaseDltaAolApi {
       "caseReference": null,
       "targetInvestments": [
         {
-          id: investmentId,
-          "percent": 100
-        }
+          "id": investmentId,
+              "percent": 50
+          },
+          {
+              "id": memberInvestmentId,
+              "percent": 50
+          }
       ]
     };
     let response = await this.post(path, JSON.stringify(data));

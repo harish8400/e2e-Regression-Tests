@@ -91,11 +91,12 @@ test(fundName()+"-ABP Rollover Out Commutation - Full exit @pension", async ({ n
 test(fundName()+"-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensionTransactionPage , pensionAccountPage, apiRequestContext,transactionApi}) => {
     await navBar.navigateToPensionMembersPage();
     let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext );
+    let membersId = memberId.linearId.id;
+   await MemberApiHandler.rpbpPayments(apiRequestContext,membersId)
     await pensionTransactionPage.commutationUNPBenefit(true);
     let paymentId = await pensionTransactionPage.paymentView();
     let paymentTransactionId = paymentId!.split(":")[1];
     await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
-    let membersId = memberId.linearId.id;
     await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi,membersId);
     await pensionTransactionPage.unitPriceValidation();
     await MemberApiHandler.fetchMemberSummary(apiRequestContext,membersId);
