@@ -139,6 +139,8 @@ export class PensionTransactionPage extends BasePage {
   readonly activityData:Locator;
   readonly closeTheData:Locator;
   readonly adminFeeCase:Locator;
+  readonly investtmnetBalanceScreen:Locator;
+  
 
 
 
@@ -270,6 +272,8 @@ export class PensionTransactionPage extends BasePage {
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
     this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
+    this.investtmnetBalanceScreen = page.locator("//button[text()='Investments and Balances']");
+    
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
 
@@ -665,6 +669,7 @@ export class PensionTransactionPage extends BasePage {
 
     let transID = await this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)").textContent();
     let status = await this.page.locator("//span[@class='font-semibold']/following-sibling::span[1]").innerText();
+    await this.reviewCase.captureScreenshot();
     if (status.trim() === "Finalised") {
       console.log(`${transID} is Finalised. payment has been  processed.`);
     } else if(status.trim() === "Pending") {
@@ -676,6 +681,7 @@ export class PensionTransactionPage extends BasePage {
     await this.componentScreen.click();
     let taxAmountValue = await this.taxableTaxed.textContent();
     const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
+    await this.reviewCase.captureScreenshot();
     console.log("Tax amount:", taxAmount);
     let preservedComponent = await this.preserved.textContent();
     const unpComponentValue = parseFloat(preservedComponent!.replace(/[^0-9.-]+/g, ""));
@@ -695,6 +701,7 @@ export class PensionTransactionPage extends BasePage {
     const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
     const unitPricevalue = await unitPriceTable?.textContent();
     expect(unitPricevalue).toMatch(/\$\d+\.\d{4,}/);
+    await this.reviewCase.captureScreenshot();
     await this.sleep(3000);
     await this.adminFeeCase.focus();
     await this.adminFeeCase.click();
@@ -712,6 +719,16 @@ export class PensionTransactionPage extends BasePage {
     await this. closeTheData.click();
     await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
+  }
+
+  async investementBalances(){
+    await this.sleep(3000);
+    await this.investtmnetBalanceScreen.click();
+    const investmentBalance = await this.page.$("(//p[@class='mx-1']/following::p[@class='mx-1'])[5]");
+    const balance = investmentBalance?.textContent();
+    await this.reviewCase.captureScreenshot();
+    expect(balance).not.toBeNull();
+    
   }
 
   async memberStatus() {
