@@ -107,6 +107,9 @@ export class MemberPage extends BasePage {
     readonly firstRowMember:Locator;
     readonly percentage:Locator;
     readonly verifySwitchSuccess: Locator;
+    readonly highGrowth:Locator;
+    readonly investmentDropDown2:Locator;
+    readonly sustainbleGrowth1:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -191,7 +194,8 @@ export class MemberPage extends BasePage {
     this.balanceAllocation =page.getByRole('spinbutton').first();   
     this.transactionAllocation =page.getByRole('spinbutton').nth(1);
     this.addBtn =page.getByRole('button', { name: 'ADD', exact: true });
-    this.sustainableGrowth=page.locator("(//li[@class='el-select-dropdown__item option__Sustainable Growth_2'])[1]");
+    this.sustainableGrowth=page.locator('li').nth(4);
+    this.sustainbleGrowth1=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
     this.investmentDropDown1 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
     this.balanceAllocation1 =page.getByRole('spinbutton').nth(2);   
     this.transactionAllocation1 =page.getByRole('spinbutton').nth(3);
@@ -207,6 +211,8 @@ export class MemberPage extends BasePage {
     this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
     this.percentage =page.getByText('100%');
     this.verifySwitchSuccess = page.getByText('Process step completed with note: Investment change letter payload sent.');
+    this.highGrowth=page.locator('li').filter({ hasText: 'High Growth' });
+    this.investmentDropDown2 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
 }    
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
@@ -327,7 +333,83 @@ export class MemberPage extends BasePage {
 
     }
 
-    async verifyCombinedSwitchProcessedSuccessfully(){
+    async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToAnotherOption(){
+       await this.investementBalancesTab.click();
+       await this.investmentEditBtn.click();
+       await this.viewCases.click({ timeout: 5000 });
+       await this.createCase.click({ timeout: 15000 });
+       await this.investmentDropDown.click();
+       await this.conservative.click();
+       await this.balanceAllocation.fill('0');
+       await this.transactionAllocation.fill('100');
+       await this.addBtn.click();
+       //await this.investmentDropDown1.click();
+       //await this.sustainableGrowth.click();
+       //await this.balanceAllocation1.fill('0');
+       //await this.transactionAllocation1.fill('50');
+       //await this.addBtn1.click();
+       await this.linkCase.click({ timeout: 10000 });
+       await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+       await this.leftArrow.click();
+       await this.investmentProfileDropDown.click();
+       await this.investementBalancesTab.click();
+       await this.investmentEditBtn.click();
+       await this.viewCases.click({ timeout: 5000 });
+       await this.createCase.click({ timeout: 15000 });
+       await this.investmentDropDown.click();
+       await this.sustainableGrowth.click();
+       await this.balanceAllocation.fill('0');
+       await this.transactionAllocation.fill('100');
+       await this.addBtn.click();
+       await this.linkCase.click({ timeout: 10000 });
+       await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+       await this.leftArrow.click();
+       await this.investmentProfileDropDown.click();
+       await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
+       
+      
+    } 
+
+
+    async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToMultipleOption(){
+        await this.investementBalancesTab.click();
+        await this.investmentEditBtn.click();
+        await this.viewCases.click({ timeout: 5000 });
+        await this.createCase.click({ timeout: 15000 });
+        await this.investmentDropDown.click();
+        await this.highGrowth.click();
+        await this.balanceAllocation.fill('0');
+        await this.transactionAllocation.fill('100');
+        await this.addBtn.click();
+        await this.linkCase.click({ timeout: 10000 });
+        await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+        await this.leftArrow.click();
+        await this.investmentProfileDropDown.click()
+        await this.investementBalancesTab.click();
+        await this.investmentEditBtn.click();
+        await this.viewCases.click({ timeout: 5000 });
+        await this.createCase.click({ timeout: 15000 });
+        await this.sleep(4000);
+        await this.investmentDropDown.click();
+        await this.conservative.click();
+        await this.balanceAllocation.fill('0');
+        await this.transactionAllocation.fill('50');
+        await this.addBtn.click();
+        await this.investmentDropDown1.click();
+        await this.sustainbleGrowth1.click();
+        await this.balanceAllocation1.fill('0');
+        await this.transactionAllocation1.fill('50');
+        await this.addBtn1.click();
+        await this.linkCase.click({ timeout: 10000 });
+        await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+        await this.leftArrow.click();
+        await this.investmentProfileDropDown.click()
+        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
+        
+       
+     } 
+
+     async verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption(){
        await this.investementBalancesTab.click();
        await this.investmentEditBtn.click();
        await this.viewCases.click({ timeout: 5000 });
@@ -346,9 +428,25 @@ export class MemberPage extends BasePage {
        await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
        await this.leftArrow.click();
        await this.investmentProfileDropDown.click();
+       await this.investementBalancesTab.click();
+       await this.investmentEditBtn.click();
+       await this.viewCases.click({ timeout: 5000 });
+       await this.createCase.click({ timeout: 15000 });
+       await this.investmentDropDown.click();
+       await this.highGrowth.click();
+       await this.balanceAllocation.fill('0');
+       await this.transactionAllocation.fill('100');
+       await this.addBtn.click();
+       await this.linkCase.click({ timeout: 10000 });
+       await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+       await this.leftArrow.click();
+       await this.investmentProfileDropDown.click();
        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
+        
        
-      
-    } 
-}
+     } 
+ }
+
+
+
 

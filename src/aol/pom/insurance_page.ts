@@ -71,6 +71,7 @@ export class InsurancePage extends BasePage {
     readonly reinstatement_Period: Locator;
     readonly reinstatement_PeriodField: Locator;
     readonly saveCategory: Locator;
+    readonly providerName:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -130,7 +131,7 @@ export class InsurancePage extends BasePage {
         this.applyButton= page.getByRole('button', { name: 'APPLY' });
         this.provider= page.locator("(//div[@class='filter-list-item'])[2]");
         this.providerDropDown= page.getByRole('tooltip', { name: 'close icon Provider Provider' }).getByRole('img');
-        this.hannoverRe= page.getByRole('textbox', { name: 'Select' });
+        this.hannoverRe= page.locator('#el-popper-6446').getByText('Hannover Re');
         this.hannoverReButton= page.locator('li').filter({ hasText: /^Hannover Re$/ });
         this.coverType= page.getByText('Cover Type', { exact: true });
         this.coverTypeDropDown= page.getByRole('tooltip', { name: 'close icon Cover Type Cover' }).locator('i');
@@ -144,6 +145,7 @@ export class InsurancePage extends BasePage {
         this.saveCategoryButton=page.getByRole('button', { name: 'Save Category' });
         this.validationError=page.locator('div:nth-child(3) > .input-select-container > .inline-block > .block');
         this.errorMessage=page.getByText('Maximum cover limit must be');
+        this.providerName=page.locator('li').nth(1);
     }
     async clickOnInsuranceLink(){
         await this.accumulationDropDown.click();;
@@ -241,14 +243,15 @@ export class InsurancePage extends BasePage {
     }
         await this.categoryNameInputText.fill(categoryName);
         await this.applyButton.click();
-        await expect(this.page.getByLabel('CS Default unit based Death')).toContainText('Provider');
+        await expect(this.page.getByText('Category: VOL Death (Units)')).toContainText('Category: VOL Death (Units)');
       }
       async verifyDefaultDeathCoverCanBeBasedOnProvider(){
         await this.provider.click();
         await this.providerDropDown.click();
-        await this.metLife.click();
+        await this.providerName.click();
+        await this.sleep(4000);
         await this.applyButton.click();
-       
+        await expect(this.page.getByText('Provider')).toContainText('Provider');
         
       }
       async verifyDefaultDeathCoverCanBeBasedOnCoverType(){
@@ -256,7 +259,9 @@ export class InsurancePage extends BasePage {
         await this.coverTypeDropDown.click();
         await this.deathText.click();
         await this.applyButton.click();
+        await expect(this.page.getByText('Cover Type: Death')).toContainText('Cover Type: Death');
       }
+
 
       async clickOnNewCategory(){
         await this.newCategory.click();

@@ -34,7 +34,7 @@ export class Navbar extends BasePage {
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
         this.productSelection = page.getByText('HESTA for Mercy');
-
+        
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
         this.FilterOption = page.getByText('Member Number', { exact: true });
         this.FilterOptionInput = page.locator('textarea');

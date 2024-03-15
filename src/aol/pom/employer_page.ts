@@ -121,23 +121,27 @@ export class EmployerPage extends BasePage {
         this.abn=page.getByRole('option', { name: 'ABN' });
     }
     async createNewemployer() {
-        
+        var wpn = Number(employer.wpn);
+
         await this.accumulationProduct.click();
         await this.employerLink.click();
         await this.createNewEmployer.click();
+        await this.sleep(4000);
         await this.name.fill(this.employername);
         await this.iDTypeArrow.click();
         await this.wpn.click();
-        await this.wpnTextField.fill(employer.wpn);
+        await this.sleep(4000);
+        await this.wpnTextField.fill(wpn.toString());
         await this.employerArrow.click();
         await this.partcipating.click();
         await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.newEmployerText.click();
-        await this.iDTypeArrow.click();
-        await this.abn.click();
+        //await this.newEmployerText.click();
+        //await this.iDTypeArrow.click();
+        //await this.abn.click();
         //await this.iDTypeArrow.click();
         //await this.wpn.click();
-        await this.abnTextField.fill(employer.abn);
+        //await this.abnTextField.fill(employer.abn);
+        await this.sleep(4000);
         await this.saveEmployer.click();
         //await expect(this.page.getByText('Active Members')).toContainText('Active Members');
         
