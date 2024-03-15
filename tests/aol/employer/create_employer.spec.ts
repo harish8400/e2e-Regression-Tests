@@ -1,5 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { expect } from "@playwright/test";
 
 
 test.beforeEach(async ({ navBar }) => {
@@ -21,6 +22,14 @@ test("Verify if  employer details can be updated successfully", async ({ navBar,
 
 test("Verify if newly added Employer is listed under 'select employer' option while adding a new member", async ({ navBar, employerPage }) => {
     await navBar.navigateToAccumulationMembersPage();
-    await employerPage.createNewemployer(); 
-    await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage();
+    let newEmployer = await employerPage.createNewemployer(); 
+    await navBar.navigateToAccumulationMembersPage();
+    await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer);
+})
+
+test("Verify employer types available while adding employer", async ({ navBar, employerPage }) => {
+    await navBar.navigateToAccumulationMembersPage();
+    let expectedEmployerTypes: string[] = ['Participating','Associated','Non-Associated'];
+    let actualEmployerTypes = await employerPage.getEmployerTypes();
+    expect(actualEmployerTypes).toEqual(expectedEmployerTypes);
 })
