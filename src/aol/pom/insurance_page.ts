@@ -269,9 +269,18 @@ export class InsurancePage extends BasePage {
       }
 
       async verifyMandtoryFiledsNewCategory(){
-        await expect(this.categoryNameField).toContainText('Category Name');
-        await expect(this.providerNameField).toContainText('Provider');
         await this.saveCategoryButton.click();
+        expect(this.page.getByTitle('Category Name').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Provider').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Minimum age').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Maximum age').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Gender').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Cooling period').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Occupation').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Effective date').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Unit Divisor').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Multiplier').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Period Divisor').locator('span')).toBeVisible();
         await expect(this.validationError).toContainText('This field is required');
       }
 
@@ -279,6 +288,26 @@ export class InsurancePage extends BasePage {
         await this.saveCategoryButton.click();
         await expect(this.validationError).toContainText('This field is required');
         await expect(this.errorMessage).toContainText('Maximum cover limit must be greater than the minimum cover limit');
+        
+      }
+
+      async verifyFiledsAreDisplayedOnNewCategory(){
+        await this.saveCategoryButton.click();
+        await expect(this.page.getByPlaceholder('Occupation', { exact: true })).toBeVisible;
+        await expect(this.page.locator('#gs2__combobox div').first()).toBeVisible;
+        await expect(this.page.getByPlaceholder('Category Name')).toBeVisible;
+        expect(this.page.getByTitle('Category Name').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Provider').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Minimum age').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Maximum age').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Gender').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Cooling period').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Occupation').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Effective date').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Unit Divisor').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Multiplier').locator('span')).toBeVisible();
+        expect(this.page.getByTitle('Period Divisor').locator('span')).toBeVisible();
+        await expect(this.validationError).toContainText('This field is required');
       }
 
 

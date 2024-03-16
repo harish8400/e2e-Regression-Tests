@@ -110,8 +110,8 @@ test("Verify the fields are displayed correctly", async ({ navBar, insurancePage
 
     try {
         await insurancePage.clickOnInsuranceLink();
-        await insurancePage.clickOnFilter();
-        await insurancePage.verifyDefaultDeathCoverCanBeBasedOnCoverType();
+        await insurancePage.clickOnNewCategory();
+        await insurancePage.verifyFiledsAreDisplayedOnNewCategory();
     } catch (error) {
         throw error;
     }
