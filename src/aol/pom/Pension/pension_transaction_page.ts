@@ -140,6 +140,7 @@ export class PensionTransactionPage extends BasePage {
   readonly closeTheData:Locator;
   readonly adminFeeCase:Locator;
   readonly investtmnetBalanceScreen:Locator;
+  readonly paymentDetails:Locator;
   
 
 
@@ -273,6 +274,7 @@ export class PensionTransactionPage extends BasePage {
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
     this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
     this.investtmnetBalanceScreen = page.locator("//button[text()='Investments and Balances']");
+    this.paymentDetails = page.locator("//span[text()='Payment Details']");
     
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
@@ -681,6 +683,7 @@ export class PensionTransactionPage extends BasePage {
     await this.componentScreen.click();
     let taxAmountValue = await this.taxableTaxed.textContent();
     const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
+    await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
     console.log("Tax amount:", taxAmount);
     let preservedComponent = await this.preserved.textContent();
@@ -726,6 +729,7 @@ export class PensionTransactionPage extends BasePage {
     await this.investtmnetBalanceScreen.click();
     const investmentBalance = await this.page.$("(//p[@class='mx-1']/following::p[@class='mx-1'])[5]");
     const balance = investmentBalance?.textContent();
+    await this.sleep (3000);
     await this.reviewCase.captureScreenshot();
     expect(balance).not.toBeNull();
     
@@ -743,6 +747,42 @@ export class PensionTransactionPage extends BasePage {
       } else {
         console.log('Member status is in Pending state only');
       }
+  }
+
+  async componentsValidation(){
+    await this.componentScreen.click();
+    let taxAmountValue = await this.taxableTaxed.textContent();
+    const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
+    await this.sleep(3000);
+    await this.reviewCase.captureScreenshot();
+    console.log("Tax amount:", taxAmount);
+    let preservedComponent = await this.preserved.textContent();
+    const unpComponentValue = parseFloat(preservedComponent!.replace(/[^0-9.-]+/g, ""));
+    console.log("Preserved Component:", unpComponentValue);
+    let payGValue = await this.paygAssessableIncome.textContent();
+    expect(payGValue).toMatch(/^(yes|no)$/i);
+    await this.sleep(3000);
+    await this.paymentDetails.click();
+    const amountTransfer = await this.page.$("(//p[text()='Amount']/following::p[@class='font-semibold'])[1]");
+    const amount = amountTransfer?.textContent();
+    expect(amount).not.toBeNull();
+    const conversationId = await this.page.$("(//p[text()='Conversation ID']/following::p[@class='font-semibold'])[1]");
+    conversationId?.scrollIntoViewIfNeeded();
+    if (conversationId) {
+      const id = await conversationId.textContent();
+      if (id) {
+          const containsInternalTransfer = id.includes("InternalTransfer");
+          if (!containsInternalTransfer) {
+              console.error("Error: conversationId does not contain 'InternalTransfer'");
+          }
+      } else {
+          console.error("Error: The conversation ID text content is null or empty");
+      }
+  } else {
+      console.error("Error: Conversation ID element not found");
+  }
+    await this.reviewCase.captureScreenshot();
+    await this.closePopUp.click();
   }
 
 

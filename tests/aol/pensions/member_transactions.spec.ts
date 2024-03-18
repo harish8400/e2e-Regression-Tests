@@ -22,12 +22,24 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
-    await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.shellAccount(navBar, pensionAccountPage, apiRequestContext);
-    await pensionTransactionPage.rollInTransaction();
-    let rollinId = await pensionTransactionPage.transactionView();
-    let rollinTransactionId = rollinId!.split(":")[1];
-    await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+    })
+
+    await test.step("Add a New Pensions Member", async () => {
+        await pensionTransactionPage.shellAccount(navBar, pensionAccountPage, apiRequestContext);
+    })
+
+    await test.step("Add some MoneyIn", async () => {
+        await pensionTransactionPage.rollInTransaction();
+    })
+
+    await test.step("Validate the Transaction details", async () => {
+        let rollinId = await pensionTransactionPage.transactionView();
+
+        let rollinTransactionId = rollinId!.split(":")[1];
+        await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
+    })
 })
 
 test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
@@ -102,7 +114,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @pension", async ({
 
 })
 
-test(fundName() + "-ABP UNP Commutation - Full Exit @Test", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
+test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
     await navBar.navigateToPensionMembersPage();
     let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
     let membersId = memberId.linearId.id;
