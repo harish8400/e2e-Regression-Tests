@@ -194,7 +194,7 @@ export class MemberPage extends BasePage {
     this.balanceAllocation =page.getByRole('spinbutton').first();   
     this.transactionAllocation =page.getByRole('spinbutton').nth(1);
     this.addBtn =page.getByRole('button', { name: 'ADD', exact: true });
-    this.sustainableGrowth=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
+    this.sustainableGrowth=page.locator('li').filter({ hasText: 'Sustainable Growth' }).nth(0);
     this.sustainbleGrowth1=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
     this.investmentDropDown1 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
     this.balanceAllocation1 =page.getByRole('spinbutton').nth(2);   
