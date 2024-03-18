@@ -40,13 +40,6 @@ test(fundName()+"Verify Combined switch is processed successfully for a member w
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-
         await navBar.selectMember(member);
         await memberPage.verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToAnotherOption();
 
@@ -60,13 +53,6 @@ test(fundName()+"Verify Combined switch is processed successfully for a member w
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-
         await navBar.selectMember(member);
         await memberPage.verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToMultipleOption();
 
@@ -79,13 +65,6 @@ test(fundName()+"Verify Combined switch is processed successfully for a more tha
     try {
         await navBar.navigateToAccumulationMembersPage();
         let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-
         await navBar.selectMember(member);
         await memberPage.verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption();
 

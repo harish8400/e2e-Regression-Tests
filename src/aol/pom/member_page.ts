@@ -194,7 +194,7 @@ export class MemberPage extends BasePage {
     this.balanceAllocation =page.getByRole('spinbutton').first();   
     this.transactionAllocation =page.getByRole('spinbutton').nth(1);
     this.addBtn =page.getByRole('button', { name: 'ADD', exact: true });
-    this.sustainableGrowth=page.locator('li').nth(4);
+    this.sustainableGrowth=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
     this.sustainbleGrowth1=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
     this.investmentDropDown1 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
     this.balanceAllocation1 =page.getByRole('spinbutton').nth(2);   
@@ -354,8 +354,11 @@ export class MemberPage extends BasePage {
        await this.investmentProfileDropDown.click();
        await this.investementBalancesTab.click();
        await this.investmentEditBtn.click();
+       await this.sleep(2000);
        await this.viewCases.click({ timeout: 5000 });
+       await this.sleep(2000);
        await this.createCase.click({ timeout: 15000 });
+       await this.sleep(2000);
        await this.investmentDropDown.click();
        await this.sustainableGrowth.click();
        await this.balanceAllocation.fill('0');
@@ -366,8 +369,6 @@ export class MemberPage extends BasePage {
        await this.leftArrow.click();
        await this.investmentProfileDropDown.click();
        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
-       
-      
     } 
 
 
@@ -387,9 +388,11 @@ export class MemberPage extends BasePage {
         await this.investmentProfileDropDown.click()
         await this.investementBalancesTab.click();
         await this.investmentEditBtn.click();
+        await this.sleep(2000);
         await this.viewCases.click({ timeout: 5000 });
+        await this.sleep(2000);
         await this.createCase.click({ timeout: 15000 });
-        await this.sleep(4000);
+        await this.sleep(2000);
         await this.investmentDropDown.click();
         await this.conservative.click();
         await this.balanceAllocation.fill('0');
@@ -405,8 +408,6 @@ export class MemberPage extends BasePage {
         await this.leftArrow.click();
         await this.investmentProfileDropDown.click()
         await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
-        
-       
      } 
 
      async verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption(){
@@ -442,8 +443,6 @@ export class MemberPage extends BasePage {
        await this.leftArrow.click();
        await this.investmentProfileDropDown.click();
        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
-        
-       
      } 
  }
 
