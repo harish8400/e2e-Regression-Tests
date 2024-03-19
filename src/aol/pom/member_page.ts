@@ -5,6 +5,8 @@ import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 import { FUND } from "../../../constants";
+import { InvalidResultAttributeException } from "@aws-sdk/client-ssm/dist-types/models/models_1";
+
 import { MemberApiHandler } from "../../aol_api/handler/member_api_handler";
 import { Navbar } from "./component/navbar";
 import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_handler";
@@ -87,6 +89,31 @@ export class MemberPage extends BasePage {
     readonly memberSurname: string;
     readonly reviewCase: ReviewCase;
 
+    readonly investementBalancesTab:Locator
+    readonly investmentEditBtn:Locator
+    readonly investmentDropDown:Locator
+    readonly conservative:Locator
+    readonly balanceAllocation:Locator
+    readonly transactionAllocation:Locator
+    readonly addBtn:Locator
+    readonly sustainableGrowth:Locator
+    readonly investmentDropDown1:Locator
+    readonly balanceAllocation1:Locator
+    readonly transactionAllocation1:Locator
+    readonly addBtn1:Locator
+    readonly viewCases: Locator;
+    readonly createCase:Locator;
+    readonly linkCase:Locator;
+    readonly approveProcessStep: Locator;
+    readonly retryProcessStep: Locator;
+    readonly processException: Locator;
+    readonly leftArrow: Locator;
+    readonly investmentProfileDropDown:Locator;
+    readonly memberLink:Locator;
+    readonly firstRowMember:Locator;
+    readonly percentage:Locator;
+    readonly verifySwitchSuccess: Locator;
+
     constructor(page: Page) {
         super(page)
 
@@ -95,7 +122,7 @@ export class MemberPage extends BasePage {
     this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
     this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create',exact: true });
     this.welcomeLetterTrigger = page.getByText('Process step completed with note: New member welcome letter sent.');
-
+    this.memberLink =page.getByRole('link', { name: 'Members' });
     this.memberGivenName = UtilsAOL.randomName();
     this.memberSurname = UtilsAOL.randomSurname(5);
     this.title = page.getByTitle('Title').getByRole('img');
@@ -162,7 +189,31 @@ export class MemberPage extends BasePage {
     this.memberCreateReviewRow = page.getByRole('cell', { name: 'In Review' });
     this.memberActivityData = page.getByRole('button', { name: 'Activity Data' });
 
-    }
+    //SwitchProcess
+    this.investementBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
+    this.investmentEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
+    this.investmentDropDown =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).locator('i').getByRole('img');
+    this.conservative = page.locator("//li[@class='el-select-dropdown__item option__Conservative_2']"); 
+    this.balanceAllocation =page.getByRole('spinbutton').first();   
+    this.transactionAllocation =page.getByRole('spinbutton').nth(1);
+    this.addBtn =page.getByRole('button', { name: 'ADD', exact: true });
+    this.sustainableGrowth=page.locator("(//li[@class='el-select-dropdown__item option__Sustainable Growth_2'])[1]");
+    this.investmentDropDown1 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
+    this.balanceAllocation1 =page.getByRole('spinbutton').nth(2);   
+    this.transactionAllocation1 =page.getByRole('spinbutton').nth(3);
+    this.addBtn1 =page.getByRole('button', { name: 'ADD', exact: true });
+    this.viewCases = page.getByRole('button', { name: 'View Cases' });
+    this.createCase = page.getByRole('button', { name: 'Create Case' });
+    this.linkCase = page.getByRole('button', { name: 'Link to Case' });
+    this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
+    this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
+    this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
+    this.leftArrow = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
+    this.investmentProfileDropDown =page.getByRole('button', { name: 'arrow-down icon' }).first();
+    this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
+    this.percentage =page.getByText('100%');
+    this.verifySwitchSuccess = page.getByText('Process step completed with note: Investment change letter payload sent.');
+}    
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
         
@@ -274,26 +325,42 @@ export class MemberPage extends BasePage {
         await expect(this.page.getByText(`Surname:${surName}`)).toBeVisible();
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
+    async clickOnMemberLink(){
+        await this.leftArrow.click();
+        await this.memberLink.click();
+        await this.firstRowMember.click();
+        
 
-    async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-        await accountInfoPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
-        await navBar.selectMember(createMemberNo);
-        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
-        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
-        await accountInfoPage.reload();
-        await internalTransferPage.memberSummary();
-        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-        await accountInfoPage.reload();
-        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return {createMemberNo};
     }
 
     
 
+    async verifyCombinedSwitchProcessedSuccessfully(){
+       await this.investementBalancesTab.click();
+       await this.investmentEditBtn.click();
+       await this.viewCases.click({ timeout: 5000 });
+       await this.createCase.click({ timeout: 15000 });
+       await this.investmentDropDown.click();
+       await this.conservative.click();
+       await this.balanceAllocation.fill('0');
+       await this.transactionAllocation.fill('50');
+       await this.addBtn.click();
+       await this.investmentDropDown1.click();
+       await this.sustainableGrowth.click();
+       await this.balanceAllocation1.fill('0');
+       await this.transactionAllocation1.fill('50');
+       await this.addBtn1.click();
+       await this.linkCase.click({ timeout: 10000 });
+       await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+       await this.leftArrow.click();
+       await this.investmentProfileDropDown.click();
+       await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
+       
+      
+    } 
+
+
+    
+
 }
+9020107

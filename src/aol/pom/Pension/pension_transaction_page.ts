@@ -46,6 +46,7 @@ export class PensionTransactionPage extends BasePage {
   readonly transactionType_PTB: Locator;
   readonly transactionType_Insurance: Locator;
   readonly filterType_INS: Locator;
+  readonly commutationTypeDropDown:Locator;
 
   //case
 
@@ -70,6 +71,7 @@ export class PensionTransactionPage extends BasePage {
   readonly verfiyRollInProcessSuccess: Locator;
   readonly communationUNPReject: Locator;
   readonly verifyRolloutErrorMessage: Locator;
+  readonly verifyUNPErrorMessage:Locator;
 
   //close Icon
   readonly close_left: Locator;
@@ -120,7 +122,12 @@ export class PensionTransactionPage extends BasePage {
   readonly ButtonAddTransactions: Locator;
   readonly ButtonTransactions: Locator;
   readonly deathBenefitTransactionSuccess: Locator;
-
+  readonly commutationUNPBenefitButton:Locator;
+  readonly UNPPayment:Locator;
+  readonly bankOption:Locator;
+  readonly radioButton:Locator;
+  readonly paymentAmount:Locator;
+  readonly bankAccountType:Locator;
   //Transactions view 
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
@@ -157,6 +164,7 @@ export class PensionTransactionPage extends BasePage {
     this.rollIn_type = page.getByRole('option', { name: 'Client-RTR' });
     this.eligible_serviceDate = page.locator('input[name="eligibleServicePeriodStartDate"]');
     this.verifyContributionSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
+    this.commutationUNPBenefitButton =page.getByText('Commutation - UNP Benefit')
 
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -180,6 +188,7 @@ export class PensionTransactionPage extends BasePage {
     this.communationUNPReject = page.getByText('Step 3 rejected.');
     this.verifyRolloutErrorMessage = page.getByText('Process step Process Benefit did not meet conditions.');
     this.pensionCommenceSuccessMessage = page.getByText('Process step completed with note: Pension account commencement correspondence sent.');
+    this.verifyUNPErrorMessage =page.getByText('java.lang.IllegalArgumentException: Member balance is not 100% UNP.');
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
 
@@ -234,8 +243,12 @@ export class PensionTransactionPage extends BasePage {
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
     this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
-
-
+    this.commutationTypeDropDown =page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.UNPPayment = page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span');
+    this.bankOption =page.getByRole('option', { name: 'Bank' });
+    this.radioButton=page.locator('.switch-slider');
+    this.paymentAmount=page.locator('//div[@class="input-number tracking-normal inline-block py-1 border-b w-full border-teal-100 hover:border-teal-300 font-bold"]');
+    this.bankAccountType=page.getByText('AustralianSuper Pty Ltd - No');
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
@@ -681,6 +694,38 @@ export class PensionTransactionPage extends BasePage {
     let transID = this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)");
     let id = transID.textContent();
     return id!;
+  }
+
+  async verifyErrorMessageForMemberBalanceNotHundredPercentUNP() {
+   
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.pensionCommutation.click();
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    await this.sleep(3000);
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+    //await this.page.getByRole('button', { name: 'arrow-left icon clipboard-' }).click();
+    await this.commutationTypeDropDown.click();
+    await this.commutationUNPBenefitButton.click();
+    await this.page.locator('#gs4__combobox').getByLabel('Select', { exact: true }).click();
+    await this.UNPPayment.click();
+    await this.page.locator('#gs5__combobox').getByLabel('Select', { exact: true }).click();
+    await this.bankOption.click();
+    await this.page.locator('#gs6__combobox').getByLabel('Select', { exact: true }).click();
+    await this.bankAccountType.click();
+    //await this.radioButton.click();
+    //await this.paymentAmount.fill("5000");
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Enter');
+    await this.linkCase.click();
+    await this.sleep(3000);
+    await this.reviewCase.approveAndVerifyError(this.verifyUNPErrorMessage);
+
+
   }
 
 

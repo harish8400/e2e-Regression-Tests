@@ -1,8 +1,16 @@
 import { allure } from "allure-playwright";
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
-import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -76,17 +84,35 @@ test(fundName()+"-Non binding or Binding lapsing nomination cannot be updated if
 })
 
 
-test(fundName()+"-Verify a new pension membership account creation, then alter the beneficiary details while membership is in both Provisional then Active status.", async ({ navBar, beneficiaryPage ,memberApi,pensionAccountPage}) => {
+test(fundName()+"-Verify a new pension membership account creation, then alter the beneficiary details while membership is in both Provisional then Active status.", async ({ navBar, beneficiaryPage,memberApi,apiRequestContext }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        let { memberNo, processId } = await ShellAccountCreationApiHandler.createPensionShellAccount(memberApi);
-        console.log('ProcessId:', processId);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await ShellAccountCreationApiHandler.getCaseGroupId(memberApi, processId);
-        await ShellAccountCreationApiHandler.approveProcess(memberApi, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
+        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
+         //approve the process
+         await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
+         const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,memberNo);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await navBar.selectMember(memberNo);
+       
+//add Roll-In
+await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        await beneficiaryPage.reltionShipButton();
+        await beneficiaryPage.beneficiaryInputFileds();
+    } catch (error) {
+        throw error;
+    }
+})
+test(fundName()+"-Verify a new pension membership account creation, then alter the beneficiary details while membership is in both Provisional then pending status.", async ({ navBar, beneficiaryPage,memberApi,apiRequestContext }) => {
+    try {
         await navBar.navigateToPensionMembersPage();
+        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
+         //approve the process
+         await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await navBar.selectMember(memberNo);
         await beneficiaryPage.reltionShipButton();
         await beneficiaryPage.beneficiaryInputFileds();
