@@ -4,6 +4,7 @@ import { FUND } from "../../../constants";
 import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as member from "../../../src/aol/data/member.json"
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -18,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"-Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     try {
         await navBar.navigateToPensionMembersPage();
         await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
@@ -28,20 +29,20 @@ test(fundName()+"-Money gets invested into CASH after roll-in post member creati
     }
 })
 
-test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"ABP - Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        await navBar.selectMember(member.memberID);
         await pensionInvestmentPage.DrawdownTransactionsProportional();
     } catch (error) {
         throw error;
     }
 })
 
-test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        await navBar.selectMember(member.memberID);
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
 
     } catch (error) {
@@ -49,10 +50,42 @@ test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar
     }
 })
 
-test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        await navBar.selectMember(member.memberID);
+        await pensionInvestmentPage.DrawdownTransactionsPercentage();
+
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName()+"TTR - Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(member.memberID);
+        await pensionInvestmentPage.DrawdownTransactionsProportional();
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(member.memberID);
+        await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
+
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName()+"TTR - Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
+    try {
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(member.memberID);
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {

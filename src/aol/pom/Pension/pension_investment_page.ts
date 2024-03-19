@@ -28,6 +28,8 @@ export class PensionInvestmentPage extends BasePage {
     readonly PaymentAmount: Locator;
     readonly PaymentReference: Locator;
 
+    readonly clipBoardIcon: Locator;
+
     readonly InvestmentsandBalances: Locator;
     readonly CashBalanceBeforetRolloverIn: Locator;
 
@@ -44,6 +46,7 @@ export class PensionInvestmentPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly rollInSuccess: Locator;
     readonly pensionDrawdownUpdateSuccess: Locator;
+    readonly pensionHistory: Locator;
 
     //drawdown proposal
     readonly FilterClick: Locator;
@@ -79,6 +82,7 @@ export class PensionInvestmentPage extends BasePage {
 
     this.reviewCase = new ReviewCase(page);
     this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.clipBoardIcon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
     this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
     this.selectHFM = page.getByText('HESTA for Mercy');
@@ -117,7 +121,8 @@ export class PensionInvestmentPage extends BasePage {
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
     this.rollInSuccess = page.getByText('Processed Roll In.');
-    this.pensionDrawdownUpdateSuccess = page.getByText('Processed insert pension history.');
+    this.pensionDrawdownUpdateSuccess = page.getByText('Process step completed with note: Pension payment correspondence sent.');
+    this.pensionHistory = page.getByRole('row', { name: 'Pension Details Update' }).first()
 
     this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.RolloverOption = page.getByText('Client-RTR');
@@ -237,6 +242,12 @@ export class PensionInvestmentPage extends BasePage {
         await this.LinkCase.click();
         await this.sleep(2000);
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await this.clipBoardIcon.click();
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.reviewCase.captureScreenshot();
     }
 
     //specific order
@@ -252,6 +263,12 @@ export class PensionInvestmentPage extends BasePage {
         await this.SelectSpecificOrder.click();
         await this.LinkCase.click();
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await this.clipBoardIcon.click();
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.reviewCase.captureScreenshot();
     }
 
 
@@ -272,6 +289,12 @@ export class PensionInvestmentPage extends BasePage {
         await this.AddButton.click();
         await this.LinkCase.click();
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await this.clipBoardIcon.click();
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.reviewCase.captureScreenshot();
     }
 
     async verifyFutureDrawDownOptions() {
