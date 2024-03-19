@@ -880,7 +880,7 @@ export class DashboardPage extends BasePage {
     return lastColumnTexts;
   }
 
-  async createShellCaseAndAsssignToUser(){
+  async createShellCaseAndAsssignToUser(AssignToUser: boolean = false){
 
     try
     {
@@ -888,8 +888,9 @@ export class DashboardPage extends BasePage {
       await this.page.getByPlaceholder('Search Case Type').click();
       await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
       await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
+
+      if(AssignToUser){
       await this.page.getByRole('switch').locator('span').click();
-      
       await this.page.getByRole('button', { name: 'FILTER' }).first().click();
       await this.page.getByText('Member Last Name').click();
       await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').click();
@@ -897,12 +898,14 @@ export class DashboardPage extends BasePage {
       await this.page.getByRole('button', { name: 'APPLY' }).click();
       await this.page.getByRole('cell', { name: 'Rose XEqGL' }).click();
       //await this.page.locator('//tr[2]').first().click();
+      }
+      
       await this.page.getByRole('button', { name: 'Create Case' }).click();
       await expect(this.page.locator('body')).toContainText('Pending arrow-down icon');
     }
-    catch(Exception)
+    catch(error)
     {
-      throw new AssertionError({message: 'Shell case create failed'});
+      throw error;
     }
   }
 
@@ -919,9 +922,9 @@ export class DashboardPage extends BasePage {
       var currentDate = new Date();
       await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText(`${DateUtils.dMMMyyyStringDate(currentDate)}`);
     }
-    catch(Exception)
+    catch(error)
     {
-      throw new AssertionError({message: 'Shell case Username, date time log verification failed'});
+      throw error;
     }
   }
 

@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
-import * as member from "../data/member.json";
 import { DateUtils } from "../../utils/date_utils";
+import * as investments from "../../../data/hfm_accum_prices.json"
 
 export class InvestmentsAndPricing extends BasePage {
     readonly investmentsLink: Locator;
@@ -16,6 +16,10 @@ export class InvestmentsAndPricing extends BasePage {
     readonly redemptionPrice: Locator;
     readonly midPrice: Locator;
     readonly saveButton: Locator;
+    readonly filterButton: Locator;
+    readonly filterReferenceDate: Locator;
+    readonly filterReferenceDateInput: Locator;
+    readonly filterApplyButton: Locator;
     readonly investmentsRow: Locator;
 
     readonly investmentName: Locator;
@@ -31,14 +35,17 @@ export class InvestmentsAndPricing extends BasePage {
     readonly addButton: Locator;
     readonly save_Button: Locator;
 
+    readonly today: Date;
+
     constructor(page: Page){
         super(page)
 
+        this.today = new Date();
         this.investmentsLink = page.getByRole('link', { name: 'Investments & Pricing' });
         this.pricingTab = page.getByRole('button', { name: 'Pricing' });
         this.addInvestmentPrice_button = page.getByRole('button', { name: 'ADD INVESTMENT PRICE' });
         this.investmentName_dropdown = page.getByPlaceholder('Select').nth(1);
-        this.investmentName_option = page.getByText(member.investmentName).first();
+        this.investmentName_option = page.getByText(investments.investmentName).first();
         this.custodianName_dropdown = page.getByPlaceholder('Select').nth(2)
         this.custodianName_option = page.getByText('trader', { exact: true });
         this.referenceDate = page.getByPlaceholder('dd/mm/yyyy');
@@ -46,15 +53,19 @@ export class InvestmentsAndPricing extends BasePage {
         this.redemptionPrice = page.locator("(//input[@class='el-input__inner'])[6]");
         this.midPrice = page.locator("(//input[@class='el-input__inner'])[7]")
         this.saveButton = page.getByRole('button', { name: 'SAVE' });
+        this.filterButton = page.getByRole('button', { name: 'FILTER' });
+        this.filterReferenceDate = page.getByText('Investment Date Reference');
+        this.filterReferenceDateInput = page.getByPlaceholder('dd/mm/yyyy').first();
+        this.filterApplyButton = page.getByRole('button', { name: 'APPLY' });
         this.investmentsRow = page.getByRole("row").nth(1);
 
-        this.investmentName = page.getByText(member.InvestmentNameToBeUpdated, { exact: true });
+        this.investmentName = page.getByText(investments.InvestmentNameToBeUpdated, { exact: true });
         this.configurationTab = page.getByRole('button', { name: 'Configuration' });
         this.investmentStructure = page.getByRole('textbox', { name: 'Select', exact: true });
         this.investmentStructure_Option = page.getByRole('listitem');
         this.investmentNameField = page.locator("(//input[@class='el-input__inner'])[3]");
         this.selectAsset_dropdown = page.getByPlaceholder('Select asset');
-        this.selectAsset_Option = page.getByText(member.InvestmentNameToBeUpdated).first();
+        this.selectAsset_Option = page.getByText(investments.InvestmentNameToBeUpdated).first();
         this.allocation = page.getByRole('spinbutton').nth(2);
         this.lowerDeviation = page.getByRole('spinbutton').nth(3);
         this.upperDeviation = page.getByRole('spinbutton').nth(4);
@@ -75,13 +86,17 @@ export class InvestmentsAndPricing extends BasePage {
         await this.custodianName_option.click();
         await this.referenceDate.click();
         await this.referenceDate.fill(DateUtils.ddmmyyyStringDate(0));
-        await this.applicationPrice.fill(member.applicationPrice);
-        await this.redemptionPrice.fill(member.redemptionPrice);
-        await this.midPrice.fill(member.midPrice);
+        await this.applicationPrice.fill(investments.prices[2].applicationPrice.toString());
+        await this.redemptionPrice.fill(investments.prices[2].redemptionPrice.toString());
+        await this.midPrice.fill(investments.prices[2].midPrice.toString());
         await this.saveButton.click();
-        const date = DateUtils.ddmmmyyyyStringDate();
-        console.log(this.investmentName.allInnerTexts());
-        await expect(this.investmentsRow).toContainText(member.investmentName && date);
+        await this.filterButton.click();
+        await this.filterReferenceDate.click();
+        await this.filterReferenceDateInput.fill(DateUtils.ddmmyyyStringDate(0));
+        await this.filterApplyButton.click();
+        await this.sleep(2000);
+        const date = DateUtils.ddMMMyyyStringDate(this.today);
+        await expect(this.investmentsRow).toContainText(investments.investmentName && date);
     }
 
     async editInvestment(){
@@ -93,7 +108,7 @@ export class InvestmentsAndPricing extends BasePage {
         await this.sleep(3000);
         await this.investmentStructure.click();
         await this.investmentStructure_Option.click();
-        await this.investmentNameField.fill(member.NewInvestmentName);
+        await this.investmentNameField.fill(investments.NewInvestmentName);
         await this.selectAsset_dropdown.click();
         await this.selectAsset_Option.click();
         await this.allocation.fill('100');
@@ -103,6 +118,12 @@ export class InvestmentsAndPricing extends BasePage {
         await this.sleep(3000);
         await this.save_Button.click();
         await this.sleep(5000);
-        await expect(this.investmentNameField).toHaveText(member.NewInvestmentName);
+        await expect(this.investmentNameField).toHaveText(investments.NewInvestmentName);
+    }
+
+    async investmentsList() {
+        await this.investmentsLink.click();
+        await this.pricingTab.click();
+        await this.sleep(3000);
     }
 }

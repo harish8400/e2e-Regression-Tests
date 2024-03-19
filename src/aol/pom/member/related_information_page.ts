@@ -2,12 +2,16 @@ import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from '../../../common/pom/base_page';
 import { ReviewCase } from '../component/review_case'
 import { DateUtils } from '../../../utils/date_utils';
+import { Navbar } from '../component/navbar';
 
 export class RelatedInformationPage extends BasePage {
 
     readonly relatedInformationTab: Locator;
     readonly clipBoardIcon: Locator;
-    
+
+    //readonly hestaForMercyTab: Locator;
+    readonly memberAccumulationAccount_Tab: Locator;
+
     //Edit Correspondence
     readonly editCorrespondenceButton: Locator;
     readonly correspondenceDropdown: Locator;
@@ -18,6 +22,9 @@ export class RelatedInformationPage extends BasePage {
     readonly inactiveReason3: Locator;
     readonly correspondenceSuccessMessage: Locator;
     readonly correspondenceStatus: Locator;
+
+    //verification information
+    readonly superTickVerificationRow: Locator;
 
     //Condition of Release
     readonly addConditionOfRelease_button: Locator;
@@ -37,10 +44,14 @@ export class RelatedInformationPage extends BasePage {
     readonly processException: Locator;
     readonly reviewCase: ReviewCase;
 
+    //navigation page
+    readonly navBar: Navbar;
+
     constructor(page: Page){
         super(page)
 
         this.reviewCase = new ReviewCase(page);
+        this.navBar = new Navbar(page);
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.clipBoardIcon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
@@ -55,6 +66,10 @@ export class RelatedInformationPage extends BasePage {
         this.inactiveReason3 = page.getByRole('option', { name: 'Member exited' });
         this.correspondenceSuccessMessage = page.getByText('Processed Payment.');
         this.correspondenceStatus = page.getByText('Send correspondence status Inactive');
+
+        //Verification Information
+        this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
+        this.superTickVerificationRow = page.getByRole('row').nth(5);
 
         //Condition of Release
         this.addConditionOfRelease_button = page.getByRole('button', { name: 'add-circle icon Add Condition' });
@@ -113,5 +128,18 @@ export class RelatedInformationPage extends BasePage {
         await this.sleep(5000);
         expect(this.confirmationMessage).toBeVisible();
         await this.clipBoardIcon.click();
+    }
+
+    async verifySuperTickStatus(activeMember?: boolean){
+        await this.relatedInformationTab.click();
+        await this.sleep(3000);
+        await this.superTickVerificationRow.scrollIntoViewIfNeeded();
+        if(activeMember==true){
+            await expect(this.superTickVerificationRow).toContainText('SuperTickMatched');
+        }
+        else{
+            let count = await this.superTickVerificationRow.count();
+            expect(count).toEqual(0);
+        }
     }
 }

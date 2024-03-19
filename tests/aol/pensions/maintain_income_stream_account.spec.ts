@@ -1,9 +1,15 @@
-import { aolTest as test } from "../../../src/aol/base_aol_test";
+import { aolTest as base } from "../../../src/aol/base_aol_test";
 import { allure } from "allure-playwright";
 import { AssertionError } from "assert";
-import * as member from "../../../src/aol/data/member.json"
 import { fundName } from "../../../src/aol/utils_aol";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 
+export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -13,15 +19,12 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
-test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar , accountInfoPage }) => {
+test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar , accountInfoPage ,pensionAccountPage ,apiRequestContext ,pensionTransactionPage}) => {
     
     try {
         await navBar.navigateToPensionMembersPage();
-        let mem = member.memberID;
-        await navBar.selectMember(mem);
+        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await accountInfoPage.editBankAccount();
-        //await accountInfoPage.addNewBankAccount();
-        console.log("Test Execution Completed: Bank Account Details are updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }
@@ -29,14 +32,12 @@ test(fundName()+"- Maintain Income Stream Account (documentation required): Bank
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
-test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
     
     try {
         await navBar.navigateToPensionMembersPage();
-        let mem = member.memberID;
-        await navBar.selectMember(mem);
+        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionAccountPage.editPaymentDetails();
-        console.log("Test Execution Completed: pension payment details updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }
@@ -44,13 +45,12 @@ test(fundName()+"- Maintain Income Steam Account - Payment details (payment amou
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
-test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext }) => {
     
     try {
         
         await navBar.navigateToPensionMembersPage();
-        let mem = member.memberID;
-        await navBar.selectMember(mem);
+        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionAccountPage.editPaymentDetails('Bi-Annualy');
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
@@ -59,14 +59,12 @@ test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
-test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage }) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
     
     try {
         await navBar.navigateToPensionMembersPage();
-        let mem = member.memberID;
-        await navBar.selectMember(mem);
+        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionAccountPage.editPaymentDetails('Quartely');
-        console.log("Test Execution Completed: pension payment details updated successfully");
     } catch (Error) {
         throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
     }

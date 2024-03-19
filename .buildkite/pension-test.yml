@@ -1,9 +1,6 @@
 agents:
     queue: '${DEPLOY_AGENTS_QUEUE}'
 
-env:
-    ENVIRONMENT: '${ENVIRONMENT}'
-
 steps:
     - label: ':test_tube: Playwright test'
       command: './buildkite/scripts/pension-test.sh'
@@ -19,7 +16,6 @@ steps:
                     - './playwright-report:/workdir/allure-report'
                 env:
                     - BUILDKITE_ANALYTICS_TOKEN
-                    - ENVIRONMENT
                     - BUILDKITE
                     - AWS_ACCESS_KEY_ID
                     - AWS_SECRET_ACCESS_KEY
