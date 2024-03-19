@@ -46,7 +46,6 @@ test(fundName() + "-Internal Transfer Out @Hesta", async ({ navBar, pensionAccou
         await internalTransferPage.internalTransferProcess(true, true);
         await navBar.selectMemberSurName(surname);
         await internalTransferPage.internalTransferMemberOut('ABP', memberNo);
-        await MemberApiHandler.fetchMemberSummary(apiRequestContext, linearId.id);
         await new Promise(resolve => setTimeout(resolve, 3000));
         await pensionAccountPage.reload();
         await pensionTransactionPage.transactionView();
