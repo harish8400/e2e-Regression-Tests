@@ -156,6 +156,7 @@ export class PensionShellAccount extends BasePage {
    readonly memberOverview:Locator;
    readonly addAccount:Locator;
    readonly abp:Locator;
+   readonly ttr:Locator;
 
   constructor(page: Page) {
     super(page)
@@ -299,6 +300,7 @@ export class PensionShellAccount extends BasePage {
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
     this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
+    this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
   }
 
   async navigateToPensionMemberPage() {
@@ -507,12 +509,43 @@ export class PensionShellAccount extends BasePage {
 
   }
 
+  async ttrRetirement(){
+    await this.sleep(3000)
+    await this.ttrScreenView.waitFor();
+    await this.ttrScreenView.click();
+    await this.sleep(3000);
+    await this.transactionsTab.click();
+
+  }
+
   async createShellAccountExistingMember(memberNo:string) {
     await this.sleep(3000);
     await this.memberOverview.waitFor();
     await this.memberOverview.click();
     await this.addAccount.click();
     await this.abp.click();
+    await this.preferredContactMethod.click();
+    await this.preferredContactMethodSelect.click();
+    await this.residencyStatus.click();
+    await this.residencyStatusSelect.click();
+    await this.nextStep.click();
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    await this.nextStep.click();
+    await this.addMemberPensionDetails();
+    await this.initCreateCase();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+  }
+
+
+  async ttrAccountCreation(memberNo:string) {
+    await this.sleep(3000);
+    await this.memberOverview.waitFor();
+    await this.memberOverview.click();
+    await this.addAccount.click();
+    await this.ttr.click();
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     await this.residencyStatus.click();

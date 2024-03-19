@@ -78,6 +78,7 @@ export class Navbar extends BasePage {
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
+        await this.sleep(3000);
         await this.FilterOptionInput.fill(member);
         await this.BtnApply.click();
 

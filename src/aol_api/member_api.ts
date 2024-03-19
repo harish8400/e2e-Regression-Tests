@@ -148,8 +148,10 @@ export class MemberApi extends BaseDltaAolApi {
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
-    let memberNo = UtilsAOL.memberNumber('MemberNo-', 9);
+    let memberNo = UtilsAOL.memberNumber('MER-PEN-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
+    let dob  =UtilsAOL.generateDOB();
+    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
     let data = {
       templateReference: 'createPensionMemberShellAccount',
       filterGroups: [],
@@ -161,7 +163,7 @@ export class MemberApi extends BaseDltaAolApi {
           givenName: member,
           otherNames: 'Grow',
           surname: surname,
-          dob: '1955-04-16',
+          dob: dob,
           gender: 'M',
           title: 'Dr.',
           preferredContactMethod: "Digital",
@@ -234,11 +236,15 @@ export class MemberApi extends BaseDltaAolApi {
           ],
         },
         investmentData: {
-          investments: [
+          investments:[
             {
-              id: investmentId,
-              percent: 100,
+                "id": investmentId,
+                "percent": 50
             },
+            {
+                "id": memberInvestmentId,
+                "percent": 50
+            }
           ],
           "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
         },
@@ -293,19 +299,40 @@ export class MemberApi extends BaseDltaAolApi {
 
   async rpbpPayments(linearId: string): Promise<{ linearId: string }> {
     let path = `member/${linearId}/process`;
-    let data = {
 
-      "templateReference": "createPensionBenefit",
-      "initialData": {
-        "memberId": linearId,
-        "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
-      }
-    };
-    let response = await this.post(path, JSON.stringify(data));
-    let responseBody = await response.json();
-    let resultLinearId = responseBody?.linearId?.id || null;
-    return { linearId: resultLinearId };
-  }
+    // Get today's date
+    const today = new Date();
+
+    // Start from the current month and year
+    let month = today.getMonth();
+    let year = today.getFullYear();
+
+    // Loop until July 2023
+    while (!(year === 2023 && month === 6)) { 
+        
+        let data = {
+            "templateReference": "createPensionBenefit",
+            "initialData": {
+                "memberId": linearId,
+                "effectiveDate": DateUtils.localISOStringDate(new Date(year, month, today.getDate())),
+            }
+        };
+
+        let response = await this.post(path, JSON.stringify(data));
+        await response.json();
+
+        
+        if (month === 0) {
+            month = 11; 
+            year--;
+        } else {
+            month--;
+        }
+    }
+
+    return { linearId };
+}
+
 
   async getMemberDetails(linearId: string): Promise<{ id: string, fundName: string, tfn: string, givenName: string, dob: string }> {
     let path = `member/${linearId}`;
@@ -348,9 +375,14 @@ export class MemberApi extends BaseDltaAolApi {
     let path = `member/${linearId}/summary`;
     let response = await this.get(path);
     let responseBody = await response.json();
-    let status = responseBody?.active || false;
-    assert.equal(status, true, 'The member is not active');
-    return { status };
+    let { exitDate, exitReason, active } = responseBody;
+    const exitDateAsDate = new Date(exitDate);
+    const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
+    const todayDateOnly = this.today.toISOString().split('T')[0];
+    expect(exitDateOnly).toEqual(todayDateOnly);
+    expect(active).toBe(false);
+    expect(exitReason).toMatch(/^(BENEFIT|ROLLOUT)$/i);
+    return { status: true };
   }
 
   async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {

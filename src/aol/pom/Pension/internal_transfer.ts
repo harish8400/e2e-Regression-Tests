@@ -104,6 +104,7 @@ export class InternalTransferPage extends BasePage {
      readonly memberProcessId :Locator;
      readonly abpscreenOverview:Locator;
      readonly ttrScreen:Locator;
+     readonly ttrScreenOverview:Locator;
 
 
     constructor(page: Page) {
@@ -204,6 +205,7 @@ export class InternalTransferPage extends BasePage {
         this.memberProcessId = page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");
         this.abpscreenOverview =page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
         this.ttrScreen = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
+        this.ttrScreenOverview = page.getByRole('button', { name: 'HESTA for Mercy Transition to' });
        
 
 
@@ -255,6 +257,8 @@ export class InternalTransferPage extends BasePage {
         await this.page.getByPlaceholder('0').fill('5000');
 
         await this.buttonLinkToCase.click();
+        await this.sleep(3000);
+        await this.reviewCase.captureScreenshot();
 
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
@@ -441,6 +445,15 @@ export class InternalTransferPage extends BasePage {
         await this.memberProcessId.click();
         await this.sleep(3000);
         await this.abpscreenOverview.click();
+        await this.ButtonTransactions.click();
+
+    }
+
+    async transferOutTTR(){
+        await this.memberProcessId.scrollIntoViewIfNeeded();
+        await this.memberProcessId.click();
+        await this.sleep(3000);
+        await this.ttrScreenOverview.click();
         await this.ButtonTransactions.click();
 
     }
