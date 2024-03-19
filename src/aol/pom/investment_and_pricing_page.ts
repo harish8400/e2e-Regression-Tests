@@ -120,4 +120,10 @@ export class InvestmentsAndPricing extends BasePage {
         await this.sleep(5000);
         await expect(this.investmentNameField).toHaveText(investments.NewInvestmentName);
     }
+
+    async investmentsList() {
+        await this.investmentsLink.click();
+        await this.pricingTab.click();
+        await this.sleep(3000);
+    }
 }

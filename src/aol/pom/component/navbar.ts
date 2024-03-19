@@ -18,6 +18,8 @@ export class Navbar extends BasePage {
     readonly FilterOption: Locator;
     readonly FilterOptionInput: Locator;
     readonly BtnApply: Locator;
+    readonly FilterValue:Locator;
+    readonly memberSurname:Locator;
 
     constructor(page: Page) {
         super(page);
@@ -34,9 +36,11 @@ export class Navbar extends BasePage {
         this.productSelection = page.getByText('HESTA for Mercy');
 
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
-        this.FilterOption = page.getByText('Member Number', { exact: true });
+        this.FilterOption = page.getByText('Member Number').nth(1);
         this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
+        this.FilterValue = page.getByText('Name', { exact: true });
+        this.memberSurname = page.getByRole('textbox').nth(2);
     }
 
     async navigateToDashboard(){
@@ -80,6 +84,21 @@ export class Navbar extends BasePage {
         //Select and click on member details
         await expect(this.page.getByRole('cell', { name: member }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: member }).first().click();
+    }
+
+    async selectMemberSurName(surname: string){
+        //await this.page.reload();
+        await this.sleep(2000);
+
+        //Filter member
+        await this.FilterClick.click();
+        await this.FilterValue.click();
+        await this.memberSurname.fill(surname);
+        await this.BtnApply.click();
+
+        //Select and click on member details
+        await expect(this.page.getByRole('cell', { name: surname }).first()).toBeVisible();
+        await this.page.getByRole('cell', { name: surname }).first().click();
     }
 
     async navigateToTTRMembersPage() {

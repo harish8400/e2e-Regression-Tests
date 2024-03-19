@@ -4,7 +4,7 @@ import * as member from "../../data/member.json"
 import { ReviewCase } from "../component/review_case";
 import { DateUtils } from "../../../utils/date_utils";
 
-export class AccountInfoPage extends BasePage{
+export class AccountInfoPage extends BasePage {
 
     readonly reviewCase: ReviewCase;
 
@@ -35,7 +35,13 @@ export class AccountInfoPage extends BasePage{
     readonly EditBankAcc_successMessage: Locator;
     readonly NewBankAcc_successMessage: Locator;
 
-    constructor(page:Page){
+    readonly processesLink: Locator;
+    readonly memberaccount: Locator;
+    readonly review: Locator;
+    readonly shellaccount:Locator;
+    readonly inReview:Locator;
+
+    constructor(page: Page) {
         super(page)
         this.reviewCase = new ReviewCase(page);
 
@@ -65,11 +71,19 @@ export class AccountInfoPage extends BasePage{
         this.viewCasesButton = page.getByRole('button', { name: 'View Cases' });
         this.createCaseButton = page.getByRole('button', { name: 'Create Case' });
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
-    
+
+        //process
+
+        this.processesLink = page.getByRole('link', { name: 'Processes' });
+        this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
+        this.review = page.locator('//span[text()="In Progress"]');
+        this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
+        this.inReview = page.locator('//span[text()="In Review"]');
+
     }
 
     /** this function is for edit or update the existing bank account details  */
-    async editBankAccount(){
+    async editBankAccount() {
         await this.accountInfo.click();
         await this.editAccountIcon.click();
         await this.bsbNumberField.click();
@@ -92,7 +106,7 @@ export class AccountInfoPage extends BasePage{
     }
 
     /** this function is for adding New Bank Account Details */
-    async addNewBankAccount(){
+    async addNewBankAccount() {
         await this.accountInfo.click();
         await this.sleep(3000);
         await this.addNewButton.click();
@@ -117,7 +131,7 @@ export class AccountInfoPage extends BasePage{
     }
 
     //CRN Update
-    async updateCRN(){
+    async updateCRN() {
         await this.accountInfo.click();
         await this.sleep(3000);
         await this.editCRN.click();
@@ -131,4 +145,32 @@ export class AccountInfoPage extends BasePage{
         await this.CRN_SuccessMessage.scrollIntoViewIfNeeded();
         await expect(this.verifyCRN).toBeVisible();
     }
+
+
+    async ProcessTab() {
+        await this.processesLink.click();
+        await this.sleep(3000);
+        await this.memberaccount.click();
+        await this.review.click();
+        await this.page.reload();
+        await this.sleep(3000);
+        const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+        await caseId.waitFor();
+        let id = await caseId.textContent();
+        return id!.trim();
+    }
+
+    async shellAccountProcess() {
+        await this.processesLink.click();
+        await this.sleep(3000);
+        await this.shellaccount.click();
+        await this.inReview.click();
+        await this.page.reload();
+        await this.sleep(3000);
+        const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
+        await caseId.waitFor();
+        let id = await caseId.textContent();
+        return id!.trim();
+    }
+
 }

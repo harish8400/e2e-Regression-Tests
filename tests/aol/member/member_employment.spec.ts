@@ -1,8 +1,7 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
-import * as memberData from "../../../src/aol/data/member.json";
 import { fundName } from "../../../src/aol/utils_aol";
-import { FUND } from "../../../constants";
+import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -12,18 +11,17 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs Employment Termination  tests */
-test(fundName()+"-Verify an employment termination at current system date is processed successfully.", async ({  navBar, memberTransactionPage }) => {
+test(fundName()+"-Verify an employment termination at current system date is processed successfully.", async ({  navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
     try {
         await navBar.navigateToAccumulationMembersPage();
-        let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-        
-        await navBar.selectMember(member);
+        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
+        await accountInfoPage.ProcessTab();
+        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
+        await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await accountInfoPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(memberNo);
         await memberTransactionPage.employmentTerminationForCurrentDate();
 
     } catch (error) {
@@ -31,18 +29,17 @@ test(fundName()+"-Verify an employment termination at current system date is pro
     }
 })
 
-test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully.", async ({ navBar, memberTransactionPage }) => {
+test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully.", async ({ navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
     try {
         await navBar.navigateToAccumulationMembersPage();
-        let member = memberData.Employment.EmployementTerminationMember_Hesta;
-        switch (process.env.PRODUCT!) {
-            case FUND.VANGUARD:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-            case FUND.AE:
-                member = memberData.Employment.EmployementTerminationMember_Vanguard;
-        }
-
-        await navBar.selectMember(member);
+        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
+        await accountInfoPage.ProcessTab();
+        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
+        await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await accountInfoPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(memberNo);
         await memberTransactionPage.employmentTerminationForEarlierDate();
 
     } catch (error) {

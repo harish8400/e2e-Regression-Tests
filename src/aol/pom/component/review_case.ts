@@ -124,8 +124,8 @@ export class ReviewCase extends BasePage {
     
       }
 
-      async captureScreenshot(_screenShotName: string = 'screenshot'){
-        allure.attachment('Screenshot', await this.page.screenshot({ fullPage:true }), 'image/png');
+      async captureScreenshot(screenShotName: string = 'screenshot'){
+        allure.attachment(screenShotName, await this.page.screenshot({ fullPage:true }), 'image/png');
       }
     
 }
