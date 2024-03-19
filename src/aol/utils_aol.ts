@@ -120,6 +120,11 @@ export class UtilsAOL {
         return money;
     }
 
+    static randomTitle(): string {
+        const titles = ['Miss', 'Mr', 'Mrs', 'Ms', 'Mx', 'Dr', 'Prof'];
+        const randomIndex = Math.floor(Math.random() * titles.length);
+        return titles[randomIndex];
+    }
 }
 
 export function fundName() {

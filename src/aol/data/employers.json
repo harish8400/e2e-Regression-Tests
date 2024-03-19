@@ -1,0 +1,46 @@
+{
+    "Employee": {
+        "HESTA for Mercy": [
+            {
+                "value": "woolworths",
+                "entity": "88 000 014 675"
+            },
+            {
+                "value": "WPN",
+                "entity": "882712302"
+            },
+            {
+                "value": "HCE",
+                "entity": "48 109 369 048"
+            }
+        ],
+        "Vanguard Super": [
+            {
+                "value": "woolworths",
+                "entity": "88 000 014 675"
+            },
+            {
+                "value": "Woolworths Sydney",
+                "entity": "88 000 014 675"
+            },
+            {
+                "value": "HCE",
+                "entity": "48 109 369 048"
+            }
+        ],
+        "Australian Ethical Super": [
+            {
+                "value": "woolworths",
+                "entity": "88 000 014 675"
+            },
+            {
+                "value": "Woolworths Sydney",
+                "entity": "88 000 014 675"
+            },
+            {
+                "value": "HCE",
+                "entity": "48 109 369 048"
+            }
+        ]
+    }
+}
