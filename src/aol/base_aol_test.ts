@@ -23,10 +23,12 @@ import { MemberInsurance } from './pom/member/member_insurance';
 import { EmployerPage } from './pom/employer_page';
 import { RollinApi } from '../aol_api/rollin_api';
 import { ShellAccountApi } from '../aol_api/internal_transfer_in';
+import { GlobalPage } from './pom/component/global_page';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
     navBar: Navbar
+    globalPage: GlobalPage
     dashboardPage: DashboardPage
     memberPage: MemberPage
     memberTransactionPage: MemberTransactionsPage
@@ -59,6 +61,10 @@ export const aolTest = base.extend<ExtensionFixtures>({
 
     navBar: async ({ page }, use) => {
         await use(new Navbar(page));
+    },
+
+    globalPage: async ({ page }, use) => {
+        await use(new GlobalPage(page));
     },
 
     dashboardPage: async ({ page }, use) => {

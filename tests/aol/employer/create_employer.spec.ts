@@ -10,24 +10,24 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("Verify if new employer is created successfully", async ({ navBar, employerPage }) => {
+test("Verify if new employer is created successfully @demorun", async ({ navBar, employerPage }) => {
     await navBar.navigateToAccumulationMembersPage();
     await employerPage.createNewemployer();
 })
 
-test("Verify if  employer details can be updated successfully", async ({ navBar, employerPage }) => {
+test("Verify if  employer details can be updated successfully @demorun", async ({ navBar, employerPage }) => {
     await navBar.navigateToAccumulationMembersPage();
     await employerPage.updateNewemployer();
 })
 
-test("Verify if newly added Employer is listed under 'select employer' option while adding a new member", async ({ navBar, employerPage }) => {
+test("Verify if newly added Employer is listed under 'select employer' option while adding a new member @demorun", async ({ navBar, employerPage }) => {
     await navBar.navigateToAccumulationMembersPage();
     let newEmployer = await employerPage.createNewemployer(); 
     await navBar.navigateToAccumulationMembersPage();
     await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer);
 })
 
-test("Verify employer types available while adding employer", async ({ navBar, employerPage }) => {
+test("Verify employer types available while adding employer @demorun", async ({ navBar, employerPage }) => {
     await navBar.navigateToAccumulationMembersPage();
     let expectedEmployerTypes: string[] = ['Participating','Associated','Non-Associated'];
     let actualEmployerTypes = await employerPage.getEmployerTypes();
