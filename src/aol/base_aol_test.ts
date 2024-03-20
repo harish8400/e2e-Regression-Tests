@@ -19,6 +19,8 @@ import { MemberOverView } from './pom/member/member_overview';
 import { CaseApi } from '../aol_api/case_api';
 import {ProcessApi } from '../aol_api/process_api';
 import { MemberApi } from '../aol_api/member_api';
+import { MemberInsurance } from './pom/member/member_insurance';
+import { EmployerPage } from './pom/employer_page';
 import { RollinApi } from '../aol_api/rollin_api';
 import { ShellAccountApi } from '../aol_api/internal_transfer_in';
 
@@ -43,6 +45,8 @@ type ExtensionFixtures = {
     caseApi: CaseApi;
     processApi: ProcessApi;
     memberApi: MemberApi;
+    memberInsurancePage: MemberInsurance;
+    employerPage : EmployerPage
     rollinApi:RollinApi;
     shellAccountApi:ShellAccountApi;
     transactionApi:Transactions
@@ -118,6 +122,9 @@ export const aolTest = base.extend<ExtensionFixtures>({
     memberApi: async ({ dltaApiRequestContext }, use) => {
         await use(new MemberApi(dltaApiRequestContext));
     },
+    memberInsurancePage: async ({ page }, use) => {
+        await use(new MemberInsurance(page));
+    },    
 
     rollinApi: async ({ dltaApiRequestContext }, use) => {
         await use(new RollinApi(dltaApiRequestContext));
@@ -129,4 +136,7 @@ export const aolTest = base.extend<ExtensionFixtures>({
     transactionApi: async ({ dltaApiRequestContext }, use) => {
         await use(new Transactions(dltaApiRequestContext));
     },
+    employerPage: async ({ page }, use) => {
+        await use(new EmployerPage(page));
+    }
 })
