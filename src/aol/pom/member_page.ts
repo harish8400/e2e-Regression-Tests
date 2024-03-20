@@ -294,6 +294,14 @@ export class MemberPage extends BasePage {
         return {createMemberNo};
     }
 
+    async superstreamMRR(){
+        await this.sleep(1000);
+        await this.page.locator("(//a[@class='NxLAj'])[1]");
+        await this.processeslink.click();
+        await this.sleep(2000);
+        await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
+        }
+
     
 
 }

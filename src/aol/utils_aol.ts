@@ -5,7 +5,7 @@ export class UtilsAOL {
 
     static randomSurname(length: number) {
         let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         const charactersLength = characters.length;
         let counter = 0;
         while (counter < length) {
@@ -14,7 +14,7 @@ export class UtilsAOL {
         }
         return result;
     }
-
+    
     static randomName() {
         let names = ['Michelle', 'Alan', 'Glenn', 'Linda', 'Gotham', 'Lille', 'Steve', 'Rose', 'Ramsey', 'Zele', 'Simon', 'Nathan', 'Ashton', 'Kyle', 'Kane', 'Jamie', 'Oliver', 'Jason', 'Floyd', 'Andrew', 'Ricky', 'Gerald'];
         return names[Math.floor(Math.random() * names.length)]
@@ -110,6 +110,38 @@ export class UtilsAOL {
         return dob;
     }
 
+    static memberDob() {
+        const year = Math.floor(Math.random() * (1957 - 1945 + 1)) + 1945;
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = months[Math.floor(Math.random() * months.length)];
+        let day;
+        switch (month) {
+            case 'February':
+                day = Math.floor(Math.random() * 28) + 1;
+                break;
+            case 'April':
+            case 'June':
+            case 'September':
+            case 'November':
+                day = Math.floor(Math.random() * 30) + 1;
+                break;
+            default:
+                day = Math.floor(Math.random() * 31) + 1;
+                break;
+        }
+    
+        // Pad day with leading zero if it's a single digit
+        const paddedDay = day < 10 ? `0${day}` : `${day}`;
+    
+        return { year, month, day: paddedDay };
+    }
+    
+    
+    static randomGender(): string {
+        const genders = ['Male', 'Female', 'Intersex', 'Not Stated'];
+        return genders[Math.floor(Math.random() * genders.length)];
+    }
+    
 
 
     static generateMoney(): number {
@@ -125,6 +157,16 @@ export class UtilsAOL {
         const randomIndex = Math.floor(Math.random() * titles.length);
         return titles[randomIndex];
     }
+
+    static randomNumber(length: number): string {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            result += chars.charAt(randomIndex);
+        }
+        return result;
+    }
 }
 
 export function fundName() {
@@ -138,8 +180,8 @@ export function fundDetails(product: string) {
 
     switch (product) {
         case 'HESTA for Mercy':
-            productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
-            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
             break;
         case 'Vanguard Super':
             productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
