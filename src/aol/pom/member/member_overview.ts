@@ -76,7 +76,7 @@ export class MemberOverView extends BasePage{
     }
 
     async superTickVerification(){
-        await this.sleep(3000);
+        await this.sleep(5000);
         await this.overViewTab.click();
         await this.TFNStatusValid.scrollIntoViewIfNeeded();
         await expect(this.TFNStatusValid).toBeVisible();

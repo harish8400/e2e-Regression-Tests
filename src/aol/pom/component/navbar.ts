@@ -36,7 +36,7 @@ export class Navbar extends BasePage {
         this.productSelection = page.getByText('HESTA for Mercy');
         
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
-        this.FilterOption = page.getByText('Member Number', { exact: true });
+        this.FilterOption = page.getByText('Member Number').nth(1);
         this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
         this.FilterValue = page.getByText('Name', { exact: true });
@@ -78,6 +78,7 @@ export class Navbar extends BasePage {
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
+        await this.sleep(3000);
         await this.FilterOptionInput.fill(member);
         await this.BtnApply.click();
 

@@ -1,12 +1,16 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page, expect ,APIRequestContext } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 import { FUND } from "../../../constants";
-import { InvalidResultAttributeException } from "@aws-sdk/client-ssm/dist-types/models/models_1";
-
+import { MemberApiHandler } from "../../aol_api/handler/member_api_handler";
+import { Navbar } from "./component/navbar";
+import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_handler";
+import { AccountInfoPage } from "./Pension/account_info";
+import { InternalTransferPage } from "./Pension/internal_transfer";
+import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 export class MemberPage extends BasePage { 
 
     readonly accumulationAddMember: Locator;
@@ -302,7 +306,7 @@ export class MemberPage extends BasePage {
     }
 
     async selectMember(memberName: string){
-        await this.sleep(2000);
+        await this.sleep(3000);
         await this.page.reload();
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
@@ -449,3 +453,25 @@ export class MemberPage extends BasePage {
 
 
 
+    async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        await accountInfoPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await accountInfoPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo);
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await internalTransferPage.memberSummary();
+        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
+
+    
+
+}

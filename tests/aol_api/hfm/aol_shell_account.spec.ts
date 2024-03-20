@@ -5,6 +5,7 @@ import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handle
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { RollinApiHandler } from "../../../src/aol_api/handler/rollin_api-handler";
+import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler";
 
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
@@ -21,17 +22,18 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext}) => {
+test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext,internalTransferPage,pensionTransactionPage}) => {
 
     try {
 
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
-        let { memberNo } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-        let caseId = await pensionAccountPage.ProcessTab();
-        let caseGroupId = caseId.replace('Copy to clipboard', '').trim();
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId);
+        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();
@@ -40,6 +42,10 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
         await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
          await pensionAccountPage.reload();
+         await internalTransferPage.memberSummary();
+         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+         await pensionTransactionPage.transactionView();
+ 
     } catch (error) {
         throw error;
     }
