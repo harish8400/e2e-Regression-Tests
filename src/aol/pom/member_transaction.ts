@@ -123,6 +123,7 @@ export class MemberTransactionsPage extends BasePage {
         await this.viewCase.click();
         await this.createCase.click();
         await this.sleep(3000);
+        let contributionAmount = '10000';
 
         await this.memberContributionType.click();
         if(contributionType == 'Salary Sacrifice'){
@@ -145,7 +146,7 @@ export class MemberTransactionsPage extends BasePage {
         await this.paymentReceivedDate.press('Tab');
         await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.effectiveDate.press('Tab');
-        await this.contributionAmount.fill('10000');
+        await this.contributionAmount.fill(contributionAmount);
         await this.governmentContribution.click();
         await this.governmentContributionConfirm.click();
         await this.sleep(3000);
@@ -158,7 +159,7 @@ export class MemberTransactionsPage extends BasePage {
         else{
             await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
         }
-
+        return contributionAmount;
     }
 
     /** Member Termination for Current Date */

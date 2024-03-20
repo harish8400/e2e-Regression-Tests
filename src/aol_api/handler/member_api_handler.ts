@@ -5,9 +5,9 @@ import { RollinApi } from '../rollin_api';
 
 
 export class MemberApiHandler {
-    static async createMember(apiRequestContext: APIRequestContext, fundProductId?: string) {
+    static async createMember(apiRequestContext: APIRequestContext) {
         const memberCreation = new MemberApi(apiRequestContext);
-        return memberCreation.createMember(fundProductId!);
+        return memberCreation.createMember();
     }
 
     static async approveProcess(apiRequestContext: APIRequestContext, caseGroupId?: string, notes: string = "E2E auto test - approve") {

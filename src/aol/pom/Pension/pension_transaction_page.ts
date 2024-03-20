@@ -139,7 +139,7 @@ export class PensionTransactionPage extends BasePage {
   readonly activityData:Locator;
   readonly closeTheData:Locator;
   readonly adminFeeCase:Locator;
-  readonly investtmnetBalanceScreen:Locator;
+  readonly investmentBalanceScreen:Locator;
   readonly paymentDetails:Locator;
   
 
@@ -273,7 +273,7 @@ export class PensionTransactionPage extends BasePage {
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
     this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
-    this.investtmnetBalanceScreen = page.locator("//button[text()='Investments and Balances']");
+    this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']");
     this.paymentDetails = page.locator("//span[text()='Payment Details']");
     
     //vanguard
@@ -726,7 +726,7 @@ export class PensionTransactionPage extends BasePage {
 
   async investementBalances(){
     await this.sleep(3000);
-    await this.investtmnetBalanceScreen.click();
+    await this.investmentBalanceScreen.click();
     const investmentBalance = await this.page.$("(//p[@class='mx-1']/following::p[@class='mx-1'])[5]");
     const balance = investmentBalance?.textContent();
     await this.sleep (3000);
