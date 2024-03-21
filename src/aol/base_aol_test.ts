@@ -24,6 +24,8 @@ import { EmployerPage } from './pom/employer_page';
 import { RollinApi } from '../aol_api/rollin_api';
 import { ShellAccountApi } from '../aol_api/internal_transfer_in';
 import { GlobalPage } from './pom/component/global_page';
+import { SuperStreamPage } from './pom/superstream_contribution_page';
+
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -51,7 +53,9 @@ type ExtensionFixtures = {
     employerPage : EmployerPage
     rollinApi:RollinApi;
     shellAccountApi:ShellAccountApi;
-    transactionApi:Transactions
+    transactionApi:Transactions;
+    superSteam:SuperStreamPage
+
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -144,5 +148,9 @@ export const aolTest = base.extend<ExtensionFixtures>({
     },
     employerPage: async ({ page }, use) => {
         await use(new EmployerPage(page));
-    }
+    },
+    superSteam: async ({ page }, use) => {
+        await use(new SuperStreamPage(page));
+    },
+
 })

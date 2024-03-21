@@ -13,8 +13,8 @@ import employeeData from "../src/aol/data/employers.json"
 let currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // Format: YYYYMMDD
 let superGateMessageId = `${currentDate}.115734.123@superchoice.com.au`;
 let randomSuffix = Math.floor(Math.random() * 1000); // 
-let conversationId = `Contribution.84111122223.${currentDate}1118${randomSuffix}`;
-let xmlFileName = `MRR_${currentDate}_115734_123_Contribution.84111122223.${currentDate}1118${randomSuffix}_1.xml`;
+let conversationId = `Contribution.84111122223.${currentDate}111812${randomSuffix}`;
+let xmlFileName = `MRR_${currentDate}_115734_123_${conversationId}.xml`;
 let xmlFilePath = path.join(__dirname, `../src/aol/data/${xmlFileName}`);
 let remoteFilePath = `/home/saturn-dev-contribution/inbox/${xmlFileName}`;
 let privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
@@ -54,7 +54,8 @@ test("SFTP Test -To download the file", async () => {
   await main();
 });
 
-test('superstream-MRR', async ({memberPage }) => {
+test('superstream-MRR', async ({memberPage,superSteam}) => {
+ 
   try {
 
     let title = UtilsAOL.randomTitle();
@@ -219,7 +220,7 @@ test('superstream-MRR', async ({memberPage }) => {
               
                 context: {
                   contextIdentifier: 'SND01',
-                  entityIdentifier: sourceAbn
+                  entityIdentifier: '78109509739'
                 }
               },
               receiver: {
@@ -316,15 +317,13 @@ test('superstream-MRR', async ({memberPage }) => {
       }
 
     // Convert XML object to string
+  
     const xmlString = xmlBuilder.buildObject(xmlObject);
 
   // Write XML string to file
   fs.writeFileSync(xmlFilePath, xmlString);
 
   console.log(`XML file '${xmlFileName}' generated successfully.`);
-
-  // Introduce a timeout to ensure the file is saved before it's read
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the timeout value as needed
 
   // Read existing values from the saved XML file
   const readXmlValues = await readXml(xmlFilePath);
@@ -340,38 +339,18 @@ test('superstream-MRR', async ({memberPage }) => {
     console.log('Actual XML structure:', readXmlValues); // Log the actual structure
   }
 
-  async function main() {
-    const sftp = new SftpClient();
-    console.log('Private Key Content:', privateKeyContent);
-    try {
-      await sftp.connect({
-        host: 'superchoice-sftp.dev.tinasuper.com',
-        port: 22,
-        username: 'saturn-dev-contribution',
-        password: 'oghaim8aeNgei1aeho',
-        privateKey: privateKeyContent,
-        passphrase: 'oghaim8aeNgei1aeho'
-      });
-
-      // Perform SFTP upload operation
-      await new Promise((resolve) => setTimeout(resolve, 20000));
-      await sftp.fastPut(xmlFilePath, remoteFilePath);
-      console.log('File uploaded successfully.');
-    } catch (err: any) {
-      console.error('Error:', err.message);
-    } finally {
-      await sftp.end();
-    }
-  }
-
-  await main();
-
-  console.log('Uploaded file:', remoteFilePath);
 
 } catch (error) {
   console.error('Error handling XML:', error);
 }
+try {
+  await superSteam.performUpload(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent);
+  console.log('Uploaded file:', remoteFilePath);
+} catch (error) {
+  console.error('Error performing file upload:', error);
+}
 
+await new Promise((resolve) => setTimeout(resolve, 20000));
 await memberPage.superstreamMRR();
 });
 
