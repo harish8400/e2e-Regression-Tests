@@ -15,7 +15,7 @@ let superGateMessageId = `${currentDate}.115734.123@superchoice.com.au`;
 let randomSuffix = Math.floor(Math.random() * 100);
 let conversationId = `Contribution.84111122223.${currentDate}1118125${randomSuffix}`;
 let xmlFileName = `MRR_${currentDate}_115734_123_${conversationId}.xml`;
-let xmlFilePath = path.join(__dirname, `../src/aol/data/${xmlFileName}`);
+let xmlFilePath = path.join(__dirname, `../src/aol/data/processed_templates/mrr/${xmlFileName}`);
 let remoteFilePath = `/home/saturn-dev-contribution/inbox/${xmlFileName}`;
 let privateKeyPath = path.join(__dirname, '../src/aol/data/saturn-sftp_key.pem');
 let privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
@@ -92,8 +92,8 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
 
     const xmlBuilderOptions: BuilderOptions = {
       xmldec: {
-        version: '1.0', // specify XML version
-        standalone: undefined // remove the standalone attribute
+        version: '1.0', 
+        encoding: 'UTF-8', 
       }
     };
     // Define XML builder with options
@@ -104,67 +104,67 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
     const xmlObject = {
       'message:superGateXmlMessage': {
         $: {
-          xmlnsAddress: 'http://integration.universal.superchoice.com.au/domain/address/address' ,
-          xmlnsAmount: 'http://integration.universal.superchoice.com.au/domain/amount/amount',
-          xmlnsAustralianBusinessNumber: 'http://integration.universal.superchoice.com.au/domain/government/australianBusinessNumber',
-          xmlnsAustralianTaxFileNumber: 'http://integration.universal.superchoice.com.au/domain/government/australianTaxFileNumber',
-          xmlnsBankAccount: 'http://integration.universal.superchoice.com.au/domain/banking/bankAccount',
-          xmlnsBankStateBranch: 'http://integration.universal.superchoice.com.au/domain/banking/bankStateBranch',
-          xmlnsBasicMember: 'http://integration.universal.superchoice.com.au/domain/member/basicMember',
-          xmlnsCompany: 'http://integration.universal.superchoice.com.au/domain/company/company',
-          xmlnsContributionTransaction: 'http://integration.universal.superchoice.com.au/domain/transaction/contributionTransaction',
-          xmlnsContributionTransactionResponse: 'http://integration.universal.superchoice.com.au/domain/transaction/contributionTransactionResponse',
-          xmlnsConversationIdentifier: 'http://integration.universal.superchoice.com.au/domain/identifiers/conversationIdentifier',
-          xmlnsCountryCode: 'http://integration.universal.superchoice.com.au/domain/country/countryCode',
-          xmlnsCurrency: 'http://integration.universal.superchoice.com.au/domain/amount/currency',
-          xmlnsDateTime: 'http://integration.universal.superchoice.com.au/domain/moment/dateTime',
-          xmlnsDayOfMonth: 'http://integration.universal.superchoice.com.au/domain/moment/dayOfMonth',
-          xmlnsDefinedBenefits: 'http://integration.universal.superchoice.com.au/domain/employment/definedBenefits',
-          xmlnsEmailAddress: 'http://integration.universal.superchoice.com.au/domain/email/emailAddress',
-          xmlnsEmployer: 'http://integration.universal.superchoice.com.au/domain/employer/employer',
-          xmlnsEmploymentAttributes: 'http://integration.universal.superchoice.com.au/domain/employment/employmentAttributes',
-          xmlnsEmploymentPayrollNumber: 'http://integration.universal.superchoice.com.au/domain/employment/employmentPayrollNumber',
-          xmlnsEmploymentStatus: 'http://integration.universal.superchoice.com.au/domain/employment/employmentStatus',
-          xmlnsGender: 'http://integration.universal.superchoice.com.au/domain/person/gender',
-          xmlnsMemberContributionsContext: 'http://integration.universal.superchoice.com.au/domain/member/memberContributionsContext',
-          xmlnsMemberNumber: 'http://integration.universal.superchoice.com.au/domain/member/memberNumber',
-          xmlnsMemberTransaction: 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransaction',
-          xmlnsMemberTransactionResponse: 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransactionResponse',
-          xmlnsMessage:'http://integration.universal.superchoice.com.au/messages/message',
-          xmlnsMessageIdentifier: 'http://integration.universal.superchoice.com.au/domain/identifiers/messageIdentifier',
-          xmlnsMonth: 'http://integration.universal.superchoice.com.au/domain/moment/month',
-          xmlnsName: 'http://integration.universal.superchoice.com.au/domain/person/name',
-          xmlnsNameCurrency: 'http://integration.universal.superchoice.com.au/domain/person/nameCurrency',
-          xmlnsNameType: 'http://integration.universal.superchoice.com.au/domain/person/nameType',
-          xmlnsNameUsageCode: 'http://integration.universal.superchoice.com.au/domain/person/nameUsageCode',
-          xmlnsNegativeAmounts: 'http://integration.universal.superchoice.com.au/domain/employment/negativeAmounts',
-          xmlnsParameters: 'http://integration.universal.superchoice.com.au/domain/framework/parameters',
-          xmlnsPartIdentifier: 'http://integration.universal.superchoice.com.au/domain/identifiers/partIdentifier',
-          xmlnsPayee: 'http://integration.universal.superchoice.com.au/domain/payment/payee',
-          xmlnsPayer: 'http://integration.universal.superchoice.com.au/domain/payment/payer',
-          xmlnsPaymentReferenceNumber: 'http://integration.universal.superchoice.com.au/domain/payment/paymentReferenceNumber',
-          xmlnsPaymentType: 'http://integration.universal.superchoice.com.au/domain/payment/paymentType',
-          xmlnsPerson: 'http://integration.universal.superchoice.com.au/domain/person/person',
-          xmlnsPersonAttributes: 'http://integration.universal.superchoice.com.au/domain/person/personAttributes',
-          xmlnsPhoneNumber: 'http://integration.universal.superchoice.com.au/domain/phoneNumber/phoneNumber',
-          xmlnsReceiver: 'http://integration.universal.superchoice.com.au/domain/receiver/receiver',
-          xmlnsSender: 'http://integration.universal.superchoice.com.au/domain/sender/sender',
-          xmlnsStandardMember: 'http://integration.universal.superchoice.com.au/domain/member/standardMember',
-          xmlnsStandardMemberAttributes: 'http://integration.universal.superchoice.com.au/domain/member/standardMemberAttributes',
-          xmlnsStandardMemberContribution: 'http://integration.universal.superchoice.com.au/domain/member/standardMemberContribution',
-          xmlnsStandardMemberEmployment: 'http://integration.universal.superchoice.com.au/domain/member/standardMemberEmployment',
-          xmlnsStandardRequestTransactionContent: 'http://integration.universal.superchoice.com.au/domain/transaction/standardRequestTransactionContent',
-          xmlnsStandardTransaction: 'http://integration.universal.superchoice.com.au/domain/transaction/standardTransaction',
-          xmlnsState: 'http://integration.universal.superchoice.com.au/domain/country/state',
-          xmlnsSuperFundGeneratedEmployerIdentifier: 'http://integration.universal.superchoice.com.au/domain/funds/superFundGeneratedEmployerIdentifier',
-          xmlnsText: 'http://integration.universal.superchoice.com.au/domain/framework/text',
-          xmlnsTransactionResponse: 'http://integration.universal.superchoice.com.au/domain/transaction/transactionResponse',
-          xmlnsTransportHeaders: 'http://integration.universal.superchoice.com.au/domain/transport/transportHeaders',
-          xmlnsUniqueSuperFundIdentifier: 'http://integration.universal.superchoice.com.au/domain/government/uniqueSuperFundIdentifier',
-          xmlnsVersion: 'http://integration.universal.superchoice.com.au/domain/version/version',
-          xmlnsWithDate: 'http://integration.universal.superchoice.com.au/domain/framework/withDate',
-          xmlnsWorkingHours: 'http://integration.universal.superchoice.com.au/domain/employment/workingHours',
-          xmlnsXsi: 'http://www.w3.org/2001/XMLSchema-instance',
+          'xmlns:address': 'http://integration.universal.superchoice.com.au/domain/address/address' ,
+          'xmlns:amount': 'http://integration.universal.superchoice.com.au/domain/amount/amount',
+          'xmlns:australianBusinessNumber': 'http://integration.universal.superchoice.com.au/domain/government/australianBusinessNumber',
+          'xmlns:australianTaxFileNumber': 'http://integration.universal.superchoice.com.au/domain/government/australianTaxFileNumber',
+          'xmlns:bankAccount': 'http://integration.universal.superchoice.com.au/domain/banking/bankAccount',
+          'xmlns:bankStateBranch': 'http://integration.universal.superchoice.com.au/domain/banking/bankStateBranch',
+          'xmlns:basicMember': 'http://integration.universal.superchoice.com.au/domain/member/basicMember',
+          'xmlns:company': 'http://integration.universal.superchoice.com.au/domain/company/company',
+          'xmlns:contributionTransaction': 'http://integration.universal.superchoice.com.au/domain/transaction/contributionTransaction',
+          'xmlns:contributionTransactionResponse': 'http://integration.universal.superchoice.com.au/domain/transaction/contributionTransactionResponse',
+          'xmlns:conversationIdentifier': 'http://integration.universal.superchoice.com.au/domain/identifiers/conversationIdentifier',
+          'xmlns:countryCode': 'http://integration.universal.superchoice.com.au/domain/country/countryCode',
+          'xmlns:currency': 'http://integration.universal.superchoice.com.au/domain/amount/currency',
+          'xmlns:dateTime': 'http://integration.universal.superchoice.com.au/domain/moment/dateTime',
+          'xmlns:dayOfMonth': 'http://integration.universal.superchoice.com.au/domain/moment/dayOfMonth',
+          'xmlns:definedBenefits': 'http://integration.universal.superchoice.com.au/domain/employment/definedBenefits',
+          'xmlns:emailAddress': 'http://integration.universal.superchoice.com.au/domain/email/emailAddress',
+          'xmlns:employer': 'http://integration.universal.superchoice.com.au/domain/employer/employer',
+          'xmlns:employmentAttributes': 'http://integration.universal.superchoice.com.au/domain/employment/employmentAttributes',
+          'xmlns:employmentPayrollNumber': 'http://integration.universal.superchoice.com.au/domain/employment/employmentPayrollNumber',
+          'xmlns:employmentStatus': 'http://integration.universal.superchoice.com.au/domain/employment/employmentStatus',
+          'xmlns:gender': 'http://integration.universal.superchoice.com.au/domain/person/gender',
+          'xmlns:memberContributionsContext': 'http://integration.universal.superchoice.com.au/domain/member/memberContributionsContext',
+          'xmlns:memberNumber': 'http://integration.universal.superchoice.com.au/domain/member/memberNumber',
+          'xmlns:memberTransaction': 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransaction',
+          'xmlns:memberTransactionResponse': 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransactionResponse',
+          'xmlns:message':'http://integration.universal.superchoice.com.au/messages/message',
+          'xmlns:messageIdentifier': 'http://integration.universal.superchoice.com.au/domain/identifiers/messageIdentifier',
+          'xmlns:month': 'http://integration.universal.superchoice.com.au/domain/moment/month',
+          'xmlns:name': 'http://integration.universal.superchoice.com.au/domain/person/name',
+          'xmlns:nameCurrency': 'http://integration.universal.superchoice.com.au/domain/person/nameCurrency',
+          'xmlns:nameType': 'http://integration.universal.superchoice.com.au/domain/person/nameType',
+          'xmlns:nameUsageCode': 'http://integration.universal.superchoice.com.au/domain/person/nameUsageCode',
+          'xmlns:negativeAmounts': 'http://integration.universal.superchoice.com.au/domain/employment/negativeAmounts',
+          'xmlns:parameters': 'http://integration.universal.superchoice.com.au/domain/framework/parameters',
+          'xmlns:partIdentifier': 'http://integration.universal.superchoice.com.au/domain/identifiers/partIdentifier',
+          'xmlns:payee': 'http://integration.universal.superchoice.com.au/domain/payment/payee',
+          'xmlns:payer': 'http://integration.universal.superchoice.com.au/domain/payment/payer',
+          'xmlns:paymentReferenceNumber': 'http://integration.universal.superchoice.com.au/domain/payment/paymentReferenceNumber',
+          'xmlns:paymentType': 'http://integration.universal.superchoice.com.au/domain/payment/paymentType',
+          'xmlns:person': 'http://integration.universal.superchoice.com.au/domain/person/person',
+          'xmlns:personAttributes': 'http://integration.universal.superchoice.com.au/domain/person/personAttributes',
+          'xmlns:phoneNumber': 'http://integration.universal.superchoice.com.au/domain/phoneNumber/phoneNumber',
+          'xmlns:receiver': 'http://integration.universal.superchoice.com.au/domain/receiver/receiver',
+          'xmlns:sender': 'http://integration.universal.superchoice.com.au/domain/sender/sender',
+          'xmlns:standardMember': 'http://integration.universal.superchoice.com.au/domain/member/standardMember',
+          'xmlns:standardMemberAttributes': 'http://integration.universal.superchoice.com.au/domain/member/standardMemberAttributes',
+          'xmlns:standardMemberContribution': 'http://integration.universal.superchoice.com.au/domain/member/standardMemberContribution',
+          'xmlns:standardMemberEmployment': 'http://integration.universal.superchoice.com.au/domain/member/standardMemberEmployment',
+          'xmlns:standardRequestTransactionContent': 'http://integration.universal.superchoice.com.au/domain/transaction/standardRequestTransactionContent',
+          'xmlns:standardTransaction': 'http://integration.universal.superchoice.com.au/domain/transaction/standardTransaction',
+          'xmlns:state': 'http://integration.universal.superchoice.com.au/domain/country/state',
+          'xmlns:superFundGeneratedEmployerIdentifier': 'http://integration.universal.superchoice.com.au/domain/funds/superFundGeneratedEmployerIdentifier',
+          'xmlns:text': 'http://integration.universal.superchoice.com.au/domain/framework/text',
+          'xmlns:transactionResponse': 'http://integration.universal.superchoice.com.au/domain/transaction/transactionResponse',
+          'xmlns:transportHeaders': 'http://integration.universal.superchoice.com.au/domain/transport/transportHeaders',
+          'xmlns:uniqueSuperFundIdentifier': 'http://integration.universal.superchoice.com.au/domain/government/uniqueSuperFundIdentifier',
+          'xmlns:version': 'http://integration.universal.superchoice.com.au/domain/version/version',
+          'xmlns:withDate': 'http://integration.universal.superchoice.com.au/domain/framework/withDate',
+          'xmlns:workingHours': 'http://integration.universal.superchoice.com.au/domain/employment/workingHours',
+          'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
         },
       
       xsdVersion: 'VERSION 2.0.0',
@@ -290,9 +290,8 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
                       mobileNumber: '0430187123'
                     }
                   ],
-                  taxFileNumberNotProvided: isTFNProvided,
-                  ...(isTFNProvided ? {} : { tfnEntityIdentifier: tfn }),
-                  employerProvidedTaxFileNumber: '286380519',
+                  taxFileNumberNotProvided: isTFNProvided.toString(),
+                  employerProvidedTaxFileNumber: tfn,
                   employmentPayrollNumber: '001',
                   employmentStartDate: '2022-06-30T12:00:00',
                   annualSalaryforBenefits: {
@@ -352,10 +351,9 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
   console.error('Error handling XML:', error);
 }
 try {
-  if(xmlFilePath.endsWith(xmlFileName)){
-  await superSteam.performUpload(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent);
-  console.log('Uploaded file:', remoteFilePath);
-  }
+  
+  await superSteam.uploadXMLFile(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent);
+ 
   
 } catch (error) {
   console.error('Error performing file upload:', error);
