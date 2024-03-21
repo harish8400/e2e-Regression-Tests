@@ -24,7 +24,7 @@ export class Navbar extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.accumulationProduct = page.locator("(//a[@class='NxLAj'])[1]");
+        this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
@@ -34,7 +34,7 @@ export class Navbar extends BasePage {
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
         this.productSelection = page.getByText('HESTA for Mercy');
-
+        
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
         this.FilterOption = page.getByText('Member Number').nth(1);
         this.FilterOptionInput = page.locator('textarea');
@@ -78,6 +78,7 @@ export class Navbar extends BasePage {
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
+        await this.sleep(3000);
         await this.FilterOptionInput.fill(member);
         await this.BtnApply.click();
 

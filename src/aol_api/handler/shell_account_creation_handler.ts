@@ -44,6 +44,20 @@ export class ShellAccountCreationApiHandler {
         return payments.rpbpPayments(memberId!);
     }
 
+    static async getMemberInvestments(transactionApi:Transactions, memberId?: string) {
+        return transactionApi.getMemberInvestments(memberId!);
+    }
+
+    static async getMemberPayment(transactionApi:Transactions, memberId?: string) {
+        return transactionApi.getMemberPayment(memberId!);
+    }
+
+    static async getMemberFee(transactionApi:Transactions, memberId?: string) {
+        return transactionApi.getMemberFee(memberId!);
+    }
+
+    
+
 }
 
 

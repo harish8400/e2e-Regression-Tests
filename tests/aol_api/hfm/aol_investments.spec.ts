@@ -21,9 +21,9 @@ test(fundName() + "-Run unit Prices via API for accumulation ", async ({navBar,i
         await navBar.navigateToAccumulationMembersPage();
         await investmentsAndPricing.investmentsList();
         const apiRequestContext: APIRequestContext = await initDltaApiContext();
-        let productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+        let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
         let today = new Date();
-        today.setDate(today.getDate() + 1); // Enable this line when we want to run for Vanguard
+        //today.setDate(today.getDate() + 1); // Enable this line when we want to run for Vanguard
         let refDate = DateUtils.localISOStringDate(today);
         await ProductApiHandler.uploadHfmAccumUnitPrices(apiRequestContext, productId, refDate);
         await investmentsAndPricing.reload();
