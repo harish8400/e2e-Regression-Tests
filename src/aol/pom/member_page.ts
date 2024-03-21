@@ -114,6 +114,7 @@ export class MemberPage extends BasePage {
     readonly highGrowth:Locator;
     readonly investmentDropDown2:Locator;
     readonly sustainbleGrowth1:Locator;
+    readonly memberCreated:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -217,6 +218,7 @@ export class MemberPage extends BasePage {
     this.verifySwitchSuccess = page.getByText('Process step completed with note: Investment change letter payload sent.');
     this.highGrowth=page.locator('li').filter({ hasText: 'High Growth' });
     this.investmentDropDown2 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
+    this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
 }    
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
@@ -354,6 +356,10 @@ export class MemberPage extends BasePage {
         await this.processeslink.click();
         await this.sleep(2000);
         await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
+        await this.sleep(2000);
+        await this.page.locator('//span[text()="In Progress"]').click();
+        
+        await this.reviewCase.reviewCaseProcess(this.memberCreated);
         }
 
     

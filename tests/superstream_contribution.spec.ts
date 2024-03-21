@@ -4,7 +4,7 @@ import SftpClient from 'ssh2-sftp-client';
 import path from "path";
 import { readXml } from '../src/utils/xml_utils';
 import { UtilsAOL } from "../src/aol/utils_aol";
-import { Builder } from "xml2js";
+import { Builder,BuilderOptions } from "xml2js";
 import * as fs from 'fs';
 import superStreamData from "../src/aol/data/super_stream.json"
 import { FUND } from "../constants";
@@ -12,8 +12,8 @@ import employeeData from "../src/aol/data/employers.json"
 
 let currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // Format: YYYYMMDD
 let superGateMessageId = `${currentDate}.115734.123@superchoice.com.au`;
-let randomSuffix = Math.floor(Math.random() * 1000); // 
-let conversationId = `Contribution.84111122223.${currentDate}111812${randomSuffix}`;
+let randomSuffix = Math.floor(Math.random() * 100);
+let conversationId = `Contribution.84111122223.${currentDate}1118125${randomSuffix}`;
 let xmlFileName = `MRR_${currentDate}_115734_123_${conversationId}.xml`;
 let xmlFilePath = path.join(__dirname, `../src/aol/data/${xmlFileName}`);
 let remoteFilePath = `/home/saturn-dev-contribution/inbox/${xmlFileName}`;
@@ -64,7 +64,7 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
     let dob = UtilsAOL.memberDob();
     let gender = UtilsAOL.randomGender();
     let tfn = UtilsAOL.generateValidTFN();
-    const isTFNProvided = true;
+    const isTFNProvided = false;
     let number = UtilsAOL.randomNumber(20);
 
     let sourceAbn, sourceUsi, organisationName, value, entityIdentifier;
@@ -89,15 +89,22 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
       entityIdentifier = aeValues[0].entity;
     }
 
-    // Define XML builder
-    const xmlBuilder = new Builder();
+
+    const xmlBuilderOptions: BuilderOptions = {
+      xmldec: {
+        version: '1.0', // specify XML version
+        standalone: undefined // remove the standalone attribute
+      }
+    };
+    // Define XML builder with options
+    const xmlBuilder = new Builder(xmlBuilderOptions);
+    
 
     // Define XML structure with dynamic and static values
     const xmlObject = {
       'message:superGateXmlMessage': {
         $: {
-          xmlns: 'http://integration.universal.superchoice.com.au/messages/message',
-          xmlnsAddress: 'http://integration.universal.superchoice.com.au/domain/address/address',
+          xmlnsAddress: 'http://integration.universal.superchoice.com.au/domain/address/address' ,
           xmlnsAmount: 'http://integration.universal.superchoice.com.au/domain/amount/amount',
           xmlnsAustralianBusinessNumber: 'http://integration.universal.superchoice.com.au/domain/government/australianBusinessNumber',
           xmlnsAustralianTaxFileNumber: 'http://integration.universal.superchoice.com.au/domain/government/australianTaxFileNumber',
@@ -123,6 +130,7 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
           xmlnsMemberNumber: 'http://integration.universal.superchoice.com.au/domain/member/memberNumber',
           xmlnsMemberTransaction: 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransaction',
           xmlnsMemberTransactionResponse: 'http://integration.universal.superchoice.com.au/domain/transaction/memberTransactionResponse',
+          xmlnsMessage:'http://integration.universal.superchoice.com.au/messages/message',
           xmlnsMessageIdentifier: 'http://integration.universal.superchoice.com.au/domain/identifiers/messageIdentifier',
           xmlnsMonth: 'http://integration.universal.superchoice.com.au/domain/moment/month',
           xmlnsName: 'http://integration.universal.superchoice.com.au/domain/person/name',
@@ -344,8 +352,11 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
   console.error('Error handling XML:', error);
 }
 try {
+  if(xmlFilePath.endsWith(xmlFileName)){
   await superSteam.performUpload(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent);
   console.log('Uploaded file:', remoteFilePath);
+  }
+  
 } catch (error) {
   console.error('Error performing file upload:', error);
 }
