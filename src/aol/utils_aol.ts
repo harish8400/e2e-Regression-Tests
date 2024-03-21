@@ -159,7 +159,7 @@ export class UtilsAOL {
     }
 
     static randomNumber(length: number): string {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const chars = '0123456789';
         let result = '';
         for (let i = 0; i < length; i++) {
             const randomIndex = Math.floor(Math.random() * chars.length);
@@ -167,6 +167,7 @@ export class UtilsAOL {
         }
         return result;
     }
+    
 }
 
 export function fundName() {

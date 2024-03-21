@@ -13,7 +13,7 @@ import employeeData from "../src/aol/data/employers.json"
 let currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // Format: YYYYMMDD
 let superGateMessageId = `${currentDate}.115734.123@superchoice.com.au`;
 let randomSuffix = Math.floor(Math.random() * 1000); // 
-let conversationId = `Contribution.84111122223.${currentDate}1118${randomSuffix}_1`;
+let conversationId = `Contribution.84111122223.${currentDate}1118${randomSuffix}`;
 let xmlFileName = `MRR_${currentDate}_115734_123_Contribution.84111122223.${currentDate}1118${randomSuffix}_1.xml`;
 let xmlFilePath = path.join(__dirname, `../src/aol/data/${xmlFileName}`);
 let remoteFilePath = `/home/saturn-dev-contribution/inbox/${xmlFileName}`;
@@ -340,9 +340,6 @@ test('superstream-MRR', async ({memberPage }) => {
     console.log('Actual XML structure:', readXmlValues); // Log the actual structure
   }
 
-
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-
   async function main() {
     const sftp = new SftpClient();
     console.log('Private Key Content:', privateKeyContent);
@@ -357,6 +354,7 @@ test('superstream-MRR', async ({memberPage }) => {
       });
 
       // Perform SFTP upload operation
+      await new Promise((resolve) => setTimeout(resolve, 20000));
       await sftp.fastPut(xmlFilePath, remoteFilePath);
       console.log('File uploaded successfully.');
     } catch (err: any) {
