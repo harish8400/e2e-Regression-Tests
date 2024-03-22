@@ -141,9 +141,8 @@ export class PensionTransactionPage extends BasePage {
   readonly adminFeeCase:Locator;
   readonly investtmnetBalanceScreen:Locator;
   readonly paymentDetails:Locator;
-  
-
-
+  readonly investmentSwitchTransaction: Locator;
+  readonly investmentSwitchTransaction_status: Locator;
 
   //Vanguard
   readonly unathorized: Locator
@@ -215,7 +214,8 @@ export class PensionTransactionPage extends BasePage {
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
     this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
     this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' });
-
+    this.investmentSwitchTransaction = page.getByRole('row',{name: 'Pension Commencement Investment Switch'});
+    this.investmentSwitchTransaction_status = page.getByText('Status:Finalised');
     ///Death Benifits
 
     this.BenefitPayment = page.getByText('Benefit Payment');
@@ -467,6 +467,7 @@ export class PensionTransactionPage extends BasePage {
       await this.DOD.press('Tab');
       await this.linkCase.click();
       await this.sleep(3000);
+      await this.investmentSwitchTransaction.click();
       await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
     }
 
@@ -543,6 +544,7 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
+    await this.reviewCase.captureScreenshot();
 
   }
 
@@ -844,6 +846,15 @@ export class PensionTransactionPage extends BasePage {
     let transID = this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)");
     let id = transID.textContent();
     return id!;
+  }
+
+  async InvestmentSwitchTransactionStatus(){
+    await this.memberTransactionTab.click();
+    await this.sleep(3000);
+    await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
+    await this.investmentSwitchTransaction.click();
+    await expect(this.investmentSwitchTransaction_status).toBeVisible();
+    await this.reviewCase.captureScreenshot();
   }
 
 

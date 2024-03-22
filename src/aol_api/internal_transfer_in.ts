@@ -166,7 +166,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
         return { id, fundName, memberNo: memberNumber };
       }
 
-    async getMemberDetails(linearId: string): Promise<{ memberNo: string, otherNames: string, givenName: string, surname: string, gender: string, title: string, dob: string, tfn: string }> {
+    async getMemberDetails(linearId: string): Promise<{ memberId: string, memberNo: string, otherNames: string, givenName: string, surname: string, gender: string, title: string, dob: string, tfn: string }> {
         let path = `/member/${linearId}`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -179,8 +179,8 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let title = responseBody?.identity?.title || null;
         let dob = responseBody?.identity?.dob || null;
         let tfn = responseBody?.identity?.tfn || null;
-
-        return { memberNo, otherNames, givenName, surname, gender, title, dob, tfn };
+        let memberId = responseBody?.identity?.linearId.id || null;
+        return { memberNo, otherNames, givenName, surname, gender, title, dob, tfn, memberId };
     }
 
     async getMemberInfo(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {

@@ -14,7 +14,8 @@ export class ShellAccountApiHandler {
         gender?: string;
         title?: string;
         dob?: string;
-        tfn?:string
+        tfn?:string;
+        memberId?:string;
     }> {
         const memberApi = new ShellAccountApi(apiRequestContext);
         return memberApi.getMemberDetails(linearId!);

@@ -6,6 +6,7 @@ import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -165,11 +166,58 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
     await pensionTransactionPage.commutationRolloverOutTTR(false);
 })
 
-test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
-    await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
-    await pensionTransactionPage.verifyPTBtransaction(true);
-    await pensionTransactionPage.pensionCommence();
+test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, memberPage, accountInfoPage, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+    
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+    })
+
+    let createMemberNo: string | undefined;
+    
+    await test.step("Add new Accumulation Member", async () => {
+        const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+        createMemberNo = memberData.createMemberNo;
+    })
+    let linearId: string | undefined;
+    await test.step("Create Shell Account for same Member & add PTB", async () => {
+        await pensionAccountPage.createShellAccountExistingMember(createMemberNo!);
+        let memberCreated  = await pensionAccountPage.getMemberId();
+        const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
+        linearId = memberId.id;
+    })
+    await test.step("Select the Accumulation Member", async () => {
+        await pensionAccountPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo!);
+    })
+
+    await test.step("Navigate to ABP Screen", async () => {
+            await pensionAccountPage.retirement()
+    })
+
+    await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+        await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+    })
+
+    await test.step("Validate the payment details & components ", async () => {
+        await pensionTransactionPage.transactionView();
+        await pensionTransactionPage.componentsValidation();
+        await pensionTransactionPage.sleep(5000)
+    })
+    await test.step("commence pension & validate member is active", async () => {
+        await MemberApiHandler.ptbTransactions(apiRequestContext, linearId!);
+        await pensionTransactionPage.pensionCommence();
+        
+        await pensionTransactionPage.memberStatus();
+    })
+    await test.step("Validate balance from investment and balance & Correpondence payload is generated", async () => {
+        await pensionTransactionPage.investementBalances();
+        await pensionTransactionPage.memberTransactionTab.click();
+        await pensionTransactionPage.componentsValidation();
+    })
+    await test.step("Validate Pension Commencement & Investment Switch status", async () =>{
+        await pensionTransactionPage.InvestmentSwitchTransactionStatus();
+    })
 })
 
 test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage, apiRequestContext, internalTransferPage }) => {

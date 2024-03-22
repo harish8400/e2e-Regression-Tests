@@ -37,6 +37,8 @@ export class PensionShellAccount extends BasePage {
   readonly residencyStatus: Locator;
   readonly residencyStatusSelect: Locator;
   readonly nextStep: Locator;
+  readonly createdMemberCaseLink: Locator;
+  readonly memberID: Locator;
 
   //Random members 
 
@@ -191,7 +193,8 @@ export class PensionShellAccount extends BasePage {
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
-
+    this.createdMemberCaseLink = page.locator("//a[@class='gs-link text-teal-300 cursor-pointer relative no-underline font-bold']");
+    this.memberID = page.locator("(//p[@class='kwVMLQ'])[2]");
     //Consolidate step
     this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
     this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
@@ -507,6 +510,16 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000);
     await this.transactionsTab.click();
 
+  }
+
+  async getMemberId(){
+    await this.createdMemberCaseLink.click();
+    await this.sleep(3000)
+    await this.abpScreenView.waitFor();
+    await this.abpScreenView.click();
+    await this.sleep(3000);
+    let memberNumber = await this.memberID.textContent();
+    return memberNumber;
   }
 
   async ttrRetirement(){
