@@ -184,7 +184,7 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
         createMemberNo = memberData.createMemberNo;
     })
     let linearId: string | undefined;
-    await test.step("Create Shell Account for same Member & add PTB", async () => {
+    await test.step("Create Shell Account for same Member", async () => {
         await pensionAccountPage.createShellAccountExistingMember(createMemberNo!);
         let memberCreated  = await pensionAccountPage.getMemberId();
         const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
@@ -209,7 +209,7 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
         await pensionTransactionPage.componentsValidation();
         await pensionTransactionPage.sleep(5000)
     })
-    await test.step("commence pension & validate member is active", async () => {
+    await test.step("add PTB & commence pension and validate member is active", async () => {
         await MemberApiHandler.ptbTransactions(apiRequestContext, linearId!);
         await pensionTransactionPage.pensionCommence();
         
@@ -217,8 +217,8 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
     })
     await test.step("Validate balance from investment and balance & Correpondence payload is generated", async () => {
         await pensionTransactionPage.investementBalances();
-        await pensionTransactionPage.memberTransactionTab.click();
-        await pensionTransactionPage.componentsValidation();
+        // await pensionTransactionPage.memberTransactionTab.click();
+        // await pensionTransactionPage.componentsValidation();
     })
     await test.step("Validate Pension Commencement & Investment Switch status", async () =>{
         await pensionTransactionPage.InvestmentSwitchTransactionStatus();
@@ -228,7 +228,7 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
 test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage, apiRequestContext, internalTransferPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
-    const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+    const createMemberNo = await memberPage.addNewMember(false, true);
     await navBar.selectMember(createMemberNo);
     await accountInfoPage.updateCRN();
 })

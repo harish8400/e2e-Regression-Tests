@@ -117,30 +117,30 @@ export class MemberPage extends BasePage {
     readonly investmentDropDown2:Locator;
     readonly sustainbleGrowth1:Locator;
 
-    readonly investementBalancesTab:Locator
-    readonly investmentEditBtn:Locator
-    readonly investmentDropDown:Locator
-    readonly conservative:Locator
-    readonly balanceAllocation:Locator
-    readonly transactionAllocation:Locator
-    readonly addBtn:Locator
-    readonly sustainableGrowth:Locator
-    readonly investmentDropDown1:Locator
-    readonly balanceAllocation1:Locator
-    readonly transactionAllocation1:Locator
-    readonly addBtn1:Locator
-    readonly viewCases: Locator;
-    readonly createCase:Locator;
-    readonly linkCase:Locator;
-    readonly approveProcessStep: Locator;
-    readonly retryProcessStep: Locator;
-    readonly processException: Locator;
-    readonly leftArrow: Locator;
-    readonly investmentProfileDropDown:Locator;
-    readonly memberLink:Locator;
-    readonly firstRowMember:Locator;
-    readonly percentage:Locator;
-    readonly verifySwitchSuccess: Locator;
+    // readonly investementBalancesTab:Locator
+    // readonly investmentEditBtn:Locator
+    // readonly investmentDropDown:Locator
+    // readonly conservative:Locator
+    // readonly balanceAllocation:Locator
+    // readonly transactionAllocation:Locator
+    // readonly addBtn:Locator
+    // readonly sustainableGrowth:Locator
+    // readonly investmentDropDown1:Locator
+    // readonly balanceAllocation1:Locator
+    // readonly transactionAllocation1:Locator
+    // readonly addBtn1:Locator
+    // readonly viewCases: Locator;
+    // readonly createCase:Locator;
+    // readonly linkCase:Locator;
+    // readonly approveProcessStep: Locator;
+    // readonly retryProcessStep: Locator;
+    // readonly processException: Locator;
+    // readonly leftArrow: Locator;
+    // readonly investmentProfileDropDown:Locator;
+    // readonly memberLink:Locator;
+    // readonly firstRowMember:Locator;
+    // readonly percentage:Locator;
+    // readonly verifySwitchSuccess: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -476,34 +476,34 @@ export class MemberPage extends BasePage {
        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
      } 
 
-     // async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-    //     const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-    //     await accountInfoPage.ProcessTab();
-    //     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    //     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-    //     await new Promise(resolve => setTimeout(resolve, 10000));
-    //     await accountInfoPage.reload();
-    //     await navBar.navigateToAccumulationMembersPage();
-    //     await navBar.selectMember(createMemberNo);
-    //     const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
-    //     await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
-    //     await accountInfoPage.reload();
-    //     await internalTransferPage.memberSummary();
-    //     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-    //     await accountInfoPage.reload();
-    //     await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-    //     return {createMemberNo};
-    // }
+     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        await accountInfoPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await accountInfoPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo);
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await internalTransferPage.memberSummary();
+        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
 
-    // async createAccumulationMember(apiRequestContext: APIRequestContext) {
-    //     const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-    //     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    //     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-    //     await new Promise(resolve => setTimeout(resolve, 5000));
-    //     const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
-    //     await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
-    //     //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-    //     //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-    //     return {createMemberNo};
-    // }
+    async createAccumulationMember(apiRequestContext: APIRequestContext) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
  }

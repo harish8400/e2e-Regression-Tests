@@ -133,12 +133,12 @@ export function fundDetails(product: string) {
 
     switch (product) {
         case 'HESTA for Mercy':
-            productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
-            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
             break;
         case 'Vanguard Super':
-            productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
-            investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+            investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
             break;
 
         default:
