@@ -28,14 +28,17 @@ export class MemberApi extends BaseDltaAolApi {
     this.firstPensionPaymentDate.setDate(this.commencementDate.getDate() + 15);
   }
 
-  async createMember(fundProductId: string): Promise<{ memberId: string, memberNo: string, fundProductId: string, processId: string }> {
+  async createMember(tfnNull: boolean = false): Promise<{ memberId: string, memberNo: string, processId: string }> {
     let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
     let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
     let path = `product/${productId}/process`;
-    let tfn = UtilsAOL.generateValidTFN();
+    let tfn = null;
+    if(!tfnNull){
+      tfn = UtilsAOL.generateValidTFN();
+    }
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
-    let memberNo = UtilsAOL.memberNumber('MemberNo-', 9);
+    let memberNo = UtilsAOL.memberNumber('', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
     let data = {
       templateReference: 'createMember',
@@ -116,10 +119,8 @@ export class MemberApi extends BaseDltaAolApi {
     let MemberNo: string = responseBody.initialData.memberData.memberNo;
     let processId: string = responseBody?.linearId?.id || null;
     console.log(`Created member with memberNo: ${MemberNo} and memberId: ${memberId}`);
-    return { memberId, memberNo: MemberNo, fundProductId: fundProductId, processId };
+    return { memberId, memberNo: MemberNo, processId };
   }
-
-
 
   async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
     let path = `case/group/${caseGroupId}/approve`;

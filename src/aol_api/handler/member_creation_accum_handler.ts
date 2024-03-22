@@ -7,10 +7,9 @@ import { ShellAccountApi } from '../internal_transfer_in';
 
 export class AccumulationMemberApiHandler {
     
-    static async createMember(memberApi: MemberApi, fundProductId?: string) {
-        return await memberApi.createMember(fundProductId!);
+    static async createMember(memberApi: MemberApi, tfnNull: boolean = false) {
+        return await memberApi.createMember(tfnNull);
     }
-
     static async getCaseGroupId(memberApi: MemberApi, processId?: string) {
         
         return await memberApi.getCaseGroupId(processId!);

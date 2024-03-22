@@ -53,6 +53,8 @@ export class MemberTransactionsPage extends BasePage {
     readonly viewCases: Locator;
     readonly reviewCase: ReviewCase;
     readonly memberOverViewPage: MemberOverView;
+    readonly firstRowMember:Locator;
+    readonly pensionComutation:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -110,6 +112,8 @@ export class MemberTransactionsPage extends BasePage {
         this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sen');
         this.memberOverview = page.getByRole('button', { name: 'Overview' });
         this.exitStatus = page.getByRole('cell', { name: 'Exited', exact: true });
+        this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
+        this.pensionComutation=page.getByText('Pension Commutation');
 
     }
 
@@ -123,6 +127,7 @@ export class MemberTransactionsPage extends BasePage {
         await this.viewCase.click();
         await this.createCase.click();
         await this.sleep(3000);
+        let contributionAmount = '10000';
 
         await this.memberContributionType.click();
         if(contributionType == 'Salary Sacrifice'){
@@ -145,7 +150,7 @@ export class MemberTransactionsPage extends BasePage {
         await this.paymentReceivedDate.press('Tab');
         await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.effectiveDate.press('Tab');
-        await this.contributionAmount.fill('10000');
+        await this.contributionAmount.fill(contributionAmount);
         await this.governmentContribution.click();
         await this.governmentContributionConfirm.click();
         await this.sleep(3000);
@@ -158,7 +163,7 @@ export class MemberTransactionsPage extends BasePage {
         else{
             await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
         }
-
+        return contributionAmount;
     }
 
     /** Member Termination for Current Date */
