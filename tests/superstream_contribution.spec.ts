@@ -352,7 +352,9 @@ test('superstream-MRR', async ({memberPage,superSteam}) => {
 }
 try {
   
-  await superSteam.uploadXMLFile(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent);
+  await superSteam.uploadXMLFile(xmlFilePath, remoteFilePath, privateKeyPath, privateKeyContent)
+  .then(() => console.log('XML file upload completed successfully'))
+  .catch(error => console.error('Failed to upload XML file:', error));
  
   
 } catch (error) {
