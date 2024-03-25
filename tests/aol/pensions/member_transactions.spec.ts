@@ -5,10 +5,9 @@ import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json"
-import { MemberTransactionsPage } from "../../../src/aol/pom/member_transaction";
-import { ReviewCase } from "../../../src/aol/pom/component/review_case";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import pensionMember from "../../../data/aol_test_data.json"
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -96,8 +95,14 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
 
 test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-    await pensionTransactionPage.commutationUNPBenefitReject(false);
+    if (pensionMember.generate_test_data_from_api) {
+        await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+        await pensionTransactionPage.commutationUNPBenefitReject(false);
+    } else {
+        // Selecting a member based on the test case
+        const memberNo = pensionMember.members["ABP_UNP_Commutation_Partial_Member_Number"];
+        await navBar.selectMember(memberNo);
+    }
 })
 
 test(fundName() + "-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
@@ -162,12 +167,15 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
     }
 })
 
-test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar,memberPage,memberTransactionPage, pensionTransactionPage , pensionAccountPage, apiRequestContext }) => {
+test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, globalPage }) => {
     let memberNo = member.memberIdUNP;
     await navBar.navigateToTTRMembersPage();
+    await globalPage.captureScreenshot('TTR Member page');
     await navBar.selectMember(memberNo);
+    await globalPage.captureScreenshot('TTR Member Selection');
     await pensionTransactionPage.verifyErrorMessageForMemberBalanceNotHundredPercentUNP();
-   
+    await globalPage.captureScreenshot('Error Message');
+
 })
 
 test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {

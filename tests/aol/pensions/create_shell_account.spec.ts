@@ -1,9 +1,9 @@
 import { allure } from "allure-playwright";
 import { aolTest as base } from "../../../src/aol/base_aol_test"
-import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
-import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import member from "../../../data/aol_test_data.json"
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -18,26 +18,45 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension", async ({navBar,apiRequestContext }) => {
-    await navBar.navigateToPensionMembersPage();
-    let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-    	await new Promise(resolve => setTimeout(resolve, 5000));
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-//approve the process
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await navBar.selectMember(memberNo);
+test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension", async ({ navBar, pensionAccountPage, globalPage }) => {
 
-        
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await globalPage.captureScreenshot('Accumulation Member page');
+    })
+
+
+    await test.step("Select the Exsisting Accumulation Member", async () => {
+        const memberNo = member.members.Accumulation_member;
+        await navBar.selectMember(memberNo);
+        await globalPage.captureScreenshot('Exsisting Accumulation Member');
+
+    })
+    await test.step("Create shell account for the accumulation member", async () => {
+        await pensionAccountPage.createShellAccountExistingMember();
+        await globalPage.captureScreenshot('Same Member Shell Account Creation');
+    })
+
+
 })
 
-test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar,apiRequestContext  }) => {
-    await navBar.navigateToPensionMembersPage();
-    let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-    	await new Promise(resolve => setTimeout(resolve, 5000));
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-//approve the process
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, globalPage,pensionAccountPage }) => {
+   
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await globalPage.captureScreenshot('Accumulation Member page');
+    })
+
+
+    await test.step("Select the Exsisting Accumulation Member", async () => {
+        const memberNo = member.members.Accumulation_member;
         await navBar.selectMember(memberNo);
+        await globalPage.captureScreenshot('Exsisting Accumulation Member');
+
+    })
+
+    await test.step("Create shell account for the accumulation member", async () => {
+        await pensionAccountPage.createShellAccountExistingMember(true);
+        await globalPage.captureScreenshot('Same Member Shell Account Creation');
+    })
 })

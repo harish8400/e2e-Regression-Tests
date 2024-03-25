@@ -83,6 +83,7 @@ export class PensionShellAccount extends BasePage {
   readonly payment_frequency: Locator;
   readonly PensionPaymentDate: Locator;
   readonly proRata: Locator;
+  readonly taxThreshold:Locator;
   readonly eligibilty: Locator;
   readonly select_eligibility: Locator;
   readonly annual_payment: Locator;
@@ -205,7 +206,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.invPercentage = page.getByRole('textbox').nth(1)
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -228,13 +229,14 @@ export class PensionShellAccount extends BasePage {
 
     //pension step
     this.payment_frequency_select = page.getByTitle('Payment Frequency').getByPlaceholder('Select');
-    this.payment_frequency = page.locator('li').filter({ hasText: 'Fortnightly' });
+    this.payment_frequency = page.locator('li').filter({ hasText: 'Monthly' })
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.proRata = page.getByText('Yes').first();
+    this.proRata = page.locator("(//label[text()='Yes'])[1]");
+    this.taxThreshold = page.locator("(//label[text()='Yes'])[2]");
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
+    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' })
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
-    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
+    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' })
 
     //Bank Acc
 
@@ -288,7 +290,6 @@ export class PensionShellAccount extends BasePage {
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
-
     //process link
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
@@ -374,6 +375,8 @@ export class PensionShellAccount extends BasePage {
     await this.beneficiaryStateSelect.click();
     await this.beneficiaryPostcode.fill(member.postcode);
     await this.beneficiarySave.click();
+    await this.sleep(3000);
+    await this.reviewCase.captureScreenshot();
     await this.nextStep.click();
   }
 
@@ -383,8 +386,11 @@ export class PensionShellAccount extends BasePage {
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
-    await this.proRata.hover();
+    await this.sleep(2000);
     await this.proRata.click();
+    await this.sleep(2000);
+    await this.taxThreshold.click();
+    await this.sleep(2000);
     await this.eligibilty.click();
     await this.select_eligibility.click();
     await this.annual_payment.click();
@@ -518,7 +524,7 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async createShellAccountExistingMember() {
+  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();
@@ -532,8 +538,14 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
     await this.addMemberConsolidation();
     await this.addMemberInvestments();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+     
     await this.nextStep.click();
+    }
     await this.addMemberPensionDetails();
+    await this.sleep(3000);
     await this.initCreateCase();
     await this.createAcc.click();
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
