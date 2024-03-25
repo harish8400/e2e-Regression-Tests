@@ -8,6 +8,7 @@ import * as member from "../../../src/aol/data/member.json"
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import pensionMember from "../../../data/aol_test_data.json"
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -105,20 +106,70 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
     }
 })
 
-test(fundName() + "-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
-    await navBar.navigateToPensionMembersPage();
-    let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-    let membersId = memberId.linearId.id;
-    await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-    await pensionTransactionPage.investementBalances();
-    await pensionTransactionPage.commutationRolloverOut(true);
-    await pensionTransactionPage.paymentView();
-    await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId);
-    await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, membersId);
-    await pensionTransactionPage.unitPriceValidation();
-    await MemberApiHandler.fetchMemberSummary(apiRequestContext, membersId);
-    await ShellAccountCreationApiHandler.getMemberFee(transactionApi, membersId);
-    await pensionTransactionPage.memberStatus();
+test(fundName() + "-ABP Rollover Out Commutation - Full exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
+    let membersId: string | undefined;
+
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToPensionMembersPage();
+        await globalPage.captureScreenshot('Pensions Members page');
+    })
+
+    if (!pensionMember.generate_test_data_from_api) {
+        await test.step("Select Existing Pension Member", async () => {
+            let memberNo = pensionMember.members.ABP_Commutation_Rollover_Full_Member_Number;
+            await navBar.selectMember(memberNo);
+            await globalPage.captureScreenshot('Pension Member Selection page');
+        });
+    }
+
+    else if (pensionMember.generate_test_data_from_api) {
+        await test.step("Create New Pension shell Account", async () => {
+            let memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+        });
+    }
+    if (pensionMember.generate_test_data_from_api) {
+    await test.step("Fetch Member Details ", async () => {
+        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, membersId);
+         
+      })
+
+    await test.step("Regular Pension Benefit Payments", async () => {
+        await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        await globalPage.captureScreenshot('RPBP Details');
+    })
+    } else{
+    
+    await test.step("Investments and Balances Page", async () => {
+        await pensionTransactionPage.investementBalances();
+        await globalPage.captureScreenshot('investement and Balances');
+    })
+
+
+    await test.step("Commutation Rollout Process", async () => {
+        await pensionTransactionPage.commutationRolloverOut(true);
+        await globalPage.captureScreenshot('Activity Data');
+    })
+    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+        await pensionTransactionPage.paymentView();
+        await globalPage.captureScreenshot('Payment Details');
+      
+    })
+
+    await test.step("Validate Unit Prices For the current Transactions", async () => {
+        await pensionTransactionPage.unitPriceValidation();
+        await globalPage.captureScreenshot('Unit Prices Page');
+    })
+    
+    await test.step("Validate Member Status", async () => {
+        
+        await pensionTransactionPage.memberStatus();
+        await globalPage.captureScreenshot('Member Summary Page');
+        
+    })
+}
+
 
 })
 
