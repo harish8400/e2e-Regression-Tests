@@ -4,6 +4,9 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as member from "../../../src/aol/data/member.json"
+import { MemberTransactionsPage } from "../../../src/aol/pom/member_transaction";
+import { ReviewCase } from "../../../src/aol/pom/component/review_case";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 
@@ -159,10 +162,12 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
     }
 })
 
-test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar,memberPage,memberTransactionPage, pensionTransactionPage , pensionAccountPage, apiRequestContext }) => {
+    let memberNo = member.memberIdUNP;
     await navBar.navigateToTTRMembersPage();
-    await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-    await pensionTransactionPage.commutationRolloverOutTTR(false);
+    await navBar.selectMember(memberNo);
+    await pensionTransactionPage.verifyErrorMessageForMemberBalanceNotHundredPercentUNP();
+   
 })
 
 test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {

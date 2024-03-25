@@ -5,6 +5,8 @@ import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 import { FUND } from "../../../constants";
+import { InvalidResultAttributeException } from "@aws-sdk/client-ssm/dist-types/models/models_1";
+
 import { MemberApiHandler } from "../../aol_api/handler/member_api_handler";
 import { Navbar } from "./component/navbar";
 import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_handler";
@@ -114,6 +116,31 @@ export class MemberPage extends BasePage {
     readonly highGrowth:Locator;
     readonly investmentDropDown2:Locator;
     readonly sustainbleGrowth1:Locator;
+
+    readonly investementBalancesTab:Locator
+    readonly investmentEditBtn:Locator
+    readonly investmentDropDown:Locator
+    readonly conservative:Locator
+    readonly balanceAllocation:Locator
+    readonly transactionAllocation:Locator
+    readonly addBtn:Locator
+    readonly sustainableGrowth:Locator
+    readonly investmentDropDown1:Locator
+    readonly balanceAllocation1:Locator
+    readonly transactionAllocation1:Locator
+    readonly addBtn1:Locator
+    readonly viewCases: Locator;
+    readonly createCase:Locator;
+    readonly linkCase:Locator;
+    readonly approveProcessStep: Locator;
+    readonly retryProcessStep: Locator;
+    readonly processException: Locator;
+    readonly leftArrow: Locator;
+    readonly investmentProfileDropDown:Locator;
+    readonly memberLink:Locator;
+    readonly firstRowMember:Locator;
+    readonly percentage:Locator;
+    readonly verifySwitchSuccess: Locator;
 
     constructor(page: Page) {
         super(page)
