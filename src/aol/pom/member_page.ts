@@ -449,34 +449,35 @@ export class MemberPage extends BasePage {
        await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
      } 
 
-     // async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-    //     const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-    //     await accountInfoPage.ProcessTab();
-    //     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    //     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-    //     await new Promise(resolve => setTimeout(resolve, 10000));
-    //     await accountInfoPage.reload();
-    //     await navBar.navigateToAccumulationMembersPage();
-    //     await navBar.selectMember(createMemberNo);
-    //     const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
-    //     await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
-    //     await accountInfoPage.reload();
-    //     await internalTransferPage.memberSummary();
-    //     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-    //     await accountInfoPage.reload();
-    //     await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-    //     return {createMemberNo};
-    // }
+     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        await accountInfoPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await accountInfoPage.reload();
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo);
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await internalTransferPage.memberSummary();
+        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        await accountInfoPage.reload();
+        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
 
-    // async createAccumulationMember(apiRequestContext: APIRequestContext) {
-    //     const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-    //     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    //     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-    //     await new Promise(resolve => setTimeout(resolve, 5000));
-    //     const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
-    //     await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
-    //     //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-    //     //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-    //     return {createMemberNo};
-    // }
+    async createAccumulationMember(apiRequestContext: APIRequestContext) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
+    
  }
