@@ -717,8 +717,8 @@ export class PensionTransactionPage extends BasePage {
     await this.investmentScreen.click();
     const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
     const unitPricevalue = await unitPriceTable?.textContent();
-    console.log(unitPricevalue);
-    //expect(unitPricevalue).toMatch(/\$\d+\.\d{4,}/);
+    const match = unitPricevalue?.match(/\$(\d+\.\d{4,})/);
+    console.log(match ? parseFloat(match[1]) : null);
     await this.reviewCase.captureScreenshot();
     await this.sleep(3000);
     await this.adminFeeCase.focus();
