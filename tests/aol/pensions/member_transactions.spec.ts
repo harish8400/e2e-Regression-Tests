@@ -109,153 +109,107 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
 test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
-    let memberNo: string | undefined;
-    let memberId;
-    let linearId;
     let userId: string | undefined;
+
+    const captureScreenshotAndWait = async (description: string) => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await globalPage.captureScreenshot(description);
+    };
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await globalPage.captureScreenshot('Pensions Members page');
-    })
+        await captureScreenshotAndWait('Pensions Members page');
+    });
 
-    if (!pensionMember.generate_test_data_from_api) {
+    //when api is set to true, we will use existing member details for testing.
+    if (pensionMember.generate_test_data_from_api) {
+        
+        // Select Existing Pension Member
+        const memberNo = pensionMember.members.ABP_Commutation_Rollover_Full_Member_Number;
         await test.step("Select Existing Pension Member", async () => {
-            memberNo = pensionMember.members.ABP_Commutation_Rollover_Full_Member_Number;
             await navBar.selectMember(memberNo);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            await globalPage.captureScreenshot('Pension Member Selection page');
+            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
+            await captureScreenshotAndWait('Pension Member Selection page');
         });
-    }
 
-    else if (pensionMember.generate_test_data_from_api) {
-        await test.step("Create New Pension shell Account", async () => {
-            memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+        //When api is set to false we will use new Shell account creation for testing.
+
+    } else {
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await captureScreenshotAndWait('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
         });
     }
-    if (!pensionMember.generate_test_data_from_api) {
-        await test.step("Fetch Member Details ", async () => {
-             linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
-            userId = linearId.id;
 
-        })
-    }else{
-
-        await test.step("Regular Pension Benefit Payments", async () => {
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId!);
-            await globalPage.captureScreenshot('RPBP Details');
-        })
-    }
-
+    const getMemberId = () => membersId || userId;
+    
+    // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
-        if (pensionMember.generate_test_data_from_api) {
-            if (membersId) {
-                const investments =  await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, membersId!);
-                console.log('Investments:', investments);
-                await pensionTransactionPage.investementBalances();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('investement and Balances');
-            } else {
-                console.log("membersId is undefined. Cannot fetch Investments.");
-            }
+        const memberId = getMemberId();
+        if (memberId) {
+            const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
+            console.log('Investments:', investments);
+            await pensionTransactionPage.investementBalances();
+            await captureScreenshotAndWait('investment and Balances');
         } else {
-            if (userId) {
-                const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, userId!);
-                console.log('Investments:', investments);
-                await pensionTransactionPage.investementBalances();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('investement and Balances');
-            } else {
-                console.log("userId is undefined. Cannot proceed with  payments.");
-            }
+            console.log("Member ID is undefined. Cannot fetch Investments.");
         }
-    })
+    });
 
+    // Commutation Rollout Process
     await test.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationRolloverOut(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await globalPage.captureScreenshot('Activity Data');
-    })
+        await captureScreenshotAndWait('Activity Data');
+    });
 
+    // Validate the Payment Details In Transactions Screen
     await test.step("Validate the Payment Details In Transactions Screen", async () => {
-        if (pensionMember.generate_test_data_from_api) {
-            if (membersId) {
-               const paymentDetails = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, membersId!);
-               console.log('Payments:', paymentDetails);
-                await pensionTransactionPage.paymentView();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('Payment Details');
-            } else {
-                console.log("membersId is undefined. Cannot fetch payments.");
-            }
+        const memberId = getMemberId();
+        if (memberId) {
+            const paymentDetails = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
+            console.log('Payments:', paymentDetails);
+            await pensionTransactionPage.paymentView();
+            await captureScreenshotAndWait('Payment Details');
         } else {
-            if (userId) {
-                const paymentDetails = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, userId!);
-               console.log('Payments:', paymentDetails);
-                await pensionTransactionPage.paymentView();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('Payment Details');
-            } else {
-                console.log("userId is undefined. Cannot fetch payments.");
-            }
+            console.log("Member ID is undefined. Cannot fetch payments.");
         }
-    })
+    });
 
-
+    // Validate Unit Prices For the current Transactions
     await test.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await globalPage.captureScreenshot('Unit Prices Page');
-    })
+        await captureScreenshotAndWait('Unit Prices Page');
+    });
 
+    // Validate Member Fee Details
     await test.step("Validate Member Fee Details", async () => {
-        if (pensionMember.generate_test_data_from_api) {
-            if (membersId) {
-                const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, membersId!);
-                console.log('Fee:', feeDetails);
-
-            } else {
-                console.log("membersId is undefined. Cannot fetch Member Fee Details.");
-            }
+        const memberId = getMemberId();
+        if (memberId) {
+            const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, memberId);
+            console.log('Fee:', feeDetails);
         } else {
-            if (userId) {
-                const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, userId!);
-                console.log('Fee:', feeDetails);
-
-            } else {
-                console.log("userId is undefined. Cannot fetch Member Fee Details.");
-            }
+            console.log("Member ID is undefined. Cannot fetch Member Fee Details.");
         }
-    })
+    });
 
+    // Validate Member Status
     await test.step("Validate Member Status", async () => {
-        if (pensionMember.generate_test_data_from_api) {
-            if (membersId) {
-                const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, membersId!);
-                console.log("summary:",summary);
-                await pensionTransactionPage.memberStatus();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('Member Summary Page');
-            } else {
-                console.log("membersId is undefined. Cannot fetch Member status.");
-            }
+        const memberId = getMemberId();
+        if (memberId) {
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            console.log("summary:", summary);
+            await pensionTransactionPage.memberStatus();
+            await captureScreenshotAndWait('Member Summary Page');
         } else {
-            if (userId) {
-                const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, userId!);
-                console.log("summary:",summary);
-                await pensionTransactionPage.memberStatus();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                await globalPage.captureScreenshot('Member Summary Page');
-            } else {
-                console.log("userId is undefined. Cannot fetch Member status.");
-            }
+            console.log("Member ID is undefined. Cannot fetch Member status.");
         }
-    })
-})
+    });
+});
+
 
 test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi }) => {
     await navBar.navigateToPensionMembersPage();
