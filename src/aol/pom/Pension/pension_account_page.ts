@@ -201,7 +201,7 @@ export class PensionShellAccount extends BasePage {
     this.addFundSelectOption = page.getByText('Internal fund account');
     this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
 
-    this.sourceAccountNumber = page.locator('#gs10__listbox');
+    this.sourceAccountNumber = page.locator('#gs9__listbox');
     this.slider = page.locator('.switch-slider');
     this.enterAmount = page.getByText('$ 0.00');
     this.amountToBeEntered = page.getByPlaceholder('0');
@@ -211,23 +211,23 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1)
+    this.invPercentage = page.getByRole('textbox').nth(2)
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryRelation = page.locator('#gs6__combobox div').first();
-    this.beneficiaryRelationSelect = page.getByText('Spouse');
+    this.beneficiaryRelation = page.locator('#gs10__combobox div').first()
+    this.beneficiaryRelationSelect = page.getByRole('option', { name: 'Spouse' })
     this.beneficiaryEffectiveDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.select_gender = page.getByText('Male', { exact: true });
-    this.gender_select = page.locator('#gs7__combobox div').first();
+    this.select_gender = page.getByRole('option', { name: 'Male', exact: true })
+    this.gender_select = page.locator('#gs11__combobox div').first()
     this.beneficiaryContactName = page.getByLabel('Contact First Name');
-    this.countrySelect = page.locator('#gs8__combobox div').first();
+    this.countrySelect = page.locator('#gs12__combobox div').first()
     this.selectCountry = page.getByRole('option', { name: 'Australia' });
     this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
     this.beneficiaryCity = page.getByLabel('City/Town *');
-    this.beneficiaryState = page.locator('#gs9__combobox div').first();
+    this.beneficiaryState = page.locator('#gs18__combobox div').first()
     this.beneficiaryStateSelect = page.getByText('Australian Antarctic Territory');
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' }).first()
@@ -536,7 +536,7 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
+  async createShellAccountExistingMember(memberNo:boolean,addBeneficiary: boolean = false) {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();
@@ -564,7 +564,7 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async ttrAccountCreation(memberNo: string) {
+  async ttrAccountCreation(memberNo:boolean,addBeneficiary: boolean = false) {
     await this.sleep(3000);
     await this.memberOverview.waitFor();
     await this.memberOverview.click();
@@ -577,8 +577,14 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
     await this.addMemberConsolidation();
     await this.addMemberInvestments();
-    await this.nextStep.click();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+
+      await this.nextStep.click();
+    }
     await this.addMemberPensionDetails();
+    await this.sleep(3000);
     await this.initCreateCase();
     await this.createAcc.click();
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
