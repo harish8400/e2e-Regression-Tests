@@ -2,6 +2,8 @@ import { APIRequestContext } from '@playwright/test';
 import { MemberApi } from '../member_api';
 import { RollinApi } from '../rollin_api';
 import { Transactions } from './transaction_api_handler';
+import { Transactions } from './transaction_api_handler';
+import { DrawDownProfile } from '../drawdown_profile_api';
 
 
 
@@ -54,6 +56,14 @@ export class ShellAccountCreationApiHandler {
 
     static async getMemberFee(transactionApi:Transactions, memberId?: string) {
         return transactionApi.getMemberFee(memberId!);
+    }
+
+    static async specifiedOrderProfile(drawDownType:DrawDownProfile, memberId?: string) {
+        return drawDownType.memberWithSpecifiedOrderProfile(memberId!);
+    }
+
+    static async percentageProfile(drawDownType:DrawDownProfile, memberId?: string) {
+        return drawDownType.memberWithPercentageProfile(memberId!);
     }
 
     
