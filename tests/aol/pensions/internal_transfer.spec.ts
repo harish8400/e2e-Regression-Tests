@@ -42,7 +42,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest",
 
             // Select Existing Accumulation Member
             const memberNo = data.members.Accumulation_member;
-            await test.step("Select Existing Pension Member", async () => {
+            await test.step("Select the Exsisting Accumulation Member", async () => {
                 await navBar.selectMember(memberNo);
                 const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
                 membersId = linearId.id;
@@ -116,7 +116,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest",
 
             // Select Existing Accumulation Member
             const memberNo = data.members.Accumulation_member;
-            await test.step("Select Existing Pension Member", async () => {
+            await test.step("Select the Exsisting Accumulation Member", async () => {
                 await navBar.selectMember(memberNo);
                 const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
                 membersId = linearId.id;
