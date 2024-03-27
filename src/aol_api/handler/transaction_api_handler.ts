@@ -120,5 +120,54 @@ export class Transactions extends BaseDltaAolApi {
     }
 
 
-
+    async getMemberReport(memberId: string): Promise<{ effectiveDate: string, type: string, eventType: string | null, reportingEventValue: string | null }> {
+        try {
+            const path = `member/${memberId}/report`;
+            const response = await this.get(path);
+            const responseBody = await response.json();
+    
+            let dataOfMATS = null;
+    
+            // Iterate through each item in the data array to find the desired report
+            for (let i = responseBody.data.length - 1; i >= 0; i--) {
+                const item = responseBody.data[i];
+                if (item.type === 'MATS Submit') {
+                    dataOfMATS = item;
+                    break;
+                }
+            }
+    
+            if (!dataOfMATS) {
+                throw new Error('Report not found');
+            }
+    
+            // Extracting data from the found report
+            const { effectiveDate, type, data } = dataOfMATS;
+            const parsedData = JSON.parse(data);
+    
+            // Extracting desired fields from the parsed data
+            const eventType = parsedData.eventType || null;
+            const reportingEventValue = parsedData.reportingEventValue || null;
+    
+            // Create the object to return
+            const extractedFields = {
+                effectiveDate,
+                type,
+                eventType,
+                reportingEventValue
+            };
+    
+            // Log the extracted fields
+            console.log('MATS Report:', extractedFields);
+    
+            // Return the extracted fields
+            return extractedFields;
+        } catch (error:any) {
+            // Handle errors, such as API request failures or report not found
+            throw new Error('Failed to fetch member report: ' + error.message);
+        }
+    }
+    
+    
+    
 }

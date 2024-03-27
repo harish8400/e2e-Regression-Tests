@@ -147,6 +147,18 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
         }
     });
 
+    // Validate MATS Report
+    await test.step("Validate MATS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
+
 })
 
 test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
@@ -247,6 +259,18 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
             console.log("Member ID is undefined. Cannot fetch Member status.");
         }
     });
+
+    // Validate MATS Report
+    await test.step("Validate MATS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
 })
 
 test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
@@ -344,6 +368,18 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
             console.log("Member ID is undefined. Cannot fetch Member status.");
         }
     });
+
+    // Validate MATS Report
+    await test.step("Validate MATS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
 })
 
 test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
@@ -488,6 +524,18 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
             console.log("Member ID is undefined. Cannot fetch Member status.");
         }
     });
+
+    // Validate MATS Report
+    await test.step("Validate MATS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
 });
 
 
@@ -591,6 +639,19 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         } else {
             console.log("Member ID is undefined. Cannot fetch Member status.");
         }
+
+        // Validate MATS Report
+        await test.step("Validate MATS Report", async () => {
+            const memberId = getMemberId();
+            if (memberId) {
+                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+                console.log('MAAS Report:', MAASReport);
+            } else {
+                console.log("memberId is undefined. Cannot fetch MAAS Report.");
+            }
+        });
+
+
     });
 
 
@@ -709,6 +770,18 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
             console.log("Member ID is undefined. Cannot fetch Member status.");
         }
     });
+
+    // Validate MATS Report
+    await test.step("Validate MATS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
 
 })
 

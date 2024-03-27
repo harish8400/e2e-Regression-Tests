@@ -753,21 +753,27 @@ export class PensionTransactionPage extends BasePage {
   async memberStatus() {
     await this.sleep(3000);
     await this.summary.click();
-    let accountStatus = await this.page.$("(//p[@class='dwYCRt'])[2]");
-    let memberStatus = await accountStatus?.textContent();
-    console.log("member status is:", memberStatus);
-    if (memberStatus) {
-      memberStatus = memberStatus.trim();
-      if (memberStatus === 'Exited') {
-        console.log("Member has been Exited successfully");
-      } else if (memberStatus === 'Active') {
-        console.log('Member is still in Active state only');
-      } else if (memberStatus === 'Pending') {
-        console.log('Member status is in Pending state only');
-      }
+    let accountStatus = await this.page.$("//p[@class='gsTkwh']/following-sibling::div[@class='fVEMQP']/span[@class= 'fxIQyb']/following-sibling::p[1]");
+    console.log(accountStatus);
+    if (accountStatus) {
+        let memberStatus = await accountStatus.evaluate(node => node.textContent?.trim());
+        console.log("member status is:", memberStatus);
+        if (memberStatus) {
+            memberStatus = memberStatus.trim();
+            if (memberStatus === 'Exited') {
+                console.log("Member has been Exited successfully");
+            } else if (memberStatus === 'Active') {
+                console.log('Member is still in Active state only');
+            } else if (memberStatus === 'Pending') {
+                console.log('Member status is in Pending state only');
+            }
+        } else {
+            console.log("Member status not found or text content is null.");
+        }
     } else {
-      console.log("Member status not found or text content is null.");
+        console.log("Account status element not found.");
     }
+    
   }
 
   async componentsValidation() {
