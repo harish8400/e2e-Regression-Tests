@@ -57,7 +57,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -69,7 +69,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -160,7 +160,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -172,7 +172,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -259,7 +259,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -271,7 +271,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -356,7 +356,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -368,7 +368,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -401,7 +401,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -413,7 +413,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -503,7 +503,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -515,7 +515,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -609,7 +609,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -621,7 +621,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -720,7 +720,7 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
             await globalPage.captureScreenshot('Pensions Members page');
         });
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (pensionMember.generate_test_data_from_api) {
 
             // Select Existing Pension Member
@@ -731,7 +731,7 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to false we will use new Shell account creation for testing.
+            //When api is set to true we will use new Shell account creation for testing.
 
         } else {
             // Create New Pension Shell Account
@@ -761,7 +761,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Pension Member
@@ -773,7 +773,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to false we will use new Shell account creation for testing.
+        //When api is set to true we will use new Shell account creation for testing.
 
     } else {
         // Create New Pension Shell Account
@@ -810,7 +810,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
         await globalPage.captureScreenshot('Accumulation Members page');
     });
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (pensionMember.generate_test_data_from_api) {
 
         // Select Existing Accumulation Member
@@ -822,7 +822,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
             await globalPage.captureScreenshot('AccumulationMember Selection page');
         });
 
-        //When api is set to false we will use new Member Account account creation for testing.
+        //When api is set to true we will use new Member Account account creation for testing.
 
     } else {
         // Create New Member Account

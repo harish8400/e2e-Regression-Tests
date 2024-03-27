@@ -37,7 +37,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest",
             await globalPage.captureScreenshot('Accumulation Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Accumulation Member
@@ -49,7 +49,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest",
                 await globalPage.captureScreenshot('Accumulation Member Selection page');
             });
 
-            //When api is set to false we will use new Accumulation account creation for testing.
+            //When api is set to true we will use new Accumulation account creation for testing.
 
         } else {
             // Create New Accumulation Account
@@ -111,7 +111,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest",
             await globalPage.captureScreenshot('Accumulation Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Accumulation Member
@@ -123,7 +123,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest",
                 await globalPage.captureScreenshot('Accumulation Member Selection page');
             });
 
-            //When api is set to false we will use new Accumulation account creation for testing.
+            //When api is set to true we will use new Accumulation account creation for testing.
 
         } else {
             // Create New Accumulation Account
@@ -186,7 +186,7 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar
             await globalPage.captureScreenshot('Accumulation Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Pension Member
@@ -198,7 +198,7 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to false we will use new Shell account creation for testing.
+            //When api is set to true we will use new Shell account creation for testing.
 
         } else {
             // Create New Pension Shell Account
@@ -255,7 +255,7 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar
             await globalPage.captureScreenshot('Pensions Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Pension Member
@@ -267,7 +267,7 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to false we will use new Shell account creation for testing.
+            //When api is set to true we will use new Shell account creation for testing.
 
         } else {
             // Create New Pension Shell Account
@@ -325,7 +325,7 @@ test(fundName() + "-Validate Retirement Transition process is successful where P
             await globalPage.captureScreenshot('Pensions Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Pension Member
@@ -338,7 +338,7 @@ test(fundName() + "-Validate Retirement Transition process is successful where P
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to false we will use new Shell account creation for testing.
+            //When api is set to true we will use new Shell account creation for testing.
 
         } else {
             // Create New Pension Shell Account
@@ -402,7 +402,7 @@ test(fundName() + "-Validate Retirement Transition process completes successfull
             await globalPage.captureScreenshot('Pensions Members page');
         })
 
-        //when api is set to true, we will use existing member details for testing.
+        //when api is set to false, we will use existing member details for testing.
         if (data.generate_test_data_from_api) {
 
             // Select Existing Pension Member
@@ -414,7 +414,7 @@ test(fundName() + "-Validate Retirement Transition process completes successfull
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to false we will use new Shell account creation for testing.
+            //When api is set to true we will use new Shell account creation for testing.
 
         } else {
             // Create New Pension Shell Account

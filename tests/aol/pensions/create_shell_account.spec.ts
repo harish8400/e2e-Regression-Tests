@@ -29,7 +29,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
     })
 
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (data.generate_test_data_from_api) {
 
         // Select Existing Accumulation Member
@@ -40,7 +40,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
             await globalPage.captureScreenshot('Accumulation Member Selection page');
         });
 
-        //When api is set to false we will use new Accumulation account creation for testing.
+        //When api is set to true we will use new Accumulation account creation for testing.
 
     } else {
         // Create New Accumulation Account
@@ -72,7 +72,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     })
 
 
-    //when api is set to true, we will use existing member details for testing.
+    //when api is set to false, we will use existing member details for testing.
     if (data.generate_test_data_from_api) {
 
         // Select Existing Accumulation Member
@@ -83,7 +83,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
             await globalPage.captureScreenshot('Accumulation Member Selection page');
         });
 
-        //When api is set to false we will use new Accumulation account creation for testing.
+        //When api is set to true we will use new Accumulation account creation for testing.
 
     } else {
         // Create New Accumulation Account
