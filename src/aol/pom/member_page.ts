@@ -477,7 +477,7 @@ export class MemberPage extends BasePage {
      } 
 
      async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        const { memberNo: createMemberNo, processId ,memberId} = await MemberApiHandler.createMember(apiRequestContext);
         await accountInfoPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);

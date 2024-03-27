@@ -536,7 +536,7 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async createShellAccountExistingMember(memberNo:boolean,addBeneficiary: boolean = false) {
+  async createShellAccountExistingMember(memberNo:string,addBeneficiary: boolean = false) {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();

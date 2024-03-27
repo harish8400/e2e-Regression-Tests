@@ -21,83 +21,87 @@ test.beforeEach(async ({ navBar }) => {
 
 test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension", async ({ navBar, globalPage, accountInfoPage, apiRequestContext, internalTransferPage, memberPage, pensionAccountPage }) => {
 
-    let createMemberNo: string | undefined;
+    let membersId: string | undefined;
 
-    await test.step("Navigate to Accumulation Members page", async () => {
-        await navBar.navigateToAccumulationMembersPage();
-        await globalPage.captureScreenshot('Accumulation Member page');
-    })
+    //when api is set to true, we will use new member creation for testing.
 
-
-    //when api is set to false, we will use existing member details for testing.
     if (data.generate_test_data_from_api) {
+
+        // Create New Accumulation Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            membersId = memberId.createMemberNo
+            await globalPage.captureScreenshot('Accumulation Account Creation');
+        });
+
+        //When api is set to false we will Exsisting member for testing.
+
+    } else {
 
         // Select Existing Accumulation Member
         const memberNo = data.members.Accumulation_member;
         await test.step("Select the Exsisting Accumulation Member", async () => {
             await navBar.selectMember(memberNo);
-            await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
             await globalPage.captureScreenshot('Accumulation Member Selection page');
         });
 
-        //When api is set to true we will use new Accumulation account creation for testing.
-
-    } else {
-        // Create New Accumulation Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
-            await globalPage.captureScreenshot('Accumulation Account Creation');
-        });
     }
 
-
-    if (createMemberNo) {
-        await test.step("Create Shell Account for same Member", async () => {
-            await pensionAccountPage.createShellAccountExistingMember(!!createMemberNo, true);
+    const getMemberId = () => membersId;
+    await test.step("Create Shell Account for same Member", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            await pensionAccountPage.createShellAccountExistingMember(memberId!, true);
             await globalPage.captureScreenshot('Shell Account Creation for same Member');
-        });
-    }
-
+        } else {
+            console.log("Member ID is undefined. Cannot fetch Investments.");
+        }
+    
+    });
 
 })
 
-test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, globalPage, pensionAccountPage ,memberPage,accountInfoPage, apiRequestContext, internalTransferPage}) => {
+test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, globalPage, pensionAccountPage, memberPage, accountInfoPage, apiRequestContext, internalTransferPage }) => {
 
-    let createMemberNo: string | undefined;
+    let membersId: string | undefined;
 
-    await test.step("Navigate to Accumulation Members page", async () => {
-        await navBar.navigateToAccumulationMembersPage();
-        await globalPage.captureScreenshot('Accumulation Member page');
-    })
+    //when api is set to true, we will use new member creation for testing.
 
-
-    //when api is set to false, we will use existing member details for testing.
     if (data.generate_test_data_from_api) {
+
+        // Create New Accumulation Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            membersId = memberId.createMemberNo
+            await globalPage.captureScreenshot('Accumulation Account Creation');
+        });
+
+        //When api is set to false we will Exsisting member for testing.
+
+    } else {
 
         // Select Existing Accumulation Member
         const memberNo = data.members.Accumulation_member;
         await test.step("Select the Exsisting Accumulation Member", async () => {
             await navBar.selectMember(memberNo);
-            await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
             await globalPage.captureScreenshot('Accumulation Member Selection page');
         });
 
-        //When api is set to true we will use new Accumulation account creation for testing.
-
-    } else {
-        // Create New Accumulation Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
-            await globalPage.captureScreenshot('Accumulation Account Creation');
-        });
     }
 
-    if (createMemberNo) {
-        await test.step("Create Shell Account for same Member", async () => {
-            await pensionAccountPage.createShellAccountExistingMember(!!createMemberNo, true);
+const getMemberId = () => membersId;
+    await test.step("Create Shell Account for same Member", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            await pensionAccountPage.createShellAccountExistingMember(memberId!, true);
             await globalPage.captureScreenshot('Shell Account Creation for same Member');
-        });
-    }
+        } else {
+            console.log("Member ID is undefined. Cannot fetch Investments.");
+        }
+    
+    });
 })

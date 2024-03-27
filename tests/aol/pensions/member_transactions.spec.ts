@@ -55,8 +55,20 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_And_UNP_Commutation_Partial_Member_Number;
@@ -67,16 +79,6 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
     const getMemberId = () => membersId;
@@ -161,7 +163,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
 
 test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
-   
+
 
 
 
@@ -170,8 +172,21 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_And_UNP_Commutation_Partial_Member_Number;
@@ -182,19 +197,9 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
-    const getMemberId = () => membersId ;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -274,15 +279,29 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
 test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-    
+
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
+
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Commutation_Rollout_Partial_And_Full_Member_Number;
@@ -293,16 +312,6 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
     const getMemberId = () => membersId;
@@ -382,7 +391,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
 
 test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
     let membersId: string | undefined;
-    
+
 
 
     await test.step("Navigate to Pensions Members page", async () => {
@@ -390,9 +399,22 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
+
     if (pensionMember.generate_test_data_from_api) {
 
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_UNP_Commutation_Partial_Member_Number;
         await test.step("Select Existing Pension Member", async () => {
@@ -402,16 +424,6 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
     await test.step("'Commutation UNP Benefit Process", async () => {
@@ -426,17 +438,28 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
 test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
-    
-
-
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
+
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_Full_Member_Number;
@@ -447,16 +470,6 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
     const getMemberId = () => membersId;
@@ -540,17 +553,27 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
 test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-   
-
-
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_UNP_Full_Member_Number;
@@ -561,19 +584,9 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
-    const getMemberId = () => membersId ;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -659,17 +672,27 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
 test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-   
-
-
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //If api is set to false, we will use existing member details for testing.
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Commutation_Rollout_Partial_And_Full_Member_Number;
@@ -680,19 +703,9 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
-    const getMemberId = () => membersId ;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -791,8 +804,20 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
             await globalPage.captureScreenshot('Pensions Members page');
         });
 
-        //when api is set to false, we will use existing member details for testing.
+        //When api is set to true we will use new Shell account creation for testing.
         if (pensionMember.generate_test_data_from_api) {
+
+            // Create New Pension Shell Account
+            await test.step("Create New Pension Shell Account", async () => {
+                await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                await globalPage.captureScreenshot('Pension Shell Account Creation');
+
+            });
+
+
+            //If api is set to false, we will use existing member details for testing.
+
+        } else {
 
             // Select Existing Pension Member
             const memberNo = pensionMember.members.Death_benefit_member_number;
@@ -802,15 +827,6 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
-            //When api is set to true we will use new Shell account creation for testing.
-
-        } else {
-            // Create New Pension Shell Account
-            await test.step("Create New Pension Shell Account", async () => {
-                await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                await globalPage.captureScreenshot('Pension Shell Account Creation');
-
-            });
         }
         await test.step("Death Benfit Transactions", async () => {
             await pensionTransactionPage.deathBenefitTransaction();
@@ -825,15 +841,29 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
 test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage }) => {
 
     let membersId: string | undefined;
-    
+
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await test.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+        });
+
+
+        //If api is set to false, we will use existing member details for testing.
+
+
+    } else {
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Lump_Sum_Unrestricted_Unreserved_Fund_Withdrawal_Error;
@@ -844,16 +874,6 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
-        //When api is set to true we will use new Shell account creation for testing.
-
-    } else {
-        // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
-        });
     }
 
     await test.step("Verify Error Message For Member Balance Not to be 100% UNP", async () => {
@@ -874,32 +894,35 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
 
 test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage, apiRequestContext, internalTransferPage, globalPage }) => {
 
-    
+
 
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         await globalPage.captureScreenshot('Accumulation Members page');
     });
 
-    //when api is set to false, we will use existing member details for testing.
+    //when api is set to true, we new member for testing.
     if (pensionMember.generate_test_data_from_api) {
 
-        // Select Existing Accumulation Member
-        const memberNo = pensionMember.members.Accumulation_member;
-        await test.step("Select Existing Accumulation_member Member", async () => {
-            await navBar.selectMember(memberNo);
-            await globalPage.captureScreenshot('AccumulationMember Selection page');
-        });
-
-        //When api is set to true we will use new Member Account account creation for testing.
-
-    } else {
         // Create New Member Account
         await test.step("Create New Member Account", async () => {
             const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             await navBar.selectMember(createMemberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });
+
+
+        //when api is set to false, we will use existing member details for testing.
+
+    } else {
+
+        // Create New Member Account
+        await test.step("Create New Member Account", async () => {
+            const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.selectMember(createMemberNo);
+            await globalPage.captureScreenshot('New Member Account account ');
+        });
+
     }
 
     await test.step("Update CRN for the member", async () => {
