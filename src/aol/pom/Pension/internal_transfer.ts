@@ -276,6 +276,7 @@ export class InternalTransferPage extends BasePage {
         } else {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccessVG);
         }
+        await this.reviewCase.captureScreenshot();
     }
 
     async internalTransferProcess(addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {

@@ -506,4 +506,5 @@ export class MemberPage extends BasePage {
         //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
         return {createMemberNo};
     }
+    
  }

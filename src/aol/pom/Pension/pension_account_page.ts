@@ -531,7 +531,8 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async createShellAccountExistingMember(memberNo:string) {
+  async createShellAccountExistingMember() {
+
     await this.sleep(3000);
     await this.memberOverview.waitFor();
     await this.memberOverview.click();
@@ -551,7 +552,6 @@ export class PensionShellAccount extends BasePage {
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
   }
-
 
   async ttrAccountCreation(memberNo:string) {
     await this.sleep(3000);
