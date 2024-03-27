@@ -203,7 +203,7 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar
         } else {
             // Create New Pension Shell Account
             await test.step("Create New Pension Shell Account", async () => {
-                const memberData = await pensionTransactionPage.accumulationAccount(navBar, pensionAccountPage, apiRequestContext);
+                const memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
                 memberNo = memberData.memberNo;
                 surname = memberData.surname;
                 await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -272,7 +272,7 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar
         } else {
             // Create New Pension Shell Account
             await test.step("Create New Pension Shell Account", async () => {
-                const memberData = await ShellAccountApiHandler.process(navBar, pensionAccountPage, apiRequestContext);
+                const memberData = await ShellAccountApiHandler.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
                 memberNo = memberData.memberNo;
                 surname = memberData.surname;
                 await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -419,7 +419,7 @@ test(fundName() + "-Validate Retirement Transition process completes successfull
         } else {
             // Create New Pension Shell Account
             await test.step("Create New Pension Shell Account", async () => {
-                const memberData = await ShellAccountApiHandler.process(navBar, pensionAccountPage, apiRequestContext);
+                const memberData = await ShellAccountApiHandler.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
                 memberNo = memberData.memberNo;
                 surname = memberData.surname;
                 await globalPage.captureScreenshot('Pension Shell Account Creation');

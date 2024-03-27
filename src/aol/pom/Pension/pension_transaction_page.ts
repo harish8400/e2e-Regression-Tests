@@ -854,7 +854,7 @@ export class PensionTransactionPage extends BasePage {
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id)
   }
 
-  async accumulationAccount(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
     // Process pension account and retrieve necessary data
     let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
 

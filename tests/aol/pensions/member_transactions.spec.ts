@@ -48,8 +48,6 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, 
 test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-    let userId: string | undefined;
-
 
 
     await test.step("Navigate to Pensions Members page", async () => {
@@ -81,7 +79,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -163,7 +161,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
 
 test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
-    let userId: string | undefined;
+   
 
 
 
@@ -196,7 +194,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId ;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -276,7 +274,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
 test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-    let userId: string | undefined;
+    
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
@@ -307,7 +305,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -384,7 +382,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
 
 test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
     let membersId: string | undefined;
-    let userId: string | undefined;
+    
 
 
     await test.step("Navigate to Pensions Members page", async () => {
@@ -428,7 +426,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
 test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
-    let userId: string | undefined;
+    
 
 
 
@@ -461,7 +459,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -542,7 +540,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
 test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-    let userId: string | undefined;
+   
 
 
 
@@ -575,7 +573,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId ;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -661,7 +659,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
 test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
-    let userId: string | undefined;
+   
 
 
 
@@ -694,7 +692,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
         });
     }
 
-    const getMemberId = () => membersId || userId;
+    const getMemberId = () => membersId ;
 
     // Investments and Balances Page
     await test.step("Investments and Balances Page", async () => {
@@ -827,7 +825,7 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
 test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage }) => {
 
     let membersId: string | undefined;
-    let userId: string | undefined;
+    
 
     await test.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
@@ -876,7 +874,7 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
 
 test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage, apiRequestContext, internalTransferPage, globalPage }) => {
 
-    let membersId: string | undefined;
+    
 
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -890,8 +888,6 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
         const memberNo = pensionMember.members.Accumulation_member;
         await test.step("Select Existing Accumulation_member Member", async () => {
             await navBar.selectMember(memberNo);
-            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
-            membersId = linearId.id;
             await globalPage.captureScreenshot('AccumulationMember Selection page');
         });
 
