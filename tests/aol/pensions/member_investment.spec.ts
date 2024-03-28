@@ -5,6 +5,8 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json"
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -29,68 +31,121 @@ test(fundName()+"Money gets invested into CASH after roll-in post member creatio
     }
 })
 
-test(fundName()+"ABP - Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"ABP - Pension draw-down as Proportional @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+    //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than proportional
+    await test.step("Create Pension Account & Select the added member ", async () => {
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(member.memberID);
+        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+    await test.step("Change the dradown order to proportional & validate the pension histoty", async () => {
         await pensionInvestmentPage.DrawdownTransactionsProportional();
-    } catch (error) {
-        throw error;
-    }
+    });
 })
 
-test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+    //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Specified Order
+    await test.step("Create Pension Account & Select the added member ", async () => {
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(member.memberID);
+        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+
+    await test.step("change the drawdown order to specified order & validate the pension history", async () => { 
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
-
-    } catch (error) {
-        throw error;
-    }
+    });   
 })
 
-test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
+    //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
+    await test.step("Create Pension Account & Select the added member ", async () => {
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(member.memberID);
+        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToPensionMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+    await test.step("change the drawdown order to Percentage & Validate pension history", async () => {
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
-
-    } catch (error) {
-        throw error;
-    }
+    });  
 })
 
-test(fundName()+"TTR - Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"TTR - Pension draw-down as Proportional @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+    //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than proportional
+    await test.step("Create TTR Account & Select the added member ", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(member.memberID);
+        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+    await test.step("Change the dradown order to proportional & validate the pension histoty", async () => {
         await pensionInvestmentPage.DrawdownTransactionsProportional();
-    } catch (error) {
-        throw error;
-    }
+    });
+    
 })
 
-test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+    //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Specified Order
+    await test.step("Create TTR Account & Select the added member ", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(member.memberID);
+        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+        
+    await test.step("change the drawdown order to specified order & validate the pension history", async () => { 
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
-
-    } catch (error) {
-        throw error;
-    }
+    }); 
 })
 
-test(fundName()+"TTR - Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage }) => {
-    try {
+test(fundName()+"TTR - Pension draw-down as Percentage @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+    //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
+    await test.step("Create TTR Account & Select the added member ", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(member.memberID);
+        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
+        console.log('ProcessId:', processId);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(memberNo);
+    });
+    await test.step("change the drawdown order to Percentage & Validate pension history", async () => {
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
-
-    } catch (error) {
-        throw error;
-    }
+    });
 })
 
 test(fundName()+"-For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage,pensionAccountPage, apiRequestContext }) => {
