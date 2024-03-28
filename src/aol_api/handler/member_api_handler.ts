@@ -81,6 +81,14 @@ export class MemberApiHandler {
         return memberApi.getMemberRelatedBeneficiaries(memberId!);
     }
 
+    static async getMemberInvestmentRebalance(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getMemberInvestmentRebalance(memberId!);
+    }
+
+    static async getMemberInvestmentSwitch(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getMemberInvestmentSwitch(memberId!);
+    }
+
 }
 
 
