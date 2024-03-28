@@ -138,7 +138,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -217,7 +217,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     // Commutation Payment Process
     await test.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationUNPBenefit(false);
-        await globalPage.captureScreenshot('Activity Data');
+        await globalPage.captureScreenshot('Commutation Rollout');
     });
 
     // Validate the Payment Details In Transactions Screen
@@ -254,7 +254,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -367,7 +367,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -516,6 +516,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     await test.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
+            await pensionTransactionPage.adminFee();
             const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, memberId);
             console.log('Fee:', feeDetails);
         } else {
@@ -527,7 +528,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -632,6 +633,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     await test.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
+            await pensionTransactionPage.adminFee();
             const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, memberId);
             console.log('Fee:', feeDetails);
         } else {
@@ -643,7 +645,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -762,6 +764,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     await test.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
+            await pensionTransactionPage.adminFee();
             const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, memberId);
             console.log('Fee:', feeDetails);
         } else {
@@ -773,7 +776,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     await test.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');

@@ -714,12 +714,22 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.processType.click();
     await this.sleep(3000);
+    // Click on the investment screen
     await this.investmentScreen.click();
-    const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
+    const unitPriceTable = await this.page.$("//td[contains(@class,'el-table_12_column_59 ')]/following-sibling::td[1]");
     const unitPricevalue = await unitPriceTable?.textContent();
+    console.log(unitPricevalue);
+    const value = unitPricevalue?.trim();
+    console.log(value);
     const match = unitPricevalue?.match(/\$(\d+\.\d{4,})/);
     console.log(match ? parseFloat(match[1]) : null);
     await this.reviewCase.captureScreenshot();
+   
+
+    
+}
+
+  async adminFee() {
     await this.sleep(3000);
     await this.adminFeeCase.focus();
     await this.adminFeeCase.click();
@@ -747,6 +757,15 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
     expect(balance).not.toBeNull();
+    await this.sleep(2000);
+    await this.page.locator("//h2[text()='Asset Allocation']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page.locator("//p[text()=' Target ']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page.locator("(//div[text()='Market value'])[1]").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
 
   }
 
@@ -756,24 +775,24 @@ export class PensionTransactionPage extends BasePage {
     let accountStatus = await this.page.$("//p[@class='gsTkwh']/following-sibling::div[@class='fVEMQP']/span[@class= 'fxIQyb']/following-sibling::p[1]");
     console.log(accountStatus);
     if (accountStatus) {
-        let memberStatus = await accountStatus.evaluate(node => node.textContent?.trim());
-        console.log("member status is:", memberStatus);
-        if (memberStatus) {
-            memberStatus = memberStatus.trim();
-            if (memberStatus === 'Exited') {
-                console.log("Member has been Exited successfully");
-            } else if (memberStatus === 'Active') {
-                console.log('Member is still in Active state only');
-            } else if (memberStatus === 'Pending') {
-                console.log('Member status is in Pending state only');
-            }
-        } else {
-            console.log("Member status not found or text content is null.");
+      let memberStatus = await accountStatus.evaluate(node => node.textContent?.trim());
+      console.log("member status is:", memberStatus);
+      if (memberStatus) {
+        memberStatus = memberStatus.trim();
+        if (memberStatus === 'Exited') {
+          console.log("Member has been Exited successfully");
+        } else if (memberStatus === 'Active') {
+          console.log('Member is still in Active state only');
+        } else if (memberStatus === 'Pending') {
+          console.log('Member status is in Pending state only');
         }
+      } else {
+        console.log("Member status not found or text content is null.");
+      }
     } else {
-        console.log("Account status element not found.");
+      console.log("Account status element not found.");
     }
-    
+
   }
 
   async componentsValidation() {

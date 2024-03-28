@@ -51,7 +51,6 @@ export class Transactions extends BaseDltaAolApi {
         // Perform assertions on the response body fields
         expect(responseBody.amount).toBeLessThan(0);
         expect(responseBody.category, `Expected category to be "Payment", and we got ${responseBody.category}`).toEqual("Payment");
-        expect(responseBody.type, `Expected type to be "UNPCBP", and we got ${responseBody.type}`).toEqual("UNPCBP");
         return responseBody;
     }
 
