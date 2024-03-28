@@ -490,6 +490,21 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
 
+  async getMemberRelatedBeneficiaries(linearId: string): Promise<{ entityName: string, relationship: string, percent: number, beneficiaryType: string, beneficiaryTypeName: string }[]> {
+    let path = `member/${linearId}/beneficiary`;
+    let response = await this.get(path);
+    let responseBody = await response.json();
+    const data = responseBody.data;
+    const beneficiaries = data.map((beneficiary: { entityName: any; relationship: any; percent: any; beneficiaryType: any; beneficiaryTypeName: any; }) => ({
+        entityName: beneficiary.entityName,
+        relationship: beneficiary.relationship,
+        percent: beneficiary.percent,
+        beneficiaryType: beneficiary.beneficiaryType,
+        beneficiaryTypeName: beneficiary.beneficiaryTypeName
+    }));
+    console.log(beneficiaries);
+    return beneficiaries;
+}
 
 
 }

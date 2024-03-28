@@ -201,7 +201,7 @@ export class PensionShellAccount extends BasePage {
     this.addFundSelectOption = page.getByText('Internal fund account');
     this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
 
-    this.sourceAccountNumber = page.locator('#gs9__listbox');
+    this.sourceAccountNumber = page.locator('#gs10__listbox');
     this.slider = page.locator('.switch-slider');
     this.enterAmount = page.getByText('$ 0.00');
     this.amountToBeEntered = page.getByPlaceholder('0');
@@ -354,6 +354,7 @@ export class PensionShellAccount extends BasePage {
       await this.enterAmount.click();
       await this.sleep(3000);
       await this.amountToBeEntered.fill(member.Amount);
+      await this.sleep(2000);
     } else {
       await this.slider.click();
     }

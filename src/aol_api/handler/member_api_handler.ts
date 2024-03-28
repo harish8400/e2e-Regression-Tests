@@ -77,6 +77,10 @@ export class MemberApiHandler {
         return rollin.addRollIn(memberId!);
     }
 
+    static async getMemberRelatedBeneficiaries(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getMemberRelatedBeneficiaries(memberId!);
+    }
+
 }
 
 
