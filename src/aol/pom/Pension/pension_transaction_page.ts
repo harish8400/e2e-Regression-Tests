@@ -800,7 +800,7 @@ export class PensionTransactionPage extends BasePage {
     let taxAmountValue = await this.taxableTaxed.textContent();
     const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
     await this.sleep(3000);
-    await this.reviewCase.captureScreenshot();
+    await this.reviewCase.captureScreenshot('Payment Compnonents');
     console.log("Tax amount:", taxAmount);
     let preservedComponent = await this.preserved.textContent();
     const unpComponentValue = parseFloat(preservedComponent!.replace(/[^0-9.-]+/g, ""));
@@ -826,8 +826,8 @@ export class PensionTransactionPage extends BasePage {
       }
     } else {
       console.error("Error: Conversation ID element not found");
-    }
-    await this.reviewCase.captureScreenshot();
+  }
+    await this.reviewCase.captureScreenshot('Payment Details');
     await this.closePopUp.click();
   }
 
