@@ -14,7 +14,7 @@ export class GlobalPage extends BasePage {
   readonly reviewCase: ReviewCase;
 
   //Transactions view 
-  readonly TransactioReference: Locator;
+  readonly TransactionReference: Locator;
   readonly BenefitPaymentId: Locator;
   readonly TransactioType: Locator;
   readonly paymentDate: Locator;
@@ -42,7 +42,7 @@ export class GlobalPage extends BasePage {
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
     //Transactions view 
-    this.TransactioReference = page.getByRole('cell', { name: 'Contribution' }).first();
+    this.TransactionReference = page.getByRole('row', { name: 'Contribution' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
     this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
     this.paymentDate = page.locator('td:nth-child(4) > .cell').first();
@@ -70,8 +70,8 @@ export class GlobalPage extends BasePage {
 
   async validateMoneyInTransactionDetail(transactionAmount: string = '') {
     await this.sleep(3000);
-    await this.TransactioReference.scrollIntoViewIfNeeded();
-    await this.TransactioReference.click();
+    await this.TransactionReference.scrollIntoViewIfNeeded();
+    await this.TransactionReference.click();
     await this.page.getByRole('button', { name: 'Payment Details' }).click();
     //let moneyInAmount = await this.page.locator("(//td[contains(@class,'el-table__cell')])[13]").textContent();
     //moneyInAmount = moneyInAmount!.replace(',','');

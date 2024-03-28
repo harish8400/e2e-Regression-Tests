@@ -28,10 +28,15 @@ export class MemberTransactionsPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
     readonly transitionToRetirement: Locator;
-    readonly memberContributionType_superGuarantee;
-    readonly memberContributionType_Spouse;
-    readonly memberContributionType_Retirement;
-    readonly memberContributionErrorMessage;
+    readonly memberContributionType_superGuarantee: Locator;
+    readonly memberContributionType_Spouse: Locator;
+    readonly memberContributionType_Retirement: Locator;
+    readonly memberContributionErrorMessage: Locator;
+    readonly childContributionErrorMessage: Locator;
+    readonly memberContributionType_Child: Locator;
+    readonly memberSummaryTab: Locator;
+    readonly memberAge: Locator;
+
     //Rollover Out
     readonly rolloverOut: Locator;
     readonly payTo: Locator;
@@ -55,6 +60,26 @@ export class MemberTransactionsPage extends BasePage {
     readonly memberOverViewPage: MemberOverView;
     readonly firstRowMember:Locator;
     readonly pensionComutation:Locator;
+
+    //Benefit Payment
+    readonly benefitPaymentOption: Locator;
+    readonly benefitType_dropdown: Locator;
+    readonly benefitType_RetirementPreservationAge: Locator;
+    readonly benefitType_CeasedEmploymentAgeAfter60: Locator;
+    readonly benefitType_Age65orOlder: Locator;
+    readonly benefitType_FinancialHardship: Locator;
+    readonly benefitTyoe_UnrestrictedNonPreservedBenefit: Locator;
+    readonly benefitType_CompassionateGroundsPartial: Locator;
+    readonly benefitType_PermanentIncapacity: Locator;
+    readonly benefitType_DeathBenefit: Locator;
+    readonly paymentType_dropdown: Locator;
+    readonly paymentTypeOption: Locator;
+    readonly selectAccount_dropdown: Locator;
+    readonly selectAccountOption: Locator;
+    readonly benefitPayment_SuccessMessage: Locator;
+    readonly benefitTransactionReference: Locator;
+    readonly paymentTransactionReference: Locator;
+    readonly investmentsReference: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -88,7 +113,12 @@ export class MemberTransactionsPage extends BasePage {
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
         this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
         this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
+        this.memberContributionType_Child = page.getByRole('option', { name: 'Child' });
         this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
+        this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
+        this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
+        this.memberSummaryTab = page.getByRole('button', { name: 'Member Summary' });
+        
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
@@ -115,10 +145,37 @@ export class MemberTransactionsPage extends BasePage {
         this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
         this.pensionComutation=page.getByText('Pension Commutation');
 
+        //Benefit Payment
+        this.benefitPaymentOption = page.getByText('Benefit Payment');
+        this.benefitType_dropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+        this.benefitType_RetirementPreservationAge = page.getByRole('option', { name: 'Retirement - Preservation Age' });
+        this.benefitType_CeasedEmploymentAgeAfter60 = page.getByRole('option', { name: 'Ceased Employment After Age' });
+        this.benefitType_Age65orOlder = page.getByRole('option', { name: 'Age 65 or older' });
+        this.benefitType_FinancialHardship = page.getByRole('option', { name: 'Financial Hardship' });
+        this.benefitTyoe_UnrestrictedNonPreservedBenefit = page.getByRole('option', { name: 'Unrestricted Non-Preserved' });
+        this.benefitType_CompassionateGroundsPartial = page.getByRole('option', { name: 'Compassionate Grounds' });
+        this.benefitType_PermanentIncapacity = page.getByRole('option', { name: 'Permanent Incapacity' });
+        this.benefitType_DeathBenefit = page.getByRole('option', { name: 'Death Benefit' });
+        this.paymentType_dropdown = page.locator("(//div[@class='gs__dropdown-toggle'])[3]");
+        this.paymentTypeOption = page.getByRole('option').first();
+        this.selectAccount_dropdown = page.locator("(//div[@class='gs__dropdown-toggle'])[5]");
+        this.selectAccountOption = page.getByRole('option').first();
+        this.benefitPayment_SuccessMessage = page.getByText("Process step completed with note: Benefit payment correspondence sent.");
+        this.benefitTransactionReference = page.getByRole('row', {name: 'Benefit'}).first();
+        this.paymentTransactionReference = page.getByRole('row', {name: 'Payment'}).first();
+        this.investmentsReference = page.locator("//span[@class='btn-heading' and contains(text(),'Investments')]");
     }
 
     /** Member Rollin, adds a contribution to member account */
     async memberRolloverIn(contributionType?: String, TFN?: Boolean) {
+        let age;
+        if(contributionType == 'Child'){
+            await this.memberSummaryTab.click();
+            await this.memberAge.scrollIntoViewIfNeeded();
+            await this.reviewCase.captureScreenshot();
+            const value = await this.memberAge.textContent();
+            age = parseInt(value!.match(/\d+/)![0]);
+        }
         await this.memberOverViewPage.memberAccumulationAccount_Tab.click();
         await this.memberTransactionTab.click();
         await this.memberAddTransaction.click();
@@ -142,6 +199,9 @@ export class MemberTransactionsPage extends BasePage {
         else if(contributionType == 'Spouse'){
             await this.memberContributionType_Spouse.click();
         }
+        else if(contributionType == 'Child'){
+            await this.memberContributionType_Child.click();
+        }
         else{
             await this.memberContributionType_personal.click();
         }
@@ -157,8 +217,16 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
-        if( TFN==true ){
+        if( TFN==true && contributionType != 'Child' ){
         await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+        }
+        else if(TFN == true && contributionType == 'Child'){
+            if(age! > 18){
+            await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage);
+            }
+            else{
+                await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+            }
         }
         else{
             await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
@@ -240,9 +308,75 @@ export class MemberTransactionsPage extends BasePage {
             }
 
             await this.sleep(2000);
-        } while (
-            await this.verifyRolloutProcessSuccess.count() == 0
-        );
+        } while (await this.verifyRolloutProcessSuccess.count() == 0);
 
+    }
+
+    //Money_out Benefit Payment
+    async benefitPayment(benefitType: string) {
+
+        //await this.memberHFMFundLink.click();
+        await this.memberTransactionTab.click();
+        await this.memberAddTransaction.click();
+        await this.benefitPaymentOption.click();
+
+        await this.viewCase.click();
+        await this.createCase.click();
+        this.sleep(3000);
+
+        await this.benefitType_dropdown.click();
+        if(benefitType == 'Retirement - Preservation Age'){
+            await this.benefitType_RetirementPreservationAge.click();
+        }
+        else if(benefitType == 'Ceased employment age after 60'){
+            await this.benefitType_CeasedEmploymentAgeAfter60.click();
+        }
+        else if(benefitType == 'Age 65 or older'){
+            await this.benefitType_Age65orOlder.click();
+        }
+        else if(benefitType == 'Financial Hardship'){
+            await this.benefitType_FinancialHardship.click();
+        }
+        else if(benefitType == 'Unrestricted non-preserved benefit'){
+            await this.benefitTyoe_UnrestrictedNonPreservedBenefit.click();
+        }
+        // else if(benefitType == 'Compassionate Grounds - Partial'){
+        //     await this.benefitType_RetirementPreservationAge.click();
+        // }
+        else if(benefitType == 'Compassionate Grounds - Partial'){
+            await this.benefitType_CompassionateGroundsPartial.click();
+        }
+        else if(benefitType == 'Permanent Incapacity'){
+            await this.benefitType_PermanentIncapacity.click();
+        }
+        else if(benefitType == 'Death benefit'){
+            await this.benefitType_DeathBenefit.click();
+        }
+        await this.paymentType_dropdown.click();
+        await this.paymentTypeOption.click();
+        await this.selectAccount_dropdown.click();
+        await this.selectAccountOption.click();
+        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.effectiveDate.press('Tab');
+        //await this.payFullBalance.click();
+
+        await this.linkCase.click();
+        await this.sleep(5000);
+        await this.reviewCase.reviewCaseProcess(this.benefitPayment_SuccessMessage);
+
+    }
+
+    async investmentsComponents(paymentCategory: string){
+        if(paymentCategory == 'Payment-BPAP'){
+            this.paymentTransactionReference.scrollIntoViewIfNeeded();
+            this.paymentTransactionReference.click();
+        }
+        else if(paymentCategory == 'Benefit Payment-BPA'){
+            this.benefitTransactionReference.scrollIntoViewIfNeeded();
+            this.benefitTransactionReference.click();
+        }
+        await this.investmentsReference.click();
+        await this.reviewCase.captureScreenshot();
+        await this.sleep(2000);
     }
 }

@@ -434,7 +434,7 @@ export class InternalTransferPage extends BasePage {
         await this.summary.click();
         await this.sleep(3000);
         let memberBalance = this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
-        memberBalance.scrollIntoViewIfNeeded();
+        await memberBalance.scrollIntoViewIfNeeded();
         let balance = memberBalance.textContent();
         await this.ButtonTransactions.click();
         await this.sleep(3000);

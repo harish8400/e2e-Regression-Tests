@@ -120,6 +120,18 @@ export class UtilsAOL {
         return money;
     }
 
+    static drawdownProfile(drawDownType: string): string[] {
+        switch (drawDownType) {
+            case 'proportional':
+                return ['Investment 1']; 
+            case 'specifiedOrder':
+                return ['HE35', 'HE38', 'HE39']; 
+            case 'percentage':
+                return ['HE35 (25%)', 'HE38 (25%)', 'HE39 (50%)']; 
+            default:
+                throw new Error('Invalid drawdown type');
+        }
+    }
 }
 
 export function fundName() {
@@ -133,8 +145,8 @@ export function fundDetails(product: string) {
 
     switch (product) {
         case 'HESTA for Mercy':
-            productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
-            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+            productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
             break;
         case 'Vanguard Super':
             productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;

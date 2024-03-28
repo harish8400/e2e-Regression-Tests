@@ -115,17 +115,18 @@ export class AccountInfoPage extends BasePage {
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
         await this.accountNameField.fill(member.AccountName);
-        await this.sleep(5000);
+        //await this.sleep(5000);
         await this.accountNUmberField.fill(member.AccountNumber);
+        await this.page.keyboard.press('Enter');
         await this.purposeDropdown.click();
         await this.sleep(5000);
         await this.purposeOption.click();
         await this.viewCasesButton.click();
         await this.sleep(5000);
         await this.createCaseButton.click();
-        await this.sleep(5000);
+        await this.sleep(7000);
         await this.buttonLinkToCase.click();
-        await this.sleep(10000);
+        await this.sleep(5000);
         await this.reviewCase.reviewCaseProcess(this.NewBankAcc_successMessage);
 
     }

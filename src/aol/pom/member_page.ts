@@ -246,7 +246,7 @@ export class MemberPage extends BasePage {
     this.investmentDropDown2 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
 }    
 
-    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
+    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean, memberIsChild?: boolean){
         
         await this.accumulationAddMember.click();
         let tfn = UtilsAOL.generateValidTFN();
@@ -254,7 +254,12 @@ export class MemberPage extends BasePage {
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
         await this.surname.fill(this.memberSurname);
-        await this.dob.fill(member.dob);
+        if(memberIsChild==true){
+            await this.dob.fill(member.childDOB);
+        }
+        else{
+            await this.dob.fill(member.dob);
+        }
         await this.gender.click();
         await this.genderSelect.click();
         await this.emailAddress.fill(member.email);

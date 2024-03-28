@@ -119,7 +119,7 @@ export class ReviewCase extends BasePage {
           await this.sleep(5000);
     
         } while ( await successLocator.count() == 0 );
-    
+        await successLocator.scrollIntoViewIfNeeded();
         await expect(successLocator).toBeVisible();
     
       }

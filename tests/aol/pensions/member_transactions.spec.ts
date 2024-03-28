@@ -5,11 +5,8 @@ import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json"
-import { MemberTransactionsPage } from "../../../src/aol/pom/member_transaction";
-import { ReviewCase } from "../../../src/aol/pom/component/review_case";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
-import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -163,7 +160,7 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
     }
 })
 
-test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar,memberPage,memberTransactionPage, pensionTransactionPage , pensionAccountPage, apiRequestContext }) => {
+test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage }) => {
     let memberNo = member.memberIdUNP;
     await navBar.navigateToTTRMembersPage();
     await navBar.selectMember(memberNo);
@@ -185,7 +182,9 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
     })
     let linearId: string | undefined;
     await test.step("Create Shell Account for same Member", async () => {
-        await pensionAccountPage.createShellAccountExistingMember(createMemberNo!);
+        await navBar.navigateToAccumulationMembersPage();
+        await memberPage.selectMember(createMemberNo!);
+        await pensionAccountPage.createShellAccountExistingMember();
         let memberCreated  = await pensionAccountPage.getMemberId();
         const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
         linearId = memberId.id;
@@ -225,7 +224,7 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
     })
 })
 
-test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage, apiRequestContext, internalTransferPage }) => {
+test(fundName() + "Verify the updating of member's CRN in the account details @pension", async ({ navBar, accountInfoPage, memberPage }) => {
 
     await navBar.navigateToAccumulationMembersPage();
     const createMemberNo = await memberPage.addNewMember(false, true);

@@ -75,10 +75,13 @@ export class PensionInvestmentPage extends BasePage {
     readonly SelectInputBox: Locator;
     readonly PercentageInput: Locator;
     readonly AddButton: Locator;
+    readonly today: Date;
     TotalCash!: string;
 
     constructor(page: Page) {
         super(page)
+
+    this.today = new Date();
 
     this.reviewCase = new ReviewCase(page);
     this.processesLink = page.getByRole('link', { name: 'Processes' });
@@ -122,13 +125,14 @@ export class PensionInvestmentPage extends BasePage {
     this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
     this.rollInSuccess = page.getByText('Processed Roll In.');
     this.pensionDrawdownUpdateSuccess = page.getByText('Process step completed with note: Pension payment correspondence sent.');
-    this.pensionHistory = page.getByRole('row', { name: 'Pension Details Update' }).first()
+    const date = DateUtils.ddMMMyyyStringDate(this.today);
+    this.pensionHistory = page.getByRole('row', { name: date+' Pension Details Update' }).first();
 
     this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.RolloverOption = page.getByText('Client-RTR');
-    this.ViewCase = page.getByRole('button', { name: 'View Cases' });
+    this.ViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
     this.CreateCase = page.getByRole('button', { name: 'Create Case' });
-    this.LinkCase = page.getByRole('button', { name: 'Link to Case' });
+    this.LinkCase = page.getByRole('button', { name: 'Link to Case' }).nth(1);
 
     //DrawDown 
 
@@ -243,6 +247,7 @@ export class PensionInvestmentPage extends BasePage {
         await this.sleep(2000);
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
         await this.clipBoardIcon.click();
+        //console.log(this.pensionHistory);
         await expect(this.pensionHistory).toBeVisible();
         await this.pensionHistory.scrollIntoViewIfNeeded();
         await this.sleep(3000);
