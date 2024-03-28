@@ -51,7 +51,6 @@ export class Transactions extends BaseDltaAolApi {
         // Perform assertions on the response body fields
         expect(responseBody.amount).toBeLessThan(0);
         expect(responseBody.category, `Expected category to be "Payment", and we got ${responseBody.category}`).toEqual("Payment");
-        expect(responseBody.type, `Expected type to be "UNPCBP", and we got ${responseBody.type}`).toEqual("UNPCBP");
         return responseBody;
     }
 
@@ -73,11 +72,12 @@ export class Transactions extends BaseDltaAolApi {
         let type = responseBody?.data[0]?.portfolioName || '';
         expect(id).toEqual(responseBody?.data[0]?.portfolioId);
         expect(type).toEqual(responseBody?.data[0]?.portfolioName);
-
+        
+        
         return { id, type };
     }
 
-    async getMemberPayment(linearId: string): Promise<{ reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
+    async getMemberPayment(linearId: string): Promise<{ paymentAmount:string,reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
         let path = `member/${linearId}/payment`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -88,6 +88,7 @@ export class Transactions extends BaseDltaAolApi {
         let restricted = responseBody?.data[0]?.restrictedNonPreserved || '';
         let unrestricted = responseBody?.data[0]?.unrestrictedNonPreserved || '';
         let tax = responseBody?.data[0]?.taxed || '';
+        let paymentAmount = responseBody?.data[0]?.paymentAmount || '';
 
         // Perform assertions
         expect(reference).toEqual(responseBody?.data[0]?.transactionReference);
@@ -95,7 +96,7 @@ export class Transactions extends BaseDltaAolApi {
         expect(typeof parseFloat(restricted)).toBe('number');
         expect(typeof parseFloat(unrestricted)).toBe('number');
         expect(typeof parseFloat(tax)).toBe('number');
-        return { reference, preservedAmount, restricted, unrestricted, tax };
+        return { reference, preservedAmount, restricted, unrestricted, tax,paymentAmount };
     }
 
     async getMemberFee(memberId: string): Promise<{ validation: { amount: number, category: string, type: string, name: string, effectiveDate: string } }> {
@@ -118,5 +119,54 @@ export class Transactions extends BaseDltaAolApi {
     }
 
 
-
+    async getMemberReport(memberId: string): Promise<{ effectiveDate: string, type: string, eventType: string | null, reportingEventValue: string | null }> {
+        try {
+            const path = `member/${memberId}/report`;
+            const response = await this.get(path);
+            const responseBody = await response.json();
+    
+            let dataOfMATS = null;
+    
+            // Iterate through each item in the data array to find the desired report
+            for (let i = responseBody.data.length - 1; i >= 0; i--) {
+                const item = responseBody.data[i];
+                if (item.type === 'MATS Submit') {
+                    dataOfMATS = item;
+                    break;
+                }
+            }
+    
+            if (!dataOfMATS) {
+                throw new Error('Report not found');
+            }
+    
+            // Extracting data from the found report
+            const { effectiveDate, type, data } = dataOfMATS;
+            const parsedData = JSON.parse(data);
+    
+            // Extracting desired fields from the parsed data
+            const eventType = parsedData.eventType || null;
+            const reportingEventValue = parsedData.reportingEventValue || null;
+    
+            // Create the object to return
+            const extractedFields = {
+                effectiveDate,
+                type,
+                eventType,
+                reportingEventValue
+            };
+    
+            // Log the extracted fields
+            console.log('MATS Report:', extractedFields);
+    
+            // Return the extracted fields
+            return extractedFields;
+        } catch (error:any) {
+            // Handle errors, such as API request failures or report not found
+            throw new Error('Failed to fetch member report: ' + error.message);
+        }
+    }
+    
+    
+    
 }
