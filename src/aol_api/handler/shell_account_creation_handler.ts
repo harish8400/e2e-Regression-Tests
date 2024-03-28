@@ -65,8 +65,8 @@ export class ShellAccountCreationApiHandler {
         return drawDownType.memberWithPercentageProfile(memberId!);
     }
 
-    static async getMemberReport(transactionApi:Transactions, memberId?: string) {
-        return transactionApi.getMemberReport(memberId!);
+    static async getMemberReport(transactionApi:Transactions, memberId?: string ,type?:string) {
+        return transactionApi.getMemberReport(memberId!,type!);
     }
 
     

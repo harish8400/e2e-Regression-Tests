@@ -151,7 +151,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     await test.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -267,7 +267,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     await test.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -380,7 +380,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     await test.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -541,7 +541,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     await test.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -657,7 +657,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         await test.step("Validate MATS Report", async () => {
             const memberId = getMemberId();
             if (memberId) {
-                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
                 console.log('MAAS Report:', MAASReport);
             } else {
                 console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -789,7 +789,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     await test.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId);
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");

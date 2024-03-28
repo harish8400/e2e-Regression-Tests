@@ -201,7 +201,7 @@ export class PensionShellAccount extends BasePage {
     this.addFundSelectOption = page.getByText('Internal fund account');
     this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
 
-    this.sourceAccountNumber = page.locator('#gs9__listbox');
+    this.sourceAccountNumber = page.locator('#gs10__listbox');
     this.slider = page.locator('.switch-slider');
     this.enterAmount = page.getByText('$ 0.00');
     this.amountToBeEntered = page.getByPlaceholder('0');
@@ -211,7 +211,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(2)
+    this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -354,6 +354,7 @@ export class PensionShellAccount extends BasePage {
       await this.enterAmount.click();
       await this.sleep(3000);
       await this.amountToBeEntered.fill(member.Amount);
+      await this.sleep(2000);
     } else {
       await this.slider.click();
     }
@@ -518,25 +519,25 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000)
   }
 
-  async retirement() {
+  async selectABPTab() {
     await this.sleep(3000)
-    await this.abpScreenView.waitFor();
-    await this.abpScreenView.click();
+    await this.abpScreenView.first().waitFor();
+    await this.abpScreenView.first().click();
     await this.sleep(3000);
     await this.transactionsTab.click();
 
   }
 
-  async ttrRetirement() {
+  async selectTTRRetirement() {
     await this.sleep(3000)
-    await this.ttrScreenView.waitFor();
-    await this.ttrScreenView.click();
+    await this.ttrScreenView.first().waitFor();
+    await this.ttrScreenView.first().click();
     await this.sleep(3000);
     await this.transactionsTab.click();
 
   }
 
-  async createShellAccountExistingMember(memberNo:string,addBeneficiary: boolean = false) {
+  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();
@@ -561,10 +562,11 @@ export class PensionShellAccount extends BasePage {
     await this.initCreateCase();
     await this.createAcc.click();
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+    await this.reviewCase.captureScreenshot("Shell account creation");
 
   }
 
-  async ttrAccountCreation(memberNo:boolean,addBeneficiary: boolean = false) {
+  async ttrAccountCreation(addBeneficiary: boolean = false) {
     await this.sleep(3000);
     await this.memberOverview.waitFor();
     await this.memberOverview.click();

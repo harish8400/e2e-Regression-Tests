@@ -490,6 +490,60 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
 
+  async getMemberRelatedBeneficiaries(linearId: string): Promise<{ entityName: string, relationship: string, percent: number, beneficiaryType: string, beneficiaryTypeName: string }[]> {
+    let path = `member/${linearId}/beneficiary`;
+    let response = await this.get(path);
+    let responseBody = await response.json();
+    const data = responseBody.data;
+    const beneficiaries = data.map((beneficiary: { entityName: any; relationship: any; percent: any; beneficiaryType: any; beneficiaryTypeName: any; }) => ({
+      entityName: beneficiary.entityName,
+      relationship: beneficiary.relationship,
+      percent: beneficiary.percent,
+      beneficiaryType: beneficiary.beneficiaryType,
+      beneficiaryTypeName: beneficiary.beneficiaryTypeName
+    }));
+    console.log(beneficiaries);
+    return beneficiaries;
+  }
+
+  async getMemberInvestmentRebalance(linearId: string): Promise<{ transactionReference: string, amount: number, category: string, type: string, name: string, effectiveDate: string }[]> {
+    let queryParams = new URLSearchParams({});
+    let pageNum: number | null = null;
+    let pageSize: number | null = null;
+    const path = `member/${linearId}/investment/rebalance?page=${pageNum}&pageSize=${pageSize}${queryParams.toString()}`;
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    const extractedData = responseBody.data.map((item: { transactionReference: any; amount: any; category: any; type: any; name: any; effectiveDate: any; }) => ({
+      transactionReference: item.transactionReference,
+      amount: item.amount,
+      category: item.category,
+      type: item.type,
+      name: item.name,
+      effectiveDate: item.effectiveDate
+    }));
+console.log(extractedData);
+    return extractedData;
+  }
+
+  async getMemberInvestmentSwitch(linearId: string): Promise<{ transactionReference: string, amount: number, category: string, type: string, name: string, effectiveDate: string }[]> {
+    let queryParams = new URLSearchParams({});
+    let pageNum: number | null = null;
+    let pageSize: number | null = null;
+    const path = `member/${linearId}/investment/switch?page=${pageNum}&pageSize=${pageSize}${queryParams.toString()}`;
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    const extractedData = responseBody.data.map((item: { transactionReference: any; amount: any; category: any; type: any; name: any; effectiveDate: any; }) => ({
+      transactionReference: item.transactionReference,
+      amount: item.amount,
+      category: item.category,
+      type: item.type,
+      name: item.name,
+      effectiveDate: item.effectiveDate
+    }));
+    console.log(extractedData);
+    return extractedData;
+  }
+
 
 
 }
