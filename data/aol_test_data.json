@@ -16,8 +16,8 @@
         "Internal_Transfer_ABP_To_Accumulation_Source_Account": "9010938",
         "Internal_Transfer_TTR_To_Accumulation_Source_Account": "D576B-149-0",
         "Death_benefit_member_number":"D576B-2-2",
-        "ABP_Pension_Active_Member": "9010104",
-        "TTR_Pension_Active_Member": "9010104",
+        "Modify_Beneficiary_ABP_Active_Member": "9010104",
+        "Modify_Beneficiary_ABP_Pending_Status_Member": "9010104",
         "memberIdUNP":"9020227"
     }
 }

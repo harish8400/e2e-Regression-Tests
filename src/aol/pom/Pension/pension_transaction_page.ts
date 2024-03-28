@@ -850,12 +850,14 @@ export class PensionTransactionPage extends BasePage {
     return { memberNo, processId, surname };
   }
 
-  async memberPensionShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberPensionShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext, commencePension: boolean = true) {
     let { memberNo, surname } = await this.shellAccount(navBar, pensionAccountPage, apiRequestContext);
 
     // Fetch additional details and perform pension-related actions
     const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-    await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    if(commencePension){
+      await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    }
     await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
     let { id, fundName, tfn, givenName, dob } = await MemberApiHandler.getMemberDetails(apiRequestContext, linearId.id);
@@ -873,9 +875,9 @@ export class PensionTransactionPage extends BasePage {
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id)
   }
 
-  async memberShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext, commencePension: boolean = true) {
     // Process pension account and retrieve necessary data
-    let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+    let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext, commencePension);
 
     await pensionAccountPage.reload();
 
