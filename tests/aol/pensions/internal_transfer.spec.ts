@@ -124,7 +124,7 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar
         let memberID: string;
 
         if (data.generate_test_data_from_api) {
-            await test.step("Add new TTR Member", async () => {
+            await test.step("Add new ABP Member", async () => {
                 let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
                 memberID = memberData.memberNo;
             })

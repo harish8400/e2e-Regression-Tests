@@ -70,12 +70,12 @@ export class BeneficiaryPage extends BasePage {
     await this.addButton.click({ timeout: 5000 });
   }
 
-  async reltionShipButton() {
+  async selectMemberRelationshipTab() {
     await this.relationshipBtn.click({ timeout: 5000 });
     await this.addButton.click({ timeout: 5000 });
   }
 
-  async beneficiaryInputFileds() {
+  async modifyMemberBeneficiary() {
     await this.viewCase.click({ timeout: 5000 });
     await this.createCase.click({ timeout: 5000 });
     await this.beneficiaryName.fill(member.beneficiary);
@@ -138,7 +138,7 @@ export class BeneficiaryPage extends BasePage {
 
   async revisionaryBeneficiary() {
     await this.sleep(3000);
-    await this.reltionShipButton();
+    await this.selectMemberRelationshipTab();
     await this.page.locator("(//label[@class='heading-sm']/following::span[@class='text-caption'])[1]").click();
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryRelationship.click();
