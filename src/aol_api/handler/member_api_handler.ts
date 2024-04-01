@@ -93,6 +93,10 @@ export class MemberApiHandler {
         return memberApi.memberInvestmentSwitch(memberId!);
     }
 
+    static async memberCorrespondenceInfo(memberApi: MemberApi, memberId?: string) {
+        return memberApi.memberCorrespondenceInfo(memberId!);
+    }
+
 }
 
 

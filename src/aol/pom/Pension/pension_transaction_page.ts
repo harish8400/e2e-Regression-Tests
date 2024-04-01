@@ -13,6 +13,7 @@ import { MemberApiHandler } from "../../../aol_api/handler/member_api_handler";
 import { PensionShellAccount } from "./pension_account_page";
 import { RollinApiHandler } from "../../../aol_api/handler/rollin_api-handler";
 import { TransactionsApiHandler } from "../../../aol_api/handler/transaction_api_handler";
+import { allure } from "allure-playwright";
 
 
 export class PensionTransactionPage extends BasePage {
@@ -281,12 +282,12 @@ export class PensionTransactionPage extends BasePage {
     this.preserved = page.locator("//p[text()=' UNP ']/following-sibling::p");
     this.paygAssessableIncome = page.locator(" //p[text()=' PAYG Assessable Income ']/following-sibling::p");
     this.processType = page.locator("//table[@class='el-table__body']/tbody[1]/tr[2]/td[1]");
-    this.closePopUp = page.locator("//span[@class='el-dialog__title']/following-sibling::button[1]");
+    this.closePopUp = page.getByLabel('close', { exact: true });
     this.investmentScreen = page.getByRole('button', { name: 'Investments', exact: true });
     this.summary = page.getByRole('button', { name: 'Member Summary' });
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
-    this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
+    this.adminFeeCase = page.locator("//span[normalize-space()='VIEW CASE']");
     this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']");
     this.paymentDetails = page.locator("//span[text()='Payment Details']");
 
@@ -727,6 +728,8 @@ export class PensionTransactionPage extends BasePage {
     const match = unitPricevalue?.match(/\$(\d+\.\d{4,})/);
     console.log(match ? parseFloat(match[1]) : null);
     await this.reviewCase.captureScreenshot();
+    await this.sleep(3000);
+    await this.closePopUp.click();
 
 
 
@@ -874,9 +877,9 @@ export class PensionTransactionPage extends BasePage {
   }
 
   async memberWithPTBTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-    let { linearId } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+    let { linearId,memberNo } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id)
-    return { linearId: linearId.id };
+    return { linearId: linearId.id ,memberNo};
   }
 
   async memberShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext, commencePension: boolean = true) {
@@ -1125,6 +1128,14 @@ export class PensionTransactionPage extends BasePage {
     } else {
       await this.memberNoCOR(membersAge);
     }
+
+  }
+
+  async accountBalance(){
+    await this.sleep(3000);
+    await this.page.getByRole('button', { name: 'Investments and Balances' }).click();
+    await this.sleep(2000).then(()=>{this.page.locator("(//div[contains(text(),'Total')])[5]").scrollIntoViewIfNeeded()});
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
 
   }
 

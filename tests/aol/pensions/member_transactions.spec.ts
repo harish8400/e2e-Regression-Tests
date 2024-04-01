@@ -208,6 +208,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
             console.log('Investments:', investments);
+            allure.attachment('Investments Info', JSON.stringify(investments, null, 2), 'application/json');
             await pensionTransactionPage.investementBalances();
             await globalPage.captureScreenshot('investment and Balances');
         } else {
@@ -229,7 +230,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
             let paymentTransactionId = paymentId!.split(":")[1];
             const paymentDetails = await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
             console.log('Payments:', paymentDetails);
-            await pensionTransactionPage.paymentView();
+            allure.attachment('Payments Info', JSON.stringify(paymentDetails, null, 2), 'application/json')
             await globalPage.captureScreenshot('Payment Details');
         } else {
             console.log("Member ID is undefined. Cannot fetch payments.");
@@ -247,6 +248,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         if (memberId) {
             const MemberPayments = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
             console.log('MemberPayments:', MemberPayments);
+            allure.attachment('MemberPayments Info', JSON.stringify(MemberPayments, null, 2), 'application/json');
         } else {
             console.log("Member ID is undefined. Cannot fetch Member Fee Details.");
         }
@@ -257,6 +259,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         if (memberId) {
             const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, false);
             console.log("summary:", summary);
+            allure.attachment('summary Info', JSON.stringify(summary, null, 2), 'application/json');
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
         } else {
@@ -270,6 +273,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         if (memberId) {
             const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
+            allure.attachment('MAAS Report Info', JSON.stringify(MAASReport, null, 2), 'application/json');
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
@@ -481,6 +485,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
             console.log('Investments:', investments);
+            allure.attachment('Investments Info', JSON.stringify(investments, null, 2), 'application/json');
             await pensionTransactionPage.investementBalances();
             await globalPage.captureScreenshot('investment and Balances');
         } else {
@@ -500,6 +505,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         if (memberId) {
             const paymentDetails = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
             console.log('Payments:', paymentDetails);
+            allure.attachment('Payments Info', JSON.stringify(paymentDetails, null, 2), 'application/json');
             await pensionTransactionPage.paymentView();
             await globalPage.captureScreenshot('Payment Details');
         } else {
@@ -520,6 +526,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
             await pensionTransactionPage.adminFee();
             const feeDetails = await ShellAccountCreationApiHandler.getMemberFee(transactionApi, memberId);
             console.log('Fee:', feeDetails);
+            allure.attachment('Fee Info', JSON.stringify(feeDetails, null, 2), 'application/json');
         } else {
             console.log("Member ID is undefined. Cannot fetch Member Fee Details.");
         }
@@ -531,6 +538,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         if (memberId) {
             const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, true);
             console.log("summary:", summary);
+            allure.attachment('summary Info', JSON.stringify(summary, null, 2), 'application/json');
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
         } else {
@@ -544,6 +552,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         if (memberId) {
             const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
+            allure.attachment('MAAS Report:', JSON.stringify(MAASReport, null, 2), 'application/json');
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
@@ -953,8 +962,9 @@ test(fundName() + "-Validate Retirement Transition process is sucessful where PT
 
         // Create New Pension Shell Account
         await allure.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberWithPTBTransactions(navBar, pensionAccountPage, apiRequestContext);;
-            membersId = memberId.linearId;
+            let { memberNo } = await pensionTransactionPage.memberWithPTBTransactions(navBar, pensionAccountPage, apiRequestContext);
+            const linearId = await ShellAccountApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
         });
 
@@ -1044,6 +1054,20 @@ test(fundName() + "-Validate Retirement Transition process is sucessful where PT
 
     });
 
+    await allure.step("Validate whether Investments are switched from  Taxed to Untaxed", async () => {
+        allure.logStep("Verify whether Funds are moved to Unrestricted non-preserved");
+        const memberId = getMemberId();
+        if (memberId) {
+            
+            await pensionTransactionPage.accountBalance();
+        } else {
+            console.log("memberId is undefined. Cannot fetch account balance.");
+        }
+
+        await globalPage.captureScreenshot('investemntsSwitchInfo');
+
+    });
+
     await allure.step("Validate MAAS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
@@ -1061,6 +1085,7 @@ test(fundName() + "-Validate Retirement Transition process completes sucessfully
 
     let membersId: string | undefined;
     let memberNo: string | undefined;
+    let getMemberId = () => membersId;
 
 
     await allure.step("Navigate to Pensions Members page", async () => {
@@ -1073,8 +1098,9 @@ test(fundName() + "-Validate Retirement Transition process completes sucessfully
 
         // Create New Pension Shell Account
         await allure.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
+            let {memberNo} = await ShellAccountApiHandler.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            const linearId = await ShellAccountApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
         });
 
@@ -1090,17 +1116,22 @@ test(fundName() + "-Validate Retirement Transition process completes sucessfully
             await navBar.selectMember(memberNo!);
             const linearId = await ShellAccountApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
-            //await MemberApiHandler.ptbTransactions(apiRequestContext, membersId);
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
     }
 
 
-
     await allure.step("Validate member age for Condition of Release", async () => {
-        await pensionTransactionPage.memberAge(61);
-        await globalPage.captureScreenshot('Error Message');
+        const memberId = getMemberId();
+        if (pensionMember.generate_test_data_from_api && memberId) {
+            const { memberAge } = await MemberApiHandler.memberCorrespondenceInfo(memberApi, memberId);
+
+            await pensionTransactionPage.memberAge(memberAge);
+        } else {
+            await pensionTransactionPage.memberAge(pensionMember.members.MemberAge[0]);
+        }
+        await globalPage.captureScreenshot('Member Summary');
     });
 
     await allure.step("Run the Cohort Process for the same member", async () => {
@@ -1123,7 +1154,7 @@ test(fundName() + "-Validate Retirement Transition process completes sucessfully
 
     });
 
-    const getMemberId = () => membersId;
+    
 
     await allure.step("Validate Investment Rebalance is switched", async () => {
         allure.logStep("Verify Investment Rebalance PTB Case is displayed correctly");
@@ -1138,6 +1169,20 @@ test(fundName() + "-Validate Retirement Transition process completes sucessfully
         }
 
         await globalPage.captureScreenshot('InvestmentsRebalance');
+
+    });
+
+    await allure.step("Validate whether Investments are switched from  Taxed to Untaxed", async () => {
+        allure.logStep("Verify whether Funds are moved to Unrestricted non-preserved");
+        const memberId = getMemberId();
+        if (memberId) {
+            
+            await pensionTransactionPage.accountBalance();
+        } else {
+            console.log("memberId is undefined. Cannot fetch account balance.");
+        }
+
+        await globalPage.captureScreenshot('investemntsSwitchInfo');
 
     });
 
