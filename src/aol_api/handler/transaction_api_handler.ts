@@ -108,11 +108,11 @@ export class Transactions extends BaseDltaAolApi {
         expect(category).toBe("Fee");
         expect(type).toBe("AFE");
         expect(name).toBe("Admin Fee");
-        //let today = new Date();
-        //let exitDateAsDate = new Date(effectiveDate);
-        //const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
-        //const todayDateOnly = today.toISOString().split('T')[0];
-        //expect(exitDateOnly).toEqual(todayDateOnly);
+        let today = new Date();
+        let exitDateAsDate = new Date(effectiveDate);
+        const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
+        const todayDateOnly = today.toISOString().split('T')[0];
+        expect(exitDateOnly).toEqual(todayDateOnly);
         return {
             validation: { amount, category, type, name, effectiveDate }
         };
