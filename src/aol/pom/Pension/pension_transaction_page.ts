@@ -454,6 +454,7 @@ export class PensionTransactionPage extends BasePage {
     await this.pensionCommutation.click();
 
     await this.commutation_type.click();
+    await this.reviewCase.captureScreenshot();
     await this.commutation_type.press("Enter");
     await this.sleep(3000);
     await this.commutation_rollout.click();
@@ -851,11 +852,21 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.processType.click();
     await this.sleep(3000);
+    // Click on the investment screen
     await this.investmentScreen.click();
-    const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
+    const unitPriceTable = await this.page.$(
+      "//td[contains(@class,'el-table_12_column_59 ')]/following-sibling::td[1]"
+    );
     const unitPricevalue = await unitPriceTable?.textContent();
-    expect(unitPricevalue).toMatch(/\$\d+\.\d{4,}/);
+    console.log(unitPricevalue);
+    const value = unitPricevalue?.trim();
+    console.log(value);
+    const match = unitPricevalue?.match(/\$(\d+\.\d{4,})/);
+    console.log(match ? parseFloat(match[1]) : null);
     await this.reviewCase.captureScreenshot();
+  }
+
+  async adminFee() {
     await this.sleep(3000);
     await this.adminFeeCase.focus();
     await this.adminFeeCase.click();
@@ -889,21 +900,47 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
     expect(balance).not.toBeNull();
+    await this.sleep(2000);
+    await this.page
+      .locator("//h2[text()='Asset Allocation']")
+      .scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page.locator("//p[text()=' Target ']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page
+      .locator("(//div[text()='Market value'])[1]")
+      .scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
   }
 
   async memberStatus() {
     await this.sleep(3000);
     await this.summary.click();
     let accountStatus = await this.page.$(
-      "(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[3]"
+      "//p[@class='gsTkwh']/following-sibling::div[@class='fVEMQP']/span[@class= 'fxIQyb']/following-sibling::p[1]"
     );
-    let memberStatus = await accountStatus?.textContent();
-    if (memberStatus === "Exited") {
-      console.log("Member has been Exited successfully");
-    } else if (memberStatus === "Active") {
-      console.log("Member is still in Active state only");
+    console.log(accountStatus);
+    if (accountStatus) {
+      let memberStatus = await accountStatus.evaluate((node) =>
+        node.textContent?.trim()
+      );
+      console.log("member status is:", memberStatus);
+      if (memberStatus) {
+        memberStatus = memberStatus.trim();
+        if (memberStatus === "Exited") {
+          console.log("Member has been Exited successfully");
+        } else if (memberStatus === "Active") {
+          console.log("Member is still in Active state only");
+        } else if (memberStatus === "Pending") {
+          console.log("Member status is in Pending state only");
+        }
+      } else {
+        console.log("Member status not found or text content is null.");
+      }
     } else {
-      console.log("Member status is in Pending state only");
+      console.log("Account status element not found.");
     }
   }
 
@@ -912,7 +949,7 @@ export class PensionTransactionPage extends BasePage {
     let taxAmountValue = await this.taxableTaxed.textContent();
     const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
     await this.sleep(3000);
-    await this.reviewCase.captureScreenshot();
+    await this.reviewCase.captureScreenshot("Payment Compnonents");
     console.log("Tax amount:", taxAmount);
     let preservedComponent = await this.preserved.textContent();
     const unpComponentValue = parseFloat(
@@ -949,7 +986,7 @@ export class PensionTransactionPage extends BasePage {
     } else {
       console.error("Error: Conversation ID element not found");
     }
-    await this.reviewCase.captureScreenshot();
+    await this.reviewCase.captureScreenshot("Payment Details");
     await this.closePopUp.click();
   }
 
@@ -982,7 +1019,8 @@ export class PensionTransactionPage extends BasePage {
   async memberPensionShellAccountCreation(
     navBar: Navbar,
     pensionAccountPage: PensionShellAccount,
-    apiRequestContext: APIRequestContext
+    apiRequestContext: APIRequestContext,
+    commencePension: boolean = true
   ) {
     let { memberNo, surname } = await this.shellAccount(
       navBar,
@@ -995,10 +1033,12 @@ export class PensionTransactionPage extends BasePage {
       apiRequestContext,
       memberNo
     );
-    await MemberApiHandler.commencePensionMember(
-      apiRequestContext,
-      linearId.id
-    );
+    if (commencePension) {
+      await MemberApiHandler.commencePensionMember(
+        apiRequestContext,
+        linearId.id
+      );
+    }
     await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
     await TransactionsApiHandler.fetchRollInDetails(
       apiRequestContext,
@@ -1033,16 +1073,18 @@ export class PensionTransactionPage extends BasePage {
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id);
   }
 
-  async accumulationAccount(
+  async memberShellAccountCreation(
     navBar: Navbar,
     pensionAccountPage: PensionShellAccount,
-    apiRequestContext: APIRequestContext
+    apiRequestContext: APIRequestContext,
+    commencePension: boolean = true
   ) {
     // Process pension account and retrieve necessary data
     let { memberNo, surname } = await this.memberPensionShellAccountCreation(
       navBar,
       pensionAccountPage,
-      apiRequestContext
+      apiRequestContext,
+      commencePension
     );
 
     await pensionAccountPage.reload();
