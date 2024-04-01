@@ -81,6 +81,7 @@ export class PensionTransactionPage extends BasePage {
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
   readonly pensionCommenceSuccessMessage: Locator;
+  readonly pensionCommencementHistory: Locator;
 
   //Exceptions
 
@@ -160,6 +161,7 @@ export class PensionTransactionPage extends BasePage {
 
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
+    this.today = new Date();
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
     //Rollover In
@@ -225,6 +227,8 @@ export class PensionTransactionPage extends BasePage {
     this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' });
     this.investmentSwitchTransaction = page.getByRole('row',{name: 'Pension Commencement Investment Switch'});
     this.investmentSwitchTransaction_status = page.getByText('Status:Finalised');
+    const date = DateUtils.ddMMMyyyStringDate(this.today);
+    this.pensionCommencementHistory = page.getByRole('row', {name: date+" Pension Commencement"})
     ///Death Benifits
 
     this.BenefitPayment = page.getByText('Benefit Payment');
@@ -274,7 +278,6 @@ export class PensionTransactionPage extends BasePage {
     this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
     this.paymentDate = page.locator('td:nth-child(4) > .cell').first();
     this.processedDate = page.locator('td:nth-child(5) > .cell').first();
-    this.today = new Date();
     this.componentScreen = page.getByRole('button', { name: 'Components' });
     this.taxableTaxed = page.locator("//p[text()=' Taxable - taxed ']/following-sibling::p");
     this.preserved = page.locator("//p[text()=' UNP ']/following-sibling::p");
@@ -557,6 +560,9 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
+    await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
+    await expect(this.pensionCommencementHistory).toBeVisible();
+    await this.pensionCommencementHistory.click();
     await this.reviewCase.captureScreenshot();
 
   }

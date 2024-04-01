@@ -2,11 +2,12 @@ import { allure } from "allure-playwright";
 import { aolTest as base } from "../../../src/aol/base_aol_test";
 import { fundName } from "../../../src/aol/utils_aol";
 import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
-import { APIRequestContext } from "@playwright/test";
+import { APIRequestContext, expect } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json"
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import * as data from "../../../data/aol_test_data.json"
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -170,6 +171,7 @@ test(fundName()+"-Lump sum withdrawals from pre-retirement income streams are no
 
 test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, memberPage, accountInfoPage, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
     
+if (data.generate_test_data_from_api) {
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
     })
@@ -183,7 +185,8 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
     let linearId: string | undefined;
     await test.step("Create Shell Account for same Member", async () => {
         await navBar.navigateToAccumulationMembersPage();
-        await memberPage.selectMember(createMemberNo!);
+        //await memberPage.selectMember(createMemberNo!);
+        await navBar.selectMember(createMemberNo!);
         await pensionAccountPage.createShellAccountExistingMember();
         let memberCreated  = await pensionAccountPage.getMemberId();
         const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
@@ -211,16 +214,29 @@ test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar
     await test.step("add PTB & commence pension and validate member is active", async () => {
         await MemberApiHandler.ptbTransactions(apiRequestContext, linearId!);
         await pensionTransactionPage.pensionCommence();
-        
         await pensionTransactionPage.memberStatus();
     })
+}
+else{
+    await test.step("Select Pension Member", async () => {
+        await navBar.navigateToPensionMembersPage();
+        const memberId = data.members.Pension_Commencement_with_PTB;
+        await navBar.selectMember(memberId);
+    })
+
+    await test.step("Commence pension and validate member is Active", async () => {
+        await pensionTransactionPage.pensionCommence();
+        await pensionTransactionPage.memberStatus();
+    })    
+}
+
     await test.step("Validate balance from investment and balance & Correpondence payload is generated", async () => {
         await pensionTransactionPage.investementBalances();
-        // await pensionTransactionPage.memberTransactionTab.click();
-        // await pensionTransactionPage.componentsValidation();
     })
+
     await test.step("Validate Pension Commencement & Investment Switch status", async () =>{
         await pensionTransactionPage.InvestmentSwitchTransactionStatus();
+        await pensionTransactionPage.componentsValidation();
     })
 })
 

@@ -89,6 +89,7 @@ export class PensionShellAccount extends BasePage {
   readonly select_eligibility: Locator;
   readonly annual_payment: Locator;
   readonly select_payment: Locator;
+  readonly clipBoard_icon: Locator;
 
   //Pension Commencement
   readonly editButton: Locator;
@@ -194,7 +195,7 @@ export class PensionShellAccount extends BasePage {
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
     this.createdMemberCaseLink = page.locator("//a[@class='gs-link text-teal-300 cursor-pointer relative no-underline font-bold']");
-    this.memberID = page.locator("(//p[@class='kwVMLQ'])[2]");
+    this.memberID = page.locator("(//p[@data-cy='info-value'])[2]");
     //Consolidate step
     this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
     this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
@@ -238,6 +239,7 @@ export class PensionShellAccount extends BasePage {
     this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
+    this.clipBoard_icon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
     //Bank Acc
 
@@ -383,6 +385,7 @@ export class PensionShellAccount extends BasePage {
   async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
+    await this.clipBoard_icon.click();
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');

@@ -9,6 +9,7 @@
         "TTR_Commutation_Rollout_Partial_And_Full_Member_Number": "D576B-75-0",
         "TTR_Lump_Sum_Unrestricted_Unreserved_Fund_Withdrawal_Error": "D576B-36-0",
         "Pension_Drawdown_Change": "9020101",
+        "Pension_Commencement_with_PTB": "9020389",
         "Internal_Transfer_Accumulation_To_ABP_Destination_Account": "9020102",
         "Internal_Transfer_Accumulation_To_ABP_Source_Account": "D576B-116-1",
         "Internal_Transfer_ABP_To_Accumulation_Destination_Account": "9010100",
