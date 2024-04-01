@@ -10,17 +10,13 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"Contribution with TFN - Verify if contribution is processed successfully @demorun", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
+test(fundName()+"Contribution with TFN - Verify if contribution is processed successfully", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         globalPage.captureScreenshot('Accumulation Member page');
-        //await navBar.selectMember("363214890");
+        await navBar.selectMember("363214890");
     });
-
-    // await test.step("Add new Accumulation member", async () => {
-    //     addedMember = await memberPage.addNewMember(false, true);
-    // });
 
     let memberNo: string;
     let contributionAmount: string;
@@ -33,6 +29,10 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
         await new Promise(resolve => setTimeout(resolve, 2000));
         await navBar.selectMember(memberNo);
     })
+
+    // await test.step("Add new Accumulation member", async () => {
+    //     addedMember = await memberPage.addNewMember(false, true);
+    // });
 
     await test.step("Verify TFN Status of member", async () => {
         //await memberPage.selectMember(memberNo);

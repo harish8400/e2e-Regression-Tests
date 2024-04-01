@@ -105,6 +105,7 @@ export class InternalTransferPage extends BasePage {
      readonly abpscreenOverview:Locator;
      readonly ttrScreen:Locator;
      readonly ttrScreenOverview:Locator;
+     readonly verifyFinalizeMoneyOutSuccess: Locator;
 
 
     constructor(page: Page) {
@@ -139,6 +140,7 @@ export class InternalTransferPage extends BasePage {
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
+        this.verifyFinalizeMoneyOutSuccess = page.getByText('Intra fund Internal Transfer out complete.');;
 
         //API Integration Internal Transfer 
         this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
@@ -258,28 +260,38 @@ export class InternalTransferPage extends BasePage {
 
         await this.buttonLinkToCase.click();
         await this.sleep(3000);
-        await this.reviewCase.captureScreenshot();
-
+        
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
         } else {
             await this.reviewCase.reviewCaseProcess(this.verifySuccessMessageVG);
         }
+        await this.reviewCase.captureScreenshot('Internal Transfer In Case');
 
-        // Click on sub process
+        // Click on Internal transfer out process
         await this.sleep(3000);
         await this.processID.click();
         await this.sleep(3000);
-
+        
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifySuccessMessage);
         } else {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccessVG);
         }
-        await this.reviewCase.captureScreenshot();
+        await this.reviewCase.captureScreenshot('Internal Transfer Out Case');
+
+        // Click on Internal Transfer In Process
+        await this.processID.click();
+        // Click on Internal Transfer In Process
+        await this.processID.first().click();
+        if(process.env.PRODUCT == FUND.HESTA){
+            await this.reviewCase.reviewCaseProcess(this.verifyFinalizeMoneyOutSuccess);
+            await this.reviewCase.captureScreenshot('Finalize Money Out Case');
+        }
+
     }
 
-    async internalTransferProcess(addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
+    async accumulationAccountCreation(addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
 
         await this.sleep(3000);
         await this.overViewTab.waitFor();
@@ -305,7 +317,6 @@ export class InternalTransferPage extends BasePage {
         }
 
         await this.nextStep.click();
-
 
         //Employer details
         await this.employer.click();
@@ -348,14 +359,9 @@ export class InternalTransferPage extends BasePage {
             await this.beneficiaryEffectiveDate.press('Tab');
             await this.beneficiaryPercentage.fill('100');
             await this.beneficiarySave.click();
-
-            
         }
-
         //Create account
         await this.createAccount.click();
-        await this.sleep(5000);
-
     }
 
     async ProcessTab() {
