@@ -2,11 +2,12 @@ import { allure } from "allure-playwright";
 import { aolTest as base } from "../../../src/aol/base_aol_test";
 import { fundName } from "../../../src/aol/utils_aol";
 import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
-import { APIRequestContext } from "@playwright/test";
+import { APIRequestContext, expect } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import pensionMember from "../../../data/aol_test_data.json"
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -25,19 +26,19 @@ test.beforeEach(async ({ navBar }) => {
 
 
 test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
     })
 
-    await test.step("Add a New Pensions Member", async () => {
+    await allure.step("Add a New Pensions Member", async () => {
         await pensionTransactionPage.shellAccount(navBar, pensionAccountPage, apiRequestContext);
     })
 
-    await test.step("Add some MoneyIn", async () => {
+    await allure.step("Add some MoneyIn", async () => {
         await pensionTransactionPage.rollInTransaction();
     })
 
-    await test.step("Validate the Transaction details", async () => {
+    await allure.step("Validate the Transaction details", async () => {
         let rollinId = await pensionTransactionPage.transactionView();
 
         let rollinTransactionId = rollinId!.split(":")[1];
@@ -50,7 +51,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     let membersId: string | undefined;
 
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -59,7 +60,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -72,7 +73,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_And_UNP_Commutation_Partial_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -84,7 +85,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -97,13 +98,13 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     });
 
     // Commutation Payment Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationRolloverOut(false);
         await globalPage.captureScreenshot('Activity Data');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             let paymentId = await pensionTransactionPage.paymentView();
@@ -118,13 +119,13 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
 
     // Validate Member Payment Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const MemberPayments = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
@@ -135,10 +136,10 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     });
 
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -148,10 +149,10 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
     });
 
     // Validate MATS Report
-    await test.step("Validate MATS Report", async () => {
+    await allure.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -167,7 +168,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
 
 
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -176,7 +177,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -190,7 +191,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_And_UNP_Commutation_Partial_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -202,7 +203,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -215,13 +216,13 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     });
 
     // Commutation Payment Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationUNPBenefit(false);
         await globalPage.captureScreenshot('Commutation Rollout');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             let paymentId = await pensionTransactionPage.paymentView();
@@ -236,12 +237,12 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
     // Validate Member Payment Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const MemberPayments = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
@@ -251,10 +252,10 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         }
     });
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -264,10 +265,10 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
     });
 
     // Validate MATS Report
-    await test.step("Validate MATS Report", async () => {
+    await allure.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -281,7 +282,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     let membersId: string | undefined;
 
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -291,7 +292,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -305,7 +306,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Commutation_Rollout_Partial_And_Full_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -317,7 +318,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -330,13 +331,13 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     });
 
     // Commutation Rollout Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationRolloverOut(false);
         await globalPage.captureScreenshot('Activity Data');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             await pensionTransactionPage.paymentView();
@@ -347,13 +348,13 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
 
     // Validate Member Payment Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const MemberPayments = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
@@ -364,10 +365,10 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     });
 
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,false);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, false);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -377,10 +378,10 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
     });
 
     // Validate MATS Report
-    await test.step("Validate MATS Report", async () => {
+    await allure.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -394,7 +395,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
 
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -404,7 +405,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -417,7 +418,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
     } else {
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_UNP_Commutation_Partial_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -426,7 +427,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
     }
 
-    await test.step("'Commutation UNP Benefit Process", async () => {
+    await allure.step("'Commutation UNP Benefit Process", async () => {
         await pensionTransactionPage.commutationUNPBenefitReject(false);
         await globalPage.captureScreenshot('Commutation UNP Benefit');
 
@@ -439,7 +440,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
     let membersId: string | undefined;
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -449,7 +450,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -463,7 +464,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_Rollover_Full_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -475,7 +476,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -488,13 +489,13 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     });
 
     // Commutation Rollout Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationRolloverOut(true);
         await globalPage.captureScreenshot('Activity Data');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const paymentDetails = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
@@ -507,13 +508,13 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
 
     // Validate Member Fee Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             await pensionTransactionPage.adminFee();
@@ -525,10 +526,10 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     });
 
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -538,10 +539,10 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
     });
 
     // Validate MATS Report
-    await test.step("Validate MATS Report", async () => {
+    await allure.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -555,7 +556,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
 
     let membersId: string | undefined;
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -564,7 +565,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -578,7 +579,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.ABP_Commutation_UNP_Full_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -590,7 +591,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -603,13 +604,13 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     });
 
     // Commutation Payment Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationUNPBenefit(true);
         await globalPage.captureScreenshot('Activity Data');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             let paymentId = await pensionTransactionPage.paymentView();
@@ -624,13 +625,13 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
 
     // Validate Member Fee Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             await pensionTransactionPage.adminFee();
@@ -642,10 +643,10 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
     });
 
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -654,10 +655,10 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         }
 
         // Validate MATS Report
-        await test.step("Validate MATS Report", async () => {
+        await allure.step("Validate MATS Report", async () => {
             const memberId = getMemberId();
             if (memberId) {
-                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
                 console.log('MAAS Report:', MAASReport);
             } else {
                 console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -675,7 +676,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
 
     let membersId: string | undefined;
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -684,7 +685,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -698,7 +699,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Commutation_Rollout_Partial_And_Full_Member_Number;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -710,7 +711,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     const getMemberId = () => membersId;
 
     // Investments and Balances Page
-    await test.step("Investments and Balances Page", async () => {
+    await allure.step("Investments and Balances Page", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const investments = await ShellAccountCreationApiHandler.getMemberInvestments(transactionApi, memberId!);
@@ -723,13 +724,13 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     });
 
     // Commutation Rollout Process
-    await test.step("Commutation Rollout Process", async () => {
+    await allure.step("Commutation Rollout Process", async () => {
         await pensionTransactionPage.commutationRolloverOut(true);
         await globalPage.captureScreenshot('Activity Data');
     });
 
     // Validate the Payment Details In Transactions Screen
-    await test.step("Validate the Payment Details In Transactions Screen", async () => {
+    await allure.step("Validate the Payment Details In Transactions Screen", async () => {
         const memberId = getMemberId();
         if (memberId) {
             let paymentId = await pensionTransactionPage.paymentView();
@@ -744,13 +745,13 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     });
 
     // Validate Unit Prices For the current Transactions
-    await test.step("Validate Unit Prices For the current Transactions", async () => {
+    await allure.step("Validate Unit Prices For the current Transactions", async () => {
         await pensionTransactionPage.unitPriceValidation();
         await globalPage.captureScreenshot('Unit Prices Page');
     });
 
     // Validate Member Payment Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             const MemberPayments = await ShellAccountCreationApiHandler.getMemberPayment(transactionApi, memberId);
@@ -761,7 +762,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     });
 
     // Validate Member Fee Details
-    await test.step("Validate Member Fee Details", async () => {
+    await allure.step("Validate Member Fee Details", async () => {
         const memberId = getMemberId();
         if (memberId) {
             await pensionTransactionPage.adminFee();
@@ -773,10 +774,10 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     });
 
     // Validate Member Status
-    await test.step("Validate Member Status", async () => {
+    await allure.step("Validate Member Status", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId,true);
+            const summary = await MemberApiHandler.fetchMemberSummary(apiRequestContext, memberId, true);
             console.log("summary:", summary);
             await pensionTransactionPage.memberStatus();
             await globalPage.captureScreenshot('Member Summary Page');
@@ -786,10 +787,10 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
     });
 
     // Validate MATS Report
-    await test.step("Validate MATS Report", async () => {
+    await allure.step("Validate MATS Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId,'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
@@ -802,7 +803,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
 test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
     try {
 
-        await test.step("Navigate to Pensions Members page", async () => {
+        await allure.step("Navigate to Pensions Members page", async () => {
             await navBar.navigateToPensionMembersPage();
             await globalPage.captureScreenshot('Pensions Members page');
         });
@@ -811,7 +812,7 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
         if (pensionMember.generate_test_data_from_api) {
 
             // Create New Pension Shell Account
-            await test.step("Create New Pension Shell Account", async () => {
+            await allure.step("Create New Pension Shell Account", async () => {
                 await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
                 await globalPage.captureScreenshot('Pension Shell Account Creation');
 
@@ -824,14 +825,14 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
 
             // Select Existing Pension Member
             const memberNo = pensionMember.members.Death_benefit_member_number;
-            await test.step("Select Existing Pension Member", async () => {
+            await allure.step("Select Existing Pension Member", async () => {
                 await navBar.selectMember(memberNo);
                 await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
                 await globalPage.captureScreenshot('Pension Member Selection page');
             });
 
         }
-        await test.step("Death Benfit Transactions", async () => {
+        await allure.step("Death Benfit Transactions", async () => {
             await pensionTransactionPage.deathBenefitTransaction();
             await globalPage.captureScreenshot('Death Benefit Payment');
 
@@ -846,7 +847,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
     let membersId: string | undefined;
 
 
-    await test.step("Navigate to Pensions Members page", async () => {
+    await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
         await globalPage.captureScreenshot('Pensions Members page');
     });
@@ -855,7 +856,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Pension Shell Account
-        await test.step("Create New Pension Shell Account", async () => {
+        await allure.step("Create New Pension Shell Account", async () => {
             const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
             membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Pension Shell Account Creation');
@@ -870,7 +871,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
 
         // Select Existing Pension Member
         const memberNo = pensionMember.members.TTR_Lump_Sum_Unrestricted_Unreserved_Fund_Withdrawal_Error;
-        await test.step("Select Existing Pension Member", async () => {
+        await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
             const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
             membersId = linearId.id;
@@ -879,7 +880,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
 
     }
 
-    await test.step("Verify Error Message For Member Balance Not to be 100% UNP", async () => {
+    await allure.step("Verify Error Message For Member Balance Not to be 100% UNP", async () => {
         await pensionTransactionPage.verifyErrorMessageForMemberBalanceNotHundredPercentUNP();
         await globalPage.captureScreenshot('Error Message');
 
@@ -890,7 +891,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
 
 test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
     await navBar.navigateToPensionMembersPage();
-    await pensionTransactionPage.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
+    await pensionTransactionPage.memberWithPTBTransactions(navBar, pensionAccountPage, apiRequestContext);
     await pensionTransactionPage.verifyPTBtransaction(true);
     await pensionTransactionPage.pensionCommence();
 })
@@ -899,7 +900,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
 
 
-    await test.step("Navigate to Accumulation Members page", async () => {
+    await allure.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         await globalPage.captureScreenshot('Accumulation Members page');
     });
@@ -908,7 +909,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
     if (pensionMember.generate_test_data_from_api) {
 
         // Create New Member Account
-        await test.step("Create New Member Account", async () => {
+        await allure.step("Create New Member Account", async () => {
             const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             await navBar.selectMember(createMemberNo);
             await globalPage.captureScreenshot('New Member Account account ');
@@ -920,7 +921,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
     } else {
 
         // Create New Member Account
-        await test.step("Create New Member Account", async () => {
+        await allure.step("Create New Member Account", async () => {
             const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             await navBar.selectMember(createMemberNo);
             await globalPage.captureScreenshot('New Member Account account ');
@@ -928,10 +929,229 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
     }
 
-    await test.step("Update CRN for the member", async () => {
+    await allure.step("Update CRN for the member", async () => {
         await accountInfoPage.updateCRN();
         await globalPage.captureScreenshot('CRN Updation');
 
 
     });
+})
+
+test(fundName() + "-Validate Retirement Transition process is sucessful where PTB transactionm is processed on TTR account prior to conversion @PTB", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
+
+    let membersId: string | undefined;
+    let memberNo: string | undefined;
+
+
+    await allure.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+        await globalPage.captureScreenshot('Pensions Members page');
+    });
+
+    //When api is set to true we will use new Shell account creation for testing.
+    if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await allure.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberWithPTBTransactions(navBar, pensionAccountPage, apiRequestContext);;
+            membersId = memberId.linearId;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+        });
+
+
+        //If api is set to false, we will use existing member details for testing.
+
+
+    } else {
+
+        // Select Existing Pension Member
+        memberNo = pensionMember.members.Member_TTR_PTB;
+        await allure.step("Select Existing Pension Member", async () => {
+            await navBar.selectMember(memberNo!);
+            const linearId = await ShellAccountApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
+            const memberPTBTransactions = await MemberApiHandler.ptbTransactions(apiRequestContext, membersId);
+            allure.attachment('PTB Transactions Data', JSON.stringify(memberPTBTransactions, null, 2), 'application/json');
+            await globalPage.captureScreenshot('Pension Member Selection page');
+        });
+
+    }
+
+    await allure.step("Validate PTB Transactions for the same member", async () => {
+        allure.logStep("Verify PTB Transactionsn are displayed");
+        await pensionTransactionPage.verifyPTBtransaction(true);
+        await globalPage.captureScreenshot('PTB Transactions');
+    });
+
+    await allure.step("Validate member age for Condition of Release", async () => {
+        allure.logStep("Verify member age for Condition of Release is displayed correctly");
+        await pensionTransactionPage.memberAge(61);
+        await globalPage.captureScreenshot('Error Message');
+    });
+
+    await allure.step("Run the Cohort Process for the same member", async () => {
+        await pensionTransactionPage.cohortProcess(memberNo!);
+        await globalPage.captureScreenshot('Cohort Process for the same member');
+
+    });
+
+    await allure.step("Validate Retirement Transistion Case is Triggered", async () => {
+        allure.logStep("Verify Retirement Transistion Case is displayed correctly");
+        await pensionTransactionPage.retirementToTransistionProcess();
+        await globalPage.captureScreenshot('Retirement Transistion Case');
+
+    });
+
+    await allure.step("Validate Condition of Release is Updated", async () => {
+        allure.logStep("Verify Condition of Release Case is displayed correctly");
+        await pensionTransactionPage.conditionOfRelease();
+        await globalPage.captureScreenshot('Condition of Release Case');
+
+    });
+
+    const getMemberId = () => membersId;
+
+    await allure.step("Validate Investment Switch PTB cash is initiated", async () => {
+        allure.logStep("Verify Investment Switch PTB Case is displayed correctly");
+        const memberId = getMemberId();
+        if (memberId) {
+            await MemberApiHandler.memberInvestmentSwitch(memberApi, memberId);
+            const investemntsSwitchInfo = await MemberApiHandler.getMemberInvestmentSwitch(memberApi, memberId, 0, 50);
+            await pensionTransactionPage.investmentSwitch(true);
+            allure.attachment('investmentSwitch Account Info', JSON.stringify(investemntsSwitchInfo, null, 2), 'application/json');
+            console.log('investemntsSwitchInfo', investemntsSwitchInfo);
+        } else {
+            console.log("memberId is undefined. Cannot fetch investemntsSwitchInfo Report.");
+        }
+
+        await globalPage.captureScreenshot('investemntsSwitchInfo');
+
+    });
+
+    await allure.step("Validate Investment Rebalance is switched", async () => {
+        allure.logStep("Verify Investment Rebalance PTB Case is displayed correctly");
+        const memberId = getMemberId();
+        if (memberId) {
+            await pensionTransactionPage.investmentsRebalance(true);
+            const InvestmentsRebalance = await MemberApiHandler.getMemberInvestmentRebalance(memberApi, memberId, 0, 50);
+            allure.attachment('InvestmentsRebalance Transactions Data', JSON.stringify(InvestmentsRebalance, null, 2), 'application/json');
+            console.log('InvestmentsRebalance', InvestmentsRebalance);
+        } else {
+            console.log("memberId is undefined. Cannot fetchInvestmentsRebalance.");
+        }
+
+        await globalPage.captureScreenshot('InvestmentsRebalance');
+
+    });
+
+    await allure.step("Validate MAAS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MAAS Submit');
+            allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
+            expect(MAASReport.type).toEqual('MAAS Submit');
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+})
+
+test(fundName() + "-Validate Retirement Transition process completes sucessfully on TTR account with COR and No PTB Transactions @PTB", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
+
+    let membersId: string | undefined;
+    let memberNo: string | undefined;
+
+
+    await allure.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+        await globalPage.captureScreenshot('Pensions Members page');
+    });
+
+    //When api is set to true we will use new Shell account creation for testing.
+    if (pensionMember.generate_test_data_from_api) {
+
+        // Create New Pension Shell Account
+        await allure.step("Create New Pension Shell Account", async () => {
+            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            membersId = memberId.linearId.id;
+            await globalPage.captureScreenshot('Pension Shell Account Creation');
+        });
+
+
+        //If api is set to false, we will use existing member details for testing.
+
+
+    } else {
+
+        // Select Existing Pension Member
+        memberNo = pensionMember.members.Member_TTR_PTB;
+        await allure.step("Select Existing Pension Member", async () => {
+            await navBar.selectMember(memberNo!);
+            const linearId = await ShellAccountApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            membersId = linearId.id;
+            //await MemberApiHandler.ptbTransactions(apiRequestContext, membersId);
+            await globalPage.captureScreenshot('Pension Member Selection page');
+        });
+
+    }
+
+
+
+    await allure.step("Validate member age for Condition of Release", async () => {
+        await pensionTransactionPage.memberAge(61);
+        await globalPage.captureScreenshot('Error Message');
+    });
+
+    await allure.step("Run the Cohort Process for the same member", async () => {
+        await pensionTransactionPage.cohortProcess(memberNo!);
+        await globalPage.captureScreenshot('Cohort Process for the same member');
+
+    });
+
+    await allure.step("Validate Retirement Transistion Case is Triggered", async () => {
+        allure.logStep("Verify Retirement Transistion Case is displayed correctly");
+        await pensionTransactionPage.retirementToTransistionProcess();
+        await globalPage.captureScreenshot('Retirement Transistion Case');
+
+    });
+
+    await allure.step("Validate Condition of Release is Updated", async () => {
+        allure.logStep("Verify Condition of Release Case is displayed correctly");
+        await pensionTransactionPage.conditionOfRelease();
+        await globalPage.captureScreenshot('Condition of Release Case');
+
+    });
+
+    const getMemberId = () => membersId;
+
+    await allure.step("Validate Investment Rebalance is switched", async () => {
+        allure.logStep("Verify Investment Rebalance PTB Case is displayed correctly");
+        const memberId = getMemberId();
+        if (memberId) {
+            await pensionTransactionPage.investmentsRebalance(true);
+            const InvestmentsRebalance = await MemberApiHandler.getMemberInvestmentRebalance(memberApi, memberId, 0, 50);
+            allure.attachment('InvestmentsRebalance Transactions Data', JSON.stringify(InvestmentsRebalance, null, 2), 'application/json');
+            console.log('InvestmentsRebalance', InvestmentsRebalance);
+        } else {
+            console.log("memberId is undefined. Cannot fetchInvestmentsRebalance.");
+        }
+
+        await globalPage.captureScreenshot('InvestmentsRebalance');
+
+    });
+
+    await allure.step("Validate MAAS Report", async () => {
+        const memberId = getMemberId();
+        if (memberId) {
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MAAS Submit');
+            allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
+            expect(MAASReport.type).toEqual('MAAS Submit');
+            console.log('MAAS Report:', MAASReport);
+        } else {
+            console.log("memberId is undefined. Cannot fetch MAAS Report.");
+        }
+    });
+
+
 })

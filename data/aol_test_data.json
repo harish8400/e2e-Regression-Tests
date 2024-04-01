@@ -18,6 +18,7 @@
         "Death_benefit_member_number":"D576B-2-2",
         "Modify_Beneficiary_ABP_Active_Member": "9010104",
         "Modify_Beneficiary_ABP_Pending_Status_Member": "9010104",
-        "memberIdUNP":"9020227"
+        "memberIdUNP":"9020227",
+        "Member_TTR_PTB":"9020227"
     }
 }
