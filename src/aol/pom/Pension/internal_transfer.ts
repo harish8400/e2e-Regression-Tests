@@ -140,7 +140,7 @@ export class InternalTransferPage extends BasePage {
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
-        this.verifyFinalizeMoneyOutSuccess = page.getByText('Intra fund Internal Transfer out complete.');;
+        this.verifyFinalizeMoneyOutSuccess = page.getByText('Process step completed with note: Rollout correspondence sent.');
 
         //API Integration Internal Transfer 
         this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");

@@ -908,9 +908,10 @@ if (data.generate_test_data_from_api) {
         //await memberPage.selectMember(createMemberNo!);
         await navBar.selectMember(createMemberNo!);
         await pensionAccountPage.createShellAccountExistingMember();
-        let memberCreated  = await pensionAccountPage.getMemberId();
+        let memberCreated  = await pensionAccountPage.getMemberId("ABP");
         const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
         linearId = memberId.id;
+        console.log(linearId);
     })
     await test.step("Select the Accumulation Member", async () => {
         await pensionAccountPage.reload();
@@ -919,7 +920,7 @@ if (data.generate_test_data_from_api) {
     })
 
     await test.step("Navigate to ABP Screen", async () => {
-            await pensionAccountPage.selectTTRRetirement()
+            await pensionAccountPage.selectABPTab()
     })
 
     await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
@@ -927,6 +928,7 @@ if (data.generate_test_data_from_api) {
     })
 
     await test.step("Validate the payment details & components ", async () => {
+        await MemberApiHandler.ptbTransactions(apiRequestContext, linearId);
         await pensionTransactionPage.transactionView();
         await pensionTransactionPage.componentsValidation();
         await pensionTransactionPage.sleep(5000)

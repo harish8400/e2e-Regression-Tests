@@ -48,9 +48,9 @@ test(fundName()+"ABP - Pension draw-down as Proportional @pension", async ({ api
     });
 }
 else{
-    await test.step("Navigate Accumulation Mmembers list & select the member", async () => {
+    await test.step("Navigate Pension Members list & select the member", async () => {
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(data.members.Pension_Drawdown_Change);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Proportional);
     });
 }
     await test.step("Change the dradown order to proportional & validate the pension histoty", async () => {
@@ -58,26 +58,52 @@ else{
     });
 })
 
-test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ accountInfoPage, memberPage, pensionTransactionPage, internalTransferPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Specified Order
     if (data.generate_test_data_from_api) {
-    await test.step("Create Pension Account & Select the added member ", async () => {
-            await navBar.navigateToPensionMembersPage();
-            let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-            console.log('ProcessId:', processId);
-            await pensionAccountPage.ProcessTab();
-            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-            await new Promise(resolve => setTimeout(resolve, 10000));
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+    
+        let createMemberNo: string | undefined;
+        
+        await test.step("Add new Accumulation Member", async () => {
+            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+        })
+        let linearId: string | undefined;
+        await test.step("Create Shell Account for same Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            //await memberPage.selectMember(createMemberNo!);
+            await navBar.selectMember(createMemberNo!);
+            await pensionAccountPage.createShellAccountExistingMember();
+            let memberCreated  = await pensionAccountPage.getMemberId("ABP");
+            const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
+            linearId = memberId.id;
+        })
+        await test.step("Select the Accumulation Member", async () => {
             await pensionAccountPage.reload();
-            await navBar.navigateToPensionMembersPage();
-            await navBar.selectMember(memberNo);
-        });
-    }
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo!);
+        })
+    
+        await test.step("Navigate to ABP Screen", async () => {
+                await pensionAccountPage.selectABPTab()
+        })
+    
+        await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+            await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+        })
+
+        await test.step("commence pension and validate member is active", async () => {
+            await pensionTransactionPage.pensionCommence();
+            await pensionTransactionPage.memberStatus();
+        })
+}
     else{
-        await test.step("Navigate Pension Mmembers list & select the member", async () => {
+        await test.step("Navigate Pension Members list & select the member", async () => {
             await navBar.navigateToPensionMembersPage();
-            await navBar.selectMember(data.members.Pension_Drawdown_Change);
+            await navBar.selectMember(data.members.Pension_Drawdown_Change_to_SpecificOrder);
         });
     }
 
@@ -86,26 +112,52 @@ test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ a
     });   
 })
 
-test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
+test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
-if (data.generate_test_data_from_api) {
-    await test.step("Create Pension Account & Select the added member ", async () => {
-        await navBar.navigateToPensionMembersPage();
-        let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-        console.log('ProcessId:', processId);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
-        await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(memberNo);
-    });
+    if (data.generate_test_data_from_api) {
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+    
+        let createMemberNo: string | undefined;
+        
+        await test.step("Add new Accumulation Member", async () => {
+            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+        })
+        let linearId: string | undefined;
+        await test.step("Create Shell Account for same Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            //await memberPage.selectMember(createMemberNo!);
+            await navBar.selectMember(createMemberNo!);
+            await pensionAccountPage.createShellAccountExistingMember();
+            let memberCreated  = await pensionAccountPage.getMemberId("ABP");
+            const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
+            linearId = memberId.id;
+        })
+        await test.step("Select the Accumulation Member", async () => {
+            await pensionAccountPage.reload();
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo!);
+        })
+    
+        await test.step("Navigate to ABP Screen", async () => {
+                await pensionAccountPage.selectABPTab()
+        })
+    
+        await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+            await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+        })
+
+        await test.step("commence pension and validate member is active", async () => {
+            await pensionTransactionPage.pensionCommence();
+            await pensionTransactionPage.memberStatus();
+        })
 }
 else{
-    await test.step("Navigate Pension Mmembers list & select the member", async () => {
+    await test.step("Navigate Pension Members list & select the member", async () => {
         await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(data.members.Pension_Drawdown_Change);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Percentage);
     });
 }
     await test.step("change the drawdown order to Percentage & Validate pension history", async () => {
@@ -132,7 +184,7 @@ if (data.generate_test_data_from_api) {
 else{
     await test.step("navigate to TTR members list and select the member", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(data.members.Pension_Drawdown_Change);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Proportional);
     });
 }
     await test.step("Change the dradown order to proportional & validate the pension histoty", async () => {
@@ -141,26 +193,49 @@ else{
     
 })
 
-test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ pensionTransactionPage, accountInfoPage, memberPage, internalTransferPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Specified Order
-if (data.generate_test_data_from_api) {
-    await test.step("Create TTR Account & Select the added member ", async () => {
-        await navBar.navigateToTTRMembersPage();
-        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
-        console.log('ProcessId:', processId);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
-        await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(memberNo);
-    });
+    if (data.generate_test_data_from_api) {
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+    
+        let createMemberNo: string | undefined;
+        
+        await test.step("Add new Accumulation Member", async () => {
+            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+        })
+        
+        await test.step("Create Shell Account for same Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo!);
+            await pensionAccountPage.ttrAccountCreation();
+            await pensionAccountPage.getMemberId("TTR");
+        })
+        await test.step("Select the Accumulation Member", async () => {
+            await pensionAccountPage.reload();
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo!);
+        })
+    
+        await test.step("Navigate to ABP Screen", async () => {
+                await pensionAccountPage.selectTTRRetirement();
+        })
+    
+        await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+            await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+        })
+
+        await test.step("commence pension and validate member is active", async () => {
+            await pensionTransactionPage.pensionCommence();
+            await pensionTransactionPage.memberStatus();
+        })
 }
 else{
     await test.step("navigate to TTR members list and select the member", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(data.members.Pension_Drawdown_Change);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_SpecificOrder);
     });
 }
         
@@ -169,26 +244,49 @@ else{
     }); 
 })
 
-test(fundName()+"TTR - Pension draw-down as Percentage @pension", async ({ apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"TTR - Pension draw-down as Percentage @pension", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
 if (data.generate_test_data_from_api) {
-    await test.step("Create TTR Account & Select the added member ", async () => {
-        await navBar.navigateToTTRMembersPage();
-        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
-        console.log('ProcessId:', processId);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+    })
+
+    let createMemberNo: string | undefined;
+    
+    await test.step("Add new Accumulation Member", async () => {
+        const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+        createMemberNo = memberData.createMemberNo;
+    })
+    
+    await test.step("Create Shell Account for same Member", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo!);
+        await pensionAccountPage.ttrAccountCreation();
+        await pensionAccountPage.getMemberId("TTR");
+    })
+    await test.step("Select the Accumulation Member", async () => {
         await pensionAccountPage.reload();
-        await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(memberNo);
-    });
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo!);
+    })
+
+    await test.step("Navigate to ABP Screen", async () => {
+            await pensionAccountPage.selectTTRRetirement();
+    })
+
+    await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+        await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+    })
+
+    await test.step("commence pension and validate member is active", async () => {
+        await pensionTransactionPage.pensionCommence();
+        await pensionTransactionPage.memberStatus();
+    })
 }
 else{
     await test.step("navigate to TTR members list and select the member", async () => {
         await navBar.navigateToTTRMembersPage();
-        await navBar.selectMember(data.members.Pension_Drawdown_Change);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Percentage);
     });
 }
     await test.step("change the drawdown order to Percentage & Validate pension history", async () => {

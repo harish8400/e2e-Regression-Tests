@@ -215,7 +215,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
+    this.invPercentage = page.getByRole('textbox').nth(2);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -534,11 +534,18 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async getMemberId(){
+  async getMemberId(account: string){
     await this.createdMemberCaseLink.click();
     await this.sleep(3000)
+    if(account == 'ABP'){
     await this.abpScreenView.waitFor();
     await this.abpScreenView.click();
+    }
+    if(account == 'TTR'){
+      await this.ttrScreenView.waitFor();
+      await this.ttrScreenView.click();await this.ttrScreenView.waitFor();
+      await this.ttrScreenView.click();
+    }
     await this.sleep(3000);
     let memberNumber = await this.memberID.textContent();
     return memberNumber;
