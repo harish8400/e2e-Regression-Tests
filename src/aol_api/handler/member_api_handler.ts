@@ -97,6 +97,9 @@ export class MemberApiHandler {
         return memberApi.memberCorrespondenceInfo(memberId!);
     }
 
+    static async getRegularPensionPaymentAmount(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getRegularPensionPaymentAmount(memberId!);
+    }
 }
 
 

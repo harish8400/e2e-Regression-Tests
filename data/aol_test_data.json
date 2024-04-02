@@ -19,6 +19,8 @@
         "Modify_Beneficiary_ABP_Active_Member": "9010104",
         "Modify_Beneficiary_ABP_Pending_Status_Member": "9010104",
         "memberIdUNP":"9020227",
+        "Maintain_Income_Stream_Account_Bank_Account": "9020386",
+        "Maintain_Income_Stream_Account_Payment_Details": "9020385",
         "Member_TTR_PTB":"9020227",
         "MemberAge":[
             60,61,62,63,64,65,66,67,68

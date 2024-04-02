@@ -580,13 +580,21 @@ export class MemberApi extends BaseDltaAolApi {
     return { memberId };
   }
 
-  async memberCorrespondenceInfo(linearId: string): Promise<{ memberAge: number, ageJoinedFund: number, ageJoinedProduct: number,memberId:string }> {
+  async memberCorrespondenceInfo(linearId: string): Promise<{ memberAge: number, ageJoinedFund: number, ageJoinedProduct: number, memberId: string }> {
     let path = `member/${linearId}/correspondence/info`;
     let response = await this.get(path);
     let responseBody = await response.json();
-    const { memberAge, ageJoinedFund, ageJoinedProduct ,memberId } = responseBody.memberData;
-    return { memberAge, ageJoinedFund, ageJoinedProduct,memberId };
-}
+    const { memberAge, ageJoinedFund, ageJoinedProduct, memberId } = responseBody.memberData;
+    return { memberAge, ageJoinedFund, ageJoinedProduct, memberId };
+  }
+  async getRegularPensionPaymentAmount(memberId: string): Promise<{ regularPaymentAmount: string }> {
+    let path = `member/${memberId}/pension/payment/details`;
 
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    //let { regularPaymentAmount } = responseBody.regularPaymentAmount;
+    return responseBody;
+
+  }
 
 }

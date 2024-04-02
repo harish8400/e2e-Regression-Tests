@@ -7,6 +7,8 @@ import { AssertionError } from "assert";
 import { UtilsAOL } from "../../utils_aol";
 import { ReviewCase } from "../component/review_case";
 import { DashboardPage } from "../dashboard_page";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "../component/global_page";
 
 export class PensionShellAccount extends BasePage {
 
@@ -160,10 +162,15 @@ export class PensionShellAccount extends BasePage {
   readonly addAccount: Locator;
   readonly abp: Locator;
   readonly ttr: Locator;
+  readonly globalPage: GlobalPage;
+  readonly pensionHistory: Locator;
+  readonly regularPensionAmount: Locator;
+  readonly caseHeading: Locator;
 
   constructor(page: Page) {
     super(page)
     this.dashboard_page = new DashboardPage(page);
+    this.globalPage = new GlobalPage(page);
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
@@ -307,6 +314,10 @@ export class PensionShellAccount extends BasePage {
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
     this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
+    const date = DateUtils.ddMMMyyyStringDate(new Date());
+    this.pensionHistory = page.getByRole('cell', { name: 'Pension Payment Details Update' }).first();
+    this.regularPensionAmount = page.getByText('Regular Pension Payment Amount');
+    this.caseHeading = page.getByRole('heading', { name: 'Pension - Update Payment' });
   }
 
   async navigateToPensionMemberPage() {
@@ -493,11 +504,11 @@ export class PensionShellAccount extends BasePage {
     if (frequency == 'Bi-Annualy') {
       await this.frequencyValue3.click();
     }
-    else if (frequency == 'Quartely') {
+    else if (frequency == 'Quarterly') {
       await this.frequencyValue2.click();
     }
     else {
-      await this.frequencyValue3.click();
+      await this.frequencyValue1.click();
     }
     await this.nextPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(15)}`);
     await this.annualPaymentMethod.click();
@@ -509,6 +520,32 @@ export class PensionShellAccount extends BasePage {
     await this.linkCase.click();
     await this.sleep(5000);
     await this.reviewCase.reviewCaseProcess(this.successMessage);
+
+    await allure.step("Validate Correspondence is sent with success", async () => {
+      allure.logStep("Verify Correspondence sent success is displayed")
+      expect(this.successMessage).toBeVisible();
+      await this.caseHeading.focus();
+      await this.successMessage.scrollIntoViewIfNeeded();
+      await this.globalPage.captureScreenshot("Correspondence triggered");
+    });
+
+    await allure.step("Validate Case is processed without error", async () => {
+      await this.caseHeading.focus();
+      await this.caseHeading.scrollIntoViewIfNeeded();
+      await this.globalPage.captureScreenshot("Pension - Update case");
+    });
+
+    await allure.step("Validate New Pension History record", async () => {
+      await expect(this.pensionHistory).toBeVisible();
+      await this.pensionHistory.scrollIntoViewIfNeeded();
+      await this.sleep(1000);
+      //await this.pensionHistory.click();
+      await this.globalPage.captureScreenshot("New Pension History record");
+    });
+
+    this.regularPensionAmount.scrollIntoViewIfNeeded();
+    //this.regularPensionAmount.focus();
+    
   }
 
   async ProcessTab() {

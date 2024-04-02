@@ -72,13 +72,13 @@ export class Navbar extends BasePage {
     }
 
     async selectMember(member: string){
-        await this.sleep(3000);
+        await this.sleep(1500);
         await this.page.reload();
         
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
-        await this.sleep(3000);
+        await this.sleep(1000);
         await this.FilterOptionInput.fill(member);
         await this.BtnApply.click();
 
