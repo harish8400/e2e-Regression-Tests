@@ -1,40 +1,74 @@
 {
-    "memberID":"9020107",
-    "memberIdUNP":"9020227",
-    "memberIDwithTFN": "464591486",
-    "paymentDate":"02/02/2024",
-    "dob": "16/06/1955",
-    "email": "pharish.kumar@grow.inc",
-    "phone":"61412345678",
-    "address":"11 high street",
-    "city":"Sydney",
-    "postcode":"2000",
-    "dateJoined": "01/01/2024",
-    "AccNumber":"AUS-ACC-102030",
-    "USI":"STA0100AU",
-    "Amount":"50000",
-    "share":"100",
-    "share1":"60",
-    "FirstName":"",
-    "SurName":"",
-    "beneficiary":"John",
-    "beneficiaryDOB":"16/06/2000",
-    "BSBNumber":"032-000",
-    "AccountName":"InTest",
-    "PensionMembershipAccountNumber":"9020227",
-    "AccountNumber":"123456",
-    "CRN":"103675704651001506",
-    "names":[
-      "Michelle", "Alan", "Glenn", "Linda", "Gotham", "Lille", "Steve", "Rose", "Ramsey", "Zele", "Simon", "Nathan", "Ashton", "Kyle", "Kane", "Jamie", "Oliver"
-    ],
-    "PaymentReference":"ABP-Full",
-    "EligibleServiceDate":"1/7/2023",
-    "Employment": {
-      "EmployementTerminationMember_Hesta":"D576B-48-1",
-      "EmployementTerminationMember_Vanguard":"AE-10006"
-    },
-    "Beneficiary": {
-      "PensionMembershipAccountNumber_Hesta":"9020102",
-      "PensionMembershipAccountNumber_Vanguard":"9020227"
-    }
-  }
+  "memberID": "9020107",
+  "memberIdUNP": "9020227",
+  "memberIDwithTFN": "464591486",
+  "paymentDate": "02/02/2024",
+  "dob": "16/06/1955",
+  "email": "pharish.kumar@grow.inc",
+  "phone": "61412345678",
+  "address": "11 high street",
+  "city": "Sydney",
+  "postcode": "2000",
+  "dateJoined": "01/01/2024",
+  "AccNumber": "AUS-ACC-102030",
+  "USI": "STA0100AU",
+  "Amount": "50000",
+  "share": "100",
+  "share1": "60",
+  "FirstName": "",
+  "SurName": "",
+  "beneficiary": "John",
+  "beneficiaryDOB": "16/06/2000",
+  "BSBNumber": "032-000",
+  "AccountName": "InTest",
+  "PensionMembershipAccountNumber": "9020227",
+  "AccountNumber": "123456",
+  "CRN": "103675704651001506",
+  "names": [
+    "Michelle",
+    "Alan",
+    "Glenn",
+    "Linda",
+    "Gotham",
+    "Lille",
+    "Steve",
+    "Rose",
+    "Ramsey",
+    "Zele",
+    "Simon",
+    "Nathan",
+    "Ashton",
+    "Kyle",
+    "Kane",
+    "Jamie",
+    "Oliver"
+  ],
+  "PaymentReference": "ABP-Full",
+  "EligibleServiceDate": "1/7/2023",
+  "Employment": {
+    "EmployementTerminationMember_Hesta": "D576B-48-1",
+    "EmployementTerminationMember_Vanguard": "AE-10006"
+  },
+  "Beneficiary": {
+    "PensionMembershipAccountNumber_Hesta": "9020102",
+    "PensionMembershipAccountNumber_Vanguard": "9020227"
+  },
+  "processType": "Retirement Transition",
+  "cohorenceType": [
+    "Member Test 01",
+    "Member Test 02",
+    "Member Test 03",
+    "Member Test 04",
+    "Member Test 05"
+  ],
+  "FrequencyType": [
+    "Annually",
+    "Bi-Annually",
+    "Quarterly",
+    "Monthly",
+    "Fortnightly",
+    "Weekly",
+    "Daily"
+  ],
+  "caseType":"Transfer Request - Create"
+}
