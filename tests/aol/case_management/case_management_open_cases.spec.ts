@@ -34,7 +34,7 @@ test(fundName()+"-Verify that adhoc (shell) cases can be created successfully", 
         //Create shell case and assign to a user
         await dashboardPage.createShellCaseAndAsssignToUser();
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
+        throw (error);
     }
 })
 
