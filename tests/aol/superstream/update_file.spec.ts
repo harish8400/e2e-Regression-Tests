@@ -11,53 +11,54 @@ import { DataUtils } from '../../../src/utils/data_utils';
 
 export function updateFile(): void {
     const templateFileName: string = "xmlFileTemplate.xml";
-
-    let templateFilePath = (path.join(__dirname, `${templateFileName}`));
-    const absolutePath = `${DataUtils.dataFilesPath}/${templateFileName}`;
+    console.log(templateFileName)
+ 
+    //const templateFilePath = path.join(__dirname, `../../src/aol/data/${templateFileName}`);
+    const absolutePath = path.join(DataUtils.dataFilesPath);
     console.log(absolutePath)
-    //const templateFilePath: string ="./src/aol/data/superstream_template/XMLFileTemplate.xml"
-    let destifolder = (path.join(__dirname, `aol/data/superstream_processed`))
+    let destifolder = path.join(DataUtils.dataDestiFilePath);
+    console.log(destifolder)
 
     let formattedDate: string = getCurrentDateFormatted();
-    const conversationId: string = `Contribution.84111122223.${formattedDate}111812599`;
+    const conversationId: string = `Contribution.84111122223.${formattedDate}111812600`;
     const superGateMessageId: string = `${formattedDate}.115734.123@superchoice.com.au`
 
     const fileName: string = `MRR_${formattedDate}_115734_123_${conversationId}.XML`;
-    const fullFileName: string = copyGeneratedFile(templateFilePath, templateFileName, fileName, destifolder);
+    const fullFileName: string = copyGeneratedFile(absolutePath, templateFileName, fileName, destifolder);
+    updateXML(`${destifolder}/${fileName}`, superGateMessageId, conversationId);
 
-    if (fullFileName) {
-        console.error("Failed to copy the template file to template File path folder");
-    } else {
-        updateXML(`${destifolder}\\${fileName}`, superGateMessageId, conversationId);
-    }
+   // if (fullFileName) {
+    //  console.error("Failed to copy the template file to template File path folder");
+    //} else {
+    //    updateXML(`${destifolder}\\${fileName}`, superGateMessageId, conversationId);
+   // }
 }
 
 function getCurrentDateFormatted(): string {
-    return DateUtils.ddmmyyyStringDate(0);
+    return DateUtils.yyyymmddStringDate();
 }
 
 
 ///code for copying the file from local folder to shared folder 
 
-
-
-export function copyGeneratedFile(templateFilePath: string, templateFileName: string, fileName: string, destifolder: string) {
+export function copyGeneratedFile(absolutePath: string, templateFileName: string, fileName: string, destifolder: string) {
     try {
-        const files = fs.readdirSync(templateFilePath);
+        const files = fs.readdirSync(`/home/minal.tate/MinalAutomation/e2e-regression-tests/src/aol/data/superstream_template`);
 
         console.log(files)
         for (const file of files) {
-            if (file.includes(templateFileName)) {
-                const fullFilePath = path.join(templateFilePath, file);
+          //  if (file.includes(templateFileName)) {
+                const fullFilePath = path.join(absolutePath, file);
+                console.log(fullFilePath)
                 const destinationPath = path.join(destifolder, fileName);
-
+                console.log(destinationPath)
                 fs.copyFileSync(fullFilePath, destinationPath);
-                console.log(`File ${file} copied successfully to ${destinationPath}`);
+               // console.log(`File ${file} copied successfully to ${destinationPath}`);
                 return file;
-            }
+            //}
         }
 
-        console.log(`File with name ${templateFileName} was not found in the path ${templateFilePath}`);
+        console.log(`File with name ${absolutePath} was not found in the path ${destifolder}`);
         return "Fail";
     } catch (error) {
         console.error(`An error occurred: ${error}`);
@@ -69,8 +70,6 @@ export function copyGeneratedFile(templateFilePath: string, templateFileName: st
 
 
 ///update node value
-
-
 
 export function updateXML(filePath: string, conversationId: string, superGateMessageId: string): void {
     console.log("Updating the XML File content for edi config");

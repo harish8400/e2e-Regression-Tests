@@ -33,4 +33,11 @@ export class DateUtils {
         return `${date.getDate() + dayToAdd}/${date.getMonth() + 1}/${date.getFullYear() - age}`
     }
 
+
+    /**format example: 20231124 */
+    static yyyymmddStringDate() {
+        let date = new Date();
+        return `${date.getDate()}${date.getFullYear()}${date.getMonth()}`
+    }
+
 }
