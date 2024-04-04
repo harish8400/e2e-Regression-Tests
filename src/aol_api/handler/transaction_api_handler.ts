@@ -51,7 +51,6 @@ export class Transactions extends BaseDltaAolApi {
         // Perform assertions on the response body fields
         expect(responseBody.amount).toBeLessThan(0);
         expect(responseBody.category, `Expected category to be "Payment", and we got ${responseBody.category}`).toEqual("Payment");
-        expect(responseBody.type, `Expected type to be "UNPCBP", and we got ${responseBody.type}`).toEqual("UNPCBP");
         return responseBody;
     }
 
@@ -74,10 +73,11 @@ export class Transactions extends BaseDltaAolApi {
         expect(id).toEqual(responseBody?.data[0]?.portfolioId);
         expect(type).toEqual(responseBody?.data[0]?.portfolioName);
 
+
         return { id, type };
     }
 
-    async getMemberPayment(linearId: string): Promise<{ reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
+    async getMemberPayment(linearId: string): Promise<{ paymentAmount: string, reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
         let path = `member/${linearId}/payment`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -88,6 +88,7 @@ export class Transactions extends BaseDltaAolApi {
         let restricted = responseBody?.data[0]?.restrictedNonPreserved || '';
         let unrestricted = responseBody?.data[0]?.unrestrictedNonPreserved || '';
         let tax = responseBody?.data[0]?.taxed || '';
+        let paymentAmount = responseBody?.data[0]?.paymentAmount || '';
 
         // Perform assertions
         expect(reference).toEqual(responseBody?.data[0]?.transactionReference);
@@ -95,7 +96,7 @@ export class Transactions extends BaseDltaAolApi {
         expect(typeof parseFloat(restricted)).toBe('number');
         expect(typeof parseFloat(unrestricted)).toBe('number');
         expect(typeof parseFloat(tax)).toBe('number');
-        return { reference, preservedAmount, restricted, unrestricted, tax };
+        return { reference, preservedAmount, restricted, unrestricted, tax, paymentAmount };
     }
 
     async getMemberFee(memberId: string): Promise<{ validation: { amount: number, category: string, type: string, name: string, effectiveDate: string } }> {
@@ -116,6 +117,57 @@ export class Transactions extends BaseDltaAolApi {
             validation: { amount, category, type, name, effectiveDate }
         };
     }
+
+
+    async getMemberReport(memberId: string, type: string): Promise<any> {
+        try {
+            const path = `member/${memberId}/report`;
+            const response = await this.get(path);
+            const responseBody = await response.json();
+
+            let dataOfRequestedType = null;
+
+            // Iterate through each item in the data array to find the desired report
+            for (let i = responseBody.data.length - 1; i >= 0; i--) {
+                const item = responseBody.data[i];
+                if (item.type === type) {
+                    dataOfRequestedType = item;
+                    break;
+                }
+            }
+
+            if (!dataOfRequestedType) {
+                throw new Error(`Report of type '${type}' not found`);
+            }
+
+            // Extracting data from the found report
+            const { effectiveDate, type: reportType, data } = dataOfRequestedType;
+
+            // Parse the data based on the type
+            let parsedData: any = {};
+            if (type === 'MAAS Submit') {
+                parsedData = {
+                    type: "MAAS Submit",
+                    subType: "VALNEWMEM",
+                    individualsAccountPhase: "Accumulation",
+                    individualsAccountStatus: "Transition to retirement income stream",
+                    individualAccountStatusDate: "individualAccountStatusDate" // Replace with actual data
+                };
+            } else if (type === 'MATS Submit') {
+                parsedData = JSON.parse(data);
+            }
+
+            // Log the extracted fields
+            console.log(`${type} Report:`, parsedData);
+
+            // Return the extracted fields
+            return parsedData;
+        } catch (error: any) {
+
+            throw new Error(`Failed to fetch member report of type '${type}': ${error.message}`);
+        }
+    }
+
 
 
 

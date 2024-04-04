@@ -36,7 +36,7 @@ export class BeneficiaryPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.reviewCase = new ReviewCase(page);
-    this.beneficiaryUpdateSuccess = page.getByText('Process step completed with');
+    this.beneficiaryUpdateSuccess = page.locator("//p[text()='Process step completed with note: New Member Beneficiary letter payload sent.']");
     this.beneficiaryUpdateError = page.getByText('Case linking unsuccessful.');
     this.accumulationFirstMember = page.locator('td > .cell').first();
     this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
@@ -44,7 +44,7 @@ export class BeneficiaryPage extends BasePage {
     //Beneficiary Input Fields
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
     this.beneficiaryType = page.locator('#gs3__combobox');
-    this.beneficiaryRelationship = page.locator('#gs4__combobox');
+    this.beneficiaryRelationship = page.locator("(//input[@type='search'])[2]");
     this.bindingLapsing = page.getByText('Binding Lapsing');
     this.beneficiaryStartDate = page.locator('input[name="effectiveDate"]');
     this.beneficiaryEndDate = page.locator('input[name="endDate"]');
@@ -54,7 +54,7 @@ export class BeneficiaryPage extends BasePage {
     this.contactSurName = page.getByLabel('Contact Surname');
     this.phoneInputField = page.getByLabel('Phone');
     this.emailInputField = page.getByLabel('Email');
-    this.genderDropDown = page.locator('#gs5__combobox div').first();
+    this.genderDropDown = page.locator("(//div[@class='gs__selected-options']//input)[3]");
     this.saveButton = page.getByRole('button', { name: 'SAVE' });
     this.nonBinding = page.getByText('Non-Binding');
     this.childDropDown = page.getByRole('option', { name: 'Child' });
@@ -70,20 +70,20 @@ export class BeneficiaryPage extends BasePage {
     await this.addButton.click({ timeout: 5000 });
   }
 
-  async reltionShipButton() {
-    await this.relationshipBtn.click({ timeout: 5000 });
-    await this.addButton.click({ timeout: 5000 });
+  async selectMemberRelationshipTab() {
+    await this.relationshipBtn.click();
+    await this.addButton.click();
   }
 
-  async beneficiaryInputFileds() {
-    await this.viewCase.click({ timeout: 5000 });
-    await this.createCase.click({ timeout: 5000 });
+  async modifyMemberBeneficiary() {
+    await this.viewCase.click();
+    await this.createCase.click();
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.nonBinding.click();
     await this.beneficiaryRelationship.click();
     await this.childDropDown.click();
-    await this.beneficiaryShare.click({ timeout: 5000 });
+    await this.beneficiaryShare.click();
     await this.beneficiaryShare1.fill(member.share);
     await this.contactFirstName.fill(member.FirstName);
     await this.contactSurName.fill(member.SurName);
@@ -91,6 +91,7 @@ export class BeneficiaryPage extends BasePage {
     await this.emailInputField.fill(member.email);
     await this.linkCase.click();
     await this.reviewCase.reviewCaseProcess(this.beneficiaryUpdateSuccess);
+    await this.emailInputField.scrollIntoViewIfNeeded();
   }
 
   async bindinglapsingInputFileds() {
@@ -134,6 +135,41 @@ export class BeneficiaryPage extends BasePage {
     await this.saveButton.click();
     await this.linkCase.click();
     await expect(this.beneficiaryUpdateError).toBeVisible();
+  }
+
+  async revisionaryBeneficiary() {
+    await this.sleep(3000);
+    await this.selectMemberRelationshipTab();
+    await this.page.locator("(//label[@class='heading-sm']/following::span[@class='text-caption'])[1]").click();
+    await this.beneficiaryName.fill(member.beneficiary);
+    await this.beneficiaryRelationship.click();
+    await this.sleep(3000)
+    await this.page.getByRole('option', { name: 'Spouse' }).click();
+    await this.contactFirstName.fill(member.FirstName);
+    await this.contactSurName.fill(member.SurName);
+    await this.phoneInputField.fill(member.phone);
+    await this.emailInputField.fill(member.email);
+    let memberDOB = await this.page.locator("(//input[@placeholder='dd/mm/yyyy'])[1]");
+    memberDOB.click({ timeout: 5000 });
+    memberDOB.fill(member.dob);
+    memberDOB.press('Tab');
+    await this.sleep(2000);
+    await this.genderDropDown.click();
+    await this.page.waitForTimeout(3000);
+    await this.page.locator("(//div[@class='gs__selected-options']//input)[3]").click();
+    let saveButton = await this.page.locator("(//span[text()=' SAVE '])[1]");
+    saveButton.scrollIntoViewIfNeeded();
+    await this.page.waitForTimeout(3000).then(() => { return saveButton.click() });
+    await this.viewCase.click({ timeout: 5000 });
+    await this.linkCase.click();
+    await this.reviewCase.reviewCaseProcess(this.beneficiaryUpdateSuccess);
+
+
+
+
+
+
+
   }
 
 } 

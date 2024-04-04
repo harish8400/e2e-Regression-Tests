@@ -5,6 +5,7 @@ import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 import { FUND } from "../../../constants";
+
 import { MemberApiHandler } from "../../aol_api/handler/member_api_handler";
 import { Navbar } from "./component/navbar";
 import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_handler";
@@ -332,8 +333,22 @@ export class MemberPage extends BasePage {
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
 
-    async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+    
+
+    async superstreamMRR(){
+        await this.page.locator("(//a[@class='NxLAj'])[1]").click();
+        await this.processeslink.click();
+        await this.sleep(2000);
+        await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
+        await this.sleep(2000);
+        await this.page.locator('//span[text()="In Progress"]').click();
+        
+        await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        }
+
+
+     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
+        const { memberNo: createMemberNo, processId ,memberId} = await MemberApiHandler.createMember(apiRequestContext);
         await accountInfoPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
@@ -351,17 +366,16 @@ export class MemberPage extends BasePage {
         return {createMemberNo};
     }
 
-    async superstreamMRR(){
-        await this.page.locator("(//a[@class='NxLAj'])[1]").click();
-        await this.processeslink.click();
-        await this.sleep(2000);
-        await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
-        await this.sleep(2000);
-        await this.page.locator('//span[text()="In Progress"]').click();
-        
-        await this.reviewCase.reviewCaseProcess(this.memberCreated);
-        }
-
+    async createAccumulationMember(apiRequestContext: APIRequestContext) {
+        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+        //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        return {createMemberNo};
+    }
     
-
-}
+ }

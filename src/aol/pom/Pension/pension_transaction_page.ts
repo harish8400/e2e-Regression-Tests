@@ -13,6 +13,8 @@ import { MemberApiHandler } from "../../../aol_api/handler/member_api_handler";
 import { PensionShellAccount } from "./pension_account_page";
 import { RollinApiHandler } from "../../../aol_api/handler/rollin_api-handler";
 import { TransactionsApiHandler } from "../../../aol_api/handler/transaction_api_handler";
+import { allure } from "allure-playwright";
+
 
 export class PensionTransactionPage extends BasePage {
 
@@ -46,6 +48,7 @@ export class PensionTransactionPage extends BasePage {
   readonly transactionType_PTB: Locator;
   readonly transactionType_Insurance: Locator;
   readonly filterType_INS: Locator;
+  readonly commutationTypeDropDown: Locator;
 
   //case
 
@@ -70,6 +73,7 @@ export class PensionTransactionPage extends BasePage {
   readonly verfiyRollInProcessSuccess: Locator;
   readonly communationUNPReject: Locator;
   readonly verifyRolloutErrorMessage: Locator;
+  readonly verifyUNPErrorMessage: Locator;
 
   //close Icon
   readonly close_left: Locator;
@@ -120,7 +124,12 @@ export class PensionTransactionPage extends BasePage {
   readonly ButtonAddTransactions: Locator;
   readonly ButtonTransactions: Locator;
   readonly deathBenefitTransactionSuccess: Locator;
-
+  readonly commutationUNPBenefitButton: Locator;
+  readonly UNPPayment: Locator;
+  readonly bankOption: Locator;
+  readonly radioButton: Locator;
+  readonly paymentAmount: Locator;
+  readonly bankAccountType: Locator;
   //Transactions view 
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
@@ -136,12 +145,12 @@ export class PensionTransactionPage extends BasePage {
   readonly closePopUp: Locator;
   readonly investmentScreen: Locator;
   readonly summary: Locator;
-  readonly activityData:Locator;
-  readonly closeTheData:Locator;
-  readonly adminFeeCase:Locator;
-  readonly investmentBalanceScreen:Locator;
-  readonly paymentDetails:Locator;
-  
+  readonly activityData: Locator;
+  readonly closeTheData: Locator;
+  readonly adminFeeCase: Locator;
+  readonly investmentBalanceScreen: Locator;
+  readonly paymentDetails: Locator;
+
 
 
 
@@ -176,6 +185,7 @@ export class PensionTransactionPage extends BasePage {
     this.rollIn_type = page.getByRole('option', { name: 'Client-RTR' });
     this.eligible_serviceDate = page.locator('input[name="eligibleServicePeriodStartDate"]');
     this.verifyContributionSuccess = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
+    this.commutationUNPBenefitButton = page.getByText('Commutation - UNP Benefit')
 
     //case
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -199,6 +209,7 @@ export class PensionTransactionPage extends BasePage {
     this.communationUNPReject = page.getByText('Step 3 rejected.');
     this.verifyRolloutErrorMessage = page.getByText('Process step Process Benefit did not meet conditions.');
     this.pensionCommenceSuccessMessage = page.getByText('Process step completed with note: Pension account commencement correspondence sent.');
+    this.verifyUNPErrorMessage = page.getByText('java.lang.IllegalArgumentException: Member balance is not 100% UNP.');
     //close Icon
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
 
@@ -210,10 +221,10 @@ export class PensionTransactionPage extends BasePage {
     this.transactionsHistoryFilter = page.getByRole('button', { name: 'FILTER' });
     this.filterCategory_Type = page.locator("//div[@class='filter-list-item'][normalize-space()='Type']");
     this.selectFilterType = page.getByRole('tooltip', { name: 'close icon Type Select APPLY' }).getByPlaceholder('Select')
-    this.filterType_PTB = page.locator("//span[normalize-space()='PTB']");
+    this.filterType_PTB = page.locator("//span[normalize-space()='PTB']").first();
     this.filterType_INS = page.locator("//span[normalize-space()='INS']");
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
-    this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
+    this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]").nth(1);
     this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' });
 
     ///Death Benifits
@@ -253,8 +264,12 @@ export class PensionTransactionPage extends BasePage {
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
     this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
-
-
+    this.commutationTypeDropDown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.UNPPayment = page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span');
+    this.bankOption = page.getByRole('option', { name: 'Bank' });
+    this.radioButton = page.locator('.switch-slider');
+    this.paymentAmount = page.locator('//div[@class="input-number tracking-normal inline-block py-1 border-b w-full border-teal-100 hover:border-teal-300 font-bold"]');
+    this.bankAccountType = page.getByText('AustralianSuper Pty Ltd - No');
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
@@ -267,15 +282,15 @@ export class PensionTransactionPage extends BasePage {
     this.preserved = page.locator("//p[text()=' UNP ']/following-sibling::p");
     this.paygAssessableIncome = page.locator(" //p[text()=' PAYG Assessable Income ']/following-sibling::p");
     this.processType = page.locator("//table[@class='el-table__body']/tbody[1]/tr[2]/td[1]");
-    this.closePopUp = page.locator("//span[@class='el-dialog__title']/following-sibling::button[1]");
+    this.closePopUp = page.getByLabel('close', { exact: true });
     this.investmentScreen = page.getByRole('button', { name: 'Investments', exact: true });
     this.summary = page.getByRole('button', { name: 'Member Summary' });
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
-    this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
+    this.adminFeeCase = page.locator("//span[normalize-space()='VIEW CASE']");
     this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']");
     this.paymentDetails = page.locator("//span[text()='Payment Details']");
-    
+
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
 
@@ -333,6 +348,7 @@ export class PensionTransactionPage extends BasePage {
     await this.pensionCommutation.click();
 
     await this.commutation_type.click();
+    await this.reviewCase.captureScreenshot();
     await this.commutation_type.press('Enter');
     await this.sleep(3000);
     await this.commutation_rollout.click();
@@ -624,8 +640,10 @@ export class PensionTransactionPage extends BasePage {
     await this.applyButton.click();
     await this.sleep(3000);
     if (PTB) {
-      await this.transactionType_PTB.scrollIntoViewIfNeeded();
       expect(this.transactionType_PTB).toBeVisible();
+      await this.page.locator("//tr[contains(@class,'clickable')]//td[1]").first().click();
+      await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+      await this.sleep(2000).then(() => { this.page.locator("//i[contains(@class,'el-icon el-dialog__close')]//*[name()='svg']").click() });
     }
     await this.reviewCase.captureScreenshot();
 
@@ -674,9 +692,9 @@ export class PensionTransactionPage extends BasePage {
     await this.reviewCase.captureScreenshot();
     if (status.trim() === "Finalised") {
       console.log(`${transID} is Finalised. payment has been  processed.`);
-    } else if(status.trim() === "Pending") {
+    } else if (status.trim() === "Pending") {
       console.log(`${transID}. payment is in pending state.`);
-    }else{
+    } else {
       throw new Error(` ${transID} is not Finalised.`);
     }
 
@@ -700,11 +718,24 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.processType.click();
     await this.sleep(3000);
+    // Click on the investment screen
     await this.investmentScreen.click();
-    const unitPriceTable = await this.page.$("(//tr[2]/td[6]/div)[2]");
+    const unitPriceTable = await this.page.$("//td[contains(@class,'el-table_12_column_59 ')]/following-sibling::td[1]");
     const unitPricevalue = await unitPriceTable?.textContent();
-    expect(unitPricevalue).toMatch(/\$\d+\.\d{4,}/);
+    console.log(unitPricevalue);
+    const value = unitPricevalue?.trim();
+    console.log(value);
+    const match = unitPricevalue?.match(/\$(\d+\.\d{4,})/);
+    console.log(match ? parseFloat(match[1]) : null);
     await this.reviewCase.captureScreenshot();
+    await this.sleep(3000);
+    await this.closePopUp.click();
+
+
+
+  }
+
+  async adminFee() {
     await this.sleep(3000);
     await this.adminFeeCase.focus();
     await this.adminFeeCase.click();
@@ -712,49 +743,70 @@ export class PensionTransactionPage extends BasePage {
     await this.activityData.scrollIntoViewIfNeeded();
     await this.activityData.click();
     const fixedFeeTotal = await this.page.$("(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[1]");
-    const total  = await fixedFeeTotal?.textContent();
+    const total = await fixedFeeTotal?.textContent();
     expect(total).not.toBeNull();
     const assetBasedFeeTotal = await this.page.$("(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[2]");
-    const feeTotal  = await assetBasedFeeTotal?.textContent();
+    const feeTotal = await assetBasedFeeTotal?.textContent();
     expect(feeTotal).not.toBeNull();
     await this.sleep(3000);
-    await this. closeTheData.scrollIntoViewIfNeeded();
-    await this. closeTheData.click();
+    await this.closeTheData.scrollIntoViewIfNeeded();
+    await this.closeTheData.click();
     await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
   }
 
-  async investementBalances(){
+  async investementBalances() {
     await this.sleep(3000);
     await this.investmentBalanceScreen.click();
     const investmentBalance = await this.page.$("(//p[@class='mx-1']/following::p[@class='mx-1'])[5]");
     const balance = investmentBalance?.textContent();
-    await this.sleep (3000);
+    await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
     expect(balance).not.toBeNull();
-    
+    await this.sleep(2000);
+    await this.page.locator("//h2[text()='Asset Allocation']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page.locator("//p[text()=' Target ']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    await this.sleep(2000);
+    await this.page.locator("(//div[text()='Market value'])[1]").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+
   }
 
   async memberStatus() {
     await this.sleep(3000);
     await this.summary.click();
-    let accountStatus = await this.page.$("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[3]");
-      let memberStatus = await accountStatus?.textContent();
-      if (memberStatus === 'Exited') {
-        console.log("Member has been Exited successfully");
-      } else if (memberStatus === 'Active') {
-        console.log('Member is still in Active state only');
+    let accountStatus = await this.page.$("//p[@class='gsTkwh']/following-sibling::div[@class='fVEMQP']/span[@class= 'fxIQyb']/following-sibling::p[1]");
+    console.log(accountStatus);
+    if (accountStatus) {
+      let memberStatus = await accountStatus.evaluate(node => node.textContent?.trim());
+      console.log("member status is:", memberStatus);
+      if (memberStatus) {
+        memberStatus = memberStatus.trim();
+        if (memberStatus === 'Exited') {
+          console.log("Member has been Exited successfully");
+        } else if (memberStatus === 'Active') {
+          console.log('Member is still in Active state only');
+        } else if (memberStatus === 'Pending') {
+          console.log('Member status is in Pending state only');
+        }
       } else {
-        console.log('Member status is in Pending state only');
+        console.log("Member status not found or text content is null.");
       }
+    } else {
+      console.log("Account status element not found.");
+    }
+
   }
 
-  async componentsValidation(){
+  async componentsValidation() {
     await this.componentScreen.click();
     let taxAmountValue = await this.taxableTaxed.textContent();
     const taxAmount = parseFloat(taxAmountValue!.replace(/[^0-9.-]+/g, ""));
     await this.sleep(3000);
-    await this.reviewCase.captureScreenshot();
+    await this.reviewCase.captureScreenshot('Payment Compnonents');
     console.log("Tax amount:", taxAmount);
     let preservedComponent = await this.preserved.textContent();
     const unpComponentValue = parseFloat(preservedComponent!.replace(/[^0-9.-]+/g, ""));
@@ -771,17 +823,17 @@ export class PensionTransactionPage extends BasePage {
     if (conversationId) {
       const id = await conversationId.textContent();
       if (id) {
-          const containsInternalTransfer = id.includes("InternalTransfer");
-          if (!containsInternalTransfer) {
-              console.error("Error: conversationId does not contain 'InternalTransfer'");
-          }
+        const containsInternalTransfer = id.includes("InternalTransfer");
+        if (!containsInternalTransfer) {
+          console.error("Error: conversationId does not contain 'InternalTransfer'");
+        }
       } else {
-          console.error("Error: The conversation ID text content is null or empty");
+        console.error("Error: The conversation ID text content is null or empty");
       }
-  } else {
+    } else {
       console.error("Error: Conversation ID element not found");
-  }
-    await this.reviewCase.captureScreenshot();
+    }
+    await this.reviewCase.captureScreenshot('Payment Details');
     await this.closePopUp.click();
   }
 
@@ -804,12 +856,14 @@ export class PensionTransactionPage extends BasePage {
     return { memberNo, processId, surname };
   }
 
-  async memberPensionShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberPensionShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext, commencePension: boolean = true) {
     let { memberNo, surname } = await this.shellAccount(navBar, pensionAccountPage, apiRequestContext);
 
     // Fetch additional details and perform pension-related actions
     const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-    await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    if (commencePension) {
+      await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    }
     await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
     let { id, fundName, tfn, givenName, dob } = await MemberApiHandler.getMemberDetails(apiRequestContext, linearId.id);
@@ -822,14 +876,15 @@ export class PensionTransactionPage extends BasePage {
     return { memberNo, surname, linearId };
   }
 
-  async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-    let { linearId } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+  async memberWithPTBTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+    let { linearId,memberNo } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id)
+    return { linearId: linearId.id ,memberNo};
   }
 
-  async accumulationAccount(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+  async memberShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext, commencePension: boolean = true) {
     // Process pension account and retrieve necessary data
-    let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+    let { memberNo, surname } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext, commencePension);
 
     await pensionAccountPage.reload();
 
@@ -844,6 +899,244 @@ export class PensionTransactionPage extends BasePage {
     let transID = this.page.locator("section[class='gs-row flex padding-bottom-20 border-b border-neutral-100'] div:nth-child(1) p:nth-child(1)");
     let id = transID.textContent();
     return id!;
+  }
+
+  async verifyErrorMessageForMemberBalanceNotHundredPercentUNP() {
+
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.pensionCommutation.click();
+    await this.commutation_type.click();
+    await this.commutation_type.press('Enter');
+    await this.sleep(3000);
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
+    //await this.page.getByRole('button', { name: 'arrow-left icon clipboard-' }).click();
+    await this.commutationTypeDropDown.click();
+    await this.commutationUNPBenefitButton.click();
+    await this.page.locator('#gs4__combobox').getByLabel('Select', { exact: true }).click();
+    await this.UNPPayment.click();
+    await this.page.locator('#gs5__combobox').getByLabel('Select', { exact: true }).click();
+    await this.bankOption.click();
+    await this.page.locator('#gs6__combobox').getByLabel('Select', { exact: true }).click();
+    await this.bankAccountType.click();
+    //await this.radioButton.click();
+    //await this.paymentAmount.fill("5000");
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press('Enter');
+    await this.linkCase.click();
+    await this.sleep(3000);
+    await this.reviewCase.approveAndVerifyError(this.verifyUNPErrorMessage);
+
+
+  }
+
+  async memberNoCOR(membersAge: number) {
+    await this.sleep(3000);
+    await this.page.locator("//button[text()='Related Information']").click();
+    await this.page.waitForTimeout(3000);
+    await this.page.locator("//h2[text()=' Condition of Release ']").scrollIntoViewIfNeeded();
+    await this.page.locator("//span[text()='Add Condition Of Release']").click();
+    await this.page.waitForTimeout(3000);
+    await this.page.locator("(//div[@class='gs__selected-options'])[2]").click();
+    await this.sleep(2000);
+
+    if (membersAge < 65) {
+      await this.page.getByRole('option', { name: 'Cease Employment' }).click();
+    } else {
+      await this.page.getByRole('option', { name: 'or Older' }).click();
+    }
+    await this.page.waitForTimeout(3000).then(() => { this.viewCase.click() });
+    await this.sleep(2000).then(() => { this.createCase.click() });
+    await this.sleep(2000).then(() => { this.linkCase.click() });
+    await this.sleep(3000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.reviewCase.reviewCaseProcess(this.page.getByText('Processed upsert dated meta data.'));
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+
+  }
+
+  async cohortProcess(memberNumber: string) {
+    await this.page.waitForTimeout(3000).then(() => { this.page.getByRole('link', { name: 'Processes' }).click() });
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.sleep(3000).then(() => { this.page.locator("//a[contains(text(),'Manage Processes')]").click() });
+    let processSearch = await this.page.locator("(//div[@aria-label='Search for option']//div)[3]");
+    await processSearch.click().then(() => { this.sleep(3000) });
+    await this.page.getByPlaceholder('Search').fill(pensions.processType);
+    await this.page.getByRole('option', { name: 'Retirement Transition' }).click();
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.page.getByRole('main').locator('div').filter({ hasText: 'Retirement Transition Live' }).nth(2).click();
+    await this.sleep(2000);
+    await this.page.locator("//div[text()=' Set Cohort - Start Date and Frequency ']").click();
+    await this.sleep(2000).then(() => {
+      this.page.getByRole('button', { name: 'add-circle icon Add New Cohort' }).click()
+    });
+    await this.page.locator("//span[text()=' FILTER ']").click();
+    await this.page.getByText('Member Number').click();
+    let textArea = await this.page.locator('textarea');
+    await this.sleep(3000);
+    textArea.fill(memberNumber);
+    await this.page.getByRole('button', { name: 'APPLY' }).click();
+    await this.sleep(5000);
+    let datePlaceHolder = await this.page.getByRole('textbox', { name: 'dd/mm/yyyy' })
+    datePlaceHolder.scrollIntoViewIfNeeded();
+    datePlaceHolder.click();
+    let date = new Date();
+    let today = DateUtils.ddmmyyyStringDate(0);
+    datePlaceHolder.fill(today);
+    await this.sleep(2000);
+    datePlaceHolder.press('Enter');
+    datePlaceHolder.press('Tab');
+    await this.sleep(2000).then(() => { this.page.getByRole('option', { name: pensions.FrequencyType[0], exact: true }).click() });
+    let monthSearch = await this.page.locator("(//label[text()='Start Month ']/following::input)[1]");
+    monthSearch.click();
+    await this.sleep(3000);
+    let currentMonth = date.getMonth();
+    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let currentMonthName = months[currentMonth];
+    monthSearch.fill(currentMonthName);
+    await this.sleep(2000);
+    await this.page.getByRole('option', { name: currentMonthName, exact: true }).click();
+    date.setDate(date.getDate() - 15);
+    let currentDayOfMonth = date.getDate();
+    let dayOfMonth = await this.page.locator("(//label[text()='Day of Month ']/following::input)[1]");
+    dayOfMonth.click();
+    dayOfMonth.fill(currentDayOfMonth.toString());
+    await this.sleep(2000);
+    await this.page.getByRole('option', { name: currentDayOfMonth.toString(), exact: true }).click();
+    let time = await this.page.locator("//input[@placeholder='00:00:00']");
+    time.click();
+    await this.sleep(2000).then(() => { this.page.locator("//button[text()='OK']").click() });
+    await this.page.waitForTimeout(3000);
+    let reference = await this.page.getByLabel('Cohort Reference *')
+    reference.scrollIntoViewIfNeeded();
+    reference.fill(pensions.cohorenceType[1]);
+    await this.sleep(2000)
+    await this.page.getByRole('button', { name: 'Add', exact: true }).focus().then(() => { this.page.getByRole('button', { name: 'Add', exact: true }).click({ force: true }) });
+    await this.sleep(3000);
+    await this.page.getByRole('button', { name: 'Done' }).click();
+    await this.sleep(3000);
+    let processIcon = await this.page.getByRole('button', { name: 'more icon' }).nth(3);
+    processIcon.focus();
+    processIcon.click();
+    await this.sleep(2000);
+    let runProcess = await this.page.locator("(//div[text()='Run Process'])[2]");
+    runProcess.focus().then(() => runProcess.click())
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.sleep(2000);
+    let processDate = await this.page.locator("(//input[@placeholder='dd/mm/yyyy'])[2]");
+    processDate.click().then(() => processDate.fill(today));
+    await this.sleep(2000);
+    processDate.press('Enter');
+    await this.sleep(2000);
+    await this.page.getByRole('button', { name: 'Run Process' }).click();
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+  }
+
+  async retirementToTransistionProcess() {
+    await this.sleep(2000);
+    let processSummary = await this.page.locator("//a[contains(text(),'Process Summary')]");
+    processSummary.click();
+    await this.page.locator("//button[@aria-label='Retirement Transition']").first().isVisible();
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+
+
+  }
+
+  async conditionOfRelease() {
+    await this.sleep(3000);
+    await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]").click();
+    await this.sleep(3000);
+    await this.page.locator("//button[text()='HESTA for Mercy Transition to Retirement']").click();
+    await this.page.locator("//button[text()='Related Information']").click();
+    await this.page.waitForTimeout(3000);
+    await this.page.locator("//h2[text()=' Condition of Release ']").scrollIntoViewIfNeeded();
+
+  }
+
+  async investmentsRebalance(REB: boolean) {
+    await this.sleep(3000);
+    await this.page.getByRole('button', { name: 'Investments and Balances' }).click();
+    let rebalanceButton = await this.page.getByRole('button', { name: 'REBALANCE' });
+    await this.sleep(3000);
+    rebalanceButton.scrollIntoViewIfNeeded();
+    rebalanceButton.click().then(() => this.sleep(2000));
+    await this.page.waitForTimeout(5000);
+    await this.page.locator("//div[@class='el-message-box__header']/following::span[text()='YES, CONTINUE']").click();
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.page.getByRole('button', { name: 'OK' }).click();
+    await this.sleep(3000);
+    await this.page.getByRole('heading', { name: 'Costs From Investments' }).scrollIntoViewIfNeeded();
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.sleep(3000);
+    await this.memberTransactionTab.click();
+    await this.sleep(3000).then(() => this.transactionsHistoryFilter.scrollIntoViewIfNeeded()).then(() => this.transactionsHistoryFilter.click());
+    await this.sleep(3000);
+    await this.filterCategory_Type.click();
+    await this.selectFilterType.click();
+    await this.selectFilterType.fill('REB');
+    await this.sleep(3000).then(() => this.page.locator('li').filter({ hasText: /^REB$/ }).click());
+    await this.applyButton.click();
+    await this.sleep(3000);
+    if (REB) {
+
+      await this.page.getByRole('cell', { name: 'Rebalance', exact: true }).first().click();
+      await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+      await this.sleep(2000).then(() => { this.page.locator("//i[contains(@class,'el-icon el-dialog__close')]//*[name()='svg']").click() });
+    }
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+
+  }
+
+  async investmentSwitch(INVPC: boolean) {
+    await this.sleep(3000);
+    await this.memberTransactionTab.click();
+    await this.sleep(3000).then(() => this.transactionsHistoryFilter.scrollIntoViewIfNeeded()).then(() => this.transactionsHistoryFilter.click());
+    await this.sleep(3000);
+    await this.filterCategory_Type.click();
+    await this.selectFilterType.click();
+    await this.selectFilterType.fill('INVPC');
+    await this.sleep(3000).then(() => this.page.locator("(//li[@class='el-select-dropdown__item option_select_equals_INVPC_32'])[1]").click());
+    await this.applyButton.click();
+    await this.sleep(3000);
+    if (INVPC) {
+      expect(this.page.locator("//div[@class='inline-flex']//div[contains(text(),'Investment Switch')]")).toBeVisible();
+      await this.page.locator("//tr[contains(@class,'clickable')]//td[1]").first().click();
+      await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+      await this.sleep(2000).then(() => { this.page.locator("//i[contains(@class,'el-icon el-dialog__close')]//*[name()='svg']").click() });
+    }
+    await this.reviewCase.captureScreenshot();
+
+
+  }
+
+
+  async memberAge(membersAge: number) {
+    await this.sleep(3000);
+    await this.page.getByRole('button', { name: 'Member Summary' }).click();
+    await this.sleep(3000);
+    await this.page.locator("//p[normalize-space()='Contact details']").scrollIntoViewIfNeeded();
+    await this.reviewCase.captureScreenshot();
+    let memberAge = await this.page.locator("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[15]");
+    let age = await memberAge.textContent();
+    let ageNumber = age ? parseInt(age.replace('years', '').trim()) : NaN;
+    console.log("Age Number:", ageNumber);
+    await this.page.waitForTimeout(3000);
+    if (membersAge >= ageNumber) {
+      await this.memberNoCOR(membersAge);
+    } else {
+      await this.memberNoCOR(membersAge);
+    }
+
+  }
+
+  async accountBalance(){
+    await this.sleep(3000);
+    await this.page.getByRole('button', { name: 'Investments and Balances' }).click();
+    await this.sleep(2000).then(()=>{this.page.locator("(//div[contains(text(),'Total')])[5]").scrollIntoViewIfNeeded()});
+    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+
   }
 
 

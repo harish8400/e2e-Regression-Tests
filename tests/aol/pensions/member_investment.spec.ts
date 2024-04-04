@@ -4,6 +4,9 @@ import { FUND } from "../../../constants";
 import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import data from "../../../data/aol_test_data.json"
+import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
+import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -18,11 +21,67 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"-Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName() + "-Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage, apiRequestContext, globalPage, memberPage, internalTransferPage, accountInfoPage, shellAccountApi, pensionAccountPage, transactionApi }) => {
     try {
-        await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await pensionInvestmentPage.RolloverInTransaction();
+        let membersId: string | undefined;
+
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            await globalPage.captureScreenshot('Accumulation Member Page');
+        })
+
+        //when api is set to true, we will use new member creation for testing.
+        let memberNo: string;
+
+        if (data.generate_test_data_from_api) {
+
+            // Create New Accumulation Account
+            await test.step("Create New Pension Shell Account", async () => {
+                const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                membersId = memberId.createMemberNo
+                await globalPage.captureScreenshot('Accumulation Account Creation');
+            });
+
+            //When api is set to false we will Exsisting member for testing.
+
+        } else {
+
+            // Select Existing Accumulation Member
+            memberNo = data.members.Pension_Member_Rollin_And_Verify_Cash_Investment;
+            await test.step("Select the Exsisting Accumulation Member", async () => {
+                await navBar.selectMember(memberNo);
+                const linearId = await AccumulationMemberApiHandler.getMemberInfo(shellAccountApi, memberNo!);
+                membersId = linearId.id;
+                await globalPage.captureScreenshot('Accumulation Member Selection page');
+            });
+
+        }
+
+        const getMemberId = () => membersId;
+        await test.step("Create Shell Account for same Member", async () => {
+            const memberId = getMemberId();
+            if (memberId) {
+                await pensionAccountPage.createShellAccountExistingMember();
+            } else {
+                console.log("Member ID is undefined");
+            }
+        });
+
+        // Validate MAAS Submit Report
+        await test.step("Validate MAAS Submit Report", async () => {
+            const memberId = getMemberId();
+            if (memberId) {
+                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+                console.log('MAAS Report:', MAASReport);
+            } else {
+                console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
+            }
+        });
+
+        await test.step("Validate Rollin succes", async () => {
+            await pensionInvestmentPage.RolloverInTransaction();
+        });
+
     } catch (error) {
         throw error;
     }
@@ -31,7 +90,7 @@ test(fundName()+"-Money gets invested into CASH after roll-in post member creati
 test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionInvestmentPage.DrawdownTransactionsProportional();
     } catch (error) {
         throw error;
@@ -41,7 +100,7 @@ test(fundName()+"-Pension draw-down as Proportional @pension", async ({ navBar, 
 test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
 
     } catch (error) {
@@ -52,7 +111,7 @@ test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar
 test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionInvestmentPage.DrawdownTransactionsPercentage();
 
     } catch (error) {
@@ -63,12 +122,12 @@ test(fundName()+"-Pension draw-down as Percentage @pension", async ({ navBar, pe
 test(fundName()+"-For future drawdown Members should not be able to select any investment options in which the money is NOT currently invested @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage,pensionAccountPage, apiRequestContext }) => {
     try {
         await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         switch (process.env.PRODUCT!) {
             case FUND.VANGUARD:
-                await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+                //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
             case FUND.AE:
-                await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+                //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         }
 
         await pensionInvestmentPage.verifyFutureDrawDownOptions();

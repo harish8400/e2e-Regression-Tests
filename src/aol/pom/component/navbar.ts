@@ -28,8 +28,8 @@ export class Navbar extends BasePage {
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
-        //this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
-        this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
+        this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
+        //this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
         this.membersLink = page.getByRole('link', { name: 'Members' });
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
@@ -72,13 +72,13 @@ export class Navbar extends BasePage {
     }
 
     async selectMember(member: string){
-        await this.sleep(3000);
+        await this.sleep(1500);
         await this.page.reload();
         
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
-        await this.sleep(3000);
+        await this.sleep(1000);
         await this.FilterOptionInput.fill(member);
         await this.BtnApply.click();
 
@@ -106,6 +106,7 @@ export class Navbar extends BasePage {
 
         await this.selectTTRProduct.click();
         await this.membersLink.click();
+       
 
     }
 

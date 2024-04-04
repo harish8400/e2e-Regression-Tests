@@ -26,6 +26,7 @@ import { ShellAccountApi } from '../aol_api/internal_transfer_in';
 import { GlobalPage } from './pom/component/global_page';
 import { SuperStreamPage } from './pom/superstream_contribution_page';
 
+import { DrawDownProfile } from '../aol_api/drawdown_profile_api';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
@@ -56,6 +57,7 @@ type ExtensionFixtures = {
     transactionApi:Transactions;
     superSteam:SuperStreamPage
 
+    drawDownType:DrawDownProfile
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -153,4 +155,7 @@ export const aolTest = base.extend<ExtensionFixtures>({
         await use(new SuperStreamPage(page));
     },
 
+    drawDownType: async ({ dltaApiRequestContext }, use) => {
+        await use(new DrawDownProfile(dltaApiRequestContext));
+    },
 })

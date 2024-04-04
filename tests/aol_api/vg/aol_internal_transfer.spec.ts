@@ -41,7 +41,7 @@ test(fundName() + "-Internal Transfer Out @VG", async ({ navBar, pensionAccountP
     await MemberApiHandler.internalTransferOutvalidation(apiRequestContext, linearId.id, amount)
     await pensionAccountPage.reload();
     await new Promise(resolve => setTimeout(resolve, 5000));
-    await internalTransferPage.internalTransferProcess(true, false);
+    await internalTransferPage.accumulationAccountCreation(true, false);
     let Id = await internalTransferPage.ProcessTab();
     Id.replace('Copy to clipboard', '').trim();
     await internalTransferPage.vanguard();

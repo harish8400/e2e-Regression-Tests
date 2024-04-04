@@ -56,9 +56,9 @@ export class MemberApiHandler {
         return identity.memberIdentity(memberId!, details);
     }
 
-    static async fetchMemberSummary(apiRequestContext: APIRequestContext, linearId: string): Promise<{ status: boolean }> {
+    static async fetchMemberSummary(apiRequestContext: APIRequestContext, linearId?: string, FullExit?: boolean): Promise<{ status: boolean }> {
         const details = new MemberApi(apiRequestContext);
-        const summary = await details.fetchMemberSummary(linearId);
+        const summary = await details.fetchMemberSummary(linearId!, FullExit!);
         return summary;
     }
 
@@ -72,11 +72,34 @@ export class MemberApiHandler {
         return Id.getCaseGroupId(processId!);
     }
 
-    static async addRollIn(apiRequestContext: APIRequestContext,memberId?: string) {
+    static async addRollIn(apiRequestContext: APIRequestContext, memberId?: string) {
         const rollin = new MemberApi(apiRequestContext);
         return rollin.addRollIn(memberId!);
     }
 
+    static async getMemberRelatedBeneficiaries(memberApi: MemberApi, memberId?: string) {
+        return memberApi.getMemberRelatedBeneficiaries(memberId!);
+    }
+
+    static async getMemberInvestmentRebalance(memberApi: MemberApi, memberId?: string, pageNumber?: number, pageSize?: number) {
+        return memberApi.getMemberInvestmentRebalance(memberId!, pageNumber!, pageSize!);
+    }
+
+    static async getMemberInvestmentSwitch(memberApi: MemberApi, memberId?: string, pageNumber?: number, pageSize?: number) {
+        return memberApi.getMemberInvestmentSwitch(memberId!, pageNumber!, pageSize!);
+    }
+
+    static async memberInvestmentSwitch(memberApi: MemberApi, memberId?: string) {
+        return memberApi.memberInvestmentSwitch(memberId!);
+    }
+
+    static async memberCorrespondenceInfo(memberApi: MemberApi, memberId?: string) {
+        return memberApi.memberCorrespondenceInfo(memberId!);
+    }
+
+    static async getRegularPensionPaymentAmount(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getRegularPensionPaymentAmount(memberId!);
+    }
 }
 
 

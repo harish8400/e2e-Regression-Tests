@@ -8,6 +8,7 @@ import { FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
 
 
 
+
 let { productId, investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
 let path = `product/${productId}/process`;
 export class MemberApi extends BaseDltaAolApi {
@@ -33,7 +34,7 @@ export class MemberApi extends BaseDltaAolApi {
     let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
     let path = `product/${productId}/process`;
     let tfn = null;
-    if(!tfnNull){
+    if (!tfnNull) {
       tfn = UtilsAOL.generateValidTFN();
     }
     let member = UtilsAOL.randomName();
@@ -144,14 +145,13 @@ export class MemberApi extends BaseDltaAolApi {
     }
   }
 
-
   async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
     let memberNo = UtilsAOL.memberNumber('MER-PEN-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
-    let dob  =UtilsAOL.generateDOB();
+    let dob = UtilsAOL.generateDOB();
     let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
     let data = {
       templateReference: 'createPensionMemberShellAccount',
@@ -237,14 +237,14 @@ export class MemberApi extends BaseDltaAolApi {
           ],
         },
         investmentData: {
-          investments:[
+          investments: [
             {
-                "id": investmentId,
-                "percent": 50
+              "id": investmentId,
+              "percent": 50
             },
             {
-                "id": memberInvestmentId,
-                "percent": 50
+              "id": memberInvestmentId,
+              "percent": 50
             }
           ],
           "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
@@ -309,30 +309,30 @@ export class MemberApi extends BaseDltaAolApi {
     let year = today.getFullYear();
 
     // Loop until July 2023
-    while (!(year === 2023 && month === 6)) { 
-        
-        let data = {
-            "templateReference": "createPensionBenefit",
-            "initialData": {
-                "memberId": linearId,
-                "effectiveDate": DateUtils.localISOStringDate(new Date(year, month, today.getDate())),
-            }
-        };
+    while (!(year === 2023 && month === 6)) {
 
-        let response = await this.post(path, JSON.stringify(data));
-        await response.json();
-
-        
-        if (month === 0) {
-            month = 11; 
-            year--;
-        } else {
-            month--;
+      let data = {
+        "templateReference": "createPensionBenefit",
+        "initialData": {
+          "memberId": linearId,
+          "effectiveDate": DateUtils.localISOStringDate(new Date(year, month, today.getDate())),
         }
+      };
+
+      let response = await this.post(path, JSON.stringify(data));
+      await response.json();
+
+
+      if (month === 0) {
+        month = 11;
+        year--;
+      } else {
+        month--;
+      }
     }
 
     return { linearId };
-}
+  }
 
 
   async getMemberDetails(linearId: string): Promise<{ id: string, fundName: string, tfn: string, givenName: string, dob: string }> {
@@ -344,7 +344,7 @@ export class MemberApi extends BaseDltaAolApi {
     let tfn = responseBody?.identity?.tfn || null;
     let givenName = responseBody?.identity?.givenName || null;
     let dob = responseBody?.identity?.dob || null;
-    console.log(dob,fundName,tfn,givenName)
+    console.log(dob, fundName, tfn, givenName)
     return { id, fundName, tfn, givenName, dob };
   }
   async memberIdentity(linearId: string, memberDetails: { tfn: string, dob: string, givenName: string, fundName: string }): Promise<{ linearId: string, tfn: string, givenName: string, dob: string }> {
@@ -364,15 +364,15 @@ export class MemberApi extends BaseDltaAolApi {
       console.log(responseBody);
       const member = responseBody.member;
       assert.strictEqual(member.active, true, 'The member is active');
-        let LinearId = responseBody.identity.id;
-        return { linearId: LinearId, tfn: memberDetails.tfn, givenName: memberDetails.givenName, dob: memberDetails.dob };
+      let LinearId = responseBody.identity.id;
+      return { linearId: LinearId, tfn: memberDetails.tfn, givenName: memberDetails.givenName, dob: memberDetails.dob };
     } catch (error) {
       console.error('Error:', error);
       throw error;
     }
   }
 
-  async fetchMemberSummary(linearId: string): Promise<{ status: boolean }> {
+  async fetchMemberSummary(linearId: string, FullExit: boolean): Promise<{ status: boolean }> {
     let path = `member/${linearId}/summary`;
     let response = await this.get(path);
     let responseBody = await response.json();
@@ -380,13 +380,20 @@ export class MemberApi extends BaseDltaAolApi {
     const exitDateAsDate = new Date(exitDate);
     const exitDateOnly = exitDateAsDate.toISOString().split('T')[0];
     const todayDateOnly = this.today.toISOString().split('T')[0];
-    expect(exitDateOnly).toEqual(todayDateOnly);
-    expect(active).toBe(false);
-    expect(exitReason).toMatch(/^(BENEFIT|ROLLOUT)$/i);
+    if (FullExit) {
+      expect(exitDateOnly).toEqual(todayDateOnly);
+      expect(active).toBe(false);
+      expect(exitReason).toMatch(/^(BENEFIT|ROLLOUT)$/i);
+    } else {
+      console.log("Partial Exit is done and paymentdate is:`${todayDateOnly}`")
+    }
     return { status: true };
+
   }
 
   async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {
+    let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
     let path = `member/${linearId}/process`;
     let data = {
       templateReference: "memberTransfer",
@@ -396,16 +403,24 @@ export class MemberApi extends BaseDltaAolApi {
         amount: 12500,
         targetInvestments: [
           {
-            id: "CASH",
-            percent: 100
+            id: investmentId,
+            percent: 50,
+          },
+          {
+            id: memberInvestmentId,
+            percent: 50,
           }
         ],
         effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
         paymentReceivedDate: `${DateUtils.localISOStringDate(this.today)}`,
         investmentOrigins: [
           {
-            id: "HE47",
-            amount: 12500
+            id: investmentId,
+            amount: 6250,
+          },
+          {
+            id: memberInvestmentId,
+            amount: 6250,
           }
         ]
       }
@@ -445,32 +460,32 @@ export class MemberApi extends BaseDltaAolApi {
     let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
     let path = `member/${linearId}/rollin`;
     let data = {
-        "paymentReference": "InternalTransfer_902010134",
-        "transferringFundABN": "11789425178",
-        "transferringFundUSI": "11789425178799",
-        "transferringClientIdentifier": "902010134",
-        "amount": "50000",
-        "preserved": "50000",
-        "restrictedNonPreserved": "0",
-        "unrestrictedNonPreserved": "0",
-        "kiwiPreserved": "0",
-        "taxed": "50000",
-        "untaxed": "0",
-        "taxFree": "0",
-        "kiwiTaxFree": "0",
-        "type": "RLI",
-        "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
-        "eligibleServicePeriodStartDate": null,
-        "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
-        "messageType": null,
-        "historic": true,
-        "caseReference": null,
-        "targetInvestments": [
-            {
-                id: investmentId,
-                "percent": 100
-            }
-        ]
+      "paymentReference": "InternalTransfer_902010134",
+      "transferringFundABN": "11789425178",
+      "transferringFundUSI": "11789425178799",
+      "transferringClientIdentifier": "902010134",
+      "amount": "50000",
+      "preserved": "50000",
+      "restrictedNonPreserved": "0",
+      "unrestrictedNonPreserved": "0",
+      "kiwiPreserved": "0",
+      "taxed": "50000",
+      "untaxed": "0",
+      "taxFree": "0",
+      "kiwiTaxFree": "0",
+      "type": "RLI",
+      "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "eligibleServicePeriodStartDate": null,
+      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "messageType": null,
+      "historic": true,
+      "caseReference": null,
+      "targetInvestments": [
+        {
+          id: investmentId,
+          "percent": 100
+        }
+      ]
     };
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
@@ -482,9 +497,104 @@ export class MemberApi extends BaseDltaAolApi {
     let memberNo = responseBody?.memberNo || null;
     let amount = responseBody?.amount || 0;
     return { linearId: Id, memberNo: memberNo, amount: amount };
-}
+  }
 
-  
 
+  async getMemberRelatedBeneficiaries(linearId: string): Promise<{ entityName: string, relationship: string, percent: number, beneficiaryType: string, beneficiaryTypeName: string }[]> {
+    let path = `member/${linearId}/beneficiary`;
+    let response = await this.get(path);
+    let responseBody = await response.json();
+    const data = responseBody.data;
+    const beneficiaries = data.map((beneficiary: { entityName: any; relationship: any; percent: any; beneficiaryType: any; beneficiaryTypeName: any; }) => ({
+      entityName: beneficiary.entityName,
+      relationship: beneficiary.relationship,
+      percent: beneficiary.percent,
+      beneficiaryType: beneficiary.beneficiaryType,
+      beneficiaryTypeName: beneficiary.beneficiaryTypeName
+    }));
+    console.log(beneficiaries);
+    return beneficiaries;
+  }
+
+  async getMemberInvestmentRebalance(linearId: string, pageNumber: number, pageSize: number): Promise<{ transactionReference: string, amount: number, category: string, type: string, name: string, effectiveDate: string }[]> {
+    let queryParams = new URLSearchParams({});
+    const path = `member/${linearId}/investment/rebalance?page=${pageNumber}&pageSize=${pageSize}${queryParams.toString()}`;
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    const extractedData = responseBody.data.map((item: { transactionReference: any; amount: any; category: any; type: any; name: any; effectiveDate: any; }) => ({
+      transactionReference: item.transactionReference,
+      amount: item.amount,
+      category: item.category,
+      type: item.type,
+      name: item.name,
+      effectiveDate: item.effectiveDate
+    }));
+    console.log(extractedData);
+    return extractedData;
+  }
+
+  async getMemberInvestmentSwitch(linearId: string, pageNumber: number, pageSize: number): Promise<{ transactionReference: string, amount: number, category: string, type: string, name: string, effectiveDate: string }[]> {
+    let queryParams = new URLSearchParams({});
+    const path = `member/${linearId}/investment/switch?page=${pageNumber}&pageSize=${pageSize}${queryParams.toString()}`;
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    const extractedData = responseBody.data.map((item: { transactionReference: any; amount: any; category: any; type: any; name: any; effectiveDate: any; }) => ({
+      transactionReference: item.transactionReference,
+      amount: item.amount,
+      category: item.category,
+      type: item.type,
+      name: item.name,
+      effectiveDate: item.effectiveDate
+    }));
+    console.log(extractedData);
+    return extractedData;
+  }
+
+
+  async memberInvestmentSwitch(linearId: string): Promise<{ memberId: string }> {
+    let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+
+    let path = `member/${linearId}/investment/switch`;
+    console.log(path)
+    let data = {
+      "type": "INVPC",
+      "sourceInvestments": [
+        {
+          "id": "CASH",
+          "percent": 100
+        }
+      ],
+      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "historic": true
+    };
+    console.log(data);
+    let response = await this.post(path, JSON.stringify(data));
+    console.log(response)
+    let responseBody = await response.json();
+
+    // Extract the memberId from the responseBody
+    const { memberId } = responseBody;
+
+    // Return the extracted memberId
+    return { memberId };
+  }
+
+  async memberCorrespondenceInfo(linearId: string): Promise<{ memberAge: number, ageJoinedFund: number, ageJoinedProduct: number, memberId: string }> {
+    let path = `member/${linearId}/correspondence/info`;
+    let response = await this.get(path);
+    let responseBody = await response.json();
+    const { memberAge, ageJoinedFund, ageJoinedProduct, memberId } = responseBody.memberData;
+    return { memberAge, ageJoinedFund, ageJoinedProduct, memberId };
+  }
+  async getRegularPensionPaymentAmount(memberId: string): Promise<{ regularPaymentAmount: string }> {
+    let path = `member/${memberId}/pension/payment/details`;
+
+    const response = await this.get(path);
+    const responseBody = await response.json();
+    //let { regularPaymentAmount } = responseBody.regularPaymentAmount;
+    return responseBody;
+
+  }
 
 }
