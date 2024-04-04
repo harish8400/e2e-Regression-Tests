@@ -14,10 +14,10 @@
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.405.0",
     "@playwright/test": "^1.41.0",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.16",
     "@types/sinon": "^17.0.3",
     "@types/ssh2-sftp-client": "^9.0.3",
-    "@types/jsonwebtoken": "^9.0.5",
     "allure-playwright": "^2.10.0",
     "async-wait-until": "^2.0.12",
     "sinon": "^17.0.1"
