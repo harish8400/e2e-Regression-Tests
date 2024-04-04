@@ -185,7 +185,7 @@ export class PensionShellAccount extends BasePage {
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
     this.surname = page.getByTitle('Surname').getByRole('textbox');
     this.dob = page.getByTitle('DOB').getByPlaceholder('dd/mm/yyyy');
-    this.gender = page.getByTitle('Gender').getByPlaceholder('Select');
+    this.gender = page.locator('.gs__actions').nth(2);
     this.genderSelect = page.locator('li').filter({ hasText: /^Male$/ });
     this.emailAddress = page.getByTitle('Email Address').getByRole('textbox');
     this.primaryPhone = page.getByTitle('Primary Phone').getByRole('textbox');
@@ -208,9 +208,9 @@ export class PensionShellAccount extends BasePage {
     this.addFundSelectOption = page.getByText('Internal fund account');
     this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
 
-    this.sourceAccountNumber = page.locator('#gs10__listbox');
+    this.sourceAccountNumber = page.locator('.gs__actions').nth(2);
     this.slider = page.locator('.switch-slider');
-    this.enterAmount = page.getByText('$ 0.00');
+    this.enterAmount = page.getByPlaceholder('0');
     this.amountToBeEntered = page.getByPlaceholder('0');
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
@@ -224,17 +224,17 @@ export class PensionShellAccount extends BasePage {
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryRelation = page.locator('#gs10__combobox div').first()
+    this.beneficiaryRelation = page.locator('.gs__actions').nth(1);
     this.beneficiaryRelationSelect = page.getByRole('option', { name: 'Spouse' })
     this.beneficiaryEffectiveDate = page.getByPlaceholder('dd/mm/yyyy');
     this.select_gender = page.getByRole('option', { name: 'Male', exact: true })
-    this.gender_select = page.locator('#gs11__combobox div').first()
+    this.gender_select = page.locator('.gs__actions').nth(2);
     this.beneficiaryContactName = page.getByLabel('Contact First Name');
-    this.countrySelect = page.locator('#gs12__combobox div').first()
+    this.countrySelect = page.locator('.gs__actions').nth(3);
     this.selectCountry = page.getByRole('option', { name: 'Australia' });
     this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
     this.beneficiaryCity = page.getByLabel('City/Town *');
-    this.beneficiaryState = page.locator('#gs18__combobox div').first()
+    this.beneficiaryState = page.locator('.gs__actions').nth(4);
     this.beneficiaryStateSelect = page.getByText('Australian Antarctic Territory');
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' }).first()
@@ -353,19 +353,18 @@ export class PensionShellAccount extends BasePage {
     //return this.memberSurname;
   }
 
-  async addMemberConsolidation(transferEntireBalance: boolean = true) {
+  async addMemberConsolidation(transferPartialBalance: boolean = false, memberNo: string = '') {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
-    await this.memberAccountNumber.click();
-    await this.sleep(3000);
     await this.sourceAccountNumber.click();
-    if (transferEntireBalance) {
+    await this.page.getByRole('option', { name: memberNo }).click();
+    if (transferPartialBalance) {
       await this.slider.click();
       await this.enterAmount.click();
-      await this.sleep(3000);
-      await this.amountToBeEntered.fill(member.Amount);
-      await this.sleep(2000);
+      await this.sleep(1000);
+      await this.enterAmount.fill(member.Amount);
+      await this.sleep(1000);
     } else {
       await this.slider.click();
     }
@@ -574,7 +573,7 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
+  async createShellAccountExistingMember(addBeneficiary: boolean = false, memberNo: string = '') {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();
@@ -586,7 +585,7 @@ export class PensionShellAccount extends BasePage {
     await this.residencyStatus.click();
     await this.residencyStatusSelect.click();
     await this.nextStep.click();
-    await this.addMemberConsolidation();
+    await this.addMemberConsolidation(true, memberNo);
     await this.addMemberInvestments();
     if (addBeneficiary) {
       await this.addMemberBeneficiaries();

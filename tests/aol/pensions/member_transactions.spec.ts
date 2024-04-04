@@ -415,8 +415,6 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
             await globalPage.captureScreenshot('Pension Shell Account Creation');
             await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
         });
-
-
         //when api is set to false, we will use existing member details for testing.
 
     } else {
@@ -424,8 +422,8 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
         const memberNo = pensionMember.members.ABP_UNP_Commutation_Partial_Member_Number;
         await allure.step("Select Existing Pension Member", async () => {
             await navBar.selectMember(memberNo);
-            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
-            membersId = linearId.id;
+            //const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            //membersId = linearId.id;
             await globalPage.captureScreenshot('Pension Member Selection page');
         });
 
@@ -434,10 +432,7 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
     await allure.step("'Commutation UNP Benefit Process", async () => {
         await pensionTransactionPage.commutationUNPBenefitReject(false);
         await globalPage.captureScreenshot('Commutation UNP Benefit');
-
-
     });
-
 
 })
 

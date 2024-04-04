@@ -24,6 +24,7 @@ setup(fundName()+"authenticate", async ({ page }) => {
     // Wait for the final URL to ensure that the cookies are actually set.
     //await page.waitForURL('https://github.com/');
     // Alternatively, you can wait until the page reaches a state where all cookies are set.
+    await new Promise(resolve => setTimeout(resolve, 4000));
     await expect(page.getByText('Open Cases', { exact: true })).toBeVisible();
 
     // End of authentication steps.
