@@ -1,0 +1,20 @@
+[
+    {
+        "messageId":"",
+        "conversationId":"",
+        "sourceAbn":"",
+        "sourceUsi":"",
+        "fund":"",
+        "receiverIdentifier":"",
+        "australianBusinessNumber":"",
+        "memberTitle":"",
+        "memberName":"",
+        "memberLastName":"",
+        "memberGender":"",
+        "dobYear":"",
+        "dobMonth":"",
+        "dobDay":"",
+        "employerProvidedTaxFileNumber":"",
+        "tfnEntityIdentifier":""
+    }
+]
