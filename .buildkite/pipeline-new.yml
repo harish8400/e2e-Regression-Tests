@@ -1,0 +1,11 @@
+env:
+  COMPOSE_FILE: "buildkite.docker-compose.yml"
+  DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
+
+agents:
+  queue: "pipeline-upload"
+
+steps:
+  - label: ":test_tube: Playwright test"
+    branches: "!main"
+    command: "buildkite-signed-pipeline upload .buildkite/pull-request.yml"
