@@ -1,7 +1,6 @@
 env:
   COMPOSE_FILE: "./buildkite.docker-compose.yml"
   DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
-  BUILDKITE_ANALYTICS_TOKEN: c6nTypqVzDfxnZ3pF51JVVtd
 
 agents:
   queue: "${DEPLOY_AGENTS_QUEUE}"
