@@ -184,7 +184,7 @@ export class PensionInvestmentPage extends BasePage {
         let st = (CashBeforeRolloverIn?.replace(/[^0-9\.-]+/g, ""));
         let cash = 0;
         cash = (Number(st)) + (Number(25000));
-        //cash = (Number(st));
+        await this.reviewCase.captureScreenshot("Cash before Rollin");
 
         await this.ButtonTransactions.click();
         await this.sleep(1000);
@@ -241,6 +241,7 @@ export class PensionInvestmentPage extends BasePage {
         cashAfter = (Number(afterCashAmount));
         await this.sleep(1000);
         expect(cashAfter).toEqual(cash);
+        await this.reviewCase.captureScreenshot("Cash after Rollin");
 
     }
 

@@ -78,7 +78,7 @@ export class ShellAccountApiHandler {
       }
 
       static async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-        let { linearId ,memberNo,surname} = await this.process(navBar, pensionAccountPage, apiRequestContext);
+        let { linearId ,memberNo,surname} = await this.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
         await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id);
         return {memberNo,surname};
     }

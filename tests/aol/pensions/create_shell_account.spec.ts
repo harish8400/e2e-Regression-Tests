@@ -4,7 +4,6 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import data from "../../../data/aol_test_data.json"
-import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
 
@@ -61,8 +60,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
     await test.step("Create Shell Account for same Member", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            await pensionAccountPage.createShellAccountExistingMember(memberId!, true);
-            await globalPage.captureScreenshot('Shell Account Creation for same Member');
+            await pensionAccountPage.createShellAccountExistingMember();
         } else {
             console.log("Member ID is undefined. Cannot fetch Investments.");
         }
@@ -83,7 +81,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
 
 })
 
-test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, beneficiaryPage, globalPage, pensionAccountPage, memberPage, accountInfoPage, apiRequestContext, internalTransferPage, transactionApi, memberApi }) => {
+test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, globalPage, pensionAccountPage, memberPage, accountInfoPage, apiRequestContext, internalTransferPage, transactionApi, shellAccountApi }) => {
 
     let membersId: string | undefined;
 
@@ -92,7 +90,9 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
         await globalPage.captureScreenshot('Accumulation Member Page');
     })
 
+
     //when api is set to true, we will use new member creation for testing.
+    let memberNo: string;
 
     if (data.generate_test_data_from_api) {
 
@@ -108,10 +108,10 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     } else {
 
         // Select Existing Accumulation Member
-        const memberNo = data.members.Accumulation_member;
+        memberNo = data.members.Capturing_Beneficiary_Accumulation_member_Internal_transfer;
         await test.step("Select the Exsisting Accumulation Member", async () => {
             await navBar.selectMember(memberNo);
-            const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo!);
+            const linearId = await AccumulationMemberApiHandler.getMemberInfo(shellAccountApi, memberNo!);
             membersId = linearId.id;
             await globalPage.captureScreenshot('Accumulation Member Selection page');
         });
@@ -122,23 +122,11 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     await test.step("Create Shell Account for same Member", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            await pensionAccountPage.createShellAccountExistingMember(memberId!, true);
-            await globalPage.captureScreenshot('Shell Account Creation for same Member');
+            await pensionAccountPage.createShellAccountExistingMember(true, memberNo);
         } else {
             console.log("Member ID is undefined. Cannot fetch Investments.");
         }
 
-    });
-
-    await test.step("Reversionary beneficiary details", async () => {
-        const memberId = getMemberId();
-        if (memberId) {
-            await beneficiaryPage.revisionaryBeneficiary();
-            await MemberApiHandler.getMemberRelatedBeneficiaries(memberApi, memberId)
-            await globalPage.captureScreenshot('Realationship screen');
-        } else {
-            console.log("memberId is undefined. Cannot fetch member benficiary related Information.");
-        }
     });
 
     // Validate MAAS Submit Report
@@ -147,6 +135,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
         if (memberId) {
             const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
             console.log('MAAS Report:', MAASReport);
+            allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
         }

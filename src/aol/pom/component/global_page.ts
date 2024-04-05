@@ -65,7 +65,7 @@ export class GlobalPage extends BasePage {
   }
 
   async captureScreenshot(screenShotName: string = 'screenshot'){
-    await this.sleep(3000);
+    await new Promise(resolve => setTimeout(resolve, 3000));
     allure.attachment(screenShotName, await this.page.screenshot({ fullPage:true }), 'image/png');
   }
 
