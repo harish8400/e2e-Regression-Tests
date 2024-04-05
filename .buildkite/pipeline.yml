@@ -1,5 +1,5 @@
 env:
-  COMPOSE_FILE: "./buildkite.docker-compose.yml"
+  COMPOSE_FILE: "buildkite.docker-compose.yml"
   DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
 
 agents:
