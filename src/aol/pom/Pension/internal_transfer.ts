@@ -7,7 +7,6 @@ import * as member from "../../data/member.json";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
-
 export class InternalTransferPage extends BasePage {
     readonly processesLink: Locator;
     readonly reviewCase: ReviewCase;
@@ -140,7 +139,7 @@ export class InternalTransferPage extends BasePage {
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
-        this.verifyFinalizeMoneyOutSuccess = page.getByText('Intra fund Internal Transfer out complete.');;
+        this.verifyFinalizeMoneyOutSuccess = page.getByText('Process step completed with note: Rollout correspondence sent');;
 
         //API Integration Internal Transfer 
         this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
@@ -283,7 +282,7 @@ export class InternalTransferPage extends BasePage {
         // Click on Internal Transfer In Process
         await this.processID.click();
         // Click on Internal Transfer In Process
-        await this.processID.first().click();
+        await this.processID.nth(1).click();
         if(process.env.PRODUCT == FUND.HESTA){
             await this.reviewCase.reviewCaseProcess(this.verifyFinalizeMoneyOutSuccess);
             await this.reviewCase.captureScreenshot('Finalize Money Out Case');
