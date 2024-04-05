@@ -1,8 +1,0 @@
-env:
-  DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
-
-steps:
-  - label: "Pension E2E Test"
-    agents:
-      queue: "${DEPLOY_AGENTS_QUEUE}"
-    command: "buildkite-signed-pipeline upload .buildkite/pension-test.yml"

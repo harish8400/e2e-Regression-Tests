@@ -1,10 +1,12 @@
 env:
-  COMPOSE_FILE: "buildkite.docker-compose.yml"
+  COMPOSE_FILE: "./buildkite.docker-compose.yml"
   DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
+  BUILDKITE_ANALYTICS_TOKEN: c6nTypqVzDfxnZ3pF51JVVtd
 
 agents:
-  queue: "pipeline-upload"
+  queue: "${DEPLOY_AGENTS_QUEUE}"
 
 steps:
   - label: ":test_tube: Playwright test"
-    command: "buildkite-signed-pipeline upload .buildkite/pull-request.yml"
+    #   branches: 'aol'
+    command: "buildkite-signed-pipeline upload .buildkite/e2e-test.yml"
