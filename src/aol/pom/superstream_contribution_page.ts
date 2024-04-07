@@ -1,13 +1,8 @@
 import { BasePage } from "../../common/pom/base_page";
 import SftpClient from 'ssh2-sftp-client';
-import { Page } from "playwright";
 import * as fs from 'fs';
 
-
 export class SuperStreamPage extends BasePage {
-    constructor(page: Page) {
-        super(page);
-    }
 
     async uploadFile(localFilePath: string, remoteFilePath: string, privateKeyPath: string, privateKeyContent: string) {
         const sftp = new SftpClient();
@@ -23,7 +18,7 @@ export class SuperStreamPage extends BasePage {
             });
                         
             // Perform SFTP upload operation
-            await sftp.fastPut(localFilePath, remoteFilePath);
+            await sftp.put(localFilePath, remoteFilePath);
             console.log('File uploaded successfully.');
         } catch (err: any) {
             console.error('Error:', err.message);
