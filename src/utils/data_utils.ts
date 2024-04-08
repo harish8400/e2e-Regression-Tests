@@ -16,5 +16,4 @@ export class DataUtils {
         return content;
 
     }
-__
 }
