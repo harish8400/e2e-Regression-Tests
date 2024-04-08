@@ -25,7 +25,7 @@ export function updateFile(): void {
 
     const fileName: string = `MRR_${formattedDate}_115734_123_${conversationId}.XML`;
     const fullFileName: string = copyGeneratedFile(absolutePath, templateFileName, fileName, destifolder);
-    updateXML(`${destifolder}/${fileName}`, superGateMessageId, conversationId);
+    updateXML(`${destifolder}/${fileName}`, `src/aol/data/outputJson`,superGateMessageId, conversationId);
 
     // if (fullFileName) {
     //  console.error("Failed to copy the template file to template File path folder");
@@ -69,44 +69,59 @@ export function copyGeneratedFile(absolutePath: string, templateFileName: string
 
 ///update node value
 
-export function updateXML(filePath: string, conversationId: string, superGateMessageId: string): void {
+export function updateXML(filePath: string, jsonFilePath :string,  conversationId: string, superGateMessageId: string): void {
     console.log("Updating the XML File content for edi config");
 
     const messageId_nodePath: string = "//*[text()='messageId']";
     const conversationId_nodePath: string = "//*[text()='conversationId']";
     const tfn_nodePath: string = "//*[text()='tfn']";
 
-    setListOfXmlValue(filePath, messageId_nodePath, superGateMessageId);
-    setListOfXmlValue(filePath, conversationId_nodePath, conversationId);
-    setListOfXmlValue(filePath, tfn_nodePath, "57885");
+    setListOfXmlValue(filePath, jsonFilePath,  messageId_nodePath, superGateMessageId);
+    setListOfXmlValue(filePath, jsonFilePath, conversationId_nodePath, conversationId);
+    setListOfXmlValue(filePath, jsonFilePath, tfn_nodePath, "57885");
 
     console.log("XML file updated successfully");
 }
 
-function setListOfXmlValue(filePath: string, nodePath: string, value: string): void {
+function setListOfXmlValue(filePath: string, jsonFilePath: string, nodePath: string, value: string ): void {
     try {
-        // const xmlContent = fs.readFileSync(filePath, 'utf-8');
-        // const xmlDoc = new DOMParser().parseFromString(xmlContent);
+    //     // const xmlContent = fs.readFileSync(filePath, 'utf-8');
+    //     // const xmlDoc = new DOMParser().parseFromString(xmlContent);
 
-        // // const nodes = xpath.select(nodePath, xmlDoc)?.toString();
-        // // console.log(nodes);
-        // // for (let node of nodes!) {
-        // //     node = value;
-        // // }
-        // const nodesToUpdate = xmlDoc.getElementsByTagName(`superGateMessageId`);
-        // for (let i = 0; i < nodesToUpdate.length; i++) {
-        //     // Modify the node as required
-        //     nodesToUpdate[i].textContent = `testSGM`;
-        // }
-        // const updatedXmlContent = new XMLSerializer().serializeToString(xmlDoc);
-        // require('fs').writeFileSync(filePath, updatedXmlContent);
-        // const builder = new xml2js.Builder();
-        // const updatedXmlContent = builder.buildObject(xmlDoc);
+    //     // // const nodes = xpath.select(nodePath, xmlDoc)?.toString();
+    //     // // console.log(nodes);
+    //     // // for (let node of nodes!) {
+    //     // //     node = value;
+    //     // // }
+    //     // const nodesToUpdate = xmlDoc.getElementsByTagName(`superGateMessageId`);
+    //     // for (let i = 0; i < nodesToUpdate.length; i++) {
+    //     //     // Modify the node as required
+    //     //     nodesToUpdate[i].textContent = `testSGM`;
+    //     // }
+    //     // const updatedXmlContent = new XMLSerializer().serializeToString(xmlDoc);
+    //     // require('fs').writeFileSync(filePath, updatedXmlContent);
+    //     // const builder = new xml2js.Builder();
+    //     // const updatedXmlContent = builder.buildObject(xmlDoc);
 
-        // fs.writeFileSync(filePath, updatedXmlContent, 'utf-8');
+    //     // fs.writeFileSync(filePath, updatedXmlContent, 'utf-8');
 
        // Read the XML file
         const xmlContent = require('fs').readFileSync(filePath, 'utf-8');
+        const jsonContent = fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2))
+        try {
+            // Read XML file
+            const xmlString = readXmlFile(filePath);
+    
+            // Convert XML to JSON
+            const jsonData = xmlToJson(xmlString);
+    
+            // Write JSON to file
+            writeJsonFile(jsonFilePath, jsonData);
+    
+            console.log('Conversion successful!');
+        } catch (error) {
+            console.error('Error:', error);
+        }
 
         // Parse XML content
         const parser = new DOMParser();
@@ -133,3 +148,5 @@ function setListOfXmlValue(filePath: string, nodePath: string, value: string): v
         console.error(`An error occurred while updating XML: ${error}`);
     }
 }
+
+
