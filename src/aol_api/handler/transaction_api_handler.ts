@@ -72,12 +72,12 @@ export class Transactions extends BaseDltaAolApi {
         let type = responseBody?.data[0]?.portfolioName || '';
         expect(id).toEqual(responseBody?.data[0]?.portfolioId);
         expect(type).toEqual(responseBody?.data[0]?.portfolioName);
-        
-        
+
+
         return { id, type };
     }
 
-    async getMemberPayment(linearId: string): Promise<{ paymentAmount:string,reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
+    async getMemberPayment(linearId: string): Promise<{ paymentAmount: string, reference: string, preservedAmount: number, restricted: number, unrestricted: number, tax: number }> {
         let path = `member/${linearId}/payment`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -96,7 +96,7 @@ export class Transactions extends BaseDltaAolApi {
         expect(typeof parseFloat(restricted)).toBe('number');
         expect(typeof parseFloat(unrestricted)).toBe('number');
         expect(typeof parseFloat(tax)).toBe('number');
-        return { reference, preservedAmount, restricted, unrestricted, tax,paymentAmount };
+        return { reference, preservedAmount, restricted, unrestricted, tax, paymentAmount };
     }
 
     async getMemberFee(memberId: string): Promise<{ validation: { amount: number, category: string, type: string, name: string, effectiveDate: string } }> {
@@ -124,9 +124,9 @@ export class Transactions extends BaseDltaAolApi {
             const path = `member/${memberId}/report`;
             const response = await this.get(path);
             const responseBody = await response.json();
-    
+
             let dataOfRequestedType = null;
-    
+
             // Iterate through each item in the data array to find the desired report
             for (let i = responseBody.data.length - 1; i >= 0; i--) {
                 const item = responseBody.data[i];
@@ -135,14 +135,14 @@ export class Transactions extends BaseDltaAolApi {
                     break;
                 }
             }
-    
+
             if (!dataOfRequestedType) {
                 throw new Error(`Report of type '${type}' not found`);
             }
-    
+
             // Extracting data from the found report
             const { effectiveDate, type: reportType, data } = dataOfRequestedType;
-    
+
             // Parse the data based on the type
             let parsedData: any = {};
             if (type === 'MAAS Submit') {
@@ -156,19 +156,19 @@ export class Transactions extends BaseDltaAolApi {
             } else if (type === 'MATS Submit') {
                 parsedData = JSON.parse(data);
             }
-    
+
             // Log the extracted fields
             console.log(`${type} Report:`, parsedData);
-    
+
             // Return the extracted fields
             return parsedData;
-        } catch (error:any) {
-            // Handle errors, such as API request failures or report not found
+        } catch (error: any) {
+
             throw new Error(`Failed to fetch member report of type '${type}': ${error.message}`);
         }
     }
-    
-    
-    
-    
+
+
+
+
 }

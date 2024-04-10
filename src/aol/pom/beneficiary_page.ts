@@ -71,19 +71,19 @@ export class BeneficiaryPage extends BasePage {
   }
 
   async selectMemberRelationshipTab() {
-    await this.relationshipBtn.click({ timeout: 5000 });
-    await this.addButton.click({ timeout: 5000 });
+    await this.relationshipBtn.click();
+    await this.addButton.click();
   }
 
   async modifyMemberBeneficiary() {
-    await this.viewCase.click({ timeout: 5000 });
-    await this.createCase.click({ timeout: 5000 });
+    await this.viewCase.click();
+    await this.createCase.click();
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.nonBinding.click();
     await this.beneficiaryRelationship.click();
     await this.childDropDown.click();
-    await this.beneficiaryShare.click({ timeout: 5000 });
+    await this.beneficiaryShare.click();
     await this.beneficiaryShare1.fill(member.share);
     await this.contactFirstName.fill(member.FirstName);
     await this.contactSurName.fill(member.SurName);
@@ -91,6 +91,7 @@ export class BeneficiaryPage extends BasePage {
     await this.emailInputField.fill(member.email);
     await this.linkCase.click();
     await this.reviewCase.reviewCaseProcess(this.beneficiaryUpdateSuccess);
+    await this.emailInputField.scrollIntoViewIfNeeded();
   }
 
   async bindinglapsingInputFileds() {
