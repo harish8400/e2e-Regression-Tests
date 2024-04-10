@@ -1,8 +1,17 @@
 import { allure } from "allure-playwright";
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
-import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import *  as data from "../../../data/aol_test_data.json"
+
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -30,7 +39,7 @@ test(fundName()+"- Add new non binding nomination on an existing account with al
         await AccumulationMemberApiHandler.fetchRollInDetails(transactions,linearId.id);
         await memberPage.selectMember(memberNo);
         await beneficiaryPage.addNewNonBindingNominationOnExistingAccount();
-        await beneficiaryPage.beneficiaryInputFileds();
+        await beneficiaryPage.modifyMemberBeneficiary();
     } catch (error) {
         throw error;
     }
@@ -76,20 +85,65 @@ test(fundName()+"-Non binding or Binding lapsing nomination cannot be updated if
 })
 
 
-test(fundName()+"-Verify a new pension membership account creation, then alter the beneficiary details while membership is in both Provisional then Active status.", async ({ navBar, beneficiaryPage ,memberApi,pensionAccountPage}) => {
+test(fundName() + "-Verify a new pension membership account creation, then alter the beneficiary details while membership is in Provisional status", async ({ navBar, beneficiaryPage, pensionTransactionPage, pensionAccountPage,  apiRequestContext }) => {
     try {
-        await navBar.navigateToPensionMembersPage();
-        let { memberNo, processId } = await ShellAccountCreationApiHandler.createPensionShellAccount(memberApi);
-        console.log('ProcessId:', processId);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await ShellAccountCreationApiHandler.getCaseGroupId(memberApi, processId);
-        await ShellAccountCreationApiHandler.approveProcess(memberApi, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
-        await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(memberNo);
-        await beneficiaryPage.reltionShipButton();
-        await beneficiaryPage.beneficiaryInputFileds();
+        await test.step("Navigate to Pensions Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
+
+        let memberID: string;
+
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new TTR Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext, false);
+                memberID = memberData.memberNo;
+            })
+        }
+        else {
+            memberID = data.members.Modify_Beneficiary_ABP_Active_Member;
+        }
+
+        await test.step("Select the ABP Member", async () => {
+            await navBar.selectMember(memberID);
+        });
+
+        await test.step("Alter Beneficiary of ABP Member", async () => {
+            await beneficiaryPage.selectMemberRelationshipTab();
+            await beneficiaryPage.modifyMemberBeneficiary();
+        });
+        
+    } catch (error) {
+        throw error;
+    }
+})
+
+test(fundName() + "-Verify a new pension membership account creation, then alter the beneficiary details while membership is in Active status.", async ({ navBar, beneficiaryPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+    try {
+        await test.step("Navigate to Pensions Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
+
+        let memberID: string;
+
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new TTR Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                memberID = memberData.memberNo;
+            })
+        }
+        else {
+            memberID = data.members.Modify_Beneficiary_ABP_Active_Member;
+        }
+
+        await test.step("Select the ABP Member", async () => {
+            await navBar.selectMember(memberID);
+        });
+
+        await test.step("Alter Beneficiary of ABP Member", async () => {
+            await beneficiaryPage.selectMemberRelationshipTab();
+            await beneficiaryPage.modifyMemberBeneficiary();
+        });
+
     } catch (error) {
         throw error;
     }

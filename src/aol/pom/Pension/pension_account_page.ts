@@ -49,9 +49,11 @@ export class PensionShellAccount extends BasePage {
   readonly addFund: Locator;
   readonly addFundSelect: Locator;
   readonly memberAccountNumber: Locator;
-  readonly USI: Locator;
+  readonly sourceAccountNumber: Locator;
+  readonly slider: Locator;
   readonly addFundSelectOption: Locator;
   readonly enterAmount: Locator;
+  readonly amountToBeEntered: Locator;
   readonly saveFundDetails: Locator;
 
   //Investments
@@ -83,6 +85,7 @@ export class PensionShellAccount extends BasePage {
   readonly payment_frequency: Locator;
   readonly PensionPaymentDate: Locator;
   readonly proRata: Locator;
+  readonly taxThreshold: Locator;
   readonly eligibilty: Locator;
   readonly select_eligibility: Locator;
   readonly annual_payment: Locator;
@@ -144,18 +147,19 @@ export class PensionShellAccount extends BasePage {
 
   //Exceptions
   readonly processException: Locator;
-  readonly abpScreen:Locator;
+  readonly abpScreen: Locator;
 
-   //process link
-   readonly processesLink: Locator;
-   readonly shellaccount:Locator;
-   readonly review:Locator;
-   readonly transactionsTab:Locator;
-   readonly abpScreenView:Locator;
-   readonly ttrScreenView:Locator;
-   readonly memberOverview:Locator;
-   readonly addAccount:Locator;
-   readonly abp:Locator;
+  //process link
+  readonly processesLink: Locator;
+  readonly shellaccount: Locator;
+  readonly review: Locator;
+  readonly transactionsTab: Locator;
+  readonly abpScreenView: Locator;
+  readonly ttrScreenView: Locator;
+  readonly memberOverview: Locator;
+  readonly addAccount: Locator;
+  readonly abp: Locator;
+  readonly ttr: Locator;
 
   constructor(page: Page) {
     super(page)
@@ -194,46 +198,50 @@ export class PensionShellAccount extends BasePage {
     //Consolidate step
     this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
     this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-    this.addFundSelectOption = page.getByText('External fund account');
-    this.memberAccountNumber = page.getByLabel('Member account number *');
-    this.USI = page.getByLabel('USI *');
-    this.enterAmount = page.getByPlaceholder('0');
+    this.addFundSelectOption = page.getByText('Internal fund account');
+    this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
+
+    this.sourceAccountNumber = page.locator('#gs10__listbox');
+    this.slider = page.locator('.switch-slider');
+    this.enterAmount = page.getByText('$ 0.00');
+    this.amountToBeEntered = page.getByPlaceholder('0');
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
     //Investment step
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryRelation = page.locator('#gs6__combobox div').first();
-    this.beneficiaryRelationSelect = page.getByText('Spouse');
+    this.beneficiaryRelation = page.locator('#gs10__combobox div').first()
+    this.beneficiaryRelationSelect = page.getByRole('option', { name: 'Spouse' })
     this.beneficiaryEffectiveDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.select_gender = page.getByText('Male', { exact: true });
-    this.gender_select = page.locator('#gs7__combobox div').first();
+    this.select_gender = page.getByRole('option', { name: 'Male', exact: true })
+    this.gender_select = page.locator('#gs11__combobox div').first()
     this.beneficiaryContactName = page.getByLabel('Contact First Name');
-    this.countrySelect = page.locator('#gs8__combobox div').first();
+    this.countrySelect = page.locator('#gs12__combobox div').first()
     this.selectCountry = page.getByRole('option', { name: 'Australia' });
     this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
     this.beneficiaryCity = page.getByLabel('City/Town *');
-    this.beneficiaryState = page.locator('#gs9__combobox div').first();
+    this.beneficiaryState = page.locator('#gs18__combobox div').first()
     this.beneficiaryStateSelect = page.getByText('Australian Antarctic Territory');
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' }).first()
 
     //pension step
     this.payment_frequency_select = page.getByTitle('Payment Frequency').getByPlaceholder('Select');
-    this.payment_frequency = page.locator('li').filter({ hasText: 'Fortnightly' });
+    this.payment_frequency = page.locator('li').filter({ hasText: 'Monthly' })
     this.PensionPaymentDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.proRata = page.getByText('Yes').first();
+    this.proRata = page.locator("(//label[text()='Yes'])[1]");
+    this.taxThreshold = page.locator("(//label[text()='Yes'])[2]");
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' });
+    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' })
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
-    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
+    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' })
 
     //Bank Acc
 
@@ -287,7 +295,6 @@ export class PensionShellAccount extends BasePage {
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
     this.createAcc = page.getByRole('button', { name: 'Create Account' });
-
     //process link
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
@@ -299,6 +306,7 @@ export class PensionShellAccount extends BasePage {
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
     this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
+    this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
   }
 
   async navigateToPensionMemberPage() {
@@ -334,14 +342,22 @@ export class PensionShellAccount extends BasePage {
     //return this.memberSurname;
   }
 
-  async addMemberConsolidation() {
+  async addMemberConsolidation(transferEntireBalance: boolean = true) {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
-    await this.memberAccountNumber.fill(member.AccNumber);
-    await this.USI.fill(member.USI);
-    await this.USI.press('Tab');
-    await this.enterAmount.fill(member.Amount);
+    await this.memberAccountNumber.click();
+    await this.sleep(3000);
+    await this.sourceAccountNumber.click();
+    if (transferEntireBalance) {
+      await this.slider.click();
+      await this.enterAmount.click();
+      await this.sleep(3000);
+      await this.amountToBeEntered.fill(member.Amount);
+      await this.sleep(2000);
+    } else {
+      await this.slider.click();
+    }
     await this.sleep(1000);
     await this.saveFundDetails.click();
     await this.nextStep.click();
@@ -372,6 +388,8 @@ export class PensionShellAccount extends BasePage {
     await this.beneficiaryStateSelect.click();
     await this.beneficiaryPostcode.fill(member.postcode);
     await this.beneficiarySave.click();
+    await this.sleep(3000);
+    await this.reviewCase.captureScreenshot();
     await this.nextStep.click();
   }
 
@@ -381,8 +399,11 @@ export class PensionShellAccount extends BasePage {
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
-    await this.proRata.hover();
+    await this.sleep(2000);
     await this.proRata.click();
+    await this.sleep(2000);
+    //await this.taxThreshold.click();
+    await this.sleep(2000);
     await this.eligibilty.click();
     await this.select_eligibility.click();
     await this.annual_payment.click();
@@ -449,7 +470,7 @@ export class PensionShellAccount extends BasePage {
 
     await this.addMemberButton.click();
     await this.addMemberPersonalDetails(uniqueSurname);
-    await this.addMemberConsolidation();
+    await this.addMemberConsolidation(false);
     await this.addMemberInvestments();
     if (addBeneficiary) {
       await this.addMemberBeneficiaries();
@@ -496,18 +517,28 @@ export class PensionShellAccount extends BasePage {
     await this.shellaccount.click();
     await this.review.click();
     await this.sleep(3000)
-}
-  
-  async retirement(){
+  }
+
+  async selectABPTab() {
     await this.sleep(3000)
-    await this.abpScreenView.waitFor();
-    await this.abpScreenView.click();
+    await this.abpScreenView.first().waitFor();
+    await this.abpScreenView.first().click();
     await this.sleep(3000);
     await this.transactionsTab.click();
 
   }
 
-  async createShellAccountExistingMember(memberNo:string) {
+  async selectTTRRetirement() {
+    await this.sleep(3000)
+    await this.ttrScreenView.first().waitFor();
+    await this.ttrScreenView.first().click();
+    await this.sleep(3000);
+    await this.transactionsTab.click();
+
+  }
+
+  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
+
     await this.sleep(3000);
     await this.memberOverview.waitFor();
     await this.memberOverview.click();
@@ -520,14 +551,48 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
     await this.addMemberConsolidation();
     await this.addMemberInvestments();
-    await this.nextStep.click();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+
+      await this.nextStep.click();
+    }
     await this.addMemberPensionDetails();
+    await this.sleep(3000);
+    await this.initCreateCase();
+    await this.createAcc.click();
+    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+    await this.reviewCase.captureScreenshot("Shell account creation");
+
+  }
+
+  async ttrAccountCreation(addBeneficiary: boolean = false) {
+    await this.sleep(3000);
+    await this.memberOverview.waitFor();
+    await this.memberOverview.click();
+    await this.addAccount.click();
+    await this.ttr.click();
+    await this.preferredContactMethod.click();
+    await this.preferredContactMethodSelect.click();
+    await this.residencyStatus.click();
+    await this.residencyStatusSelect.click();
+    await this.nextStep.click();
+    await this.addMemberConsolidation();
+    await this.addMemberInvestments();
+    if (addBeneficiary) {
+      await this.addMemberBeneficiaries();
+    } else {
+
+      await this.nextStep.click();
+    }
+    await this.addMemberPensionDetails();
+    await this.sleep(3000);
     await this.initCreateCase();
     await this.createAcc.click();
     await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
   }
 
-  
+
 
 }

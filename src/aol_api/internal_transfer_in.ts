@@ -26,6 +26,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
     async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
         let productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
         let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+        let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
         let path = `/product/${productId}/process`;
         let tfn = UtilsAOL.generateValidTFN();
         let member = UtilsAOL.randomName();
@@ -116,11 +117,15 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     ],
                 },
                 investmentData: {
-                    investments: [
+                    investments:[
                         {
-                            id: investmentId,
-                            percent: 100,
+                            "id": investmentId,
+                            "percent": 50
                         },
+                        {
+                            "id": memberInvestmentId,
+                            "percent": 50
+                        }
                     ],
                     "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
                 },

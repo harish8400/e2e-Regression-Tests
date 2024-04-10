@@ -58,7 +58,7 @@ export class ShellAccountApiHandler {
         return { memberNo, processId, surname };
       }
 
-      static async process(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
+      static async ttrShellAccountCreation(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
         let { memberNo, surname } = await this.shellAccount(navBar, pensionAccountPage, apiRequestContext);
     
         // Fetch additional details and perform pension-related actions
@@ -77,8 +77,9 @@ export class ShellAccountApiHandler {
       }
 
       static async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-        let { linearId } = await this.process(navBar, pensionAccountPage, apiRequestContext);
-        await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id)
+        let { linearId ,memberNo,surname} = await this.process(navBar, pensionAccountPage, apiRequestContext);
+        await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id);
+        return {memberNo,surname};
     }
 
     

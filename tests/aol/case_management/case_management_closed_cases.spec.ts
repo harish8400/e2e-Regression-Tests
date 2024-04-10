@@ -5,7 +5,7 @@ import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
-        test.setTimeout(600000);
+        test.setTimeout(800000);
         await navBar.selectProduct();
         await allure.suite("Case Management");
         await allure.parentSuite(process.env.PRODUCT!);

@@ -19,12 +19,17 @@ import { MemberOverView } from './pom/member/member_overview';
 import { CaseApi } from '../aol_api/case_api';
 import {ProcessApi } from '../aol_api/process_api';
 import { MemberApi } from '../aol_api/member_api';
+import { MemberInsurance } from './pom/member/member_insurance';
+import { EmployerPage } from './pom/employer_page';
 import { RollinApi } from '../aol_api/rollin_api';
 import { ShellAccountApi } from '../aol_api/internal_transfer_in';
+import { GlobalPage } from './pom/component/global_page';
+import { DrawDownProfile } from '../aol_api/drawdown_profile_api';
 
 type ExtensionFixtures = {
     loginPage: LoginPage;
     navBar: Navbar
+    globalPage: GlobalPage
     dashboardPage: DashboardPage
     memberPage: MemberPage
     memberTransactionPage: MemberTransactionsPage
@@ -43,8 +48,12 @@ type ExtensionFixtures = {
     caseApi: CaseApi;
     processApi: ProcessApi;
     memberApi: MemberApi;
+    memberInsurancePage: MemberInsurance;
+    employerPage : EmployerPage
     rollinApi:RollinApi;
     shellAccountApi:ShellAccountApi;
+    transactionApi:Transactions;
+    drawDownType:DrawDownProfile
 }
 
 export const aolTest = base.extend<ExtensionFixtures>({
@@ -54,6 +63,10 @@ export const aolTest = base.extend<ExtensionFixtures>({
 
     navBar: async ({ page }, use) => {
         await use(new Navbar(page));
+    },
+
+    globalPage: async ({ page }, use) => {
+        await use(new GlobalPage(page));
     },
 
     dashboardPage: async ({ page }, use) => {
@@ -117,6 +130,9 @@ export const aolTest = base.extend<ExtensionFixtures>({
     memberApi: async ({ dltaApiRequestContext }, use) => {
         await use(new MemberApi(dltaApiRequestContext));
     },
+    memberInsurancePage: async ({ page }, use) => {
+        await use(new MemberInsurance(page));
+    },    
 
     rollinApi: async ({ dltaApiRequestContext }, use) => {
         await use(new RollinApi(dltaApiRequestContext));
@@ -124,5 +140,14 @@ export const aolTest = base.extend<ExtensionFixtures>({
 
     shellAccountApi: async ({ dltaApiRequestContext }, use) => {
         await use(new ShellAccountApi(dltaApiRequestContext));
+    },
+    transactionApi: async ({ dltaApiRequestContext }, use) => {
+        await use(new Transactions(dltaApiRequestContext));
+    },
+    employerPage: async ({ page }, use) => {
+        await use(new EmployerPage(page));
+    },
+    drawDownType: async ({ dltaApiRequestContext }, use) => {
+        await use(new DrawDownProfile(dltaApiRequestContext));
     },
 })

@@ -51,44 +51,78 @@ export class UtilsAOL {
     static memberNumber(prefix: string = 'TTR-', length: number = 9): string {
         const characters = '0123456789';
         const charactersLength = characters.length;
-    
+
         // Generate a candidate member number
         let candidateMemberNumber = prefix;
-    
+
         for (let i = 0; i < length; i++) {
             candidateMemberNumber += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-    
+
         // Check if the candidate member number is unique
         while (UtilsAOL.isMemberNumberUsed(candidateMemberNumber)) {
             // Regenerate if not unique
             candidateMemberNumber = prefix;
-    
+
             for (let i = 0; i < length; i++) {
                 candidateMemberNumber += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
         }
-    
+
         return candidateMemberNumber;
     }
-    
+
     // Helper method to check if a member number is already used
     static isMemberNumberUsed(memberNumber: string): boolean {
         // Assuming there is an array to store used member numbers
-        const usedMemberNumbers: string[] = []; 
+        const usedMemberNumbers: string[] = [];
         return usedMemberNumbers.includes(memberNumber);
     }
     static memberIdentityNumber(prefix: string = 'MER-ACC-', length: number = 6): string {
         let result = prefix;
         const characters = '0123456789';
         const charactersLength = characters.length;
-        
+
         for (let i = 0; i < length; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        
+
         return result;
     }
+
+    static generateDOB(): string {
+        const weights: number[] = [1, 4, 5, 1, 2, 1, 2, 1, 2, 1, 2, 1];
+        const year: number = Math.floor(Math.random() * (1957 - 1945 + 1)) + 1945;
+        const month: number = Math.floor(Math.random() * 12) + 1
+        const day: number = Math.floor(Math.random() * 28) + 1;
+        let dob: string = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+        let sum: number = 0;
+        let zero: number = 13;
+        while (zero) {
+            dob = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+            for (let i = 0; i < dob.length; i++) {
+                sum += parseInt(dob.slice(i, i + 1), 10) * weights[i];
+            }
+            zero = sum % 31;
+            sum = 0;
+        }
+        return dob;
+    }
+
+    static generateMoney(): number {
+        const min = 10000;
+        const max = 1000000;
+        const random = Math.random();
+        const money = Math.floor(random * (max - min + 1)) + min;
+        return money;
+    }
+
+    static generateRandomThreeDigitNumber(): number {
+        // Generate a random number between 100 and 999 inclusive
+        return Math.floor(Math.random() * 900) + 100;
+    }
+
 }
 
 export function fundName() {
@@ -115,4 +149,7 @@ export function fundDetails(product: string) {
     }
 
     return { productId, investmentId };
+
 }
+
+
