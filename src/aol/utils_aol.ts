@@ -5,7 +5,7 @@ export class UtilsAOL {
 
     static randomSurname(length: number) {
         let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         const charactersLength = characters.length;
         let counter = 0;
         while (counter < length) {
@@ -110,6 +110,8 @@ export class UtilsAOL {
         return dob;
     }
 
+
+
     static generateMoney(): number {
         const min = 10000;
         const max = 1000000;
@@ -122,7 +124,7 @@ export class UtilsAOL {
         // Generate a random number between 100 and 999 inclusive
         return Math.floor(Math.random() * 900) + 100;
     }
-
+    
 }
 
 export function fundName() {
@@ -136,8 +138,8 @@ export function fundDetails(product: string) {
 
     switch (product) {
         case 'HESTA for Mercy':
-            productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
-            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
             break;
         case 'Vanguard Super':
             productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
