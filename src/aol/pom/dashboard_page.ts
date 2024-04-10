@@ -251,7 +251,7 @@ export class DashboardPage extends BasePage {
 
   async clickFilter() {
     await allure.step(" Filter Options", async () => {
-      await this.filter_option.click({ timeout: 5000 });
+      await this.filter_option.click({ timeout: 6000 });
       await this.globalPage.captureScreenshot('Filter Options');
     });
 

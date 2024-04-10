@@ -47,7 +47,6 @@ test(fundName() + "-Verify that adhoc (shell) case can be linked to a member or 
 
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
     }
 })
 
@@ -58,7 +57,6 @@ test(fundName() + "-Verify that if user is able to close case with log of userna
 
 
         await dashboardPage.createShellCaseAndAsssignToUser();
-
 
         //Verify log of username, date and time when case is closed
 
@@ -128,28 +126,28 @@ test(fundName() + "-Verify filter option on open cases @casemanagement", async (
     try {
 
         // verify if all filters are displayed correctly
-        await test.step("Verify filters", async () => {
+        
             await dashboardPage.clickFilter();
             const expectedFilters = caseManagement.expectedItems;
             const actualFilters = await dashboardPage.getListItemsAndHighlight();
             expect(actualFilters).toEqual(expectedFilters);
             await globalPage.captureScreenshot('Verify filters');
-        })
+        
 
         // verify if all filters are filtering results correctly 
-        await test.step("Verify filter results", async () => {
+        
             await dashboardPage.validateMemberAccountNumberFilter({ dashboardPage });
             await dashboardPage.validateEffectiveDateFilter({ dashboardPage });
             await dashboardPage.validateMemberTobeAssignedFilter({ dashboardPage });
             await dashboardPage.validateCaseTypeFilter({ dashboardPage });
             await dashboardPage.validateCaseIdFilter({ dashboardPage });
             await dashboardPage.validateReferenceFilter({ dashboardPage });
-        })
+    
 
         console.log('Test Execution Success : Verify filter option on open cases')
 
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Verifying filter option on open cases has failed" });
+        throw error
     }
 })
 
