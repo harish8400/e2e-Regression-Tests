@@ -28,16 +28,20 @@ export class DateUtils {
     }
 
     /**format example: 24/11/2023 */
-    static ddmmyyyStringDate(dayToAdd: number, age:number = 0) {
+    static ddmmyyyStringDate(dayToAdd: number, age: number = 0) {
         let date = new Date();
         return `${date.getDate() + dayToAdd}/${date.getMonth() + 1}/${date.getFullYear() - age}`
     }
 
 
-    /**format example: 20231124 */
+    /**format example: 20240408 */
     static yyyymmddStringDate() {
-        let date = new Date();
-        return `${date.getDate()}${date.getFullYear()}${date.getMonth()}`
+        let today = new Date();
+        const year = today.getFullYear().toString();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const day = today.getDate().toString().padStart(2, '0');
+
+        return year + month + day;
     }
 
 }

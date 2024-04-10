@@ -110,14 +110,17 @@ export class UtilsAOL {
         return dob;
     }
 
-
-
     static generateMoney(): number {
         const min = 10000;
         const max = 1000000;
         const random = Math.random();
         const money = Math.floor(random * (max - min + 1)) + min;
         return money;
+    }
+
+    static generateRandomThreeDigitNumber(): number {
+        // Generate a random number between 100 and 999 inclusive
+        return Math.floor(Math.random() * 900) + 100;
     }
 
 }
