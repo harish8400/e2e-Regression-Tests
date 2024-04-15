@@ -20,3 +20,6 @@ test("MRR is processed with out TFN", async () => {
     xmlUtility.generateXMLFile("MRRWithoutTFN.xml");
 
 })
+test("CTR is processed with TFN", async () => {
+    xmlUtility.generateCTRWithTFNXML("CTRWithTFN.xml");
+})
