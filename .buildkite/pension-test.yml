@@ -4,7 +4,7 @@ agents:
 steps:
     - label: ":test_tube: Playwright test"
       commands:
-          - "ls -alt"
+          - "ls -alt && cd .buildkite/scripts && ls -alt"
           - "./buildkite/scripts/pension-test.sh"
       artifact_paths:
           - "playwright-report/**/*"
