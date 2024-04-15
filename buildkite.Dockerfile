@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.35.1
+FROM mcr.microsoft.com/playwright:v1.40.0-jammy
 
 COPY . /e2e
 
