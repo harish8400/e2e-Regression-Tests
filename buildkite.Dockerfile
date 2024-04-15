@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/playwright:v1.40.0-jammy
 
-COPY . /e2e
+COPY ./ /e2e/
 
 WORKDIR /e2e
 
