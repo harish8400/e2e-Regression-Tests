@@ -8,7 +8,7 @@ steps:
           - "playwright-report/**/*"
       plugins:
           - docker-compose#v4.14.0:
-                run: app
+                run: e2e_tests
                 config:
                     - ./buildkite.docker-compose.yml
                 mount-checkout: true
