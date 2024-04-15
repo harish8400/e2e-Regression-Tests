@@ -6,9 +6,9 @@ WORKDIR /e2e
 
 VOLUME /e2e/playwright-report
 
-RUN npm install
+# RUN npm install
 
-RUN npx playwright install
+# RUN npx playwright install
 
-ENTRYPOINT [ "npx", "playwright", "test" ]
-CMD []
+# ENTRYPOINT [ "npx", "playwright", "test" ]
+# CMD []

@@ -7,7 +7,7 @@ BASEDIR=$(dirname "$0")
 
 
 echo "NPM Install"
-#npm ci
+npm ci
 
 echo "Running Pension tests"
 npm run test:pension
