@@ -5,8 +5,11 @@ import { DateUtils } from "../../utils/date_utils";
 import { AssertionError } from "assert";
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 import path from "path";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "./component/global_page";
 export class DashboardPage extends BasePage {
 
+  readonly globalPage: GlobalPage;
   readonly addCaseLink: Locator;
   readonly selectProduct: Locator;
   readonly selectHFM: Locator;
@@ -72,6 +75,7 @@ export class DashboardPage extends BasePage {
     this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
 
     //Case Mgmt
+    this.globalPage = new GlobalPage(page);
     this.casemanagement = page.getByRole('heading', { name: 'Case Management' });
     this.openCaseslink = page.getByText('Open Cases', { exact: true });
     this.closedCasesLink = page.getByRole('link', { name: 'Closed Cases' });
@@ -131,94 +135,110 @@ export class DashboardPage extends BasePage {
   async addNewCase(expectedOutcome: string[]) {
     //await this.addCaseLink.click();
     //await this.addCase.submitCase();
-    try
-    {
-      //Create case
-      await this.page.getByRole('button', { name: 'add-circle icon Add New Case' }).click();
-      await this.page.getByPlaceholder('Search Case Type').click();
-      await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
-      await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
-      await this.sleep(2000);
-      let caseRef = await this.page.getByPlaceholder('Max. 30 characters').inputValue();
-      await this.page.getByRole('button', { name: 'Create Case' }).click();
+    try {
+      await allure.step("Add new case", async () => {
+        //Create case
+        await this.page.getByRole('button', { name: 'add-circle icon Add New Case' }).click();
+        await this.page.getByPlaceholder('Search Case Type').click();
+        await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
+        await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
+        await this.sleep(2000);
+        let caseRef = await this.page.getByPlaceholder('Max. 30 characters').inputValue();
+        await this.page.getByRole('button', { name: 'Create Case' }).click();
 
-      //Verify case outcome
-      await this.page.getByRole('button', { name: 'FILTER' }).click();
-      await this.page.locator("(//div[@class='filter-list-item'][normalize-space()='Reference'])[1]").click();
-      await this.page.getByRole('tooltip', { name: 'close icon Reference APPLY' }).getByRole('textbox').click();
-      await this.page.getByRole('tooltip', { name: 'close icon Reference APPLY' }).getByRole('textbox').fill(caseRef);
-      await this.page.getByRole('button', { name: 'APPLY' }).click();
-      await this.page.getByRole('button', { name: 'Go' }).click();
+        //Verify case outcome
+        await this.page.getByRole('button', { name: 'FILTER' }).click();
+        await this.page.locator("(//div[@class='filter-list-item'][normalize-space()='Reference'])[1]").click();
+        await this.page.getByRole('tooltip', { name: 'close icon Reference APPLY' }).getByRole('textbox').click();
+        await this.page.getByRole('tooltip', { name: 'close icon Reference APPLY' }).getByRole('textbox').fill(caseRef);
+        await this.page.getByRole('button', { name: 'APPLY' }).click();
+        await this.page.getByRole('button', { name: 'Go' }).click();
 
-      let actualOutcome = await this.page.getByRole('row', { name: `${caseRef}` }).locator('span').nth(2).textContent();
-      expect(expectedOutcome).toContain(actualOutcome);
+        let actualOutcome = await this.page.getByRole('row', { name: `${caseRef}` }).locator('span').nth(2).textContent();
+        expect(expectedOutcome).toContain(actualOutcome);
+        await this.globalPage.captureScreenshot('Add new case');
+      });
+
     }
-    catch(Error)
-    {
+    catch (Error) {
       throw Error;
     }
   }
 
-  async navigateToCaseManagement(){
-    await this.page.goto(this.caseManagementURL);
+  async navigateToCaseManagement() {
+    await allure.step("Navigate to case management", async () => {
+      await this.page.goto(this.caseManagementURL);
+      await this.globalPage.captureScreenshot('Navigate to case management');
+    });
+
   }
 
   async navigateToAccumulationAddMember() {
-    await this.navigateToCaseManagement();
-    //await this.selectProduct.click();
-    //await this.selectHFM.click();
-    await this.accumulationProduct.isVisible();
-    await this.accumulationProduct.click();
-    await this.accumulationMembersLink.click();
-    await this.accumulationAddMember.click();
+    await allure.step("Navigate to Accumulation member", async () => {
+      await this.navigateToCaseManagement();
+      //await this.selectProduct.click();
+      //await this.selectHFM.click();
+      await this.accumulationProduct.isVisible();
+      await this.accumulationProduct.click();
+      await this.accumulationMembersLink.click();
+      await this.accumulationAddMember.click();
+      await this.globalPage.captureScreenshot('Navigate to Accumulation member');
+    });
+
   }
 
   async verifyCaseManagementTabs() {
 
-    try 
-    {
-      await expect(this.openCaseslink).toBeVisible();
-      await this.highlightElement(this.openCaseslink);
-      console.log("Open cases tab is verified with sucess");
+    try {
+      await allure.step("Case management tabs", async () => {
+        await expect(this.openCaseslink).toBeVisible();
+        await this.highlightElement(this.openCaseslink);
+        console.log("Open cases tab is verified with sucess");
 
-      await expect(this.closedCasesLink).toBeVisible();
-      await this.highlightElement(this.closedCasesLink);
-      console.log("Closed cases tab is verified with sucess");
+        await expect(this.closedCasesLink).toBeVisible();
+        await this.highlightElement(this.closedCasesLink);
+        console.log("Closed cases tab is verified with sucess");
 
-      await expect(this.onHoldCases_check).toBeVisible();
-      await this.highlightElement(this.onHoldCases_check);
-      console.log("On hold cases option is verified with sucess");
+        await expect(this.onHoldCases_check).toBeVisible();
+        await this.highlightElement(this.onHoldCases_check);
+        console.log("On hold cases option is verified with sucess");
 
-      //await this.highlightElementAndCheckVisibility(this.SLA);
+        //await this.highlightElementAndCheckVisibility(this.SLA);
+        await this.globalPage.captureScreenshot('Case management tabs');
+      });
+
     } catch (error) {
       console.error(`Error in verifyCaseManagementTabs: ${error}`);
     }
   }
 
   async highlightElement(element: Locator) {
-    
+
     try {
+      await allure.step("Highlight Element", async () => {
+        // Highlight the background color of the current element
+        await element.evaluate((node: HTMLElement) => {
+          node.style.backgroundColor = 'yellow'; // Choose any color you prefer
+          node.style.color = 'black'; // Choose any color you prefer for text
+          // Add any other styles as needed
+        });
 
-    // Highlight the background color of the current element
-    await element.evaluate((node: HTMLElement) => {
-      node.style.backgroundColor = 'yellow'; // Choose any color you prefer
-      node.style.color = 'black'; // Choose any color you prefer for text
-      // Add any other styles as needed
-    });
+        // Wait for a short duration for the highlighting effect
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Highlight duration
 
-    // Wait for a short duration for the highlighting effect
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Highlight duration
+        // Remove the highlight after the check
+        // await element.evaluate((node: HTMLElement) => {
+        //   node.style.backgroundColor = ''; // Reset background color
+        //   node.style.color = ''; // Reset text color
+        // });
+        await this.globalPage.captureScreenshot('Highlight Element');
+      });
 
-    // Remove the highlight after the check
-    // await element.evaluate((node: HTMLElement) => {
-    //   node.style.backgroundColor = ''; // Reset background color
-    //   node.style.color = ''; // Reset text color
-    // });
 
     } catch (error) {
       throw error;
     }
-    
+
   }
 
   async close_arrow() {
@@ -230,7 +250,11 @@ export class DashboardPage extends BasePage {
   }
 
   async clickFilter() {
-    await this.filter_option.click({ timeout: 5000 });
+    await allure.step(" Filter Options", async () => {
+      await this.filter_option.click({ timeout: 6000 });
+      await this.globalPage.captureScreenshot('Filter Options');
+    });
+
   }
 
   async getListItemsAndHighlight(): Promise<string[]> {
@@ -263,11 +287,15 @@ export class DashboardPage extends BasePage {
   async verifyMemberAccountNumber(_milliseconds: number) {
 
     try {
-      await this.clickOnFilter();
-      await this.memberAccountNumber.click();
-      await this.textBox.fill(caseData.accountNumber);
-      await this.apply_button();
-      await this.go_Button();
+      await allure.step(" ", async () => {
+        await this.clickOnFilter();
+        await this.memberAccountNumber.click();
+        await this.textBox.fill(caseData.accountNumber);
+        await this.apply_button();
+        await this.go_Button();
+        await this.globalPage.captureScreenshot('Create a Shell Account');
+      });
+
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
     }
@@ -275,30 +303,35 @@ export class DashboardPage extends BasePage {
   }
 
   async validateMemberAccountNumberFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await allure.step(" Member Account Number", async () => {
+      await this.page.reload();
+      await this.verifyMemberAccountNumber(5000);
+      const expectedAlertText = caseData.alert_account;
+      const actualAlertText = await this.filterDisplayed();
+      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+      const expectedData = caseData.accountNumber;
+      await this.verifyFilterResult(expectedData, dashboardPage);
+      await this.close_main();
+      await this.globalPage.captureScreenshot('Member Account Numbert');
+    });
 
-    await this.page.reload();
-    await this.verifyMemberAccountNumber(5000);
-
-    const expectedAlertText = caseData.alert_account;
-    const actualAlertText = await this.filterDisplayed();
-    await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-
-    const expectedData = caseData.accountNumber;
-    await this.verifyFilterResult(expectedData, dashboardPage);
-    await this.close_main();
   }
 
   async verifyMemberAssignFilter(_milliseconds: number) {
 
     try {
-      await this.clickOnFilter();
-      await this.memberToAssign.click()
-      await this.select_member.click();
-      await this.sleep(1000);
-      await this.unassigned.click();
-      await this.sleep(1000);
-      await this.apply_button();
-      await this.go_Button();
+      await allure.step("Member assign filter", async () => {
+        await this.clickOnFilter();
+        await this.memberToAssign.click()
+        await this.select_member.click();
+        await this.sleep(1000);
+        await this.unassigned.click();
+        await this.sleep(1000);
+        await this.apply_button();
+        await this.go_Button();
+        await this.globalPage.captureScreenshot('Member assign filter');
+      });
+
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
       //throw error;
@@ -307,32 +340,40 @@ export class DashboardPage extends BasePage {
   }
 
   async validateMemberTobeAssignedFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await allure.step("Validate Member assign filter", async () => {
 
-    await this.page.reload();
-    await this.verifyMemberAssignFilter(5000);
+      await this.page.reload();
+      await this.verifyMemberAssignFilter(5000);
 
-    // verify if result is filtered
-    const expectedAlertText = caseData.alert_assignedTo;
-    const actualAlertText = await this.filterDisplayed();
-    await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-    const expectedData = caseData.AssignedTo;
-    await this.sleep(5000);
-    await this.verifyFilterResult(expectedData, dashboardPage);
-    //await this.close_main();
+      // verify if result is filtered
+      const expectedAlertText = caseData.alert_assignedTo;
+      const actualAlertText = await this.filterDisplayed();
+      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+      const expectedData = caseData.AssignedTo;
+      await this.sleep(5000);
+      await this.verifyFilterResult(expectedData, dashboardPage);
+      //await this.close_main();
+      await this.globalPage.captureScreenshot('Validate member assign filter');
+    });
+
   }
 
   async verify_case_type() {
 
     try {
-      await this.clickFilter();
-      await this.case.click();
-      await this.sleep(1000);
-      await this.text_Box.click();
-      await this.member_entity.click();
-      await this.heading.click({ timeout: 1000 })
-      await this.sleep(1000);
-      await this.apply_button();
-      await this.go_Button();
+      await allure.step("Case type", async () => {
+        await this.clickFilter();
+        await this.case.click();
+        await this.sleep(1000);
+        await this.text_Box.click();
+        await this.member_entity.click();
+        await this.heading.click({ timeout: 1000 })
+        await this.sleep(1000);
+        await this.apply_button();
+        await this.go_Button();
+        await this.globalPage.captureScreenshot('Case type');
+      });
+
     } catch (error) {
       console.error('Error occurred while verifying case type:', error);
       // Handle the error or throw it further if needed
@@ -342,29 +383,38 @@ export class DashboardPage extends BasePage {
   }
 
   async validateCaseTypeFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await allure.step("Case type filter", async () => {
+      await this.page.reload();
+      await this.verify_case_type();
 
-    await this.page.reload();
-    await this.verify_case_type();
+      const expectedAlertText = caseData.case_type_selected;
+      const actualAlertText = await this.filterDisplayed();
+      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+      const expectedData = caseData.case_type_selected;
+      await this.verifyFilterResult(expectedData, dashboardPage);
+      //await this.close_main();
+      await this.globalPage.captureScreenshot('Case type filter');
+    });
 
-    const expectedAlertText = caseData.case_type_selected;
-    const actualAlertText = await this.filterDisplayed();
-    await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-    const expectedData = caseData.case_type_selected;
-    await this.verifyFilterResult(expectedData, dashboardPage);
-    //await this.close_main();
+
   }
 
   async verify_case_Id() {
 
+
     try {
-      await this.clickFilter();
-      await this.caseId.click();
-      await this.sleep(1000);
-      await this.text_Box.click();
-      await this.text_Box.fill(caseData.caseGroupid);
-      await this.sleep(1000);
-      await this.apply_button();
-      await this.go_Button();
+      await allure.step("Verify case Id", async () => {
+        await this.clickFilter();
+        await this.caseId.click();
+        await this.sleep(1000);
+        await this.text_Box.click();
+        await this.text_Box.fill(caseData.caseGroupid);
+        await this.sleep(1000);
+        await this.apply_button();
+        await this.go_Button();
+        await this.globalPage.captureScreenshot('Verify case ID');
+      });
+
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
       // Handle the error or throw it further if needed
@@ -374,29 +424,37 @@ export class DashboardPage extends BasePage {
   }
 
   async validateCaseIdFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await allure.step("Case ID Filter", async () => {
+      await this.page.reload();
+      await this.verify_case_Id();
 
-    await this.page.reload();
-    await this.verify_case_Id();
+      const expectedAlertText = caseData.caseGroupid;
+      const actualAlertText = await this.filterDisplayed();
+      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+      const expectedData = caseData.caseGroupid;
+      await this.sleep(1000)
+      await this.verifyFilterResult(expectedData, dashboardPage);
+      //await this.close_main();
+      await this.globalPage.captureScreenshot('Case ID Filter');
+    });
 
-    const expectedAlertText = caseData.caseGroupid;
-    const actualAlertText = await this.filterDisplayed();
-    await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-    const expectedData = caseData.caseGroupid;
-    await this.sleep(1000)
-    await this.verifyFilterResult(expectedData, dashboardPage);
-    //await this.close_main();
+
   }
 
   async verify_reference() {
     try {
-      await this.clickFilter();
-      await this.referenceId.click();
-      await this.sleep(1000);
-      await this.text_Box.click();
-      await this.text_Box.fill(caseData.reference_No);
-      await this.sleep(1000);
-      await this.apply_button();
-      await this.go_Button();
+      await allure.step("Verify reference", async () => {
+        await this.clickFilter();
+        await this.referenceId.click();
+        await this.sleep(1000);
+        await this.text_Box.click();
+        await this.text_Box.fill(caseData.reference_No);
+        await this.sleep(1000);
+        await this.apply_button();
+        await this.go_Button();
+        await this.globalPage.captureScreenshot('Verify Reference');
+      });
+
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
       // Handle the error or throw it further if needed
@@ -405,74 +463,111 @@ export class DashboardPage extends BasePage {
   }
 
   async validateReferenceFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
+    await allure.step("Validate Reference Filter", async () => {
+      await this.page.reload();
+      await this.verify_reference();
 
-    await this.page.reload();
-    await this.verify_reference();
+      const expectedAlertText = caseData.reference_No;
+      const actualAlertText = await this.filterDisplayed();
+      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+      const expectedData = caseData.reference_No;
+      await this.sleep(1000)
+      await this.verifyFilterResult(expectedData, dashboardPage);
+      //await this.close_main();
+      await this.globalPage.captureScreenshot('Validate reference filter');
+    });
 
-    const expectedAlertText = caseData.reference_No;
-    const actualAlertText = await this.filterDisplayed();
-    await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-    const expectedData = caseData.reference_No;
-    await this.sleep(1000)
-    await this.verifyFilterResult(expectedData, dashboardPage);
-    //await this.close_main();
+
   }
 
   async apply_button() {
-    await this.apply.click();
+    await allure.step(" ", async () => {
+      await this.apply.click();
+      await this.globalPage.captureScreenshot('Create a Shell Account');
+    });
+
   }
 
   async go_Button() {
-    await this.go_option.click();
+    await allure.step(" ", async () => {
+      await this.go_option.click();
+      await this.globalPage.captureScreenshot('Create a Shell Account');
+    });
+
   }
 
   async verify_Member_TobeAssigned() {
-    await this.unassigned.click({ timeout: 5000 });
+    await allure.step(" ", async () => {
+      await this.unassigned.click({ timeout: 5000 });
+      await this.globalPage.captureScreenshot('Create a Shell Account');
+    });
+
 
   }
 
   async addCaseToAssignee() {
-    await this.assignedTo.click();
-    //await this.filter_dropdown.click({ timeout: 50000 })
-    await this.page.locator('li').filter({ hasText: /^Admin User$/ }).click();
-    //await this.assigned_Other.click({ timeout: 50000 })
+    await allure.step(" ", async () => {
+      await this.assignedTo.click();
+      //await this.filter_dropdown.click({ timeout: 50000 })
+      await this.page.locator('li').filter({ hasText: /^Admin User$/ }).click();
+      //await this.assigned_Other.click({ timeout: 50000 })
+      await this.globalPage.captureScreenshot('Create a Shell Account');
+    });
+
   }
 
   async clickOnTableRow(rowNumber: number) {
-    const tableRows = await this.page.$$('table tbody tr');
-    if (rowNumber >= 0 && rowNumber < tableRows.length) {
-      await tableRows[rowNumber].click();
-    } else {
-      throw new Error('Invalid row number or row does not exist.');
-    }
+    await allure.step("Click on table row", async () => {
+      const tableRows = await this.page.$$('table tbody tr');
+      if (rowNumber >= 0 && rowNumber < tableRows.length) {
+        await tableRows[rowNumber].click();
+      } else {
+        throw new Error('Invalid row number or row does not exist.');
+      }
+      await this.globalPage.captureScreenshot('Click on table row');
+    });
+
   }
-  
+
   async clickOnClosedIcon() {
     await this.close_left.click();
   }
 
 
   async verifyCaseManagementTab() {
-    await this.closedCasesLink.isVisible();
-    await this.closedCasesLink.click();
-    await this.filter.isVisible();
-    await this.go_option.isVisible();
+    await allure.step("Verify case management tab", async () => {
+      await this.closedCasesLink.isVisible();
+      await this.closedCasesLink.click();
+      await this.filter.isVisible();
+      await this.go_option.isVisible();
+      await this.globalPage.captureScreenshot('Verify case managemnet tab');
+    });
+
   }
 
   async clickOnFilter() {
-    await this.filter.click();
+
+    await allure.step("Click on filter", async () => {
+      await this.filter.click();
+      await this.globalPage.captureScreenshot('click on filter');
+    });
+
   }
 
   async getListOfItems() {
-    let items: string[] = [];
-    let els = await this.items.all();
-    for (const e of els) {
-      const text = await e.textContent();
-      items.push(text || "");
-      //console.log("Element Text:", text);
-    }
-    //console.log("Generated items:", items);
-    return items
+    await allure.step("List of Items", async () => {
+      let items: string[] = [];
+      let els = await this.items.all();
+      for (const e of els) {
+        const text = await e.textContent();
+        items.push(text || "");
+        //console.log("Element Text:", text);
+      }
+      //console.log("Generated items:", items);
+      return items
+      await this.globalPage.captureScreenshot('List of Items');
+    });
+
   }
 
   async activity_notes(): Promise<string> {
@@ -494,6 +589,7 @@ export class DashboardPage extends BasePage {
   }
 
   async filterDisplayed(): Promise<string | null> {
+
     const filterSelected = 'xpath=//span[@class="filter-tag"]//span';
     const filterTextArray: string[] = [];
 
@@ -513,14 +609,17 @@ export class DashboardPage extends BasePage {
       console.log('Filter option not found or no text content.');
       return null;
     }
+
   }
 
   // TO BE DELETED
-  async verifyDataInTable(expectedData: string): Promise<boolean> {8
+  async verifyDataInTable(expectedData: string): Promise<boolean> {
+
     //const tableRows = await this.page.$$('table tbody tr');
     const tableRows = await this.page.$$("//tbody/tr[1]");
 
     for (const row of tableRows) {
+
       const rowData = await row.textContent();
       if (rowData && rowData.includes(expectedData)) {
         console.log(`Results based on filter "${expectedData}" is listed successfully`);
@@ -530,23 +629,29 @@ export class DashboardPage extends BasePage {
 
     console.log(`Results based on filter "${expectedData}" is not found`);
     return false;
+
+
   }
 
   // TO BE DELETED
   async highlightTextInTableCells(expectedText: string) {
-   // let rows = await this.page.$$('table.el-table__body tr');
-   // let rowCount = 0;
+    // let rows = await this.page.$$('table.el-table__body tr');
+    // let rowCount = 0;
     let rowToHighlight = await this.page.locator(`div.cell:has-text("${expectedText}")`).all();
-    for (const r of rowToHighlight){
-      //r.evaluate(element => element.style.backgroundColor = 'yellow')
-      await r.evaluate((node: HTMLElement) => {
-        node.style.backgroundColor = 'yellow'; // Choose any color you prefer
-        node.style.color = 'black'; // Choose any color you prefer for text
-        // Add any other styles as needed
+    for (const r of rowToHighlight) {
+      await allure.step("Highlight text in tablet cells", async () => {
+        //r.evaluate(element => element.style.backgroundColor = 'yellow')
+        await r.evaluate((node: HTMLElement) => {
+          node.style.backgroundColor = 'yellow'; // Choose any color you prefer
+          node.style.color = 'black'; // Choose any color you prefer for text
+          // Add any other styles as needed
+        });
+
+        // Wait for a short duration for the highlighting effect
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Highlight duration
+        await this.globalPage.captureScreenshot('Highlight text in tablet cells');
       });
-  
-      // Wait for a short duration for the highlighting effect
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Highlight duration
+
     }
   }
 
@@ -557,7 +662,7 @@ export class DashboardPage extends BasePage {
     const outcomeIndex = items.findIndex(text => text.includes(expectedText));
 
     if (outcomeIndex !== null) {
-      const elements = await this.items.all(); 
+      const elements = await this.items.all();
       await elements[outcomeIndex].click();
       //console.log(`Clicked on the item with "${expectedText}" text.`);
     } else {
@@ -566,15 +671,23 @@ export class DashboardPage extends BasePage {
   }
 
   async click_outcome() {
-    await this.select_process.click();
+    await allure.step("Clicking on outcome", async () => {
+      await this.select_process.click();
+      await this.globalPage.captureScreenshot('Clicking on outcome');
+    });
+
   }
 
   async validateIfFilterIsApplied(expectedText: string, actualText: string | null) {
-    if (actualText !== null) {
-      expect(actualText).toContain(expectedText);
-    } else {
-      console.error('Selected Filter not applied');
-    }
+    await allure.step("If Fiter is applied", async () => {
+      if (actualText !== null) {
+        expect(actualText).toContain(expectedText);
+      } else {
+        console.error('Selected Filter not applied');
+      }
+      await this.globalPage.captureScreenshot('If filter is applied');
+    });
+
   }
 
   async verifyFilterResult(expectedData: string, page: DashboardPage) {
@@ -584,21 +697,21 @@ export class DashboardPage extends BasePage {
     await this.sleep(2000);
     const filteredResults = await this.page.locator(`div.cell:has-text("${expectedData}")`).all();
 
-    if(filteredResults.length > 0){
+    if (filteredResults.length > 0) {
 
       for (const row of filteredResults) {
-        
-        await expect(row).toContainText(expectedData);
-        
-        // const rowData = await row.textContent();
-        // if (rowData && rowData.includes(expectedData)) {
+        await allure.step("Filter Results", async () => {
+          await expect(row).toContainText(expectedData);
+
+          // const rowData = await row.textContent();
+          // if (rowData && rowData.includes(expectedData)) {
           //console.log(`Results based on filter "${expectedData}" is listed successfully`);
-       
+
           await row.evaluate((node: HTMLElement) => {
             node.style.backgroundColor = 'yellow'; // Choose any color you prefer
             node.style.color = 'black'; // Choose any color you prefer for text
           });
-      
+
           // Wait for a short duration for the highlighting effect
           await new Promise((resolve) => setTimeout(resolve, 200)); // Highlight duration
 
@@ -606,105 +719,133 @@ export class DashboardPage extends BasePage {
           //   node.style.backgroundColor = ''; // Choose any color you prefer
           //   node.style.color = ''; // Choose any color you prefer for text
           // });
+          await this.globalPage.captureScreenshot('Filter results');
+        });
+
+
       }
     }
-    else{
+    else {
       console.log(`Results based on filter "${expectedData}" is not found`);
     }
 
   }
 
   async select_outcome() {
-    await this.case_text.click({ timeout: 5000 });
+    await allure.step("Select outcome ", async () => {
+      await this.case_text.click({ timeout: 5000 });
+      await this.globalPage.captureScreenshot('select outcome');
+    });
+
   }
 
   async box_select() {
-    await this.text_Box.click({ timeout: 5000 });
+    await allure.step("Box select", async () => {
+      await this.text_Box.click({ timeout: 5000 });
+      await this.globalPage.captureScreenshot('Box select');
+    });
+
+
   }
 
   async verifyOpencaseStatuses({ dashboardPage }: { dashboardPage: DashboardPage }) {
     const selected = caseData.status_selected;
     //await this.openCaseslink.click();
     for (const status of selected) {
-      await this.clickOnFilter();
-      await this.clickOnOutcomeItem(caseData.status);
-      await this.box_select();
-      await this.page.locator('li').filter({ hasText: status }).click();
-      await this.apply_button();
-      await this.go_Button();
-      const actualAlertText = await this.filterDisplayed();
-      await this.validateIfFilterIsApplied(status, actualAlertText);
-      await this.verifyFilterResult(status, dashboardPage);
-      //console.log(`Open cases with status '${status}' is verified`)
+      await allure.step("Open Case Statuses", async () => {
+        await this.clickOnFilter();
+        await this.clickOnOutcomeItem(caseData.status);
+        await this.box_select();
+        await this.page.locator('li').filter({ hasText: status }).click();
+        await this.apply_button();
+        await this.go_Button();
+        const actualAlertText = await this.filterDisplayed();
+        await this.validateIfFilterIsApplied(status, actualAlertText);
+        await this.verifyFilterResult(status, dashboardPage);
+        //console.log(`Open cases with status '${status}' is verified`)
+        await this.globalPage.captureScreenshot('Open Case statusest');
+      });
+
     }
   }
 
   async verifyClosedcaseStatuses({ dashboardPage }: { dashboardPage: DashboardPage }) {
     await this.closedCasesLink.click();
     await this.sleep(1000);
-    
+
     const selected = caseData.status_selected_close;
     for (const status of selected) {
-      await this.clickOnFilter();
-      await this.clickOnOutcomeItem(caseData.status);
-      await this.box_select();
-      await this.page.locator('li').filter({ hasText: status }).click();
-      await this.apply_button();
-      await this.go_Button();
-      const actualAlertText = await this.filterDisplayed();
-      await this.validateIfFilterIsApplied(status, actualAlertText);
-      await this.verifyFilterResult(status, dashboardPage);
-      //console.log(`Closed cases with status '${status}' is verified`)
+      await allure.step("Clpsed Case Statuses", async () => {
+        await this.clickOnFilter();
+        await this.clickOnOutcomeItem(caseData.status);
+        await this.box_select();
+        await this.page.locator('li').filter({ hasText: status }).click();
+        await this.apply_button();
+        await this.go_Button();
+        const actualAlertText = await this.filterDisplayed();
+        await this.validateIfFilterIsApplied(status, actualAlertText);
+        await this.verifyFilterResult(status, dashboardPage);
+        //console.log(`Closed cases with status '${status}' is verified`)
+        await this.globalPage.captureScreenshot('Closed Case Statuses');
+      });
+
     }
     await this.closed();
   }
 
   async getCreatedDate(): Promise<string> {
+
     const createdDateText = await this.createdDate.textContent();
     if (createdDateText) {
       return createdDateText.trim();
     } else {
       throw new Error('Created date element not found');
     }
+
+
   }
 
   async validateEffectiveDateFilter({ dashboardPage }: { dashboardPage: DashboardPage }) {
-    await this.page.reload();
-    await this.clickOnFilter();
-    await this.date_picker.click();
-    let effectiveDate = DateUtils.ddmmyyyStringDate(-3);
-    await this.effectiveDate.fill(effectiveDate);
-    await this.effectiveDate.press('Tab');
-    await this.sleep(1000);
-    await this.apply_button();
-    await this.go_Button();
-    await dashboardPage.go_Button();
+    await allure.step("Effective Date Filter", async () => {
+      await this.page.reload();
+      await this.clickOnFilter();
+      await this.date_picker.click();
+      let effectiveDate = DateUtils.ddmmyyyStringDate(-3);
+      await this.effectiveDate.fill(effectiveDate);
+      await this.effectiveDate.press('Tab');
+      await this.sleep(1000);
+      await this.apply_button();
+      await this.go_Button();
+      await dashboardPage.go_Button();
 
-    // const lastColumnData = await dashboardPage.getLastColumnData();
+      // const lastColumnData = await dashboardPage.getLastColumnData();
 
-    // for (const data of lastColumnData) {
-    //   await dashboardPage.verifyFilterResult(data, dashboardPage);
-    // }
+      // for (const data of lastColumnData) {
+      //   await dashboardPage.verifyFilterResult(data, dashboardPage);
+      // }
 
-    const dynamicXPath = await this.getTableLastColumnXPath();
+      const dynamicXPath = await this.getTableLastColumnXPath();
 
-    // Get all elements matching the last column XPath
-    const lastColumnElements = await this.page.$$(dynamicXPath);
-    const lastColumnTexts: string[] = [];
+      // Get all elements matching the last column XPath
+      const lastColumnElements = await this.page.$$(dynamicXPath);
+      const lastColumnTexts: string[] = [];
 
-    for (const element of lastColumnElements) {
-      const lastColumnText = await element.textContent();
+      for (const element of lastColumnElements) {
+        const lastColumnText = await element.textContent();
 
-      // Add text content to the array and perform assertions if needed
-      if (lastColumnText !== null) {
-        const expectedPattern = /\d{1,2} [A-Za-z]{3} \d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)/;
-        expect(lastColumnText).toMatch(expectedPattern);
-        lastColumnTexts.push(lastColumnText);
-        await dashboardPage.verifyFilterResult(lastColumnText, dashboardPage);
-      } else {
-        throw new Error('Text content not found in one of the last column elements');
+        // Add text content to the array and perform assertions if needed
+        if (lastColumnText !== null) {
+          const expectedPattern = /\d{1,2} [A-Za-z]{3} \d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)/;
+          expect(lastColumnText).toMatch(expectedPattern);
+          lastColumnTexts.push(lastColumnText);
+          await dashboardPage.verifyFilterResult(lastColumnText, dashboardPage);
+        } else {
+          throw new Error('Text content not found in one of the last column elements');
+        }
       }
-    }
+      await this.globalPage.captureScreenshot('Effective Date Filter');
+    });
+
   }
 
   async getTableLastColumnXPath_(): Promise<string> {
@@ -724,6 +865,7 @@ export class DashboardPage extends BasePage {
   }
 
   async verifyCreatedAndUpdatedDatetime() {
+
     //: Promise<{ createdColumn: ElementHandle[], updatedColumn: ElementHandle[] }> 
 
     await this.sleep(5000);
@@ -736,6 +878,8 @@ export class DashboardPage extends BasePage {
 
     const createdColumnTexts: string[] = [];
     const updatedColumnTexts: string[] = [];
+
+
 
     for (let i = 0; i < createdColumnElements.length; i++) {
       const createdColumnText = await createdColumnElements[i].textContent();
@@ -762,89 +906,126 @@ export class DashboardPage extends BasePage {
 
     // Highlight created column date time
     for (const element of createdColumnElements) {
-      await element.evaluate((node: HTMLElement) => {
+      await allure.step("Element of created Column Elements", async () => {
+        await element.evaluate((node: HTMLElement) => {
           node.style.backgroundColor = 'yellow'; // Choose any color you prefer
           node.style.color = 'black'; // Choose any color you prefer for text
           // Add any other styles as needed
-        });;
-  }
+        });
+        await this.globalPage.captureScreenshot('Element of created Column Elements');
+      });
 
-  // Highlight before last updated column date time
-  for (const element of updatedColumnElements) {
-      await element.evaluate((node: HTMLElement) => {
+    }
+
+    // Highlight before last updated column date time
+    for (const element of updatedColumnElements) {
+      await allure.step(" Element of updated Column Elements", async () => {
+        await element.evaluate((node: HTMLElement) => {
           node.style.backgroundColor = 'yellow'; // Choose any color you prefer
           node.style.color = 'black'; // Choose any color you prefer for text
           // Add any other styles as needed
-        });;
-  }
+        });
+        await this.globalPage.captureScreenshot('Element of updated Column Elementst');
+      });
 
-  //return { createdColumn: createdColumnElements, updatedColumn: updatedColumnElements };
+    }
+
+    //return { createdColumn: createdColumnElements, updatedColumn: updatedColumnElements };
   }
 
   async addNotes() {
-    await this.notesComments.click();
-    await this.notes.click();
-    await this.notes.fill(caseData.Notes);
-    await this.done.click();
+    await allure.step("Add Notes", async () => {
+      await this.notesComments.click();
+      await this.notes.click();
+      await this.notes.fill(caseData.Notes);
+      await this.done.click();
+      await this.globalPage.captureScreenshot('Add Notes');
+    });
+
   }
 
-  async uploadFileCaseManagement(){
-    await this.attachment.click();
-    await this.write_note.click();
-    await this.write_note.fill(caseData.Attachements);
+  async uploadFileCaseManagement() {
+    await allure.step("Upload file", async () => {
+      await this.attachment.click();
+      await this.write_note.click();
+      await this.write_note.fill(caseData.Attachements);
 
-    const fileChooserPromise = this.page.waitForEvent('filechooser');
-    await this.page.getByText('Browse').click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles(path.join(__dirname, '../../../src/aol/data/sample.csv'));
-    await this.done.click();
+      const fileChooserPromise = this.page.waitForEvent('filechooser');
+      await this.page.getByText('Browse').click();
+      const fileChooser = await fileChooserPromise;
+      await fileChooser.setFiles(path.join(__dirname, '../../../src/aol/data/sample.csv'));
+      await this.done.click();
+      await this.globalPage.captureScreenshot('Upload file');
+    });
+
   }
 
   async verifyOpenCasesOutcomes({ dashboardPage }: { dashboardPage: DashboardPage }) {
-    const selected = caseData.Outcome_selected;
-    for (const outcomes of selected) {
-      await this.clickOnFilter();
-      await this.clickOnOutcomeItem(caseData.List_outcome);
-      await this.box_select();
-      await this.page.locator('li').filter({ hasText: outcomes }).click();
-      await this.apply_button();
-      await this.go_Button();
-      const actualAlertText = await this.filterDisplayed();
-      await this.validateIfFilterIsApplied(outcomes, actualAlertText);
-      await this.verifyFilterResult(outcomes, dashboardPage);
-      // const expectedData = caseManagement.Outcome_selected;
-      // for (const expecteddata of expectedData) {
-      //   await this.verifyFilterResult(expecteddata, dashboardPage);
-      // }
-    }
+    await allure.step("Open cases outcomes", async () => {
+      const selected = caseData.Outcome_selected;
+      for (const outcomes of selected) {
+        await this.clickOnFilter();
+        await this.clickOnOutcomeItem(caseData.List_outcome);
+        await this.box_select();
+        await this.page.locator('li').filter({ hasText: outcomes }).click();
+        await this.apply_button();
+        await this.go_Button();
+        const actualAlertText = await this.filterDisplayed();
+        await this.validateIfFilterIsApplied(outcomes, actualAlertText);
+        await this.verifyFilterResult(outcomes, dashboardPage);
+        // const expectedData = caseManagement.Outcome_selected;
+        // for (const expecteddata of expectedData) {
+        //   await this.verifyFilterResult(expecteddata, dashboardPage);
+        // }
+      }
+      await this.globalPage.captureScreenshot('Open cases outcomes');
+    });
+
   }
 
   async verifyClosedCasesOutcomes({ dashboardPage }: { dashboardPage: DashboardPage }) {
-    await this.closedCasesLink.click();
-    await this.sleep(3000);
-    const selected = caseData.Outcome_closed_cases;
+    await allure.step("Closed cases outcomes", async () => {
+      await this.closedCasesLink.click();
+      await this.sleep(3000);
+      const selected = caseData.Outcome_closed_cases;
 
-    for (const outcomes of selected) {
-      await this.clickOnFilter();
-      await this.clickOnOutcomeItem(caseData.List_outcome);
-      await this.box_select();
-      await this.page.locator('li').filter({ hasText: 'Success' }).click();
-      await this.apply_button();
-      await this.go_Button();
-      const expectedAlertText = caseData.alert_outcome; // Replace with your expected alert text
-      const actualAlertText = await this.filterDisplayed();
-      await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
-      //To validate wheteher Outcome is displayed in table  
-      await this.verifyFilterResult(outcomes, dashboardPage);
-     }
+      for (const outcomes of selected) {
+        await allure.step(" ", async () => {
+          await this.clickOnFilter();
+          await this.clickOnOutcomeItem(caseData.List_outcome);
+          await this.box_select();
+          await this.page.locator('li').filter({ hasText: 'Success' }).click();
+          await this.apply_button();
+          await this.go_Button();
+          const expectedAlertText = caseData.alert_outcome; // Replace with your expected alert text
+          const actualAlertText = await this.filterDisplayed();
+          await this.validateIfFilterIsApplied(expectedAlertText, actualAlertText);
+          //To validate wheteher Outcome is displayed in table  
+          await this.verifyFilterResult(outcomes, dashboardPage);
+          await this.globalPage.captureScreenshot('Create a Shell Account');
+        });
+      }
+
+
+      await this.globalPage.captureScreenshot('Closed cases outcomes');
+    });
+
   }
 
   async closed() {
-    await this.close.click();
+    await allure.step("Closed", async () => {
+      await this.close.click();
+      await this.globalPage.captureScreenshot('Closed');
+    });
+
   }
 
   async open() {
-    await this.openCaseslink.click();
+    await allure.step("Open ", async () => {
+      await this.openCaseslink.click();
+      await this.globalPage.captureScreenshot('Open');
+    });
+
   }
 
   async getActivityLogElement(): Promise<ElementHandle | null> {
@@ -853,7 +1034,10 @@ export class DashboardPage extends BasePage {
   }
 
   async getTableLastColumnXPath(): Promise<string> {
-    return `//td[contains(@class, 'el-table_1_column')][last()]/div`;
+   
+      return `//td[contains(@class, 'el-table_1_column')][last()]/div`;
+     
+    
   }
 
   //TO BE DELETED
@@ -880,110 +1064,139 @@ export class DashboardPage extends BasePage {
     return lastColumnTexts;
   }
 
-  async createShellCaseAndAsssignToUser(AssignToUser: boolean = false){
+  async createShellCaseAndAsssignToUser(AssignToUser: boolean = false) {
 
-    try
-    {
-      await this.page.getByRole('button', { name: 'add-circle icon Add New Case' }).click();
-      await this.page.getByPlaceholder('Search Case Type').click();
-      await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
-      await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
+    try {
+      await allure.step("shell case cretion and assignment", async () => {
+        await this.page.getByRole('button', { name: 'add-circle icon Add New Case' }).click();
+        await this.page.getByPlaceholder('Search Case Type').click();
+        await this.page.getByPlaceholder('Search Case Type').fill('enquiry');
+        await this.page.locator('li').filter({ hasText: 'Enquiry - Grow' }).click();
+        await this.globalPage.captureScreenshot('Create a Shell Account');
+      });
 
-      if(AssignToUser){
-      await this.page.getByRole('switch').locator('span').click();
-      await this.page.getByRole('button', { name: 'FILTER' }).first().click();
-      await this.page.getByText('Member Last Name').click();
-      await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').click();
-      await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').fill('XEqGL');
-      await this.page.getByRole('button', { name: 'APPLY' }).click();
-      await this.page.getByRole('cell', { name: 'Rose XEqGL' }).click();
-      //await this.page.locator('//tr[2]').first().click();
+
+      if (AssignToUser) {
+        await allure.step("Create a Shell Account", async () => {
+          await this.page.getByRole('switch').locator('span').click();
+          await this.page.getByRole('button', { name: 'FILTER' }).first().click();
+          await this.page.getByText('Member Last Name').click();
+          await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').click();
+          await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').fill('u1wii');
+          await this.page.getByRole('button', { name: 'APPLY' }).click();
+          await this.page.getByRole('cell', { name: 'Kane u1wii' }).click();
+          await this.globalPage.captureScreenshot('Create a Shell Account');
+        });
+
+
+        //await this.page.locator('//tr[2]').first().click();
       }
-      
+
       await this.page.getByRole('button', { name: 'Create Case' }).click();
-      await expect(this.page.locator('body')).toContainText('Pending arrow-down icon');
+      await expect(this.page.locator('body')).toContainText('Pending arrow-down icon', { timeout: 20000 });
     }
-    catch(error)
-    {
+    catch (error) {
       throw error;
     }
   }
 
-  async verifyCaseCloseLog(){
+  async verifyCaseCloseLog() {
 
-    try
-    {
-      await this.page.getByRole('button', { name: 'Close Case arrow-down icon' }).click();
-      await this.page.getByText('Close - Success').click();
-      
-      //Todo check logged in user instead of admin
-      await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Changed status to \'Closed - Success\'');
-      await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Admin User');
-      var currentDate = new Date();
-      await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText(`${DateUtils.dMMMyyyStringDate(currentDate)}`);
+    try {
+
+      await allure.step("Case close logs", async () => {
+        await this.page.getByRole('button', { name: 'Close Case arrow-down icon' }).click();
+        await this.page.getByText('Close - Success').click();
+
+        //Todo check logged in user instead of admin
+        await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Changed status to \'Closed - Success\'');
+        await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Admin User');
+        var currentDate = new Date();
+        await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText(`${DateUtils.dMMMyyyStringDate(currentDate)}`);
+
+        await this.globalPage.captureScreenshot('Case close logs');
+      });
+
     }
-    catch(error)
-    {
+    catch (error) {
       throw error;
     }
   }
 
-  async updateClosedCaseWithComment(){
+  async updateClosedCaseWithComment() {
 
-    try
-    {
-      await this.page.getByRole('link', { name: 'Closed Cases' }).click();
-      await this.page.locator('td').first().click();
-      await this.page.getByRole('button', { name: 'Activity Notes add-circle icon', exact: true }).click();
-      await this.page.getByPlaceholder('Write note...').click();
-      await this.page.getByPlaceholder('Write note...').fill('test');
-      await this.page.getByRole('button', { name: 'Done' }).click();
-    }
-    catch(Exception)
-    {
-      throw new AssertionError({message: 'Updating closed cases with comments failed'});
-    }
-  }
+    try {
 
-  async verifyClosedCaseUpdateLog(){
-
-    try
-    {
-      //Todo check logged in user instead of admin
-      //await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Changed status to \'Closed - Success\'');
-      await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Admin User');
-      var currentDate = new Date();
-      await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText(`${DateUtils.dMMMyyyStringDate(currentDate)}`);
+      await allure.step("Update closed case with comment", async () => {
+        await this.page.getByRole('link', { name: 'Closed Cases' }).click();
+        await this.page.locator('td').first().click();
+        await this.page.getByRole('button', { name: 'Activity Notes add-circle icon', exact: true }).click();
+        await this.page.getByPlaceholder('Write note...').click();
+        await this.page.getByPlaceholder('Write note...').fill('test');
+        await this.page.getByRole('button', { name: 'Done' }).click();
+        await this.globalPage.captureScreenshot('update closed case with comment');
+      });
     }
-    catch(Exception)
-    {
-      throw new AssertionError({message: 'Verify username, datetime log of closed case update failed'});
+    catch (Exception) {
+      throw new AssertionError({ message: 'Updating closed cases with comments failed' });
     }
   }
 
-  async verifyClosedCasesPageFilters(){
-    await this.closedCasesLink.click();
-    await this.clickFilter();
-    const expectedFilters = caseData.expectedItems;
-    const actualFilters = await this.getListItemsAndHighlight();
-    expect(expectedFilters).toEqual(expect.arrayContaining(actualFilters));
+  async verifyClosedCaseUpdateLog() {
+
+    try {
+      await allure.step("Closed case update logs", async () => {
+        //Todo check logged in user instead of admin
+        //await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Changed status to \'Closed - Success\'');
+        await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText('Admin User');
+        var currentDate = new Date();
+        await expect(this.page.locator("(//div[contains(@class,'gs-column full-row-gutter pl-4')])[1]")).toContainText(`${DateUtils.dMMMyyyStringDate(currentDate)}`);
+
+        await this.globalPage.captureScreenshot('Closed case update logs');
+      });
+    }
+    catch (Exception) {
+      throw new AssertionError({ message: 'Verify username, datetime log of closed case update failed' });
+    }
   }
 
-  async navigateToClosedCasesTab(){
-    this.closedCasesLink.click();
+  async verifyClosedCasesPageFilters() {
+    await allure.step(" Closed cases page filters", async () => {
+      await this.closedCasesLink.click();
+      await this.clickFilter();
+      const expectedFilters = caseData.expectedItems;
+      const actualFilters = await this.getListItemsAndHighlight();
+      expect(expectedFilters).toEqual(expect.arrayContaining(actualFilters));
+      await this.globalPage.captureScreenshot('Closed cases page filters');
+    });
+
+  }
+
+  async navigateToClosedCasesTab() {
+    await allure.step("Navigate to closed cases tab", async () => {
+      this.closedCasesLink.click();
+      await this.globalPage.captureScreenshot('Navigated to closed cases tab');
+    });
+
+
   }
 
 
   async filterCaseByReference() {
     try {
-      await this.clickFilter();
-      await this.referenceId.click();
-      await this.sleep(1000);
-      await this.text_Box.click();
-      await this.text_Box.fill("MER-1903");
-      await this.sleep(1000);
-      await this.apply_button();
-      await this.go_Button();
+
+      await allure.step("Filter case by reference ", async () => {
+        await this.clickFilter();
+        await this.referenceId.click();
+        await this.sleep(1000);
+        await this.text_Box.click();
+        await this.text_Box.fill("MER-1903");
+        await this.sleep(1000);
+        await this.apply_button();
+        await this.go_Button();
+
+        await this.globalPage.captureScreenshot('Filter case by reference');
+      });
     } catch (error) {
       console.error('Error occurred while verifying member account number:', error);
       // Handle the error or throw it further if needed
@@ -991,8 +1204,8 @@ export class DashboardPage extends BasePage {
     }
   }
 
-  async selectExistingCase(){
-    
+  async selectExistingCase() {
+
   }
 
 }

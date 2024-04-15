@@ -13,7 +13,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /* Ensure that a new case can be created without being assigned to a member with possible outcome of Processing, Error, Success */
-test(fundName()+"-Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Verify new case creation without assigning to a member @casemanagement", async ({ dashboardPage }) => {
     try {
 
         let expectedOutcomes = ['Processing', 'Error', 'Success'];
@@ -21,14 +21,14 @@ test(fundName()+"-Verify new case creation without assigning to a member @casema
         await dashboardPage.addNewCase(expectedOutcomes);
 
         console.log('Test Execution Success : Verify new case creation without assigning to a member ')
-        
+
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed : New case creation without assigning to a member has failed" });
     }
 })
 
 /** Verify that adhoc case can be created*/
-test(fundName()+"-Verify that adhoc (shell) cases can be created successfully", async ({ dashboardPage }) => {
+test(fundName() + "-Verify that adhoc (shell) cases can be created successfully", async ({ dashboardPage }) => {
 
     try {
         //Create shell case and assign to a user
@@ -39,35 +39,46 @@ test(fundName()+"-Verify that adhoc (shell) cases can be created successfully", 
 })
 
 /** Verify that adhoc case can be created and assigned to an existing member */
-test(fundName()+"-Verify that adhoc (shell) case can be linked to a member or to an existing case", async ({ dashboardPage }) => {
+test(fundName() + "-Verify that adhoc (shell) case can be linked to a member or to an existing case", async ({ dashboardPage, globalPage }) => {
 
     try {
-        //Create shell case and assign to a user
+        //Create shell case and assign to a use
         await dashboardPage.createShellCaseAndAsssignToUser(true);
+
+
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Create adhoc case and assign to user has failed" });
     }
 })
 
-test(fundName()+"-Verify that if user is able to close case with log of username, date and time when it was closed", async ({ dashboardPage }) => {
+test(fundName() + "-Verify that if user is able to close case with log of username, date and time when it was closed", async ({ dashboardPage, globalPage }) => {
 
     try {
         //Create shell case and assign to a user
+
+
         await dashboardPage.createShellCaseAndAsssignToUser();
+
         //Verify log of username, date and time when case is closed
-        await dashboardPage.verifyCaseCloseLog();
+
+        await test.step("Close case and verify username, date", async () => {
+            await dashboardPage.verifyCaseCloseLog();
+            await globalPage.captureScreenshot('Close Case Log');
+        })
+
     } catch (error) {
         throw error;
     }
 })
 
 /* Ensure that user can find exact created and updated date time of a case */
-test(fundName()+"-Ensure that user can find exact created and updated date time of a case @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Ensure that user can find exact created and updated date time of a case @casemanagement", async ({ dashboardPage, globalPage }) => {
 
     try {
-        
-        await dashboardPage.verifyCreatedAndUpdatedDatetime();
-        console.log('Test Execution Success : Ensure that user can find exact created and updated date time of a case')
+        await test.step("User can find exact created and updated timestamp", async () => {
+            await dashboardPage.verifyCreatedAndUpdatedDatetime();
+            await globalPage.captureScreenshot('Created and Updated timestamp');
+            console.log('Test Execution Success : Ensure that user can find exact created and updated date time of a case')
+        })
 
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed : Ensure that user can find exact created and updated date time of a case has failed" });
@@ -76,8 +87,8 @@ test(fundName()+"-Ensure that user can find exact created and updated date time 
 })
 
 /* Ensure that primary statuses of the cases are: Pending, In Progress, In Review, On Hold (Open Cases) and Closed, Deleted (Closed Cases) */
-test(fundName()+"-Verify the primary statuses of open cases @casemanagement", async ({ dashboardPage }) => {
-    
+test(fundName() + "-Verify the primary statuses of open cases @casemanagement", async ({ dashboardPage }) => {
+
     try {
 
         //await dashboardPage.navigateToCaseManagement();
@@ -87,17 +98,21 @@ test(fundName()+"-Verify the primary statuses of open cases @casemanagement", as
         console.log('Test Execution Success : Verifying the primary statuses of open cases')
 
     } catch (error) {
-        throw new AssertionError({message: "Test Execution Failed : Verifying primary status of cases has failed"});
     }
 })
 
 /* Ensure cases are correctly displayed under Open Cases tab with following tabs: Open Cases, Closed Cases, On Hold, SLA */
-test(fundName()+"-Verify that open cases are displayed correctly @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Verify that open cases are displayed correctly @casemanagement", async ({ dashboardPage, globalPage }) => {
     try {
 
         //await dashboardPage.navigateToCaseManagement();
-        expect(await dashboardPage.casemanagement.innerText()).toBe('Case Management');
-        await dashboardPage.verifyCaseManagementTabs();
+        await test.step("Open cases are displaying correctly", async () => {
+            expect(await dashboardPage.casemanagement.innerText()).toBe('Case Management');
+            await dashboardPage.verifyCaseManagementTabs();
+            await globalPage.captureScreenshot('Open cases are displaying correctly');
+
+        })
+
 
         console.log('Test Execution Success : Verifying that open cases are displayed correctly')
 
@@ -107,35 +122,36 @@ test(fundName()+"-Verify that open cases are displayed correctly @casemanagement
 })
 
 /* Ensure filtering is available on Open Cases in Case Management & user can filter on multiple parameters */
-test(fundName()+"-Verify filter option on open cases @casemanagement", async ({ dashboardPage }) => { 
+test(fundName() + "-Verify filter option on open cases @casemanagement", async ({ dashboardPage, globalPage }) => {
     try {
 
         // verify if all filters are displayed correctly
-        await test.step("Verify filters", async () => {
+        
             await dashboardPage.clickFilter();
             const expectedFilters = caseManagement.expectedItems;
             const actualFilters = await dashboardPage.getListItemsAndHighlight();
             expect(actualFilters).toEqual(expectedFilters);
-        })
+            await globalPage.captureScreenshot('Verify filters');
+        
 
         // verify if all filters are filtering results correctly 
-        await test.step("Verify filter results", async () => {
+        
             await dashboardPage.validateMemberAccountNumberFilter({ dashboardPage });
             await dashboardPage.validateEffectiveDateFilter({ dashboardPage });
             await dashboardPage.validateMemberTobeAssignedFilter({ dashboardPage });
             await dashboardPage.validateCaseTypeFilter({ dashboardPage });
             await dashboardPage.validateCaseIdFilter({ dashboardPage });
             await dashboardPage.validateReferenceFilter({ dashboardPage });
-        })
+    
 
         console.log('Test Execution Success : Verify filter option on open cases')
-        
+
     } catch (error) {
-        throw new AssertionError({ message: "Test Execution Failed : Verifying filter option on open cases has failed" });
+        throw error
     }
 })
 
-test(fundName()+"-Verify that an existing case can be updated by assigning to a user @casemanagement", async ({ dashboardPage }) => { 
+test(fundName() + "-Verify that an existing case can be updated by assigning to a user @casemanagement", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.clickOnFilter();
@@ -162,7 +178,7 @@ test(fundName()+"-Verify that an existing case can be updated by assigning to a 
     }
 })
 
-test(fundName()+"-Verify that an existing case can be updated by adding notes/comments @casemanagement", async ({ dashboardPage }) => { 
+test(fundName() + "-Verify that an existing case can be updated by adding notes/comments @casemanagement", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.clickOnFilter();
@@ -185,7 +201,7 @@ test(fundName()+"-Verify that an existing case can be updated by adding notes/co
     }
 })
 
-test(fundName()+"-Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => { 
+test(fundName() + "-Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => {
 
     try {
 

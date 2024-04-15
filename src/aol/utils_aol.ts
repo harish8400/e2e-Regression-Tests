@@ -168,6 +168,11 @@ export class UtilsAOL {
         return result;
     }
     
+    static generateRandomThreeDigitNumber(): number {
+        // Generate a random number between 100 and 999 inclusive
+        return Math.floor(Math.random() * 900) + 100;
+    }
+    
 }
 
 export function fundName() {
