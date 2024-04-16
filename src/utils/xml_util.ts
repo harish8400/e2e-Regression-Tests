@@ -63,7 +63,10 @@ export class xmlUtility {
             "//name[1]/firstName[1]": UtilsAOL.randomName(),
             "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
             "//taxFileNumberNotProvided[1]": true,
-            "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier
+            "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier,
+            "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
+            "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
+            "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
         };
 
         /// Update XML nodes and save it
@@ -85,6 +88,7 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN(); 
 
         /// Prepare nodes list to update
         interface nodes {
@@ -103,8 +107,11 @@ export class xmlUtility {
             "//australianBusinessNumber[1]": superStreamData.australianBusinessNumber,
             "//name[1]/firstName[1]": UtilsAOL.randomName(),
             "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
-            "//tfnEntityIdentifier[1]": superStreamData.tfnEntityIdentifier,
-            "//employerProvidedTaxFileNumber[1]": superStreamData.employerProvidedTaxFileNumber
+            "//tfnEntityIdentifier[1]": tfn,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
+            "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
+            "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
         };
 
         /// Update XML nodes and save it
@@ -127,6 +134,7 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN(); 
 
         /// Prepare nodes list to update
         interface nodes {
@@ -157,8 +165,8 @@ export class xmlUtility {
             "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
             "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
             "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
-            "//employerProvidedTaxFileNumber[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
-            "//tfnEntityIdentifier[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//tfnEntityIdentifier[1]": tfn,
             "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
             "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
         };
