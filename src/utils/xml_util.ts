@@ -18,9 +18,15 @@ export class xmlUtility {
 
         let generatedXMLFileName : string = templateName;
         switch (templateName) {
-            case 'MRRWithTFN.xml': generatedXMLFileName = this.generateMRRWithTFNXML(templateName);
-            case 'MRRWithoutTFN.xml': generatedXMLFileName = this.generateMRRWithoutTFNXML(templateName);
-            case 'CTRWithTFN.xml': this.generateCTRWithTFNXML(templateName);
+            case 'MRRWithTFN.xml': 
+            generatedXMLFileName = this.generateMRRWithTFNXML(templateName);
+            break;
+            case 'MRRWithoutTFN.xml': 
+            generatedXMLFileName = this.generateMRRWithoutTFNXML(templateName);
+            break;
+            case 'CTRWithTFN.xml': 
+            this.generateCTRWithTFNXML(templateName);
+            break;
         }
         return generatedXMLFileName;
     }
