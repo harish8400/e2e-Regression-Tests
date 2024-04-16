@@ -8,22 +8,21 @@ import { DataUtils } from './data_utils';
 import * as superStreamData from '../aol/data/superstream_data.json';
 import * as superStreamDataCTR from '../aol/data/superstream_CTR_data.json';
 import { UtilsAOL } from '../aol/utils_aol';
-import { SuperStreamPage } from '../aol/pom/superstream_contribution_page';
 
 export class xmlUtility {
 
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
-    static generateXMLFile(templateName: string): void {
+    static generateXMLFile(templateName: string): string {
 
+        let generatedXMLFileName : string = templateName;
         switch (templateName) {
-            case 'MRRWithTFN.xml': this.generateMRRWithTFNXML(templateName);
-            case 'MRRWithoutTFN.xml': this.generateMRRWithoutTFNXML(templateName);
+            case 'MRRWithTFN.xml': generatedXMLFileName = this.generateMRRWithTFNXML(templateName);
+            case 'MRRWithoutTFN.xml': generatedXMLFileName = this.generateMRRWithoutTFNXML(templateName);
             case 'CTRWithTFN.xml': this.generateCTRWithTFNXML(templateName);
-           
         }
-
+        return generatedXMLFileName;
     }
 
     // Generate XML with TFN for MRR
@@ -55,14 +54,16 @@ export class xmlUtility {
             "//targetUsi[1]": superStreamData.sourceUsi,
             "//employer[1]/organisationName[1]/value[1]": superStreamData.employerOrganisationName,
             "//australianBusinessNumber[1]": superStreamData.australianBusinessNumber,
-            "//name[1]/firstName[1]": superStreamData.memberFirstName,
-            "//name[1]/lastName[1]": superStreamData.memberLastName,
+            "//name[1]/firstName[1]": UtilsAOL.randomName(),
+            "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
             "//taxFileNumberNotProvided[1]": true,
             "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier
         };
 
         /// Update XML nodes and save it
         this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return `${destinationFileName}`;
     }
 
     // Generate XML for MRR
@@ -94,11 +95,16 @@ export class xmlUtility {
             "//targetUsi[1]": superStreamData.sourceUsi,
             "//employer[1]/organisationName[1]/value[1]": superStreamData.employerOrganisationName,
             "//australianBusinessNumber[1]": superStreamData.australianBusinessNumber,
-            "//name[1]/firstName[1]": superStreamData.memberFirstName,
-            "//name[1]/lastName[1]": superStreamData.memberLastName,
+            "//name[1]/firstName[1]": UtilsAOL.randomName(),
+            "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
             "//tfnEntityIdentifier[1]": superStreamData.tfnEntityIdentifier,
             "//employerProvidedTaxFileNumber[1]": superStreamData.employerProvidedTaxFileNumber
         };
+
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return `${destinationFileName}`;
     }
 
     // Generate XML for CTR
