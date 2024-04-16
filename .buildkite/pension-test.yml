@@ -3,12 +3,12 @@ agents:
 
 steps:
     - label: ":test_tube: Playwright test"
-      command: "./buildkite/scripts/pension-test.sh"
+      command: "ls -alt && cd .buildkite/scripts && ls -alt && ./pension-test.sh"
       artifact_paths:
           - "playwright-report/**/*"
       plugins:
           - docker-compose#v4.14.0:
-                run: app
+                run: e2e_tests
                 config:
                     - ./buildkite.docker-compose.yml
                 mount-checkout: true
