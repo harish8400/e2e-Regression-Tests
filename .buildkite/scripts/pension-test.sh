@@ -5,7 +5,7 @@ set -e
 
 BASEDIR=$(dirname "$0")
 
-npx playwright install && npx playwright install-deps
+npx playwright install && npx playwright install-deps && apt-get install -y allure
 
 echo "NPM Install"
 npm ci
