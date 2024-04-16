@@ -138,7 +138,7 @@ export class UtilsAOL {
     
     
     static randomGender(): string {
-        const genders = ['Male', 'Female', 'Intersex', 'Not Stated'];
+        const genders = ['MALE', 'FEMALE', 'INTERSEX', 'NOT STATED'];
         return genders[Math.floor(Math.random() * genders.length)];
     }
     
@@ -172,6 +172,22 @@ export class UtilsAOL {
         // Generate a random number between 100 and 999 inclusive
         return Math.floor(Math.random() * 900) + 100;
     }
+
+    static getRandomYear(): number {
+        const range = 1900 - 2024 + 1;
+        return Math.floor(Math.random() * range) + 2024;
+    }
+
+    static getRandomMonth(): number {
+        return Math.floor(Math.random() * 12) + 1;
+    }
+
+    static getRandomDay(): number {
+        const year = 2024;
+        const month = 2;
+        const daysInMonth = new Date(year, month, 0).getDate();
+        return Math.floor(Math.random() * daysInMonth) + 1;
+    }
     
 }
 
@@ -201,5 +217,6 @@ export function fundDetails(product: string) {
     return { productId, investmentId };
 
 }
+
 
 
