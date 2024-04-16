@@ -1,4 +1,3 @@
-
 import * as fs from 'fs';
 import xpath from 'xpath';
 import { DOMParser } from 'xmldom';

@@ -21,8 +21,9 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
 
     try {
 
-        let generatedXMLFileName: string;
+        let generatedXMLFileName: string | { destinationFileName: string, firstName: string, lastName: string, dob: string };
         await test.step("Generate XML file for upload", async () => {
+
             generatedXMLFileName = xmlUtility.generateXMLFile("MRRWithTFN.xml");
         });
 
@@ -33,7 +34,50 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
         await test.step("Verify member created by Superstream", async () => {
             await new Promise((resolve) => setTimeout(resolve, 20000));
             await memberPage.superstreamMRR();
+
         });
+
+        await test.step("Verify member creation by Superstream in overview screen", async () => {
+            await memberPage.memberOverview();
+
+        });
+
+        await test.step("Validate member creation by Superstream in overview screen", async () => {
+            let generatedData;
+            if (typeof generatedXMLFileName === "string") {
+                generatedData = { destinationFileName: generatedXMLFileName, firstName: '', lastName: '', dob: '' };
+            } else {
+                // Handle the case where generatedXMLFileName is an object
+                generatedData = generatedXMLFileName;
+            }
+
+            // Get expected values from generated data
+            const expectedFirstName = generatedData.firstName;
+            console.log(expectedFirstName);
+            const expectedLastName = generatedData.lastName;
+            console.log(expectedLastName)
+            const expectedDOB = generatedData.dob;
+            console.log(expectedDOB)
+
+            // Get expected values from the UI
+            const actualFirstName = await memberPage.getFirstName();
+            console.log(actualFirstName)
+            const actualLastName = await memberPage.getLastName();
+            console.log(actualLastName)
+            const actualDOB = await memberPage.getDOB();
+            console.log(actualDOB)
+            if (
+                actualFirstName === expectedFirstName &&
+                actualLastName === expectedLastName &&
+                actualDOB === expectedDOB
+            ) {
+                console.log("Validation: UI values match with expected values from XML.");
+            } else {
+                console.error("Validation: UI values do not match with expected values from XML.");
+            }
+        });
+
+
 
     } catch (error) {
         throw error;

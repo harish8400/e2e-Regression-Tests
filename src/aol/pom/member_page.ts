@@ -1,4 +1,4 @@
-import { Locator, Page, expect ,APIRequestContext } from "@playwright/test";
+import { Locator, Page, expect, APIRequestContext } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { UtilsAOL } from "../utils_aol";
@@ -12,7 +12,9 @@ import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_ha
 import { AccountInfoPage } from "./Pension/account_info";
 import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
-export class MemberPage extends BasePage { 
+import { allure } from "allure-playwright";
+import { parseString } from "xml2js";
+export class MemberPage extends BasePage {
 
     readonly accumulationAddMember: Locator;
     readonly memberInfoTab: Locator;
@@ -88,142 +90,144 @@ export class MemberPage extends BasePage {
     readonly memberSurname: string;
     readonly reviewCase: ReviewCase;
 
-    readonly investementBalancesTab:Locator
-    readonly investmentEditBtn:Locator
-    readonly investmentDropDown:Locator
-    readonly conservative:Locator
-    readonly balanceAllocation:Locator
-    readonly transactionAllocation:Locator
-    readonly addBtn:Locator
-    readonly sustainableGrowth:Locator
-    readonly investmentDropDown1:Locator
-    readonly balanceAllocation1:Locator
-    readonly transactionAllocation1:Locator
-    readonly addBtn1:Locator
+    readonly investementBalancesTab: Locator
+    readonly investmentEditBtn: Locator
+    readonly investmentDropDown: Locator
+    readonly conservative: Locator
+    readonly balanceAllocation: Locator
+    readonly transactionAllocation: Locator
+    readonly addBtn: Locator
+    readonly sustainableGrowth: Locator
+    readonly investmentDropDown1: Locator
+    readonly balanceAllocation1: Locator
+    readonly transactionAllocation1: Locator
+    readonly addBtn1: Locator
     readonly viewCases: Locator;
-    readonly createCase:Locator;
-    readonly linkCase:Locator;
+    readonly createCase: Locator;
+    readonly linkCase: Locator;
     readonly approveProcessStep: Locator;
     readonly retryProcessStep: Locator;
     readonly processException: Locator;
     readonly leftArrow: Locator;
-    readonly investmentProfileDropDown:Locator;
-    readonly memberLink:Locator;
-    readonly firstRowMember:Locator;
-    readonly percentage:Locator;
+    readonly investmentProfileDropDown: Locator;
+    readonly memberLink: Locator;
+    readonly firstRowMember: Locator;
+    readonly percentage: Locator;
     readonly verifySwitchSuccess: Locator;
-    readonly highGrowth:Locator;
-    readonly investmentDropDown2:Locator;
-    readonly sustainbleGrowth1:Locator;
-    readonly memberCreated:Locator;
+    readonly highGrowth: Locator;
+    readonly investmentDropDown2: Locator;
+    readonly sustainbleGrowth1: Locator;
+    readonly memberCreated: Locator;
+    readonly navBar: Navbar
 
     constructor(page: Page) {
         super(page)
 
-    this.reviewCase = new ReviewCase(page);
-    this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
-    this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
-    this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create',exact: true });
-    this.welcomeLetterTrigger = page.getByText('Process step completed with note: New member welcome letter sent.');
-    this.memberLink =page.getByRole('link', { name: 'Members' });
-    this.memberGivenName = UtilsAOL.randomName();
-    this.memberSurname = UtilsAOL.randomSurname(5);
-    this.title = page.getByTitle('Title').getByRole('img');
-    this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
-    this.givenName = page.getByTitle('Given Name').getByRole('textbox');
-    this.surname = page.getByTitle('Surname').getByRole('textbox');
-    this.dob = page.getByTitle('DOB').getByPlaceholder('dd/mm/yyyy');
-    this.gender = page.getByTitle('Gender').getByPlaceholder('Select');
-    this.genderSelect = page.locator('li').filter({ hasText: /^Male$/ });
-    this.emailAddress = page.getByTitle('Email Address').getByRole('textbox');
-    this.primaryPhone = page.getByTitle('Primary Phone').getByRole('textbox');
-    this.preferredContactMethod = page.getByTitle('Preferred contact method').getByPlaceholder('Select');
-    this.preferredContactMethodSelect = page.getByText('Digital');
-    this.tfn = page.getByTitle('TFN').getByRole('textbox');
-    this.address1 = page.getByTitle('Residential Address line 1').getByRole('textbox');
-    this.city = page.getByTitle('City/Town').getByRole('textbox');
-    this.state = page.locator('#gs4__combobox div').first();
-    this.stateSelect = page.getByText('New South Wales');
-    this.postcode = page.getByTitle('Postcode').getByRole('textbox');
-    this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
-    this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
-    this.residencyStatusSelect = page.getByText('Resident', { exact: true });
-    this.dateJoined = page.getByTitle('Date Joined').getByPlaceholder('dd/mm/yyyy');
-    this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
-    //Employer step
-    this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
-    this.employerSelect = page.getByRole('option').nth(0);
-    this.employerStartDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.employerSave = page.getByRole('button', { name: 'SAVE' });
-    //Consolidate step
-    this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
-    this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-    this.addFundSelectOption = page.getByText('External fund account');
-    this.memberAccountNumber = page.getByLabel('Member account number *');
-    this.USI = page.getByLabel('USI *');
-    this.enterAmount = page.getByPlaceholder('0');
-    this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
-    //Investment step
-    this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
-    this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
-    this.invPercentage = page.getByRole('textbox').nth(1);
-    this.saveInv = page.getByRole('button', { name: 'Add' });
-    this.profileType = page.locator('#membershipProfile').getByPlaceholder('Select');
-    this.profileTypeSelect = page.getByText('My Super', { exact: true });
-    //Beneficiaries step
-    this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
-    this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryType = page.getByText('Non-Binding');
-    this.beneficiaryRelation = page.locator('#gs8__combobox div').first();
-    this.beneficiaryRelationSelect = page.getByText('Spouse');
-    this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
-    this.beneficiaryPercentage = page.getByPlaceholder('0'); 
-    this.beneficiaryContactName = page.getByLabel('Contact First Name');
-    this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
-    this.beneficiaryCity = page.getByLabel('City/Town *');
-    this.beneficiaryState = page.locator('#gs11__combobox div').first();
-    this.beneficiaryStateSelect = page.getByRole('option', { name: 'New South Wales' });
-    this.beneficiaryPostcode = page.getByLabel('Postcode *');
-    this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
-    this.createAccount = page.getByRole('button', { name: 'Create Account' });
-    //MemberCreateProcess
-    this.processeslink = page.getByRole('link', { name: 'Processes' });
-    this.memberCreateProcessRow = page.getByLabel('Member - Create', { exact: true }).first();
-    this.memberCreateReviewRow = page.getByRole('cell', { name: 'In Review' });
-    this.memberActivityData = page.getByRole('button', { name: 'Activity Data' });
+        this.reviewCase = new ReviewCase(page);
+        this.navBar = new Navbar(page)
+        this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
+        this.memberInfoTab = page.getByRole('button', { name: 'Account Info' });
+        this.memberCreatedCase = page.getByRole('cell', { name: 'Member - Create', exact: true });
+        this.welcomeLetterTrigger = page.getByText('Process step completed with note: New member welcome letter sent.');
+        this.memberLink = page.getByRole('link', { name: 'Members' });
+        this.memberGivenName = UtilsAOL.randomName();
+        this.memberSurname = UtilsAOL.randomSurname(5);
+        this.title = page.getByTitle('Title').getByRole('img');
+        this.selectTitle = page.locator('li').filter({ hasText: /^Mr$/ });
+        this.givenName = page.getByTitle('Given Name').getByRole('textbox');
+        this.surname = page.getByTitle('Surname').getByRole('textbox');
+        this.dob = page.getByTitle('DOB').getByPlaceholder('dd/mm/yyyy');
+        this.gender = page.getByTitle('Gender').getByPlaceholder('Select');
+        this.genderSelect = page.locator('li').filter({ hasText: /^Male$/ });
+        this.emailAddress = page.getByTitle('Email Address').getByRole('textbox');
+        this.primaryPhone = page.getByTitle('Primary Phone').getByRole('textbox');
+        this.preferredContactMethod = page.getByTitle('Preferred contact method').getByPlaceholder('Select');
+        this.preferredContactMethodSelect = page.getByText('Digital');
+        this.tfn = page.getByTitle('TFN').getByRole('textbox');
+        this.address1 = page.getByTitle('Residential Address line 1').getByRole('textbox');
+        this.city = page.getByTitle('City/Town').getByRole('textbox');
+        this.state = page.locator('#gs4__combobox div').first();
+        this.stateSelect = page.getByText('New South Wales');
+        this.postcode = page.getByTitle('Postcode').getByRole('textbox');
+        this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
+        this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
+        this.residencyStatusSelect = page.getByText('Resident', { exact: true });
+        this.dateJoined = page.getByTitle('Date Joined').getByPlaceholder('dd/mm/yyyy');
+        this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
+        //Employer step
+        this.employer = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+        this.employerSelect = page.getByRole('option').nth(0);
+        this.employerStartDate = page.getByPlaceholder('dd/mm/yyyy');
+        this.employerSave = page.getByRole('button', { name: 'SAVE' });
+        //Consolidate step
+        this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
+        this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
+        this.addFundSelectOption = page.getByText('External fund account');
+        this.memberAccountNumber = page.getByLabel('Member account number *');
+        this.USI = page.getByLabel('USI *');
+        this.enterAmount = page.getByPlaceholder('0');
+        this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
+        //Investment step
+        this.invSelect = page.getByRole('main').locator('section').filter({ hasText: 'InvestmentPercentage Add' }).getByPlaceholder('Select');
+        this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
+        this.invPercentage = page.getByRole('textbox').nth(1);
+        this.saveInv = page.getByRole('button', { name: 'Add' });
+        this.profileType = page.locator('#membershipProfile').getByPlaceholder('Select');
+        this.profileTypeSelect = page.getByText('My Super', { exact: true });
+        //Beneficiaries step
+        this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
+        this.beneficiaryName = page.getByLabel('Beneficiary Name *');
+        this.beneficiaryType = page.getByText('Non-Binding');
+        this.beneficiaryRelation = page.locator('#gs8__combobox div').first();
+        this.beneficiaryRelationSelect = page.getByText('Spouse');
+        this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
+        this.beneficiaryPercentage = page.getByPlaceholder('0');
+        this.beneficiaryContactName = page.getByLabel('Contact First Name');
+        this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
+        this.beneficiaryCity = page.getByLabel('City/Town *');
+        this.beneficiaryState = page.locator('#gs11__combobox div').first();
+        this.beneficiaryStateSelect = page.getByRole('option', { name: 'New South Wales' });
+        this.beneficiaryPostcode = page.getByLabel('Postcode *');
+        this.beneficiarySave = page.getByRole('button', { name: 'SAVE' });
+        this.createAccount = page.getByRole('button', { name: 'Create Account' });
+        //MemberCreateProcess
+        this.processeslink = page.getByRole('link', { name: 'Processes' });
+        this.memberCreateProcessRow = page.getByLabel('Member - Create', { exact: true }).first();
+        this.memberCreateReviewRow = page.getByRole('cell', { name: 'In Review' });
+        this.memberActivityData = page.getByRole('button', { name: 'Activity Data' });
 
-    //SwitchProcess
-    this.investementBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
-    this.investmentEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
-    this.investmentDropDown =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).locator('i').getByRole('img');
-    this.conservative = page.locator("//li[@class='el-select-dropdown__item option__Conservative_2']"); 
-    this.balanceAllocation =page.getByRole('spinbutton').first();   
-    this.transactionAllocation =page.getByRole('spinbutton').nth(1);
-    this.addBtn =page.getByRole('button', { name: 'ADD', exact: true });
-    this.sustainableGrowth=page.locator('li').filter({ hasText: 'Sustainable Growth' }).nth(0);
-    this.sustainbleGrowth1=page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
-    this.investmentDropDown1 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
-    this.balanceAllocation1 =page.getByRole('spinbutton').nth(2);   
-    this.transactionAllocation1 =page.getByRole('spinbutton').nth(3);
-    this.addBtn1 =page.getByRole('button', { name: 'ADD', exact: true });
-    this.viewCases = page.getByRole('button', { name: 'View Cases' });
-    this.createCase = page.getByRole('button', { name: 'Create Case' });
-    this.linkCase = page.getByRole('button', { name: 'Link to Case' });
-    this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
-    this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
-    this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
-    this.leftArrow = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
-    this.investmentProfileDropDown =page.getByRole('button', { name: 'arrow-down icon' }).first();
-    this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
-    this.percentage =page.getByText('100%');
-    this.verifySwitchSuccess = page.getByText('Process step completed with note: Investment change letter payload sent.');
-    this.highGrowth=page.locator('li').filter({ hasText: 'High Growth' });
-    this.investmentDropDown2 =page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
-    this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
-}    
+        //SwitchProcess
+        this.investementBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
+        this.investmentEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
+        this.investmentDropDown = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).locator('i').getByRole('img');
+        this.conservative = page.locator("//li[@class='el-select-dropdown__item option__Conservative_2']");
+        this.balanceAllocation = page.getByRole('spinbutton').first();
+        this.transactionAllocation = page.getByRole('spinbutton').nth(1);
+        this.addBtn = page.getByRole('button', { name: 'ADD', exact: true });
+        this.sustainableGrowth = page.locator('li').filter({ hasText: 'Sustainable Growth' }).nth(0);
+        this.sustainbleGrowth1 = page.locator('//li[@class="el-select-dropdown__item option__Sustainable Growth_3"]');
+        this.investmentDropDown1 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
+        this.balanceAllocation1 = page.getByRole('spinbutton').nth(2);
+        this.transactionAllocation1 = page.getByRole('spinbutton').nth(3);
+        this.addBtn1 = page.getByRole('button', { name: 'ADD', exact: true });
+        this.viewCases = page.getByRole('button', { name: 'View Cases' });
+        this.createCase = page.getByRole('button', { name: 'Create Case' });
+        this.linkCase = page.getByRole('button', { name: 'Link to Case' });
+        this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
+        this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
+        this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
+        this.leftArrow = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
+        this.investmentProfileDropDown = page.getByRole('button', { name: 'arrow-down icon' }).first();
+        this.firstRowMember = page.locator('td:nth-child(6) > .cell').first();
+        this.percentage = page.getByText('100%');
+        this.verifySwitchSuccess = page.getByText('Process step completed with note: Investment change letter payload sent.');
+        this.highGrowth = page.locator('li').filter({ hasText: 'High Growth' });
+        this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
+        this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
+    }
 
-    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean){
-        
+    async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
+
         await this.accumulationAddMember.click();
         let tfn = UtilsAOL.generateValidTFN();
         await this.title.click();
@@ -237,12 +241,12 @@ export class MemberPage extends BasePage {
         await this.primaryPhone.fill(member.phone);
         await this.preferredContactMethod.click();
         await this.preferredContactMethodSelect.click();
-        
-        if(!tfnNull){
+
+        if (!tfnNull) {
             await this.tfn.click();
             await this.tfn.fill(`${tfn}`);
         }
-        
+
         await this.address1.fill(member.address);
         await this.city.fill(member.city);
         await this.state.click();
@@ -252,12 +256,12 @@ export class MemberPage extends BasePage {
         await this.residencyStatus.click();
         await this.residencyStatusSelect.click();
 
-        if(process.env.PRODUCT != FUND.HESTA && dateJoinedFundEarlier){
+        if (process.env.PRODUCT != FUND.HESTA && dateJoinedFundEarlier) {
             await this.dateJoined.fill(`${DateUtils.ddmmyyyStringDate(-5)}`);
         }
 
         await this.nextStep.click();
-        
+
         //Employer details
         await this.employer.click();
         await this.employerSelect.click();
@@ -265,7 +269,7 @@ export class MemberPage extends BasePage {
         await this.employerStartDate.press('Tab');
         await this.employerSave.click();
         await this.nextStep.click();
-        
+
         //Consolidation details
         await this.addFund.click();
         await this.addFundSelect.click();
@@ -277,7 +281,7 @@ export class MemberPage extends BasePage {
         await this.sleep(1000);
         await this.saveFundDetails.click();
         await this.nextStep.click();
-        
+
         //Investments
         await this.invSelect.click();
         await this.invSelection.click();
@@ -286,9 +290,9 @@ export class MemberPage extends BasePage {
         await this.profileType.click();
         await this.profileTypeSelect.click();
         await this.nextStep.click();
-        
+
         //Beneficiaries
-        if(addBeneficiary){
+        if (addBeneficiary) {
             await this.addNewBeneficiary.click();
             await this.beneficiaryName.fill(member.names[0]);
             await this.beneficiaryName.press('Tab');
@@ -300,7 +304,7 @@ export class MemberPage extends BasePage {
             await this.beneficiaryPercentage.fill('100');
             await this.beneficiarySave.click();
         }
-        
+
         //Create account
         await this.createAccount.click();
         await this.sleep(5000);
@@ -308,14 +312,14 @@ export class MemberPage extends BasePage {
         return this.memberSurname;
     }
 
-    async selectMember(memberName: string){
+    async selectMember(memberName: string) {
         await this.sleep(3000);
         await this.page.reload();
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
 
-    async verifyIfWelcomeLetterTriggered(){
+    async verifyIfWelcomeLetterTriggered() {
         await this.memberInfoTab.click();
         await this.memberCreatedCase.click();
 
@@ -323,7 +327,7 @@ export class MemberPage extends BasePage {
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
 
-    async approveMemberCreationProcess(surName: string){
+    async approveMemberCreationProcess(surName: string) {
         await this.processeslink.click();
         await this.memberCreateProcessRow.click();
         //await this.page.locator('button').filter({ hasText: `Member - CreateRun on${DateUtils.ddMMMyyyStringDate(new Date())}` }).first();
@@ -333,22 +337,29 @@ export class MemberPage extends BasePage {
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
 
-    
 
-    async superstreamMRR(){
+
+    async superstreamMRR() {
         await this.page.locator("(//a[@class='NxLAj'])[1]").click();
         await this.processeslink.click();
         await this.sleep(2000);
         await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
         await this.sleep(2000);
-        await this.page.locator('//span[text()="In Progress"]').click();
-        
-        await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
+        if (await process.innerText() === "In Review") {
+            await this.page.locator('//span[text()="In Review"]').click();
+        }else{
+            await this.page.locator('//span[text()="In Progress"]').click();
         }
 
+        
 
-     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-        const { memberNo: createMemberNo, processId ,memberId} = await MemberApiHandler.createMember(apiRequestContext);
+        await this.reviewCase.reviewCaseProcess(this.memberCreated);
+    }
+
+
+    async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
+        const { memberNo: createMemberNo, processId, memberId } = await MemberApiHandler.createMember(apiRequestContext);
         await accountInfoPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
@@ -356,14 +367,14 @@ export class MemberPage extends BasePage {
         await accountInfoPage.reload();
         await navBar.navigateToAccumulationMembersPage();
         await navBar.selectMember(createMemberNo);
-        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await internalTransferPage.memberSummary();
         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return {createMemberNo};
+        return { createMemberNo };
     }
 
     async createAccumulationMember(apiRequestContext: APIRequestContext) {
@@ -371,11 +382,57 @@ export class MemberPage extends BasePage {
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 5000));
-        const linearId =  await ShellAccountApiHandler.getMemberInfo(apiRequestContext,createMemberNo);
+        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return {createMemberNo};
+        return { createMemberNo };
     }
-    
- }
+
+    async memberOverview() {
+        await this.page.reload();
+        let memberNumber = await this.page.locator("(//td[@colspan='1']//div)[2]");
+        await this.sleep(3000).then(() => memberNumber.scrollIntoViewIfNeeded());
+        let MemberUniqueNumber = (await memberNumber?.textContent()) ?? null;
+        console.log(MemberUniqueNumber);
+
+        if (MemberUniqueNumber !== null) {
+            await this.sleep(3000).then(() => this.navBar.navigateToAccumulationMembersPage());
+            await this.navBar.selectMember(MemberUniqueNumber);
+        } else {
+            console.error("MemberUniqueNumber is null.");
+        }
+        await this.sleep(5000).then(() => this.page.getByRole('button', { name: 'Overview' }).click({ force: true }));
+
+        let memberNumberOnScreen = await this.page.locator("(//p[@class='truncate'])[1]");
+        await this.sleep(3000).then(() => memberNumberOnScreen.scrollIntoViewIfNeeded());
+        let MemberNumberIs = (await memberNumberOnScreen?.textContent()) ?? null;
+        console.log(MemberNumberIs);
+
+        if (MemberNumberIs === MemberUniqueNumber) {
+            allure.logStep("Expected MemberNumberIs: " + MemberUniqueNumber + ", Actual MemberNumberIs: " + MemberNumberIs);
+        }
+
+        else throw "The displayed number does not match the Expected number.";
+
+    }
+
+    async getFirstName(): Promise<string | null> {
+        const memberFirstName = await this.page.locator("(//label[@for='givenName']/following::p[@class='truncate'])[1]");
+        return memberFirstName ? memberFirstName.textContent() : null;
+    }
+
+    async getLastName(): Promise<string | null> {
+        const membersurName = await this.page.locator("(//label[@for='surname']/following::p[@class='truncate'])[1]");
+        return membersurName ? membersurName.textContent() : null;
+    }
+
+    async getDOB(): Promise<string | null> {
+        const memberDob = await this.page.locator("(//label[@for='dob']/following::p[@class='truncate'])[1]");
+        return memberDob ? memberDob.textContent() : null;
+    }
+
+
+
+
+}
