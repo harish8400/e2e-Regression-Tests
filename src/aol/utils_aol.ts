@@ -177,10 +177,17 @@ export class UtilsAOL {
         const range = 1900 - 2024 + 1;
         return Math.floor(Math.random() * range) + 2024;
     }
+    
 
-    static getRandomMonth(): number {
-        return Math.floor(Math.random() * 12) + 1;
+    static getRandomMonth() {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const randomIndex = Math.floor(Math.random() * months.length);
+        return months[randomIndex];
     }
+    
 
     static getRandomDay(): number {
         const year = 2024;
@@ -188,6 +195,11 @@ export class UtilsAOL {
         const daysInMonth = new Date(year, month, 0).getDate();
         return Math.floor(Math.random() * daysInMonth) + 1;
     }
+
+    static formatDate(day: number, month: string, year: number): string {
+        return `${day.toString().padStart(2, '0')} ${month} ${year}`;
+    }
+    
     
 }
 

@@ -1,3 +1,4 @@
+
 import { xmlUtility } from '../../../src/utils/xml_util';
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { allure } from 'allure-playwright';
@@ -28,11 +29,12 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
         });
 
         await test.step("Upload XML file via File transfer", async () => {
-            await superSteam.uploadXMLFile(`${destinationFolder}/${generatedXMLFileName}`, `${remoteFilePath}/${generatedXMLFileName}`, privateKeyPath, privateKeyContent);
+            const xmlFileName = (generatedXMLFileName as { destinationFileName: string }).destinationFileName;
+            await superSteam.uploadXMLFile(`${destinationFolder}/${xmlFileName}`, `${remoteFilePath}/${xmlFileName}`, privateKeyPath, privateKeyContent);
         });
 
         await test.step("Verify member created by Superstream", async () => {
-            await new Promise((resolve) => setTimeout(resolve, 20000));
+            await new Promise((resolve) => setTimeout(resolve, 30000));
             await memberPage.superstreamMRR();
 
         });
@@ -43,21 +45,16 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
         });
 
         await test.step("Validate member creation by Superstream in overview screen", async () => {
-            let generatedData;
-            if (typeof generatedXMLFileName === "string") {
-                generatedData = { destinationFileName: generatedXMLFileName, firstName: '', lastName: '', dob: '' };
-            } else {
-                // Handle the case where generatedXMLFileName is an object
-                generatedData = generatedXMLFileName;
-            }
+            let xmlData = generatedXMLFileName as { destinationFileName: string, firstName: string, lastName: string, dob: string };
 
             // Get expected values from generated data
-            const expectedFirstName = generatedData.firstName;
+            const expectedFirstName = xmlData.firstName;
             console.log(expectedFirstName);
-            const expectedLastName = generatedData.lastName;
+            const expectedLastName = xmlData.lastName;
             console.log(expectedLastName)
-            const expectedDOB = generatedData.dob;
+            const expectedDOB = xmlData.dob;
             console.log(expectedDOB)
+            allure.logStep(`Expected Member Data From UI Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDOB}`);
 
             // Get expected values from the UI
             const actualFirstName = await memberPage.getFirstName();
@@ -66,14 +63,16 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
             console.log(actualLastName)
             const actualDOB = await memberPage.getDOB();
             console.log(actualDOB)
+            allure.logStep(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`);
+
             if (
                 actualFirstName === expectedFirstName &&
                 actualLastName === expectedLastName &&
                 actualDOB === expectedDOB
             ) {
-                console.log("Validation: UI values match with expected values from XML.");
+                allure.logStep("Validation: UI values matched with expected values from XML.");
             } else {
-                console.error("Validation: UI values do not match with expected values from XML.");
+                allure.logStep("Validation: UI values do not match with expected values from XML.");
             }
         });
 

@@ -13,7 +13,7 @@ import { AccountInfoPage } from "./Pension/account_info";
 import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 import { allure } from "allure-playwright";
-import { parseString } from "xml2js";
+
 export class MemberPage extends BasePage {
 
     readonly accumulationAddMember: Locator;
