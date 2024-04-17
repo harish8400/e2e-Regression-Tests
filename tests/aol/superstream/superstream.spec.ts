@@ -46,6 +46,26 @@ test("MRR is processed with out TFN", async () => {
     xmlUtility.generateXMLFile("MRRWithoutTFN.xml");
 
 })
-test.only("CTR is processed with TFN", async () => {
+test("CTR is processed with TFN and Single Contribution", async () => {
+
     xmlUtility.generateCTRWithTFNXML("CTRWithTFN.xml");
+
+})
+
+test("CTR is processed with TFN and Multiple Contributions", async () => {
+
+    xmlUtility.generateCTRWithTFNXML("CTRWithTFN_MultipleContribution.xml");
+
+})
+
+test("CTR is processed without TFN and Single Contribution", async () => {
+
+    xmlUtility.generateCTRWithoutTFNXML("CTRWithoutTFN.xml");
+
+})
+
+test("CTR is processed without TFN and Multiple Contributions", async () => {
+
+    xmlUtility.generateCTRWithoutTFNXML("CTRWithoutTFN_MultipleContribution.xml");
+
 })
