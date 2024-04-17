@@ -52,19 +52,19 @@ test("CTR is processed with TFN and Single Contribution", async () => {
 
 })
 
-test.only("CTR is processed with TFN and Multiple Contributions", async () => {
+test("CTR is processed with TFN and Multiple Contributions", async () => {
 
     xmlUtility.generateCTRWithTFNXML("CTRWithTFN_MultipleContribution.xml");
 
 })
 
-test.only("CTR is processed without TFN", async () => {
+test("CTR is processed without TFN", async () => {
 
     xmlUtility.generateCTRWithoutTFNXML("CTRWithoutTFN.xml");
 
 })
 
-test.only("CTR is processed without TFN and Multiple Contributions", async () => {
+test("CTR is processed without TFN and Multiple Contributions", async () => {
 
     xmlUtility.generateCTRWithoutTFNXML("CTRWithoutTFN_MultipleContribution.xml");
 
