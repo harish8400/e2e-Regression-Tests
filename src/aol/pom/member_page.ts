@@ -339,20 +339,19 @@ export class MemberPage extends BasePage {
 
 
 
-    async superstreamMRR() {
+    async verifySuperstreamMRRProcess() {
         await this.page.locator("(//a[@class='NxLAj'])[1]").click();
         await this.processeslink.click();
-        await this.sleep(2000);
-        await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
-        await this.sleep(2000);
-        let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
-        if (await process.innerText() === "In Review") {
-            await this.page.locator('//span[text()="In Review"]').click();
-        }else{
-            await this.page.locator('//span[text()="In Progress"]').click();
-        }
-
-        
+        await this.sleep(3000);
+        await this.reloadPageWithDelay(this.page,1);
+            await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
+            await this.sleep(2000);
+            let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
+            if (await process.innerText() === "In Review") {
+                await this.page.locator('//span[text()="In Review"]').click();
+            } else {
+                await this.page.locator('//span[text()="In Progress"]').click();
+            }
 
         await this.reviewCase.reviewCaseProcess(this.memberCreated);
     }
@@ -407,7 +406,6 @@ export class MemberPage extends BasePage {
         let memberNumberOnScreen = await this.page.locator("(//p[@class='truncate'])[1]");
         await this.sleep(3000).then(() => memberNumberOnScreen.scrollIntoViewIfNeeded());
         let MemberNumberIs = (await memberNumberOnScreen?.textContent()) ?? null;
-        console.log(MemberNumberIs);
 
         if (MemberNumberIs === MemberUniqueNumber) {
             allure.logStep("Expected MemberNumberIs: " + MemberUniqueNumber + ", Actual MemberNumberIs: " + MemberNumberIs);
@@ -432,7 +430,12 @@ export class MemberPage extends BasePage {
         return memberDob ? memberDob.textContent() : null;
     }
 
+    async reloadPageWithDelay(page: Page, reloadCount: number) {
+        for (let i = 0; i < reloadCount; i++) {
+            await page.reload();
 
+        }
+    }
 
 
 }

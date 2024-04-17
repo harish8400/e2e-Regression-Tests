@@ -19,7 +19,7 @@ interface ConfigContent {
 
 let configContent: ConfigContent = configFile
 
-let environment = process.env.ENVIRONMENT || "uat";
+let environment = process.env.ENVIRONMENT || "dev";
 
 if (!(environment in configContent)) {
     throw new Error(`'${environment}' environment not defined in env.config.json`);

@@ -174,8 +174,8 @@ export class UtilsAOL {
     }
 
     static getRandomYear(): number {
-        const range = 1900 - 2024 + 1;
-        return Math.floor(Math.random() * range) + 2024;
+        const range = 1957 - 1945 + 1;
+        return Math.floor(Math.random() * range) + 1945;
     }
     
 
@@ -197,8 +197,28 @@ export class UtilsAOL {
     }
 
     static formatDate(day: number, month: string, year: number): string {
-        return `${day.toString().padStart(2, '0')} ${month} ${year}`;
+        // Define a map of month names to their abbreviations
+        const monthAbbreviations: { [key: string]: string } = {
+            'January': 'Jan',
+            'February': 'Feb',
+            'March': 'Mar',
+            'April': 'Apr',
+            'May': 'May',
+            'June': 'Jun',
+            'July': 'Jul',
+            'August': 'Aug',
+            'September': 'Sep',
+            'October': 'Oct',
+            'November': 'Nov',
+            'December': 'Dec'
+        };
+    
+        // Convert the month name to its abbreviation
+        const monthAbbreviation = monthAbbreviations[month] || month;
+    
+        return `${day.toString().padStart(2, '0')} ${monthAbbreviation} ${year}`;
     }
+    
     
     
 }

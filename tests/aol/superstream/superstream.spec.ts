@@ -18,7 +18,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
+test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam ,globalPage}) => {
 
     try {
 
@@ -34,36 +34,32 @@ test("MRR is processed with TFN", async ({ memberPage, superSteam }) => {
         });
 
         await test.step("Verify member created by Superstream", async () => {
-            await new Promise((resolve) => setTimeout(resolve, 30000));
-            await memberPage.superstreamMRR();
+            await new Promise((resolve) => setTimeout(resolve, 40000));
+            await memberPage.verifySuperstreamMRRProcess();
+           
 
         });
 
-        await test.step("Verify member creation by Superstream in overview screen", async () => {
+        await test.step("Verify Member Details of Superstream member creation", async () => {
             await memberPage.memberOverview();
-
-        });
-
-        await test.step("Validate member creation by Superstream in overview screen", async () => {
             let xmlData = generatedXMLFileName as { destinationFileName: string, firstName: string, lastName: string, dob: string };
 
             // Get expected values from generated data
             const expectedFirstName = xmlData.firstName;
-            console.log(expectedFirstName);
             const expectedLastName = xmlData.lastName;
-            console.log(expectedLastName)
             const expectedDOB = xmlData.dob;
-            console.log(expectedDOB)
+            console.log(`Expected Member Data From UI Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDOB}`)
             allure.logStep(`Expected Member Data From UI Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDOB}`);
 
             // Get expected values from the UI
             const actualFirstName = await memberPage.getFirstName();
-            console.log(actualFirstName)
             const actualLastName = await memberPage.getLastName();
-            console.log(actualLastName)
             const actualDOB = await memberPage.getDOB();
-            console.log(actualDOB)
+            console.log(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`)
             allure.logStep(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`);
+            await globalPage.captureScreenshot('Members Overview page');
+        
+        
 
             if (
                 actualFirstName === expectedFirstName &&
