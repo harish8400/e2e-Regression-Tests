@@ -22,5 +22,5 @@ steps:
                     - AWS_SESSION_TOKEN
                     - AWS_REGION
           - test-collector#v1.0.0:
-                files: "playwright-report/results.xml"
+                files: "playwright-report/index.html"
                 format: "junit"
