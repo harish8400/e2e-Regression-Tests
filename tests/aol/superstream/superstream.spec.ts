@@ -58,7 +58,7 @@ test("CTR is processed with TFN and Multiple Contributions", async () => {
 
 })
 
-test("CTR is processed without TFN", async () => {
+test("CTR is processed without TFN and Single Contribution", async () => {
 
     xmlUtility.generateCTRWithoutTFNXML("CTRWithoutTFN.xml");
 
