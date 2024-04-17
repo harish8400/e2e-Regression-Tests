@@ -120,7 +120,7 @@ export class xmlUtility {
         return `${destinationFileName}`;
     }
 
-    // Generate XML for CTR
+    // Generate XML for CTR with TFN
     static generateCTRWithTFNXML(templateFileName: string) {
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
@@ -153,20 +153,77 @@ export class xmlUtility {
             "//receiver[1]/organisationName[1]/value[1]":superStreamDataCTR.receiverOrganisationName,
             "//employer[1]/organisationName[1]/value[1]": superStreamDataCTR.employerOrganisationName,
             "//employer[1]/australianBusinessNumber[1]": superStreamDataCTR.australianBusinessNumber,
-            "//employer[1]/entityIdentifier[1]":superStreamDataCTR.australianBusinessNumber,
+            "//employer[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.australianBusinessNumber,
             "//payer[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
             "//payee[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
             "//payee[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.targetAbn,
             "//payee[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi,
-            "//name[1]/title[1]/title": UtilsAOL.randomTitle(),
-            "//name[1]/firstName[1]": UtilsAOL.randomName(),
-            "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
-            "//member[1]/gender[1]":UtilsAOL.randomGender(),
-            "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
-            "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
-            "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
+            "//name[1]/title[1]/title":superStreamDataCTR.memberTitle,
+            "//name[1]/firstName[1]":superStreamDataCTR.memberFirstName,
+            "//name[1]/lastName[1]":superStreamDataCTR.memberLastName,
+            "//member[1]/gender[1]":superStreamDataCTR.memberGender,
+            "//member[1]/dob[1]/year[1]":superStreamDataCTR.memberdobYear,
+            "//member[1]/dob[1]/month[1]":superStreamDataCTR.memberdobMonth,
+            "//member[1]/dob[1]/day[1]":superStreamDataCTR.memberdobDay,
             "//employerProvidedTaxFileNumber[1]": tfn,
             "//tfnEntityIdentifier[1]": tfn,
+            "//employersABN[1]":superStreamDataCTR.australianBusinessNumber,
+            "//member[1]//memberNumber[1]":superStreamDataCTR.memberNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
+        };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+            
+    }
+
+     // Generate XML for CTR without TFN
+    static generateCTRWithoutTFNXML(templateFileName: string) {
+
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+        const superGateMessageId=`${formattedDate}.010101.000@superchoice.com.au`;
+        const conversationId: string = `Contribution.84111122223.${formattedDate}1618411${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `CTR_${formattedDate}_115734_123_${conversationId}_9.xml`;
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//sourceAbn[1]": superStreamDataCTR.sourceAbn,
+            "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
+            "//targetAbn[1]": superStreamDataCTR.targetAbn,
+            "//targetUsi[1]": superStreamDataCTR.targetUsi,
+            "//paymentReferenceNumber[1]":superStreamDataCTR.paymentReferenceNumber,
+            "//receiver[1]/organisationName[1]/value[1]":superStreamDataCTR.receiverOrganisationName,
+            "//employer[1]/organisationName[1]/value[1]": superStreamDataCTR.employerOrganisationName,
+            "//employer[1]/australianBusinessNumber[1]": superStreamDataCTR.australianBusinessNumber,
+            "//employer[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.australianBusinessNumber,
+            "//payer[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi,
+            "//name[1]/title[1]/title":superStreamDataCTR.memberTitle,
+            "//name[1]/firstName[1]":superStreamDataCTR.memberFirstName,
+            "//name[1]/lastName[1]":superStreamDataCTR.memberLastName,
+            "//member[1]/gender[1]":superStreamDataCTR.memberGender,
+            "//member[1]/dob[1]/year[1]":superStreamDataCTR.memberdobYear,
+            "//member[1]/dob[1]/month[1]":superStreamDataCTR.memberdobMonth,
+            "//member[1]/dob[1]/day[1]":superStreamDataCTR.memberdobDay,
+            "//tfnEntityIdentifier[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
+            "//employersABN[1]":superStreamDataCTR.australianBusinessNumber,
+            "//member[1]//memberNumber[1]":superStreamDataCTR.memberNumberwithoutTFN,
             "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
             "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
         };
@@ -222,7 +279,6 @@ export class xmlUtility {
             console.error(`An error occurred while updating XML: ${error}`);
         }
     }
-
 
     
 }
