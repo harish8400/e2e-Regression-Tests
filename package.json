@@ -6,19 +6,19 @@
   "scripts": {
     "postinstall": "npx playwright install",
     "test": "npx playwright test",
-    "test:pension": "npx playwright test tests/aol/pension",
+    "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
     "report": "npx playwright show-report"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.405.0",
-    "@playwright/test": "^1.43.0",
+    "@playwright/test": "^1.43.1",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.16",
     "@types/sinon": "^17.0.3",
     "@types/ssh2-sftp-client": "^9.0.3",
-    "allure-playwright": "^2.10.0",
+    "allure-playwright": "^2.15.1",
     "async-wait-until": "^2.0.12",
     "sinon": "^17.0.1"
   },
@@ -28,7 +28,7 @@
     "allure-commandline": "^2.24.1",
     "fast-csv": "^4.3.6",
     "jsonwebtoken": "^9.0.2",
-    "playwright": "^1.42.0",
+    "playwright": "^1.43.1",
     "ssh2": "^1.15.0",
     "ssh2-sftp-client": "^10.0.3",
     "xml2js": "^0.6.2",

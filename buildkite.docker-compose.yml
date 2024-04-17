@@ -1,7 +1,7 @@
 version: '3.9'
 services:
-  e2e_tests:
-    build:
-      context: .
-      dockerfile: buildkite.Dockerfile
-    working_dir: /e2e
+    e2e_tests:
+        build:
+            context: .
+            dockerfile: buildkite.Dockerfile
+        working_dir: /e2e

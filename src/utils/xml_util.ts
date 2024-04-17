@@ -8,22 +8,27 @@ import { DataUtils } from './data_utils';
 import * as superStreamData from '../aol/data/superstream_data.json';
 import * as superStreamDataCTR from '../aol/data/superstream_CTR_data.json';
 import { UtilsAOL } from '../aol/utils_aol';
-import { SuperStreamPage } from '../aol/pom/superstream_contribution_page';
 
 export class xmlUtility {
 
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
-    static generateXMLFile(templateName: string): void {
+    static generateXMLFile(templateName: string): string {
 
+        let generatedXMLFileName : string = templateName;
         switch (templateName) {
-            case 'MRRWithTFN.xml': this.generateMRRWithTFNXML(templateName);
-            case 'MRRWithoutTFN.xml': this.generateMRRWithoutTFNXML(templateName);
-            case 'CTRWithTFN.xml': this.generateCTRWithTFNXML(templateName);
-           
+            case 'MRRWithTFN.xml': 
+            generatedXMLFileName = this.generateMRRWithTFNXML(templateName);
+            break;
+            case 'MRRWithoutTFN.xml': 
+            generatedXMLFileName = this.generateMRRWithoutTFNXML(templateName);
+            break;
+            case 'CTRWithTFN.xml': 
+            this.generateCTRWithTFNXML(templateName);
+            break;
         }
-
+        return generatedXMLFileName;
     }
 
     // Generate XML with TFN for MRR
@@ -55,14 +60,19 @@ export class xmlUtility {
             "//targetUsi[1]": superStreamData.sourceUsi,
             "//employer[1]/organisationName[1]/value[1]": superStreamData.employerOrganisationName,
             "//australianBusinessNumber[1]": superStreamData.australianBusinessNumber,
-            "//name[1]/firstName[1]": superStreamData.memberFirstName,
-            "//name[1]/lastName[1]": superStreamData.memberLastName,
+            "//name[1]/firstName[1]": UtilsAOL.randomName(),
+            "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
             "//taxFileNumberNotProvided[1]": true,
-            "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier
+            "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier,
+            "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
+            "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
+            "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
         };
 
         /// Update XML nodes and save it
         this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return `${destinationFileName}`;
     }
 
     // Generate XML for MRR
@@ -78,6 +88,7 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN(); 
 
         /// Prepare nodes list to update
         interface nodes {
@@ -94,11 +105,19 @@ export class xmlUtility {
             "//targetUsi[1]": superStreamData.sourceUsi,
             "//employer[1]/organisationName[1]/value[1]": superStreamData.employerOrganisationName,
             "//australianBusinessNumber[1]": superStreamData.australianBusinessNumber,
-            "//name[1]/firstName[1]": superStreamData.memberFirstName,
-            "//name[1]/lastName[1]": superStreamData.memberLastName,
-            "//tfnEntityIdentifier[1]": superStreamData.tfnEntityIdentifier,
-            "//employerProvidedTaxFileNumber[1]": superStreamData.employerProvidedTaxFileNumber
+            "//name[1]/firstName[1]": UtilsAOL.randomName(),
+            "//name[1]/lastName[1]": UtilsAOL.randomSurname(5),
+            "//tfnEntityIdentifier[1]": tfn,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//member[1]/dob[1]/year[1]":UtilsAOL.getRandomYear(),
+            "//member[1]/dob[1]/month[1]":UtilsAOL.getRandomMonth(),
+            "//member[1]/dob[1]/day[1]":UtilsAOL.getRandomDay(),
         };
+
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return `${destinationFileName}`;
     }
 
     // Generate XML for CTR with TFN
@@ -115,6 +134,7 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN(); 
 
         /// Prepare nodes list to update
         interface nodes {
@@ -145,8 +165,8 @@ export class xmlUtility {
             "//member[1]/dob[1]/year[1]":superStreamDataCTR.memberdobYear,
             "//member[1]/dob[1]/month[1]":superStreamDataCTR.memberdobMonth,
             "//member[1]/dob[1]/day[1]":superStreamDataCTR.memberdobDay,
-            "//employerProvidedTaxFileNumber[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
-            "//tfnEntityIdentifier[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//tfnEntityIdentifier[1]": tfn,
             "//employersABN[1]":superStreamDataCTR.australianBusinessNumber,
             "//member[1]//memberNumber[1]":superStreamDataCTR.memberNumber,
             "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
