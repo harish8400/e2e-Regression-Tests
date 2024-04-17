@@ -172,6 +172,8 @@ export class xmlUtility {
             "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
             "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
         };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
             
     }
 
