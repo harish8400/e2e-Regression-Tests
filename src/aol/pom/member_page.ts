@@ -437,5 +437,10 @@ export class MemberPage extends BasePage {
         }
     }
 
+    async getTFN(): Promise<string | null> {
+        const tfn = await this.page.locator("(//label[@for='tfn']/following::p[@class='truncate'])[1]");
+        return tfn ? tfn.textContent() : null;
+    }
+
 
 }
