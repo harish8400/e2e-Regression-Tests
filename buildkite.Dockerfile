@@ -1,14 +1,14 @@
-FROM mcr.microsoft.com/playwright:v1.35.1
+FROM mcr.microsoft.com/playwright:v1.40.0-jammy
 
-COPY . /e2e
+# COPY ./ /e2e/
 
-WORKDIR /e2e
+WORKDIR .
 
-VOLUME /e2e/playwright-report
+VOLUME /playwright-report
 
-RUN npm install
+# RUN npm install
 
-RUN npx playwright install
+# RUN npx playwright install
 
-ENTRYPOINT [ "npx", "playwright", "test" ]
-CMD []
+# ENTRYPOINT [ "npx", "playwright", "test" ]
+# CMD []

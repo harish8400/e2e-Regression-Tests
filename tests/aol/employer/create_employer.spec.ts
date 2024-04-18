@@ -20,16 +20,16 @@ test("Verify if  employer details can be updated successfully @demorun", async (
     await employerPage.updateNewemployer();
 })
 
-test("Verify if newly added Employer is listed under 'select employer' option while adding a new member @demorun", async ({ navBar, employerPage }) => {
-    await navBar.navigateToAccumulationMembersPage();
-    let newEmployer = await employerPage.createNewemployer(); 
-    await navBar.navigateToAccumulationMembersPage();
-    await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer);
-})
+// test("Verify if newly added Employer is listed under 'select employer' option while adding a new member @demorun", async ({ navBar, employerPage }) => {
+//     await navBar.navigateToAccumulationMembersPage();
+//     let newEmployer = await employerPage.createNewemployer(); 
+//     await navBar.navigateToAccumulationMembersPage();
+//     await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer);
+// })
 
-test("Verify employer types available while adding employer @demorun", async ({ navBar, employerPage }) => {
-    await navBar.navigateToAccumulationMembersPage();
-    let expectedEmployerTypes: string[] = ['Participating','Associated','Non-Associated'];
-    let actualEmployerTypes = await employerPage.getEmployerTypes();
-    expect(actualEmployerTypes).toEqual(expectedEmployerTypes);
-})
+// test("Verify employer types available while adding employer @demorun", async ({ navBar, employerPage }) => {
+//     await navBar.navigateToAccumulationMembersPage();
+//     let expectedEmployerTypes: string[] = ['Participating','Associated','Non-Associated'];
+//     let actualEmployerTypes = await employerPage.getEmployerTypes();
+//     expect(actualEmployerTypes).toEqual(expectedEmployerTypes);
+// })

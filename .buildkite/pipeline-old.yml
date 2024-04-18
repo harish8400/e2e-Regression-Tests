@@ -10,12 +10,12 @@ steps:
           run: e2e_tests
           volumes:
             - "./playwright-report:/e2e/playwright-report"
-          command: ["${TEST_OPTIONS}"]  
+          command: ["${TEST_OPTIONS}"]
           env:
             - BUILDKITE
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
-            - AWS_REGION     
+            - AWS_REGION
     agents:
       queue: "grow-tina-dev-quality"
