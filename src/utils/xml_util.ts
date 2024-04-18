@@ -14,21 +14,37 @@ export class xmlUtility {
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
-    static generateXMLFile(templateName: string): string | { destinationFileName: string, firstName: string, lastName: string, dob: string ,tfnIs:boolean} {
+    static generateXMLFile(templateName: string): string | { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
         let generatedXMLFileName: string = templateName;
         switch (templateName) {
             case 'MRRWithTFN.xml':
                 return this.generateMRRWithTFNXML(templateName);
             case 'MRRWithoutTFN.xml':
                 return this.generateMRRWithoutTFNXML(templateName);
+            default:
+                return generatedXMLFileName;
+        }
+
+    }
+
+    static generateXMLFileCTR(templateName: string): string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string } {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
             case 'CTRWithTFN.xml':
                 return this.generateCTRWithTFNXML(templateName);
-    
+            case 'CTRWithoutTFN.xml':
+                return this.generateCTRWithoutTFNXML(templateName);
+            case 'CTRWithTFN_MultipleContribution.xml':
+                return this.generateCTRWithTFNXML(templateName);
+            case 'CTRWithoutTFN_MultipleContribution.xml':
+                return this.generateCTRWithoutTFNXML(templateName);
+            default:
+                return generatedXMLFileName;
         }
-        return generatedXMLFileName;
+
     }
     // Generate XML with TFN for MRR
-    static generateMRRWithoutTFNXML(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string,tfnIs:boolean } {
+    static generateMRRWithoutTFNXML(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -67,9 +83,9 @@ export class xmlUtility {
             "//name[1]/lastName[1]": lastName,
             "//taxFileNumberNotProvided[1]": tfnIs,
             "//otherEntityIdentifier[1]": superStreamData.otherEntityIdentifier,
-            "//member[1]/dob[1]/year[1]":year,
-            "//member[1]/dob[1]/month[1]":month,
-            "//member[1]/dob[1]/day[1]":day,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
         };
 
         /// Update XML nodes and save it
@@ -79,12 +95,12 @@ export class xmlUtility {
             destinationFileName,
             firstName,
             lastName,
-            dob,tfnIs
+            dob, tfnIs
         };
     }
 
     // Generate XML for MRR
-    static generateMRRWithTFNXML(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string,tfnIs:boolean} {
+    static generateMRRWithTFNXML(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -96,7 +112,7 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
-        const tfn = UtilsAOL.generateValidTFN(); 
+        const tfn = UtilsAOL.generateValidTFN();
         const firstName = UtilsAOL.randomName();
         const lastName = UtilsAOL.randomSurname(5);
         const year = UtilsAOL.getRandomYear();
@@ -127,9 +143,9 @@ export class xmlUtility {
             "//taxFileNumberNotProvided[1]": tfnIs,
             "//tfnEntityIdentifier[1]": tfn,
             "//employerProvidedTaxFileNumber[1]": tfn,
-            "//member[1]/dob[1]/year[1]":year,
-            "//member[1]/dob[1]/month[1]":month,
-            "//member[1]/dob[1]/day[1]":day,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
 
         };
 
@@ -140,17 +156,17 @@ export class xmlUtility {
             destinationFileName,
             firstName,
             lastName,
-            dob,tfnIs
+            dob, tfnIs
         };
     }
 
     // Generate XML for CTR with TFN
-    static generateCTRWithTFNXML(templateFileName: string) {
+    static generateCTRWithTFNXML(templateFileName: string): { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string } {
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
         /// Copy template file to processed folder
-        const superGateMessageId=`${formattedDate}.010101.000@superchoice.com.au`;
+        const superGateMessageId = `${formattedDate}.010101.000@superchoice.com.au`;
         const conversationId: string = `Contribution.84111122223.${formattedDate}1618411${UtilsAOL.generateRandomThreeDigitNumber()}`;
         const destinationFileName: string = `CTR_${formattedDate}_115734_123_${conversationId}_1.xml`;
         this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
@@ -158,7 +174,9 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
-        const tfn = UtilsAOL.generateValidTFN(); 
+        const tfn = UtilsAOL.generateValidTFN();
+        const employerOrganisationName = superStreamDataCTR.employerOrganisationName;
+        const australianBusinessNumber = superStreamDataCTR.australianBusinessNumber;
 
         /// Prepare nodes list to update
         interface nodes {
@@ -173,41 +191,44 @@ export class xmlUtility {
             "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
             "//targetAbn[1]": superStreamDataCTR.targetAbn,
             "//targetUsi[1]": superStreamDataCTR.targetUsi,
-            "//paymentReferenceNumber[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//receiver[1]/organisationName[1]/value[1]":superStreamDataCTR.receiverOrganisationName,
-            "//employer[1]/organisationName[1]/value[1]": superStreamDataCTR.employerOrganisationName,
-            "//employer[1]/australianBusinessNumber[1]": superStreamDataCTR.australianBusinessNumber,
-            "//employer[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.australianBusinessNumber,
-            "//payer[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//payee[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//payee[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.targetAbn,
-            "//payee[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi,
-            "//name[1]/title[1]/title":superStreamDataCTR.memberTitle,
-            "//name[1]/firstName[1]":superStreamDataCTR.memberFirstName,
-            "//name[1]/lastName[1]":superStreamDataCTR.memberLastName,
-            "//member[1]/gender[1]":superStreamDataCTR.memberGender,
-            "//member[1]/dob[1]/year[1]":superStreamDataCTR.memberdobYear,
-            "//member[1]/dob[1]/month[1]":superStreamDataCTR.memberdobMonth,
-            "//member[1]/dob[1]/day[1]":superStreamDataCTR.memberdobDay,
+            "//paymentReferenceNumber[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//receiver[1]/organisationName[1]/value[1]": superStreamDataCTR.receiverOrganisationName,
+            "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+            "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+            "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+            "//payer[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataCTR.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi,
+            "//name[1]/title[1]/title": superStreamDataCTR.memberTitle,
+            "//name[1]/firstName[1]": superStreamDataCTR.memberFirstName,
+            "//name[1]/lastName[1]": superStreamDataCTR.memberLastName,
+            "//member[1]/gender[1]": superStreamDataCTR.memberGender,
+            "//member[1]/dob[1]/year[1]": superStreamDataCTR.memberdobYear,
+            "//member[1]/dob[1]/month[1]": superStreamDataCTR.memberdobMonth,
+            "//member[1]/dob[1]/day[1]": superStreamDataCTR.memberdobDay,
             "//employerProvidedTaxFileNumber[1]": tfn,
             "//tfnEntityIdentifier[1]": tfn,
-            "//employersABN[1]":superStreamDataCTR.australianBusinessNumber,
-            "//member[1]//memberNumber[1]":superStreamDataCTR.memberNumber,
-            "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
-            "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
+            "//employersABN[1]": australianBusinessNumber,
+            "//member[1]//memberNumber[1]": superStreamDataCTR.memberNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataCTR.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi
         };
         /// Update XML nodes and save it
         this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
-            
+        return {
+            destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId
+
+        };
     }
 
-     // Generate XML for CTR without TFN
-    static generateCTRWithoutTFNXML(templateFileName: string) {
+    // Generate XML for CTR without TFN
+    static generateCTRWithoutTFNXML(templateFileName: string): { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string } {
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
         /// Copy template file to processed folder
-        const superGateMessageId=`${formattedDate}.010101.000@superchoice.com.au`;
+        const superGateMessageId = `${formattedDate}.010101.000@superchoice.com.au`;
         const conversationId: string = `Contribution.84111122223.${formattedDate}1618411${UtilsAOL.generateRandomThreeDigitNumber()}`;
         const destinationFileName: string = `CTR_${formattedDate}_115734_123_${conversationId}_9.xml`;
         this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
@@ -215,6 +236,8 @@ export class xmlUtility {
         /// Node values
         const currentUTCTime: Date = new Date();
         const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const employerOrganisationName = superStreamDataCTR.employerOrganisationName;
+        const australianBusinessNumber = superStreamDataCTR.australianBusinessNumber;
 
         /// Prepare nodes list to update
         interface nodes {
@@ -229,31 +252,35 @@ export class xmlUtility {
             "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
             "//targetAbn[1]": superStreamDataCTR.targetAbn,
             "//targetUsi[1]": superStreamDataCTR.targetUsi,
-            "//paymentReferenceNumber[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//receiver[1]/organisationName[1]/value[1]":superStreamDataCTR.receiverOrganisationName,
+            "//paymentReferenceNumber[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//receiver[1]/organisationName[1]/value[1]": superStreamDataCTR.receiverOrganisationName,
             "//employer[1]/organisationName[1]/value[1]": superStreamDataCTR.employerOrganisationName,
-            "//employer[1]/australianBusinessNumber[1]": superStreamDataCTR.australianBusinessNumber,
-            "//employer[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.australianBusinessNumber,
-            "//payer[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//payee[1]/paymentReference[1]":superStreamDataCTR.paymentReferenceNumber,
-            "//payee[1]/context[1]/entityIdentifier[1]":superStreamDataCTR.targetAbn,
-            "//payee[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi,
-            "//name[1]/title[1]/title":superStreamDataCTR.memberTitle,
-            "//name[1]/firstName[1]":superStreamDataCTR.memberFirstName,
-            "//name[1]/lastName[1]":superStreamDataCTR.memberLastName,
-            "//member[1]/gender[1]":superStreamDataCTR.memberGender,
-            "//member[1]/dob[1]/year[1]":superStreamDataCTR.memberdobYear,
-            "//member[1]/dob[1]/month[1]":superStreamDataCTR.memberdobMonth,
-            "//member[1]/dob[1]/day[1]":superStreamDataCTR.memberdobDay,
+            "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+            "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+            "//payer[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+            "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataCTR.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi,
+            "//name[1]/title[1]/title": superStreamDataCTR.memberTitle,
+            "//name[1]/firstName[1]": superStreamDataCTR.withoutTFNMemberFirstName,
+            "//name[1]/lastName[1]": superStreamDataCTR.withoutTFNMemberLastName,
+            "//member[1]/gender[1]": superStreamDataCTR.memberGender,
+            "//member[1]/dob[1]/year[1]": superStreamDataCTR.withoutTFNMemberdobYear,
+            "//member[1]/dob[1]/month[1]": superStreamDataCTR.withoutTFNMemberdobMonth,
+            "//member[1]/dob[1]/day[1]": superStreamDataCTR.withoutTFNMemberdobDay,
             "//tfnEntityIdentifier[1]": superStreamDataCTR.employerProvidedTaxFileNumber,
-            "//employersABN[1]":superStreamDataCTR.australianBusinessNumber,
-            "//member[1]//memberNumber[1]":superStreamDataCTR.memberNumberwithoutTFN,
-            "//member[1]/context[1]/superannuationFundABN[1]":superStreamDataCTR.targetAbn,
-            "//member[1]/context[1]/superannuationFundUSI[1]":superStreamDataCTR.targetUsi
+            "//employersABN[1]": australianBusinessNumber,
+            "//member[1]//memberNumber[1]": superStreamDataCTR.memberNumberwithoutTFN,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataCTR.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi
         };
 
         /// Update XML nodes and save it
         this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return {
+            destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId
+        };
     }
 
     // Copy Template file to Processed folder
@@ -304,5 +331,5 @@ export class xmlUtility {
         }
     }
 
-    
+
 }

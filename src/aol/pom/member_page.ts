@@ -13,6 +13,7 @@ import { AccountInfoPage } from "./Pension/account_info";
 import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 import { allure } from "allure-playwright";
+import { GlobalPage } from "./component/global_page";
 
 export class MemberPage extends BasePage {
 
@@ -119,10 +120,12 @@ export class MemberPage extends BasePage {
     readonly sustainbleGrowth1: Locator;
     readonly memberCreated: Locator;
     readonly navBar: Navbar
+    readonly contribution: Locator;
+    readonly globalPage: GlobalPage;
 
     constructor(page: Page) {
         super(page)
-
+        this.globalPage = new GlobalPage(page);
         this.reviewCase = new ReviewCase(page);
         this.navBar = new Navbar(page)
         this.accumulationAddMember = page.getByRole('button', { name: 'add-circle icon Add Member' });
@@ -224,6 +227,7 @@ export class MemberPage extends BasePage {
         this.highGrowth = page.locator('li').filter({ hasText: 'High Growth' });
         this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
+        this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
@@ -337,23 +341,32 @@ export class MemberPage extends BasePage {
         await this.reviewCase.reviewCaseProcess(this.welcomeLetterTrigger);
     }
 
-
-
-    async verifySuperstreamMRRProcess() {
+    async verifySuperstreamProcess(superstreamProcess: string) {
         await this.page.locator("(//a[@class='NxLAj'])[1]").click();
         await this.processeslink.click();
         await this.sleep(3000);
-        await this.reloadPageWithDelay(this.page,1);
-            await this.page.locator("//div[text()='SuperStream - MRR']").first().click();
-            await this.sleep(2000);
-            let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
-            if (await process.innerText() === "In Review") {
-                await this.page.locator('//span[text()="In Review"]').click();
-            } else {
-                await this.page.locator('//span[text()="In Progress"]').click();
-            }
+        await this.reloadPageWithDelay(this.page, 1);
+        await this.page.locator(`//div[text()='${superstreamProcess}']`).first().click();
 
-        await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        await this.sleep(2000);
+        let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
+        if (await process.innerText() === "In Review") {
+            await this.page.locator('//span[text()="In Review"]').click();
+        } else if (await process.innerText() === "In Progress") {
+            await this.page.locator('//span[text()="In Progress"]').click();
+        }
+        else if (await process.innerText() === "Pending")  {
+            await this.page.locator('//span[text()="Pending"]').click();
+        }
+        else{
+            await this.page.locator('//span[text()="Closed"]').click();
+        }
+
+        if (superstreamProcess == 'SuperStream - Contribution') {
+            await this.reviewCase.reviewCaseProcess(this.contribution);
+        } else {
+            await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        }
     }
 
 
@@ -441,6 +454,127 @@ export class MemberPage extends BasePage {
         const tfn = await this.page.locator("(//label[@for='tfn']/following::p[@class='truncate'])[1]");
         return tfn ? tfn.textContent() : null;
     }
+
+    async memberTransaction() {
+        await this.page.reload();
+        let memberLink = await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");;
+        await this.sleep(3000)
+        memberLink.scrollIntoViewIfNeeded().then(() => this.sleep(3000).then(() => memberLink.click()));
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[2]"))).first();
+        transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
+        transactionType.click();
+        await this.transactionsMessage();
+
+    }
+
+    async transactionsMessage() {
+        await this.sleep(5000);
+        let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Investements Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Components']").click());
+        viewCase;
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Components Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Payment Details']").click());
+        viewCase;
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+
+
+    }
+
+    async getEmployerOrganisationName(): Promise<string | null> {
+        const employerOrganisationName = await this.page.locator("(//p[text()='Name']/following::p[@class='font-semibold'])[1]").textContent();
+        return employerOrganisationName ? employerOrganisationName.trim() : null;
+    }
+
+    async getAustralianBusinessNumber(): Promise<string | null> {
+        const australianBusinessNumber = await this.page.locator("(//p[text()='ABN']/following::p[@class='font-semibold'])[1]").textContent();
+        return australianBusinessNumber ? australianBusinessNumber.trim() : null;
+    }
+
+    async getAmountContributed(): Promise<string | null> {
+        const amount = await this.page.locator("(//p[text()='Amount']/following::p[@class='font-semibold'])[1]").textContent();
+        return amount ? amount.trim() : null;
+    }
+
+    async getMessageType(): Promise<string | null> {
+        const message = await this.page.locator("(//p[text()='Message type']/following::p[@class='font-semibold'])[1]").textContent();
+        return message ? message.trim() : null;
+    }
+
+    async getConversationId(): Promise<string | null> {
+        const id = await this.page.locator("//p[text()='Conversation ID']/following-sibling::p").textContent();
+        return id ? id.trim() : null;
+    }
+
+    async multipleContributions() {
+        await this.amountContributedTypeMNC();
+        await this.amountContributedTypeOTP();
+        await this.amountContributedTypeEAC();
+        await this.amountContributedTypeSAL();
+        await this.amountContributedTypeSGC();
+
+
+    }
+
+    async amountContributedTypeMNC() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let mncType = await this.page.locator("//div[@class='cell']/following::div[text()='MNC']").first();
+        mncType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => mncType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Personal is: ${amount}`);
+
+    }
+
+    async amountContributedTypeOTP() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let otpType = await this.page.locator("//div[@class='cell']/following::div[text()='OTP']").first();
+        otpType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => otpType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Other Third Party is: ${amount}`);
+
+    }
+
+    async amountContributedTypeEAC() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let eacType = await this.page.locator("//div[@class='cell']/following::div[text()='EAC']").first();
+        eacType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => eacType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Employer Additional is: ${amount}`);
+
+    }
+
+    async amountContributedTypeSAL() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let salType = await this.page.locator("//div[@class='cell']/following::div[text()='SAL']").first();
+        salType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => salType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Salary Sacrifice is: ${amount}`);
+
+    }
+
+    async amountContributedTypeSGC() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='SGC']").first();
+        sgcType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => sgcType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
+
+    }
+
+    async memberWithoutTFNMultipleContributions() {
+        await this.amountContributedTypeSGC();
+
+
+    }
+
+
 
 
 }
