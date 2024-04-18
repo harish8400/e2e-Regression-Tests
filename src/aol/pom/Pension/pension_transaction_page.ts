@@ -230,7 +230,7 @@ export class PensionTransactionPage extends BasePage {
     this.investmentSwitchTransaction = page.getByRole('row',{name: 'Pension Commencement Investment Switch'});
     this.investmentSwitchTransaction_status = page.getByText('Status:Finalised');
     const date = DateUtils.ddMMMyyyStringDate(this.today);
-    this.pensionCommencementHistory = page.getByRole('row', {name: date+" Pension Commencement"})
+    this.pensionCommencementHistory = page.getByRole('row', {name: date+" Pension Commencement"});
     ///Death Benifits
 
     this.BenefitPayment = page.getByText('Benefit Payment');
@@ -277,7 +277,7 @@ export class PensionTransactionPage extends BasePage {
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
-    this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
+    this.TransactioType = page.locator('tr:nth-child(1)').nth(1);
     this.paymentDate = page.locator('td:nth-child(4) > .cell').first();
     this.processedDate = page.locator('td:nth-child(5) > .cell').first();
     this.componentScreen = page.getByRole('button', { name: 'Components' });

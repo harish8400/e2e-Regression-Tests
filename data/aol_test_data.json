@@ -1,5 +1,5 @@
 {
-    "generate_test_data_from_api": true,
+    "generate_test_data_from_api": false,
     "members": {
         "Accumulation_member":"1C13F-2-1",
         "Capturing_Beneficiary_Accumulation_member_Internal_transfer":"1C13F-115-1",

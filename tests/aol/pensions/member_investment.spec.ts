@@ -9,7 +9,6 @@ import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/membe
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
-import * as data from "../../../data/aol_test_data.json"
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -39,9 +38,9 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
         if (data.generate_test_data_from_api) {
 
             // Create New Accumulation Account
-            await test.step("Create New Pension Shell Account", async () => {
+            await test.step("Create New Accumulation Account", async () => {
                 const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                membersId = memberId.createMemberNo
+                membersId = memberId.createMemberNo;
                 await globalPage.captureScreenshot('Accumulation Account Creation');
             });
 
@@ -114,18 +113,61 @@ else{
 }
     await test.step("Change the dradown order to proportional & validate the pension histoty", async () => {
         await pensionInvestmentPage.DrawdownTransactionsProportional();
-    } catch (error) {
-        throw error;
-    }
+    })
 })
 
-test(fundName()+"-Pension draw-down as Specific order @pension", async ({ navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
-    try {
+test(fundName()+"Pension draw-down as Specific order @pension", async ({ memberPage, accountInfoPage, internalTransferPage, navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+    //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
+    if (data.generate_test_data_from_api) {
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+    
+        let createMemberNo: string | undefined;
+        
+        await test.step("Add new Accumulation Member", async () => {
+            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+        })
+        let linearId: string | undefined;
+        await test.step("Create Shell Account for same Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            //await memberPage.selectMember(createMemberNo!);
+            await navBar.selectMember(createMemberNo!);
+            await pensionAccountPage.createShellAccountExistingMember();
+            let memberCreated  = await pensionAccountPage.getMemberId("ABP");
+            const memberId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberCreated!)
+            linearId = memberId.id;
+        })
+        await test.step("Select the Accumulation Member", async () => {
+            await pensionAccountPage.reload();
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo!);
+        })
+    
+        await test.step("Navigate to ABP Screen", async () => {
+                await pensionAccountPage.selectABPTab()
+        })
+    
+        await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+            await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
+        })
+
+        await test.step("commence pension and validate member is active", async () => {
+            await pensionTransactionPage.pensionCommence();
+            await pensionTransactionPage.memberStatus();
+        })
+}
+else{
+    await test.step("Navigate Pension Members list & select the member", async () => {
         await navBar.navigateToPensionMembersPage();
-        //await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Percentage);
+    });
+}
+    await test.step("change the drawdown order to Specific Order & Validate pension history", async () => {
         await pensionInvestmentPage.DrawdownTransactionsSpecificOrder();
-    }  
-});
+    });  
+})
 
 test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
@@ -172,7 +214,7 @@ test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensi
 else{
     await test.step("Navigate Pension Members list & select the member", async () => {
         await navBar.navigateToPensionMembersPage();
-        //await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Percentage);
+        await navBar.selectMember(data.members.Pension_Drawdown_Change_to_Percentage);
     });
 }
     await test.step("change the drawdown order to Percentage & Validate pension history", async () => {
@@ -285,7 +327,7 @@ if (data.generate_test_data_from_api) {
         await navBar.selectMember(createMemberNo!);
     })
 
-    await test.step("Navigate to ABP Screen", async () => {
+    await test.step("Navigate to TTR Screen", async () => {
             await pensionAccountPage.selectTTRRetirement();
     })
 

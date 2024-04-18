@@ -1,7 +1,15 @@
 import { allure } from "allure-playwright";
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -18,7 +26,6 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
         await navBar.selectMember("363214890");
     });
 
-    let memberNo: string;
     let contributionAmount: string;
     await test.step("Add new Accumulation Member", async () => {
         let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi);
@@ -52,20 +59,13 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
 
 })
 
-test(fundName()+"Contribution without TFN - Verify if contribution is processed successfully @demorun", async ({ navBar, memberPage, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
+test(fundName()+"Contribution without TFN - Verify if contribution is processed successfully @demorun", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         globalPage.captureScreenshot('Accumulation Member page');
     });
 
-    // let addedMember: string;
-    // await test.step("Add new Accumulation member", async () => {
-    //     addedMember = await memberPage.addNewMember(true, true);
-    // });
-
-    let memberNo: string;
-    let contributionAmount: string;
     await test.step("Add new Accumulation Member", async () => {
         let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi, true);
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -171,19 +171,21 @@ test(fundName()+"Super Guarantee Contribution - Verify if contribution is proces
     
 })
 
-test(fundName()+"Spouse Contribution - Verify if contribution is processed successfully", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName()+" Spouse Contribution - Verify if contribution is processed successfully", async ({ internalTransferPage, apiRequestContext, accountInfoPage, pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
     });
 
-    let addedMember: string;
-    await test.step("Add new Accumulation member", async () => {
-        addedMember = await memberPage.addNewMember(false, true);
-    });
+    let createMemberNo: string | undefined;
+    await test.step("Add new Accumulation Member", async () => {
+        const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+        createMemberNo = memberData.createMemberNo;
+    })
 
-    await test.step("Add Super Guarantee Contribution", async () => {
-        await memberPage.selectMember(addedMember);
+    await test.step("Add Spouse Contribution", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(createMemberNo!);
         await memberTransactionPage.memberRolloverIn('Spouse', true);
         await pensionTransactionPage.investementBalances();
         await globalPage.captureScreenshot('Investments & Balances')

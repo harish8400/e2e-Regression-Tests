@@ -57,6 +57,7 @@ export class PensionShellAccount extends BasePage {
   readonly slider: Locator;
   readonly addFundSelectOption: Locator;
   readonly enterAmount: Locator;
+  readonly amount: Locator;
   readonly amountToBeEntered: Locator;
   readonly saveFundDetails: Locator;
 
@@ -214,7 +215,8 @@ export class PensionShellAccount extends BasePage {
 
     this.sourceAccountNumber = page.locator('.gs__actions').nth(2);
     this.slider = page.locator('.switch-slider');
-    this.enterAmount = page.getByPlaceholder('0');
+    this.enterAmount = page.locator('//input[@id="transferAmount"]/parent::div');
+    this.amount = page.locator('//input[@id="transferAmount"]');
     this.amountToBeEntered = page.getByPlaceholder('0');
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
@@ -222,7 +224,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -269,12 +271,12 @@ export class PensionShellAccount extends BasePage {
     // Edit Pension Peyment Details for existing member
     this.pensionTab = page.getByRole('button', { name: 'Pension' });
     this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
-    this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.frequency = page.locator('#gs2__combobox').getByLabel('Select', { exact: true });
     this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
     this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
     this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
-    this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethod = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
 
     this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
@@ -320,8 +322,8 @@ export class PensionShellAccount extends BasePage {
     this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
     const date = DateUtils.ddMMMyyyStringDate(new Date());
-    this.pensionHistory = page.getByRole('cell', { name: 'Pension Payment Details Update' }).first();
-    this.regularPensionAmount = page.getByText('Regular Pension Payment Amount');
+    this.pensionHistory = page.getByRole('row', { name: date+' Pension Payment Details Update' }).first();
+    this.regularPensionAmount = page.locator('div').filter({ hasText: /^Regular Pension Payment Amount\$0\.00$/ }).first();
     this.caseHeading = page.getByRole('heading', { name: 'Pension - Update Payment' });
   }
 
@@ -368,7 +370,7 @@ export class PensionShellAccount extends BasePage {
       await this.slider.click();
       await this.enterAmount.click();
       await this.sleep(1000);
-      await this.enterAmount.fill(member.Amount);
+      await this.amount.fill(member.Amount);
       await this.sleep(1000);
     } else {
       await this.slider.click();
@@ -544,7 +546,7 @@ export class PensionShellAccount extends BasePage {
       await expect(this.pensionHistory).toBeVisible();
       await this.pensionHistory.scrollIntoViewIfNeeded();
       await this.sleep(1000);
-      //await this.pensionHistory.click();
+      await this.pensionHistory.click();
       await this.globalPage.captureScreenshot("New Pension History record");
     });
 
@@ -579,8 +581,11 @@ export class PensionShellAccount extends BasePage {
     }
     if(account == 'TTR'){
       await this.ttrScreenView.waitFor();
-      await this.ttrScreenView.click();await this.ttrScreenView.waitFor();
       await this.ttrScreenView.click();
+    }
+    if(account == 'Accumulation'){
+      await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).waitFor();
+      await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
     }
     await this.sleep(3000);
     let memberNumber = await this.memberID.textContent();

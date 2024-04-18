@@ -1,14 +1,15 @@
 import { allure } from "allure-playwright";
 import { aolTest as base } from "../../../src/aol/base_aol_test";
 import { fundName } from "../../../src/aol/utils_aol";
-import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler"
+import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler";
 import { APIRequestContext, expect } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
-import pensionMember from "../../../data/aol_test_data.json"
+import pensionMember from "../../../data/aol_test_data.json";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
-import * as data from "../../../data/aol_test_data.json"
+import * as data from "../../../data/aol_test_data.json";
+import * as member from "../../../src/aol/data/member.json";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -32,7 +33,14 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ navBar, 
     })
 
     await allure.step("Add a New Pensions Member", async () => {
-        await pensionTransactionPage.shellAccount(navBar, pensionAccountPage, apiRequestContext);
+        const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(memberNo);
     })
 
     await allure.step("Add some MoneyIn", async () => {
@@ -298,10 +306,14 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
 
         // Create New Pension Shell Account
         await allure.step("Create New Pension Shell Account", async () => {
-            const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-            membersId = memberId.linearId.id;
-            await globalPage.captureScreenshot('Pension Shell Account Creation');
-            await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
+            const { memberNo, processId} = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
+        await pensionAccountPage.ProcessTab();
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        await pensionAccountPage.reload();
+        await navBar.navigateToTTRMembersPage();
+        await navBar.selectMember(memberNo);
         });
 
 
@@ -902,7 +914,6 @@ if (data.generate_test_data_from_api) {
     })
 
     let createMemberNo: string | undefined;
-    
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
         createMemberNo = memberData.createMemberNo;
@@ -932,14 +943,14 @@ if (data.generate_test_data_from_api) {
         await internalTransferPage.internalTransferMember('Accumulation', createMemberNo!);
     })
 
-    await test.step("Validate the payment details & components ", async () => {
+    await test.step("Add PTB & Validate the payment details and components ", async () => {
         await MemberApiHandler.ptbTransactions(apiRequestContext, linearId);
         await pensionTransactionPage.transactionView();
         await pensionTransactionPage.componentsValidation();
         await pensionTransactionPage.sleep(5000)
     })
-    await test.step("add PTB & commence pension and validate member is active", async () => {
-        await MemberApiHandler.ptbTransactions(apiRequestContext, linearId!);
+    await test.step("commence pension and validate member is active", async () => {
+        //await MemberApiHandler.ptbTransactions(apiRequestContext, linearId!);
         await pensionTransactionPage.pensionCommence();
         await pensionTransactionPage.memberStatus();
     })
@@ -1003,8 +1014,140 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
     await allure.step("Update CRN for the member", async () => {
         await accountInfoPage.updateCRN();
         await globalPage.captureScreenshot('CRN Updation');
+    });
+})
+
+test(fundName() + "Roll In  - With TFN for APRA fund @MoneyIn", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
+
+    //when api is set to true, we create a new member for testing.
+    let createMemberNo;
+    if (data.generate_test_data_from_api) {
+        await test.step("Create New Pension Shell Account", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+            await globalPage.captureScreenshot('Accumulation Account Creation');
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo);
+        });
+    }
+    //when api is set to false, we will use existing member details for testing.
+     else {
+            await test.step("Navigate Pension Members list & select the member", async () => {
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(member.memberIDwithTFN);
+        });
+    }
+
+    await test.step("verify TFN & rolloverin transaction", async () => {
+        await memberOverviewpage.verifyTFNStatus(true);
+        await globalPage.captureScreenshot("TFN Status");
+        
+        await memberTransactionPage.rollInTransaction.click();
+        await pensionTransactionPage.componentsValidation();
+    });
+})
+
+test(fundName() + "Roll In  - Without TFN for APRA fund @MoneyIn", async ({ memberOverviewpage, pensionTransactionPage, memberTransactionPage, pensionAccountPage, apiRequestContext, navBar, globalPage }) => {
+
+    //when api is set to true, we create a new member for testing.
+    if (data.generate_test_data_from_api) {
+        await test.step("Create Pension Account & Select the added member ", async () => {
+            await navBar.navigateToPensionMembersPage();
+            let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+            console.log('ProcessId:', processId);
+            await pensionAccountPage.ProcessTab();
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await pensionAccountPage.reload();
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(memberNo);
+        });
+    }
+    //when api is set to false, we will use existing member details for testing.
+     else {
+        await test.step("Navigate Pension Members list & select the member", async () => {
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(member.memberID);
+        });
+    }
+
+    await test.step("verify TFN & rolloverin transaction", async () => {
+        await memberOverviewpage.verifyTFNStatus(false);
+        await globalPage.captureScreenshot("TFN Status");
+        await memberTransactionPage.RolloverIn();
+        await memberTransactionPage.rollInTransaction.click();
+        await pensionTransactionPage.componentsValidation();
+    });
+})
 
 
+test(fundName() + "Roll Out  - With TFN for APRA fund @MoneyIn", async ({ relatedInformationPage ,internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
+
+    //when api is set to true, we create a new member for testing.
+    let createMemberNo;
+    if (data.generate_test_data_from_api) {
+        await test.step("Create New Pension Shell Account", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+            const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            createMemberNo = memberData.createMemberNo;
+            await globalPage.captureScreenshot('Accumulation Account Creation');
+            await navBar.navigateToAccumulationMembersPage();
+            await navBar.selectMember(createMemberNo);
+        });
+    }
+    //when api is set to false, we will use existing member details for testing.
+     else {
+            await test.step("Navigate Pension Members list & select the member", async () => {
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(member.memberIDwithTFN);
+        });
+    }
+
+    await test.step("verify TFN & rolloverout transaction", async () => {
+        await memberOverviewpage.verifyTFNStatus(true);
+        await globalPage.captureScreenshot("TFN Status");
+        await memberOverviewpage.superTickVerification();
+        await relatedInformationPage.memberAccumulationAccount_Tab.click();
+        await memberTransactionPage.memberRolloverOut(true);
+        await memberTransactionPage.rollOutTransaction.click();
+        await pensionTransactionPage.componentsValidation();
+    });
+})
+
+test(fundName() + "Roll Out  - Without TFN for APRA fund @MoneyIn", async ({ relatedInformationPage, memberOverviewpage, memberTransactionPage, pensionAccountPage, apiRequestContext, navBar, globalPage }) => {
+
+    //when api is set to true, we create a new member for testing.
+    if (data.generate_test_data_from_api) {
+        await test.step("Create Pension Account & Select the added member ", async () => {
+            await navBar.navigateToPensionMembersPage();
+            let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+            console.log('ProcessId:', processId);
+            await pensionAccountPage.ProcessTab();
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await pensionAccountPage.reload();
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(memberNo);
+        });
+    }
+    //when api is set to false, we will use existing member details for testing.
+     else {
+        await test.step("Navigate Pension Members list & select the member", async () => {
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(member.memberID);
+        });
+    }
+
+    await test.step("verify TFN & rolloverin transaction", async () => {
+        await memberOverviewpage.verifyTFNStatus(false);
+        await globalPage.captureScreenshot("TFN Status");
+        await relatedInformationPage.memberAccumulationAccount_Tab.click();
+        await memberTransactionPage.memberRolloverOut(false);
+        // await memberTransactionPage.rollOutTransaction.click();
+        // await pensionTransactionPage.componentsValidation();
     });
 })
 

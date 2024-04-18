@@ -180,7 +180,7 @@ export class InternalTransferPage extends BasePage {
         this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
         this.beneficiaryName = page.getByLabel('Beneficiary Name *');
         this.beneficiaryType = page.getByText('Non-Binding');
-        this.beneficiaryRelation = page.locator('#gs11__combobox div').first()
+        this.beneficiaryRelation = page.locator('#gs15__combobox').getByLabel('Select', { exact: true });
         this.beneficiaryRelationSelect = page.getByText('Spouse');
         this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
         this.beneficiaryPercentage = page.getByPlaceholder('0');

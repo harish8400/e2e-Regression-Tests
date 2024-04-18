@@ -3,6 +3,7 @@ import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as member from "../../../src/aol/data/member.json"
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -16,23 +17,22 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs self triggered rollout full exit on a member */
-test(fundName()+"-Money Out - Rollover out full exit", async ({ dashboardPage, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransferPage, apiRequestContext, accountInfoPage, globalPage, navBar, dashboardPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");
-
-    await test.step("Super Member creation", async () => {
-        await dashboardPage.navigateToAccumulationAddMember();
-        let addedMember = await memberPage.addNewMember(false, true);
-        await memberPage.selectMember(addedMember);
-    })
+    let createMemberNo;
+    await test.step("Create New Accumulation Account", async () => {
+    const memberData = await memberPage.createAccumulationMember(apiRequestContext);
+    createMemberNo = memberData.createMemberNo;
+    await globalPage.captureScreenshot('Accumulation Account Creation'); });
 
     await test.step("Rollover In personal contribution", async () => {
         await memberTransactionPage.memberRolloverIn();
     })
 
     await test.step("Rollout full exit", async () => {
-        await memberTransactionPage.memberRolloverOut();
+        await memberTransactionPage.memberRolloverOut(true);
     })
 
 })
@@ -55,7 +55,7 @@ test(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionP
     let addedMember = await memberPage.addNewMember(false, true);
     await memberPage.selectMember(addedMember);
     await memberTransactionPage.memberRolloverIn();
-    await memberTransactionPage.memberRolloverOut();
+    await memberTransactionPage.memberRolloverOut(true);
     
 })
 
@@ -297,7 +297,7 @@ test(fundName() + "Benefit Payment_Permanent Incapacity_Verify claim processed s
 
 })
 
-test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successfully for a member", async ({ globalPage, pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -311,13 +311,14 @@ test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successf
         await navBar.navigateToAccumulationMembersPage();
     })
 
-    await test.step("Select the Accumulation Member & bank account", async () => {
+    await test.step("Select the Accumulation Member & add bank account", async () => {
         await navBar.selectMember(createMemberNo!);
         await accountInfoPage.addNewBankAccount();
     })
 
     await test.step("Benefit Payment - Death benefit", async () => {
-        await memberTransactionPage.benefitPayment('Death benefit');
+        await pensionTransactionPage.deathBenefitTransaction();
+        await globalPage.captureScreenshot('Death Benefit Payment');
     })
 
     await test.step("Validate the payment details & components ", async () => {
