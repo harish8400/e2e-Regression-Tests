@@ -38,7 +38,7 @@ test(fundName() + "-Money gets invested into CASH after roll-in post member crea
             // Create New Accumulation Account
             await test.step("Create New Pension Shell Account", async () => {
                 const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                membersId = memberId.createMemberNo
+                membersId = memberId.memberNo
                 await globalPage.captureScreenshot('Accumulation Account Creation');
             });
 

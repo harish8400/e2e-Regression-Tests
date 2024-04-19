@@ -5,7 +5,6 @@ import { UtilsAOL } from "../utils_aol";
 import * as member from "../data/member.json";
 import { ReviewCase } from "./component/review_case";
 import { FUND } from "../../../constants";
-
 import { MemberApiHandler } from "../../aol_api/handler/member_api_handler";
 import { Navbar } from "./component/navbar";
 import { TransactionsApiHandler } from "../../aol_api/handler/transaction_api_handler";
@@ -355,10 +354,10 @@ export class MemberPage extends BasePage {
         } else if (await process.innerText() === "In Progress") {
             await this.page.locator('//span[text()="In Progress"]').click();
         }
-        else if (await process.innerText() === "Pending")  {
+        else if (await process.innerText() === "Pending") {
             await this.page.locator('//span[text()="Pending"]').click();
         }
-        else{
+        else {
             await this.page.locator('//span[text()="Closed"]').click();
         }
 
@@ -371,34 +370,37 @@ export class MemberPage extends BasePage {
 
 
     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
-        const { memberNo: createMemberNo, processId, memberId } = await MemberApiHandler.createMember(apiRequestContext);
+        const { memberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
         await accountInfoPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
         await accountInfoPage.reload();
         await navBar.navigateToAccumulationMembersPage();
-        await navBar.selectMember(createMemberNo);
-        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
+        await navBar.selectMember(memberNo);
+        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await internalTransferPage.memberSummary();
         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return { createMemberNo };
+        return { memberNo };
     }
 
     async createAccumulationMember(apiRequestContext: APIRequestContext) {
-        const { memberNo: createMemberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        const { memberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId!);
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 5000));
-        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
+        const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return { createMemberNo };
+
+        return { memberNo};
     }
 
     async memberOverview() {

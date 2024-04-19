@@ -8,12 +8,25 @@ import { DataUtils } from './data_utils';
 import * as superStreamData from '../aol/data/superstream_data.json';
 import * as superStreamDataCTR from '../aol/data/superstream_CTR_data.json';
 import { UtilsAOL } from '../aol/utils_aol';
+import { MemberPage } from '../aol/pom/member_page';
+import { APIRequestContext, Page } from 'playwright';
+import { MemberApiHandler } from '../aol_api/handler/member_api_handler';
+import { MemberApi } from '../aol_api/member_api';
+import { allure } from 'allure-playwright';
+
 
 export class xmlUtility {
 
+    static memberPage: MemberPage;
+    static memberApi: MemberApi;
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
+    constructor(page: Page) {
+        xmlUtility.memberPage = new MemberPage(page);
+
+
+    }
     static generateXMLFile(templateName: string): string | { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
         let generatedXMLFileName: string = templateName;
         switch (templateName) {
@@ -43,6 +56,24 @@ export class xmlUtility {
         }
 
     }
+
+    static async generateXMLFileCTRNewMember(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean): Promise<string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'CTRWithTFN.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext);
+                } else {
+                    return this.generateCTRWithTFNXML(templateName);
+                }
+            case 'CTRWithoutTFN.xml':
+                return this.generateCTRWithoutTFNXML(templateName);
+            default:
+                return generatedXMLFileName;
+        }
+    }
+
+
     // Generate XML with TFN for MRR
     static generateMRRWithoutTFNXML(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
@@ -289,6 +320,94 @@ export class xmlUtility {
         let destinationFolder = this.destinationFolder;
         fs.copyFileSync(`${sourceFolder}/${templateFileName}`, `${destinationFolder}/${destinationFileName}`);
     }
+
+
+    // Generate XML for CTR with TFN
+    static async generateCTRWithTFNXMLForNewMember(templateFileName: string, apiRequestContext: APIRequestContext): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.010101.000@superchoice.com.au`;
+            const conversationId: string = `Contribution.84111122223.${formattedDate}1618411${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `CTR_${formattedDate}_115734_123_${conversationId}_1.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const employerOrganisationName = superStreamDataCTR.employerOrganisationName;
+            const australianBusinessNumber = superStreamDataCTR.australianBusinessNumber;
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext,false);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            let year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            let day = parseInt(parts[2], 10);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//sourceAbn[1]": superStreamDataCTR.sourceAbn,
+                "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
+                "//targetAbn[1]": superStreamDataCTR.targetAbn,
+                "//targetUsi[1]": superStreamDataCTR.targetUsi,
+                "//paymentReferenceNumber[1]": superStreamDataCTR.paymentReferenceNumber,
+                "//receiver[1]/organisationName[1]/value[1]": superStreamDataCTR.receiverOrganisationName,
+                "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+                "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+                "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+                "//payer[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": superStreamDataCTR.paymentReferenceNumber,
+                "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataCTR.targetAbn,
+                "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi,
+                "//name[1]/title[1]/title": superStreamDataCTR.memberTitle,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/gender[1]": superStreamDataCTR.memberGender,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//employerProvidedTaxFileNumber[1]": tfn,
+                "//tfnEntityIdentifier[1]": tfn,
+                "//employersABN[1]": australianBusinessNumber,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataCTR.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi
+            };
+            allure.logStep(`contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating CTR XML:", error);
+            throw error;
+        }
+    }
+
+
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {

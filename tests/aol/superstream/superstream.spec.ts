@@ -1,11 +1,21 @@
 
 import { xmlUtility } from '../../../src/utils/xml_util';
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { allure } from 'allure-playwright';
 import path from 'path';
 import * as fs from 'fs';
 import { DataUtils } from '../../../src/utils/data_utils';
 import assert from 'assert';
+import { APIRequestContext } from "@playwright/test";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as SelectionOfMember from "../../../src/aol/data/superstream_CTR_data.json"
+
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
+
 
 let remoteFilePath = `/home/saturn-dev-contribution/inbox`;
 let privateKeyPath = path.join(__dirname, '../../../src/aol/data/saturn-sftp_key.pem');
@@ -162,12 +172,12 @@ test("MRR is processed with out TFN", async ({ memberPage, superSteam, globalPag
 
 })
 
-test("CTR is processed with TFN and Single Contribution", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed with TFN and Single Contribution", async ({ memberPage, superSteam, globalPage,apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
 
-        generatedXMLFileName = xmlUtility.generateXMLFileCTR("CTRWithTFN.xml");
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTRNewMember("CTRWithTFN.xml", apiRequestContext,SelectionOfMember.isMemberToSelectExsisting);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -385,3 +395,4 @@ test("CTR is processed without TFN and Multiple Contributions", async ({ memberP
     });
 
 })
+

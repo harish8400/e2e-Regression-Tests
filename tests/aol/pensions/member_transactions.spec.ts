@@ -914,8 +914,8 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
         // Create New Member Account
         await allure.step("Create New Member Account", async () => {
-            const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            await navBar.selectMember(createMemberNo);
+            const { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.selectMember(memberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });
 
@@ -926,8 +926,8 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
         // Create New Member Account
         await allure.step("Create New Member Account", async () => {
-            const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            await navBar.selectMember(createMemberNo);
+            const { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.selectMember(memberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });
 
