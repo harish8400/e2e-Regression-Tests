@@ -5,7 +5,9 @@ set -e
 
 BASEDIR=$(dirname "$0")
 
-npx playwright install && npx playwright install-deps && npm i -D @playwright/test allure-playwright
+sudo dpkg -i allure_2.24.0-1_all.deb
+
+npx playwright install && npm i -D @playwright/test allure-playwright
 
 echo "NPM Install"
 npm ci
