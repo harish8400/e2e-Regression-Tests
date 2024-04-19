@@ -4,6 +4,7 @@ import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import { ReviewCase } from "./component/review_case";
 import { MemberOverView } from "./member/member_overview";
+import * as member from "../../aol/data/member.json"
 
 export class MemberTransactionsPage extends BasePage {
 
@@ -11,6 +12,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly memberHFMFundLink: Locator;
     readonly memberTransactionTab: Locator;
     readonly memberAddTransaction: Locator;
+    readonly rollinOption: Locator;
     readonly memberAddContribution: Locator;
     readonly memberContributionType: Locator;
     readonly memberContributionType_personal: Locator;
@@ -28,11 +30,37 @@ export class MemberTransactionsPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly verifyContributionSuccess: Locator;
     readonly transitionToRetirement: Locator;
-    readonly memberContributionType_superGuarantee;
-    readonly memberContributionType_Spouse;
-    readonly memberContributionType_Retirement;
-    readonly memberContributionErrorMessage;
+    readonly memberContributionType_superGuarantee: Locator;
+    readonly memberContributionType_Spouse: Locator;
+    readonly memberContributionType_Retirement: Locator;
+    readonly memberContributionErrorMessage: Locator;
+    readonly childContributionErrorMessage: Locator;
+    readonly memberContributionType_Child: Locator;
+    readonly memberSummaryTab: Locator;
+    readonly memberAge: Locator;
+    readonly accountNumber: Locator;
+    readonly paymentAmount: Locator;
+    readonly paymentAmountInput: Locator;
+    readonly untaxedComponent: Locator;
+    readonly untaxedComponentInput: Locator;
+    readonly taxedComponent: Locator;
+    readonly taxedComponentInput: Locator;
+    readonly taxFreeComponent: Locator;
+    readonly taxFreeComponentInput: Locator;
+    readonly unrestrictedAmount: Locator;
+    readonly unrestrictedAmountInput: Locator;
+    readonly restrictedAmount: Locator;
+    readonly restrictedAmountInput: Locator;
+    readonly preservedAmount: Locator;
+    readonly preservedAmountInput: Locator;
+    readonly rollinType_dropdown: Locator;
+    readonly rollinType_option: Locator;
+    readonly rollinSuccessMessage: Locator;
+    readonly rollInTransaction: Locator;
+    readonly rollOutTransaction: Locator;
+
     //Rollover Out
+    readonly rollOutErrorMessage: Locator;
     readonly rolloverOut: Locator;
     readonly payTo: Locator;
     readonly payToOption: Locator;
@@ -56,6 +84,26 @@ export class MemberTransactionsPage extends BasePage {
     readonly firstRowMember:Locator;
     readonly pensionComutation:Locator;
 
+    //Benefit Payment
+    readonly benefitPaymentOption: Locator;
+    readonly benefitType_dropdown: Locator;
+    readonly benefitType_RetirementPreservationAge: Locator;
+    readonly benefitType_CeasedEmploymentAgeAfter60: Locator;
+    readonly benefitType_Age65orOlder: Locator;
+    readonly benefitType_FinancialHardship: Locator;
+    readonly benefitTyoe_UnrestrictedNonPreservedBenefit: Locator;
+    readonly benefitType_CompassionateGroundsPartial: Locator;
+    readonly benefitType_PermanentIncapacity: Locator;
+    readonly benefitType_DeathBenefit: Locator;
+    readonly paymentType_dropdown: Locator;
+    readonly paymentTypeOption: Locator;
+    readonly selectAccount_dropdown: Locator;
+    readonly selectAccountOption: Locator;
+    readonly benefitPayment_SuccessMessage: Locator;
+    readonly benefitTransactionReference: Locator;
+    readonly paymentTransactionReference: Locator;
+    readonly investmentsReference: Locator;
+
     constructor(page: Page) {
         super(page)
 
@@ -67,6 +115,28 @@ export class MemberTransactionsPage extends BasePage {
         this.memberHFMFundLink = page.getByRole('button', { name: 'HESTA for Mercy Super' });
         this.memberTransactionTab = page.getByRole('button', { name: 'Transactions' });
         this.memberAddTransaction = page.getByRole('button', { name: 'ADD TRANSACTION' });
+        this.rollinOption = page.getByText('Rollover In');
+        this.accountNumber = page.getByLabel('Account number *');
+        this.paymentAmount = page.locator("//input[@id='amount']/parent::div");
+        this.paymentAmountInput = page.locator("//input[@id='amount']");
+        this.untaxedComponent = page.locator("//input[@id='untaxed']/parent::div");
+        this.untaxedComponentInput = page.locator("//input[@id='untaxed']");
+        this.taxedComponent = page.locator("//input[@id='taxed']/parent::div");
+        this.taxedComponentInput = page.locator("//input[@id='taxed']");
+        this.taxFreeComponent = page.locator("//input[@id='taxFree']/parent::div");
+        this.taxFreeComponentInput = page.locator("//input[@id='taxFree']");
+        this.unrestrictedAmount = page.locator("//input[@id='unrestrictedNonPreserved']/parent::div");
+        this.unrestrictedAmountInput = page.locator("//input[@id='unrestrictedNonPreserved']");
+        this.restrictedAmount = page.locator("//input[@id='restrictedNonPreserved']/parent::div");
+        this.restrictedAmountInput = page.locator("//input[@id='restrictedNonPreserved']");
+        this.preservedAmount = page.locator("//input[@id='preserved']/parent::div");
+        this.preservedAmountInput = page.locator("//input[@id='preserved']");
+        this.rollinType_dropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+        this.rollinType_option = page.getByRole('option', { name: 'Client-RTR' });
+        this.rollinSuccessMessage = page.getByText('Processed Roll In.');
+        this.rollInTransaction = page.getByRole('row', { name: 'Roll In' }).first();
+        this.rollOutTransaction = page.getByRole('row', { name: 'Rollover Out Payment' }).first();
+        this.rollOutErrorMessage = page.getByText('Member TFN is required for SuperTick Verification');
         this.memberAddContribution = page.getByText('Contribution', { exact: true });
         this.memberContributionType = page.locator("(//div[@class='gs__selected-options'])[2]")
         this.memberContributionType_personal = page.getByRole('option', { name: 'Personal', exact: true }).locator('span');
@@ -88,7 +158,12 @@ export class MemberTransactionsPage extends BasePage {
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
         this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
         this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
+        this.memberContributionType_Child = page.getByRole('option', { name: 'Child' });
         this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
+        this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
+        this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
+        this.memberSummaryTab = page.getByRole('button', { name: 'Member Summary' });
+        
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
@@ -109,16 +184,43 @@ export class MemberTransactionsPage extends BasePage {
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.supertickRetry = page.getByText('SuperTick verification result is not ready, retry in a few minutes');
         this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
-        this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sen');
+        this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent');
         this.memberOverview = page.getByRole('button', { name: 'Overview' });
         this.exitStatus = page.getByRole('cell', { name: 'Exited', exact: true });
         this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
         this.pensionComutation=page.getByText('Pension Commutation');
 
+        //Benefit Payment
+        this.benefitPaymentOption = page.getByText('Benefit Payment');
+        this.benefitType_dropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+        this.benefitType_RetirementPreservationAge = page.getByRole('option', { name: 'Retirement - Preservation Age' });
+        this.benefitType_CeasedEmploymentAgeAfter60 = page.getByRole('option', { name: 'Ceased Employment After Age' });
+        this.benefitType_Age65orOlder = page.getByRole('option', { name: 'Age 65 or older' });
+        this.benefitType_FinancialHardship = page.getByRole('option', { name: 'Financial Hardship' });
+        this.benefitTyoe_UnrestrictedNonPreservedBenefit = page.getByRole('option', { name: 'Unrestricted Non-Preserved' });
+        this.benefitType_CompassionateGroundsPartial = page.getByRole('option', { name: 'Compassionate Grounds' });
+        this.benefitType_PermanentIncapacity = page.getByRole('option', { name: 'Permanent Incapacity' });
+        this.benefitType_DeathBenefit = page.getByRole('option', { name: 'Death Benefit' });
+        this.paymentType_dropdown = page.locator("(//div[@class='gs__dropdown-toggle'])[3]");
+        this.paymentTypeOption = page.getByRole('option').first();
+        this.selectAccount_dropdown = page.locator("(//div[@class='gs__dropdown-toggle'])[5]");
+        this.selectAccountOption = page.getByRole('option').first();
+        this.benefitPayment_SuccessMessage = page.getByText("Process step completed with note: Benefit payment correspondence sent.");
+        this.benefitTransactionReference = page.getByRole('row', {name: 'Benefit'}).first();
+        this.paymentTransactionReference = page.getByRole('row', {name: 'Payment'}).first();
+        this.investmentsReference = page.locator("//span[@class='btn-heading' and contains(text(),'Investments')]");
     }
 
     /** Member Rollin, adds a contribution to member account */
     async memberRolloverIn(contributionType?: String, TFN?: Boolean) {
+        let age;
+        if(contributionType == 'Child'){
+            await this.memberSummaryTab.click();
+            await this.memberAge.scrollIntoViewIfNeeded();
+            await this.reviewCase.captureScreenshot();
+            const value = await this.memberAge.textContent();
+            age = parseInt(value!.match(/\d+/)![0]);
+        }
         await this.memberOverViewPage.memberAccumulationAccount_Tab.click();
         await this.memberTransactionTab.click();
         await this.memberAddTransaction.click();
@@ -142,6 +244,9 @@ export class MemberTransactionsPage extends BasePage {
         else if(contributionType == 'Spouse'){
             await this.memberContributionType_Spouse.click();
         }
+        else if(contributionType == 'Child'){
+            await this.memberContributionType_Child.click();
+        }
         else{
             await this.memberContributionType_personal.click();
         }
@@ -157,8 +262,16 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
-        if( TFN==true ){
+        if( TFN==true && contributionType != 'Child' ){
         await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+        }
+        else if(TFN == true && contributionType == 'Child'){
+            if(age! > 18){
+            await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage);
+            }
+            else{
+                await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+            }
         }
         else{
             await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
@@ -191,7 +304,7 @@ export class MemberTransactionsPage extends BasePage {
     }
 
     /** Member Rollout, perform rollout and exits member */
-    async memberRolloverOut() {
+    async memberRolloverOut(TFN: boolean) {
 
         await this.memberHFMFundLink.click();
         await this.memberTransactionTab.click();
@@ -213,36 +326,118 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
+        if(TFN == true){
+            await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+        }
+        else{
+            await this.reviewCase.approveAndVerifyError(this.rollOutErrorMessage);
+        }
 
-        //Review case process steps, approve/retry or exit on exception
-        do {
-            //Approve step
-            if (await this.approveProcessStep.count() > 0) {
-                try {
-                    await this.approveProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
+    }
 
-            //Retry step
-            if (await this.retryProcessStep.count() > 0) {
-                try {
-                    await this.retryProcessStep.click({ timeout: 5000 });
-                }
-                catch (TimeoutException) {
-                }
-            }
+    //Money_out Benefit Payment
+    async benefitPayment(benefitType: string) {
 
-            //Break if there is an process exception
-            if (await this.processException.count() > 0) {
-                throw InvalidResultAttributeException;
-            }
+        //await this.memberHFMFundLink.click();
+        await this.memberTransactionTab.click();
+        await this.memberAddTransaction.click();
+        await this.benefitPaymentOption.click();
 
-            await this.sleep(2000);
-        } while (
-            await this.verifyRolloutProcessSuccess.count() == 0
-        );
+        await this.viewCase.click();
+        await this.createCase.click();
+        this.sleep(3000);
 
+        await this.benefitType_dropdown.click();
+        if(benefitType == 'Retirement - Preservation Age'){
+            await this.benefitType_RetirementPreservationAge.click();
+        }
+        else if(benefitType == 'Ceased employment age after 60'){
+            await this.benefitType_CeasedEmploymentAgeAfter60.click();
+        }
+        else if(benefitType == 'Age 65 or older'){
+            await this.benefitType_Age65orOlder.click();
+        }
+        else if(benefitType == 'Financial Hardship'){
+            await this.benefitType_FinancialHardship.click();
+        }
+        else if(benefitType == 'Unrestricted non-preserved benefit'){
+            await this.benefitTyoe_UnrestrictedNonPreservedBenefit.click();
+
+        }
+        // else if(benefitType == 'Compassionate Grounds - Partial'){
+        //     await this.benefitType_RetirementPreservationAge.click();
+        // }
+        else if(benefitType == 'Compassionate Grounds - Partial'){
+            await this.benefitType_CompassionateGroundsPartial.click();
+        }
+        else if(benefitType == 'Permanent Incapacity'){
+            await this.benefitType_PermanentIncapacity.click();
+        }
+        else if(benefitType == 'Death benefit'){
+            await this.benefitType_DeathBenefit.click();
+        }
+        
+        await this.paymentType_dropdown.click();
+        await this.paymentTypeOption.click();
+        await this.selectAccount_dropdown.click();
+        await this.selectAccountOption.click();
+        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.effectiveDate.press('Tab');
+        //await this.payFullBalance.click();
+
+        await this.linkCase.click();
+        await this.sleep(5000);
+        await this.reviewCase.reviewCaseProcess(this.benefitPayment_SuccessMessage);
+
+    }
+
+    async investmentsComponents(paymentCategory: string){
+        if(paymentCategory == 'Payment-BPAP'){
+            this.paymentTransactionReference.scrollIntoViewIfNeeded();
+            this.paymentTransactionReference.click();
+        }
+        else if(paymentCategory == 'Benefit Payment-BPA'){
+            this.benefitTransactionReference.scrollIntoViewIfNeeded();
+            this.benefitTransactionReference.click();
+        }
+        await this.investmentsReference.click();
+        await this.reviewCase.captureScreenshot();
+        await this.sleep(2000);
+    }
+
+    async RolloverIn() {
+        
+        await this.memberTransactionTab.click();
+        await this.memberAddTransaction.click();
+        await this.rollinOption.click();
+        await this.sleep(3000);
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(3000);
+        await this.fundUSI.fill(member.USI);
+        await this.accountNumber.fill(member.AccountNumber);
+        await this.paymentReference.fill("personal");
+        await this.paymentReceivedDate.fill(DateUtils.ddmmyyyStringDate(0));
+        await this.effectiveDate.fill(DateUtils.ddmmyyyStringDate(0));
+        await this.paymentAmount.click();
+        await this.paymentAmountInput.fill('5000');
+        await this.untaxedComponent.click();
+        await this.untaxedComponentInput.fill('2000');
+        await this.taxedComponent.click();
+        await this.taxedComponentInput.fill('2000');
+        await this.taxFreeComponent.click();
+        await this.taxFreeComponentInput.fill('1000');
+        await this.unrestrictedAmount.click();
+        await this.unrestrictedAmountInput.fill('2000');
+        await this.restrictedAmount.click();
+        await this.restrictedAmountInput.fill('1000');
+        await this.preservedAmount.click();
+        await this.preservedAmountInput.fill('2000');
+        await this.rollinType_dropdown.click();
+        await this.rollinType_option.click();
+        await this.linkCase.click();
+
+        await this.reviewCase.reviewCaseProcess(this.rollinSuccessMessage);
+        
     }
 }

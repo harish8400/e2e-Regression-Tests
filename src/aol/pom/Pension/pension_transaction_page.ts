@@ -83,6 +83,7 @@ export class PensionTransactionPage extends BasePage {
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
   readonly pensionCommenceSuccessMessage: Locator;
+  readonly pensionCommencementHistory: Locator;
 
   //Exceptions
 
@@ -145,14 +146,13 @@ export class PensionTransactionPage extends BasePage {
   readonly closePopUp: Locator;
   readonly investmentScreen: Locator;
   readonly summary: Locator;
-  readonly activityData: Locator;
-  readonly closeTheData: Locator;
-  readonly adminFeeCase: Locator;
-  readonly investmentBalanceScreen: Locator;
-  readonly paymentDetails: Locator;
-
-
-
+  readonly activityData:Locator;
+  readonly closeTheData:Locator;
+  readonly adminFeeCase:Locator;
+  readonly investmentBalanceScreen:Locator;
+  readonly paymentDetails:Locator;
+  readonly investmentSwitchTransaction: Locator;
+  readonly investmentSwitchTransaction_status: Locator;
 
   //Vanguard
   readonly unathorized: Locator
@@ -163,6 +163,7 @@ export class PensionTransactionPage extends BasePage {
 
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
+    this.today = new Date();
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
     //Rollover In
@@ -226,7 +227,10 @@ export class PensionTransactionPage extends BasePage {
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
     this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]").nth(1);
     this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' });
-
+    this.investmentSwitchTransaction = page.getByRole('row',{name: 'Pension Commencement Investment Switch'});
+    this.investmentSwitchTransaction_status = page.getByText('Status:Finalised');
+    const date = DateUtils.ddMMMyyyStringDate(this.today);
+    this.pensionCommencementHistory = page.getByRole('row', {name: date+" Pension Commencement"});
     ///Death Benifits
 
     this.BenefitPayment = page.getByText('Benefit Payment');
@@ -273,10 +277,9 @@ export class PensionTransactionPage extends BasePage {
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
-    this.TransactioType = page.locator('tr:nth-child(2) > .el-table_5_column_28');
+    this.TransactioType = page.locator('tr:nth-child(1)').nth(1);
     this.paymentDate = page.locator('td:nth-child(4) > .cell').first();
     this.processedDate = page.locator('td:nth-child(5) > .cell').first();
-    this.today = new Date();
     this.componentScreen = page.getByRole('button', { name: 'Components' });
     this.taxableTaxed = page.locator("//p[text()=' Taxable - taxed ']/following-sibling::p");
     this.preserved = page.locator("//p[text()=' UNP ']/following-sibling::p");
@@ -483,6 +486,7 @@ export class PensionTransactionPage extends BasePage {
       await this.DOD.press('Tab');
       await this.linkCase.click();
       await this.sleep(3000);
+      await this.investmentSwitchTransaction.click();
       await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
     }
 
@@ -559,6 +563,10 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
+    await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
+    await expect(this.pensionCommencementHistory).toBeVisible();
+    await this.pensionCommencementHistory.click();
+    await this.reviewCase.captureScreenshot();
 
   }
 
@@ -1137,6 +1145,15 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(2000).then(()=>{this.page.locator("(//div[contains(text(),'Total')])[5]").scrollIntoViewIfNeeded()});
     await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
 
+  }
+
+  async InvestmentSwitchTransactionStatus(){
+    await this.memberTransactionTab.click();
+    await this.sleep(3000);
+    await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
+    await this.investmentSwitchTransaction.click();
+    await expect(this.investmentSwitchTransaction_status).toBeVisible();
+    await this.reviewCase.captureScreenshot();
   }
 
 

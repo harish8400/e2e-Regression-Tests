@@ -180,7 +180,7 @@ export class InternalTransferPage extends BasePage {
         this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
         this.beneficiaryName = page.getByLabel('Beneficiary Name *');
         this.beneficiaryType = page.getByText('Non-Binding');
-        this.beneficiaryRelation = page.locator('#gs11__combobox div').first()
+        this.beneficiaryRelation = page.locator('#gs15__combobox').getByLabel('Select', { exact: true });
         this.beneficiaryRelationSelect = page.getByText('Spouse');
         this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
         this.beneficiaryPercentage = page.getByPlaceholder('0');
@@ -439,7 +439,7 @@ export class InternalTransferPage extends BasePage {
         await this.summary.click();
         await this.sleep(3000);
         let memberBalance = this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
-        memberBalance.scrollIntoViewIfNeeded();
+        await memberBalance.scrollIntoViewIfNeeded();
         let balance = memberBalance.textContent();
         await this.ButtonTransactions.click();
         await this.sleep(3000);
