@@ -27,5 +27,6 @@
     "withoutTFNMemberdobMonth":"September",
     "withoutTFNMemberdobDay":"15",
     "memberNumberwithoutTFN":"90101070",
-    "isMemberToSelectExsisting":false 
+    "isMemberToSelectExsisting":false ,
+    "isTFNToBePassed":false
 }

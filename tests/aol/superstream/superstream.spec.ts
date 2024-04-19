@@ -172,12 +172,14 @@ test("MRR is processed with out TFN", async ({ memberPage, superSteam, globalPag
 
 })
 
-test("CTR is processed with TFN and Single Contribution", async ({ memberPage, superSteam, globalPage,apiRequestContext }) => {
+test("CTR is processed with TFN and Single Contribution", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
 
-        generatedXMLFileName = await xmlUtility.generateXMLFileCTRNewMember("CTRWithTFN.xml", apiRequestContext,SelectionOfMember.isMemberToSelectExsisting);
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTR("CTRWithTFN.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -228,12 +230,13 @@ test("CTR is processed with TFN and Single Contribution", async ({ memberPage, s
 
 })
 
-test("CTR is processed with TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed with TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
-
-        generatedXMLFileName = xmlUtility.generateXMLFileCTR("CTRWithTFN_MultipleContribution.xml");
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTR("CTRWithTFN_MultipleContribution.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -284,12 +287,13 @@ test("CTR is processed with TFN and Multiple Contributions", async ({ memberPage
 
 })
 
-test("CTR is processed without TFN and Single Contribution", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed without TFN and Single Contribution", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
-
-        generatedXMLFileName = xmlUtility.generateXMLFileCTR("CTRWithoutTFN.xml");
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTR("CTRWithoutTFN.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -340,12 +344,13 @@ test("CTR is processed without TFN and Single Contribution", async ({ memberPage
 
 })
 
-test("CTR is processed without TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed without TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage ,apiRequestContext}) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
-
-        generatedXMLFileName = xmlUtility.generateXMLFileCTR("CTRWithoutTFN_MultipleContribution.xml");
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTR("CTRWithoutTFN_MultipleContribution.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
     });
 
     await test.step("Upload XML file via File transfer", async () => {

@@ -40,34 +40,34 @@ export class xmlUtility {
 
     }
 
-    static generateXMLFileCTR(templateName: string): string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string } {
-        let generatedXMLFileName: string = templateName;
-        switch (templateName) {
-            case 'CTRWithTFN.xml':
-                return this.generateCTRWithTFNXML(templateName);
-            case 'CTRWithoutTFN.xml':
-                return this.generateCTRWithoutTFNXML(templateName);
-            case 'CTRWithTFN_MultipleContribution.xml':
-                return this.generateCTRWithTFNXML(templateName);
-            case 'CTRWithoutTFN_MultipleContribution.xml':
-                return this.generateCTRWithoutTFNXML(templateName);
-            default:
-                return generatedXMLFileName;
-        }
 
-    }
-
-    static async generateXMLFileCTRNewMember(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean): Promise<string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string }> {
+    static async generateXMLFileCTR(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean,isTFNToBePassed:boolean): Promise<string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string }> {
         let generatedXMLFileName: string = templateName;
         switch (templateName) {
             case 'CTRWithTFN.xml':
                 if (!isNewMember) {
-                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext);
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext,isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithTFNXML(templateName);
+                }
+                case 'CTRWithTFN_MultipleContribution.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext,isTFNToBePassed);
                 } else {
                     return this.generateCTRWithTFNXML(templateName);
                 }
             case 'CTRWithoutTFN.xml':
-                return this.generateCTRWithoutTFNXML(templateName);
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext,isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithoutTFNXML(templateName);
+                }
+                case 'CTRWithoutTFN_MultipleContribution.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext,isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithoutTFNXML(templateName);
+                }
             default:
                 return generatedXMLFileName;
         }
@@ -323,7 +323,7 @@ export class xmlUtility {
 
 
     // Generate XML for CTR with TFN
-    static async generateCTRWithTFNXMLForNewMember(templateFileName: string, apiRequestContext: APIRequestContext): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
+    static async generateCTRWithTFNXMLForNewMember(templateFileName: string, apiRequestContext: APIRequestContext,isTFNToBePassed:boolean): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
         try {
             let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -340,7 +340,7 @@ export class xmlUtility {
             const australianBusinessNumber = superStreamDataCTR.australianBusinessNumber;
 
             // Fetch member data 
-            const memberData = await MemberApiHandler.createMember(apiRequestContext,false);
+            const memberData = await MemberApiHandler.createMember(apiRequestContext,isTFNToBePassed);
             // Call necessary API methods
             await new Promise(resolve => setTimeout(resolve, 6000));
             const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);

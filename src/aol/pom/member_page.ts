@@ -570,7 +570,28 @@ export class MemberPage extends BasePage {
 
     }
 
+    async amountContributedTypeSPO() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let spoType = await this.page.locator("//div[@class='cell']/following::div[text()='SPO']").first();
+        spoType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => spoType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Spouse is: ${amount}`);
+
+    }
+
+    async amountContributedTypeAWD() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let awdType = await this.page.locator("//div[@class='cell']/following::div[text()='AWD']").first();
+        awdType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => awdType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed as Award is: ${amount}`);
+
+    }
+
     async memberWithoutTFNMultipleContributions() {
+        await this.amountContributedTypeAWD();
         await this.amountContributedTypeSGC();
 
 
