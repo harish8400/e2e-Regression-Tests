@@ -5,7 +5,10 @@ set -e
 
 BASEDIR=$(dirname "$0")
 
-sudo dpkg -i allure_2.24.0-1_all.deb
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install allure
+
+allure --version
 
 npx playwright install && npm i -D @playwright/test allure-playwright
 
