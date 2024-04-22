@@ -4,12 +4,12 @@
   <request>
     <ctr>
       <messageId>
-        <superGateMessageId>20240415.010101.000@superchoice.com.au</superGateMessageId>
-        <conversationId>Contribution.84111122223.202404151618411909</conversationId>
+        <superGateMessageId>20240417.010101.000@superchoice.com.au</superGateMessageId>
+        <conversationId>Contribution.84111122223.202404171618411188</conversationId>
       </messageId>
-      <timeInUTC>2024-04-15T16:47:51.671</timeInUTC>
+      <timeInUTC>2024-04-17T07:26:51.409</timeInUTC>
       <headers>
-        <conversationId>Contribution.84111122223.202404151618411909</conversationId>
+        <conversationId>Contribution.84111122223.202404171618411188</conversationId>
         <partId>2</partId>
         <from>
           <value>84111122223</value>
@@ -34,7 +34,7 @@
         <noOfParts>1</noOfParts>
         <paymentReferenceNumber>NA1257412369871812</paymentReferenceNumber>
         <totalBatchAmount>
-          <value>315.25</value>
+          <value>75000</value>
           <currency>AUD</currency>
         </totalBatchAmount>
       </headers>
@@ -72,19 +72,19 @@
           </organisationName>
           <context>
             <contextIdentifier>Receiver</contextIdentifier>
-            <entityIdentifier>64971749321</entityIdentifier>
+            <entityIdentifier>11789425178</entityIdentifier>
           </context>
         </receiver>
         <employer>
           <organisationName>
             <type>Main or legal name</type>
-            <value>SUTHERLAND AND COMPANY</value>
+            <value>COLES ONLINE</value>
           </organisationName>
-          <australianBusinessNumber>47783046638</australianBusinessNumber>
+          <australianBusinessNumber>45004189708</australianBusinessNumber>
           <superFundGeneratedEmployerIdentifier>F1</superFundGeneratedEmployerIdentifier>
           <context>
             <contextIdentifier>Employer1</contextIdentifier>
-            <entityIdentifier>47783046638</entityIdentifier>
+            <entityIdentifier>45004189708</entityIdentifier>
           </context>
         </employer>
         <payer>
@@ -130,19 +130,20 @@
         <member>
           <name>
             <title>Ms.</title>
-            <firstName>Gerald</firstName>
-            <lastName>DcfCE</lastName>
+            <firstName>Gopu</firstName>
+            <lastName>Regression</lastName>
           </name>
-          <gender>FEMALE</gender>
+          <gender>MALE</gender>
           <dob>
-            <year>1963</year>
-            <month>5</month>
-            <day>20</day>
+            <year>1985</year>
+            <month>January</month>
+            <day>01</day>
           </dob>
           <address>
             <australianAddress>
               <type>RES</type>
-              <line1>842 Amely Landing</line1>
+              <line1>842</line1>
+              <line2>Amely Landing</line2>
               <suburb>New Brent</suburb>
               <postCode>4000</postCode>
               <stateOrTerritory>QLD</stateOrTerritory>
@@ -151,7 +152,7 @@
           </address>
           <email>
             <emailAddressUsage>Contact</emailAddressUsage>
-            <value>gopu.balu1@grow.inc</value>
+            <value>af@growsuper.com.au</value>
           </email>
           <phoneNumber>
             <phoneNumberType>LAND_LINE</phoneNumberType>
@@ -164,29 +165,32 @@
           <phoneNumber>
             <phoneNumberType>MOBILE_PHONE</phoneNumberType>
 
-            <mobileNumber>61430187865</mobileNumber>
+            <mobileNumber>61447158378</mobileNumber>
           </phoneNumber>
-          <taxFileNumberNotProvided>false</taxFileNumberNotProvided>
-          <employerProvidedTaxFileNumber>888803525</employerProvidedTaxFileNumber>
-          <memberNumber>9010859</memberNumber>
-          <employmentPayrollNumber>001</employmentPayrollNumber>
-          <employmentStartDate>2022-06-30T12:00:00</employmentStartDate>
+          <taxFileNumberNotProvided>true</taxFileNumberNotProvided>
+          <memberNumber>MER-ACC-355683</memberNumber>
+          <employmentPayrollNumber>100200</employmentPayrollNumber>
+          <employmentStartDate>2022-01-12T12:00:00</employmentStartDate>
           <employmentStatus>Casual</employmentStatus>
-          <payPeriodStartDate>2024-02-07T12:00:00</payPeriodStartDate>
-          <payPeriodEndDate>2024-02-10T12:00:00</payPeriodEndDate>
+          <payPeriodStartDate>2021-08-10T12:00:00</payPeriodStartDate>
+          <payPeriodEndDate>2021-08-20T12:00:00</payPeriodEndDate>
           <totalMemberContributionAmount>
-            <value>5000</value>
+            <value>22000</value>
             <currency>AUD</currency>
           </totalMemberContributionAmount>
           <superGuaranteeAmount>
-            <value>5000</value>
+            <value>10000</value>
             <currency>AUD</currency>
           </superGuaranteeAmount>
+          <awardOrProductivityAmount>
+            <value>12000</value>
+            <currency>AUD</currency>
+          </awardOrProductivityAmount>
 
           <context>
             <contextIdentifier>Member1</contextIdentifier>
-            <tfnEntityIdentifier>888803525</tfnEntityIdentifier>
-            <employersABN>47783046638</employersABN>
+            <otherEntityIdentifier>MER-ACC-355683</otherEntityIdentifier>
+            <employersABN>45004189708</employersABN>
             <superannuationFundABN>64971749321</superannuationFundABN>
             <superannuationFundUSI>64971749321001</superannuationFundUSI>
           </context>
