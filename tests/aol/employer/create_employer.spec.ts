@@ -41,21 +41,21 @@ test("Verify if new employer ABN is created successfully @demorun", async ({ emp
 
 })
 
-// test("Verify if new employer WPN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+test("Verify if new employer WPN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
 
-//     await employerIdentitiesPage.createNewEmployerWPN('Businness13s');
+    await employerIdentitiesPage.createNewEmployerWPN('Businness13s');
 
-// })
+})
 
-// test("Verify for new employer Contact Details are added successfully @demorun", async ({ employerIdentitiesPage }) => {
-//     //await employerIdentitiesPage.createNewEmployer('098765800', '3333800', 'MS-EMP-909300')
-//     await employerIdentitiesPage.addContactDetails('Businness06');
+test("Verify for new employer Contact Details are added successfully @demorun", async ({ employerIdentitiesPage }) => {
+    //await employerIdentitiesPage.createNewEmployer('098765800', '3333800', 'MS-EMP-909300')
+    await employerIdentitiesPage.addContactDetails('Businness06');
 
-// })
+})
 
-// test("Verify existing employer data can be edited successfully @demorun", async ({ employerIdentitiesPage }) => {
-//    // await employerIdentitiesPage.createNewEmployer('098765901', '3333901', 'MS-EMP-909901');
-//     //test.setTimeout(4000);
-//     await employerIdentitiesPage.updateExistingEployer('Bussiness06');
+test("Verify existing employer data can be edited successfully @demorun", async ({ employerIdentitiesPage }) => {
+   // await employerIdentitiesPage.createNewEmployer('098765901', '3333901', 'MS-EMP-909901');
+    //test.setTimeout(4000);
+    await employerIdentitiesPage.updateExistingEployer('Bussiness06');
 
-// })
+})
