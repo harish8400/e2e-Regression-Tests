@@ -15,7 +15,7 @@ test(fundName()+"Contribution with TFN - Verify if contribution is processed suc
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         globalPage.captureScreenshot('Accumulation Member page');
-        await navBar.selectMember("363214890");
+        await navBar.selectMember("9010123");
     });
 
     let memberNo: string;
