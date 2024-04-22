@@ -7,7 +7,6 @@ export class SuperStreamPage extends BasePage {
     async uploadFile(localFilePath: string, remoteFilePath: string, privateKeyPath: string, privateKeyContent: string) {
         const sftp = new SftpClient();
         try {
-            console.log('Private Key Content:', privateKeyContent);
             await sftp.connect({
                 host: 'superchoice-sftp.dev.tinasuper.com',
                 port: 22,

@@ -2,10 +2,13 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { DateUtils } from "../../../utils/date_utils";
 import { ReviewCase } from "../component/review_case";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "../component/global_page";
 
 export class PensionInvestmentPage extends BasePage {
 
     readonly reviewCase: ReviewCase;
+    readonly globalPage: GlobalPage;
     readonly processesLink: Locator;
     readonly RetirementIncomeStream: Locator;
     readonly Members: Locator;
@@ -22,11 +25,16 @@ export class PensionInvestmentPage extends BasePage {
     readonly ViewCase: Locator;
     readonly CreateCase: Locator;
     readonly LinkCase: Locator;
+    readonly viewCaseButton: Locator;
+    readonly linkCaseButton: Locator;
     readonly FundUSI: Locator;
     readonly AccountNumber: Locator;
     readonly InputPaymentAmount: Locator;
     readonly PaymentAmount: Locator;
     readonly PaymentReference: Locator;
+    readonly dradownOption_proportional: Locator;
+
+    readonly clipBoardIcon: Locator;
 
     readonly InvestmentsandBalances: Locator;
     readonly CashBalanceBeforetRolloverIn: Locator;
@@ -44,6 +52,7 @@ export class PensionInvestmentPage extends BasePage {
     readonly retryProcessStep: Locator;
     readonly rollInSuccess: Locator;
     readonly pensionDrawdownUpdateSuccess: Locator;
+    readonly pensionHistory: Locator;
 
     //drawdown proposal
     readonly FilterClick: Locator;
@@ -72,13 +81,18 @@ export class PensionInvestmentPage extends BasePage {
     readonly SelectInputBox: Locator;
     readonly PercentageInput: Locator;
     readonly AddButton: Locator;
+    readonly today: Date;
     TotalCash!: string;
 
     constructor(page: Page) {
         super(page)
 
+    this.today = new Date();
+
     this.reviewCase = new ReviewCase(page);
+    this.globalPage = new GlobalPage(page);
     this.processesLink = page.getByRole('link', { name: 'Processes' });
+    this.clipBoardIcon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
     this.selectProduct = page.locator("(//div[@class='eBloA'])[1]");
     this.selectHFM = page.getByText('HESTA for Mercy');
@@ -117,13 +131,18 @@ export class PensionInvestmentPage extends BasePage {
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
     this.rollInSuccess = page.getByText('Processed Roll In.');
-    this.pensionDrawdownUpdateSuccess = page.getByText('Processed insert pension history.');
+    this.pensionDrawdownUpdateSuccess = page.getByText('Process step completed with note: Pension payment correspondence sent.');
+    const date = DateUtils.ddMMMyyyStringDate(this.today);
+    this.pensionHistory = page.getByRole('row', { name: 'Pension Details Update' }).first();
 
     this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.RolloverOption = page.getByText('Client-RTR');
-    this.ViewCase = page.getByRole('button', { name: 'View Cases' });
+    this.ViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
     this.CreateCase = page.getByRole('button', { name: 'Create Case' });
-    this.LinkCase = page.getByRole('button', { name: 'Link to Case' });
+    this.LinkCase = page.getByRole('button', { name: 'Link to Case' }).nth(1);
+
+    this.viewCaseButton = page.getByRole('button', { name: 'View Cases' });
+    this.linkCaseButton = page.getByRole('button', { name: 'Link to Case' });
 
     //DrawDown 
 
@@ -133,7 +152,7 @@ export class PensionInvestmentPage extends BasePage {
     this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     this.SelectMember = page.getByText('Ashton', { exact: true });
     this.PensionTab = page.getByRole('button', { name: 'Pension' });
-    this.BtnEdit = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.BtnEdit = page.getByRole('main').locator('section').filter({ hasText: 'Pension Drawdown Details Edit' }).getByRole('button');
     this.ProDataFirstYear = page.locator('label').filter({ hasText: 'Yes' }).locator('span').first();
 
     //specific order
@@ -142,8 +161,9 @@ export class PensionInvestmentPage extends BasePage {
     this.ClearButton = page.getByRole('button', { name: 'Clear Selected' });
     this.ClickCombobox = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.SelectSpecificOrder = page.getByText('Specified Order');
+    this.dradownOption_proportional = page.getByRole('option', { name: 'Proportional' });
     this.ClickOnInputBox = page.getByRole('textbox', { name: 'Select' });
-    this.SelectProduct = page.getByRole('listitem');
+    this.SelectProduct = page.getByRole('listitem').first();
 
     //Percentage
     this.SelectPercentage = page.getByText('Percentage');
@@ -230,36 +250,66 @@ export class PensionInvestmentPage extends BasePage {
         await this.PensionTab.click();
         await this.sleep(3000);
         await this.BtnEdit.click();
-        await this.ViewCase.click();
+        await this.viewCaseButton.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
-        await this.ProDataFirstYear.click();
-        await this.LinkCase.click();
+        await this.ClearButton.click();
+        await this.ClickCombobox.click();
+        await this.dradownOption_proportional.click();
+        await this.linkCaseButton.click();
         await this.sleep(2000);
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await allure.step("Validate Correspondence is sent with success", async () => {
+            allure.logStep("Verify Correspondence sent success is displayed")
+            expect(this.pensionDrawdownUpdateSuccess).toBeVisible();
+            await this.globalPage.captureScreenshot("Pension - Update Details Manual case");
+        });
+        await this.clipBoardIcon.click();
+        //console.log(this.pensionHistory);
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.globalPage.captureScreenshot("Pension History Record");
     }
 
     //specific order
     async DrawdownTransactionsSpecificOrder() {
         await this.PensionTab.click();
-        await this.PensionDrawdownDetailsEdit.click();
-        await this.ViewCase.click();
+        await this.sleep(3000);
+        await this.BtnEdit.click();
+        await this.sleep(3000);
+        //await this.PensionDrawdownDetailsEdit.click();
+        await this.viewCaseButton.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
         await this.ClearButton.click();
         await this.ClickCombobox.click();
         await this.SelectSpecificOrder.click();
-        await this.LinkCase.click();
+        await this.linkCaseButton.click();
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await allure.step("Validate Correspondence is sent with success", async () => {
+            allure.logStep("Verify Correspondence sent success is displayed")
+            expect(this.pensionDrawdownUpdateSuccess).toBeVisible();
+            await this.globalPage.captureScreenshot("Pension - Update Details Manual case");
+        });
+        await this.clipBoardIcon.click();
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.globalPage.captureScreenshot("Pension History Record");
     }
 
 
     async DrawdownTransactionsPercentage() {
         await this.PensionTab.click();
-        await this.PensionDrawdownDetailsEdit.click();
-        await this.ViewCase.click();
+        await this.sleep(3000);
+        await this.BtnEdit.click();
+        //await this.PensionDrawdownDetailsEdit.click();
+        await this.viewCaseButton.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
@@ -271,8 +321,19 @@ export class PensionInvestmentPage extends BasePage {
         await this.PercentageInput.click();
         await this.PercentageInput.fill('100');
         await this.AddButton.click();
-        await this.LinkCase.click();
+        await this.linkCaseButton.click();
         await this.reviewCase.reviewCaseProcess(this.pensionDrawdownUpdateSuccess);
+        await allure.step("Validate Correspondence is sent with success", async () => {
+            allure.logStep("Verify Correspondence sent success is displayed")
+            expect(this.pensionDrawdownUpdateSuccess).toBeVisible();
+            await this.globalPage.captureScreenshot("Pension - Update Details Manual case");
+        });
+        await this.clipBoardIcon.click();
+        await expect(this.pensionHistory).toBeVisible();
+        await this.pensionHistory.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.pensionHistory.click();
+        await this.globalPage.captureScreenshot("Pension History Record");
     }
 
     async verifyFutureDrawDownOptions() {

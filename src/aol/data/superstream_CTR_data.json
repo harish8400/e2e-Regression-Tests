@@ -21,5 +21,10 @@
     "employerProvidedTaxFileNumber":"414449722",
     "otherEntityIdentifier": "89879420774508212022",
     "memberNumber":"90101027",
-    "memberNumberwithoutTFN":"MER-ACC-355683"
+    "withoutTFNMemberFirstName":"Ramsey",
+    "withoutTFNMemberLastName":"WLyXZ",
+    "withoutTFNMemberdobYear":"1945",
+    "withoutTFNMemberdobMonth":"September",
+    "withoutTFNMemberdobDay":"15",
+    "memberNumberwithoutTFN":"90101070"
 }
