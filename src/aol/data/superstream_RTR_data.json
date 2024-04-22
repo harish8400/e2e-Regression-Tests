@@ -1,0 +1,16 @@
+{
+    "isMemberToSelectExsisting":true ,
+    "isTFNToBePassed":false,
+    "paymentReferenceNo":"PAYA25256455129102",
+    "memberFirstName":"Glenn",
+    "memberLastName":"HADUP",
+    "dob":"1947-03-25",
+    "memberNumber":"90101069",
+    "taxedComponent":"3000.00",
+    "nonTaxableComponent":"3000.00",
+    "benefitComponentsPreserved":"2000.00",
+    "benefitComponentsUnrestricted":"2000.00",
+    "benefitComponentsRestricted":"2000.00"
+
+
+}

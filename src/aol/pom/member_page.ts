@@ -13,6 +13,7 @@ import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "./component/global_page";
+import { Console } from "console";
 
 export class MemberPage extends BasePage {
 
@@ -120,6 +121,7 @@ export class MemberPage extends BasePage {
     readonly memberCreated: Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
+    readonly rolloverIn: Locator;
     readonly globalPage: GlobalPage;
 
     constructor(page: Page) {
@@ -227,6 +229,7 @@ export class MemberPage extends BasePage {
         this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
         this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
+        this.rolloverIn = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
@@ -363,8 +366,10 @@ export class MemberPage extends BasePage {
 
         if (superstreamProcess == 'SuperStream - Contribution') {
             await this.reviewCase.reviewCaseProcess(this.contribution);
-        } else {
+        } else if (superstreamProcess == 'SuperStream - MRR') {
             await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        } else {
+            await this.reviewCase.reviewCaseProcess(this.rolloverIn);
         }
     }
 
@@ -400,7 +405,7 @@ export class MemberPage extends BasePage {
         //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
 
-        return { memberNo};
+        return { memberNo };
     }
 
     async memberOverview() {
@@ -597,7 +602,68 @@ export class MemberPage extends BasePage {
 
     }
 
+    async rollInTransaction() {
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLI']"))).first();
+        transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
+        transactionType.click();
+        let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Investements Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Components']").click());
+        await this.sleep(1000).then(() => this.taxedComponent);
+        await this.sleep(1000).then(() => this.unTaxedComponent);
+        await this.sleep(1000).then(() => this.preservedComponent);
+        await this.sleep(1000).then(() => this.unPreservedComponent);
+        await this.sleep(1000).then(() => this.restrictedPreservedComponent);
+        viewCase;
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Components Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Payment Details']").click());
+        viewCase;
+        await this.sleep(1000).then(() => this.paymentReference);
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+
+    }
+
+    async taxedComponent() {
+        const taxed = await this.page.locator("//p[normalize-space()='Taxable - taxed']/following-sibling::p[1]").textContent();
+        return taxed ? taxed.trim() : null;
+    }
+
+    async unTaxedComponent() {
+        const unTaxed = await this.page.locator("//p[normalize-space()='Taxable - untaxed']/following-sibling::p[1]").textContent();
+        return unTaxed ? unTaxed.trim() : null;
+
+    }
+
+    async preservedComponent() {
+        const preserved = await this.page.locator("//p[normalize-space()='Preserved']/following-sibling::p[1]").textContent();
+        return preserved ? preserved.trim() : null;
+    }
+
+    async unPreservedComponent() {
+        const unp = await this.page.locator("//p[normalize-space()='UNP']/following-sibling::p[1]").textContent();
+        return unp ? unp.trim() : null;
+    }
+
+    async restrictedPreservedComponent() {
+        const rnp = await this.page.locator("//p[normalize-space()='RNP']/following-sibling::p[1]").textContent();
+        return rnp ? rnp.trim() : null;
+    }
+
+    async paymentReference() {
+        const paymentRef = await this.page.locator("//section[@class='gs-row flex padding-bottom-20 border-b border-neutral-100']//div[3]//p[1]");
+        const paymentRefText = await paymentRef.textContent();
+        const trimmedPaymentRefText = paymentRefText ? paymentRefText.trim().replace('Payment ref: ', '') : null;
+        return trimmedPaymentRefText;
+
+    }
 
 
 
 }
+
+
+
+
+

@@ -218,7 +218,13 @@ export class UtilsAOL {
     
         return `${day.toString().padStart(2, '0')} ${monthAbbreviation} ${year}`;
     }
-    
+
+    static dateFormat(inputDate: string) {
+        const parts = inputDate.split('-');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formattedDate = `${parseInt(parts[2])} ${months[parseInt(parts[1]) - 1]} ${parts[0]}`;
+        return formattedDate;
+    }
     
     
 }
