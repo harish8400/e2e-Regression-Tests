@@ -52,6 +52,8 @@ export class EmployerIdentitiesPage extends BasePage {
     readonly getRecord: Locator;
     readonly editEmployer: Locator;
     readonly statusText: Locator;
+    readonly statusText1: Locator;
+    readonly statusText2: Locator;
     readonly editContactDetails: Locator;
 
 
@@ -92,25 +94,27 @@ export class EmployerIdentitiesPage extends BasePage {
         this.email = page.getByLabel('Email');
 
         this.filter = page.getByRole('button', { name: 'FILTER' });
-        this.EmployerNameFilter = page.getByText('Employer Name', { exact: true });
+        this.EmployerNameFilter = page.locator('//div[@class="filter-list-item"][normalize-space()="Employer Name"]');
         this.EmployerNameFilterValue = page.getByRole('textbox').first();
         this.applyButton = page.getByRole('button', { name: 'APPLY' });
         // this.getRecord = page.locator('//tr[contains(@class,"el-table__row tbl-row-rnd")]');
         this.getRecord = page.locator('//table[@class="el-table__body"]');
 
         this.editEmployer = page.locator('div').filter({ hasText: /^Employer detailsEdit Content$/ }).getByRole('button');
-        this.editContactDetails = page.locator('//button[contains(@class,"gs-button gs-button-edit-btn")]//span)[2]')
+        this.editContactDetails = page.locator('(//*[name()="svg"][@role="presentation"])[17]')
 
 
         this.outcome = page.locator('//div[text()=" Outcome "]/following-sibling::div');
         this.status = page.locator('div').filter({ hasText: /^Closed$/ });
         this.statusText = page.locator('//div[contains(@class,"text-xs text-neutral-900")]/following::p[text()="Processed Create Employer."]');
+        this.statusText1 = page.locator('//p[normalize-space()="Processed Update Employer Contacts."]');
+        this.statusText2 = page.locator('//p[normalize-space()="Processed Update Employer."]')
 
 
 
     }
 
-    async createNewEmployer( businessName: string) {
+    async createNewEmployer(businessName: string) {
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         ///await this.ABN.check();
@@ -119,7 +123,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.businessName.fill(businessName);
         await this.employerType.click();
         await this.partcipating.click();
-       // await this.fundEmployerId.fill(fundEmployerId);
+        // await this.fundEmployerId.fill(fundEmployerId);
         await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(-7)}`);
         await this.addressLine1.fill('Street 5');
         await this.addressLine2.fill('block 6')
@@ -160,11 +164,12 @@ export class EmployerIdentitiesPage extends BasePage {
     }
 
     async createNewEmployerWPN(businessName: string) {
-        
+
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         await this.WPN.click();
-        await this.wpnValue.fill('4354567')
+        let tfns =TFN.getValidTFN();
+        await this.wpnValue.fill(tfns.tfn);
         //await this.acnValue.fill(acnValue);
         await this.businessName.fill(businessName);
         await this.employerType.click();
@@ -184,7 +189,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.linkCase.click();
         await this.sleep(3000);
         await this.statusText.scrollIntoViewIfNeeded();
-        
+
         const employerUpdatedData = await this.statusText.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
@@ -199,7 +204,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(statusCode);
         const ExpectedStatusCode = 'Closed';
 
-        if (trimmedText == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
+        if (trimmedText==ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
             assert.equal(ExpectedText, trimmedText);
             assert.equal(statusText, ExpectedStatusText);
             assert.equal(statusCode, ExpectedStatusCode);
@@ -221,8 +226,8 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.getRecord.click();
         await this.editContactDetails.click();
         await this.contactDetailsAddNew.click();
-        await this.contactGivenName.fill('Joey');
-        await this.surname.fill('Tribiani');
+        await this.contactGivenName.fill('John');
+        await this.surname.fill('Joseph');
         await this.contactPosition.fill('Primary');
         await this.phoneNumber.fill('+61 4 1234 5678');
         await this.email.fill('minal.tate@grow.inc');
@@ -230,9 +235,9 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.createCase.click();
         await this.linkCase.click();
         await this.sleep(3000);
-        await this.statusText.scrollIntoViewIfNeeded();
+       await this.statusText1.scrollIntoViewIfNeeded();
 
-        const employerUpdatedData = await this.statusText.textContent();
+        const employerUpdatedData = await this.statusText1.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
         const ExpectedText = 'Processed Update Employer Contacts.'
@@ -246,7 +251,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(statusCode);
         const ExpectedStatusCode = 'Closed';
 
-        if (trimmedText == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
+        if (trimmedText==ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
             assert.equal(ExpectedText, trimmedText);
             assert.equal(statusText, ExpectedStatusText);
             assert.equal(statusCode, ExpectedStatusCode);
@@ -266,15 +271,15 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.applyButton.click();
         await this.getRecord.click();
         await this.editEmployer.click();
-        await this.acnValue.fill('098765465');
-        await this.businessName.fill('3333405');
+        await this.acnValue.fill('098765470');
+        await this.businessName.fill('Businness06');
         await this.viewCase.click();
         await this.createCase.click();
         await this.linkCase.click();
-        await this.sleep(5000);
-        await this.statusText.scrollIntoViewIfNeeded();
+        await this.sleep(3000);
+        await this.statusText2.scrollIntoViewIfNeeded();
 
-        const employerUpdatedData = await this.statusText.textContent();
+        const employerUpdatedData = await this.statusText2.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
         const ExpectedText = 'Processed Update Employer.'
@@ -288,7 +293,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(statusCode);
         const ExpectedStatusCode = 'Closed';
 
-        if (trimmedText == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
+        if (trimmedText==ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
             assert.equal(ExpectedText, trimmedText);
             assert.equal(statusText, ExpectedStatusText);
             assert.equal(statusCode, ExpectedStatusCode);
