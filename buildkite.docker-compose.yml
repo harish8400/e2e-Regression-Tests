@@ -9,7 +9,9 @@
 version: '3.9'
 services:
     app:
-        build: .
+        build:
+            context: .
+            dockerfile: buildkite.Dockerfile
         environment:
             # Enable Buildkite integrations.
             - BUILDKITE
