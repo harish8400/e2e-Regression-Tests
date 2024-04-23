@@ -426,6 +426,7 @@ export class MemberPage extends BasePage {
         let memberNumberOnScreen = await this.page.locator("(//p[@class='truncate'])[1]");
         await this.sleep(3000).then(() => memberNumberOnScreen.scrollIntoViewIfNeeded());
         let MemberNumberIs = (await memberNumberOnScreen?.textContent()) ?? null;
+        console.log(MemberNumberIs);
 
         if (MemberNumberIs === MemberUniqueNumber) {
             allure.logStep("Expected MemberNumberIs: " + MemberUniqueNumber + ", Actual MemberNumberIs: " + MemberNumberIs);
@@ -657,6 +658,13 @@ export class MemberPage extends BasePage {
         const trimmedPaymentRefText = paymentRefText ? paymentRefText.trim().replace('Payment ref: ', '') : null;
         return trimmedPaymentRefText;
 
+    }
+
+    async memberNumberLink() {
+        await this.page.reload();
+        let memberLink = await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");;
+        await this.sleep(3000)
+        memberLink.scrollIntoViewIfNeeded().then(() => this.sleep(3000).then(() => memberLink.click()));
     }
 
 

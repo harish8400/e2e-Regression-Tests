@@ -424,7 +424,14 @@ test("RTR is processed with TFN -@TFN_RTR", async ({ memberPage, superSteam, glo
     });
 
     await test.step("Verify Member rollover-in Details In Transactions Screen", async () => {
-        await memberPage.memberOverview();
+
+        if (MemberToBeSelected.isMemberToSelectExsisting === true) {
+            await memberPage.memberOverview();
+        } else {
+
+            await memberPage.memberNumberLink();
+
+        }
 
         let xmlData = generatedXMLFileName as { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
 
@@ -531,7 +538,13 @@ test("RTR is processed without TFN -@withoutTFN_RTR", async ({ memberPage, super
     });
 
     await test.step("Verify Member rollover-in Details In Transactions Screen", async () => {
-        await memberPage.memberOverview();
+        if (MemberToBeSelected.isMemberToSelectExsisting === true) {
+            await memberPage.memberOverview();
+        } else {
+
+            await memberPage.memberNumberLink();
+
+        }
 
         let xmlData = generatedXMLFileName as { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
 

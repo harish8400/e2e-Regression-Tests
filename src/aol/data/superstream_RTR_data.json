@@ -1,6 +1,6 @@
 {
-    "isMemberToSelectExsisting":true ,
-    "isTFNToBePassed":false,
+    "isMemberToSelectExsisting":false ,
+    "isTFNToBePassed":true,
     "paymentReferenceNo":"PAYA25256455129102",
     "memberFirstName":"Nathan",
     "memberLastName":"XcDex",
