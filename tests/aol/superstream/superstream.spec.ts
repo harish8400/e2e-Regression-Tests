@@ -31,7 +31,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("MRR is processed with TFN -@TFN_MRR", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -103,7 +103,7 @@ test("MRR is processed with TFN -@TFN_MRR", async ({ memberPage, superSteam, glo
 
 })
 
-test("MRR is processed with out TFN-@withoutTFN_MRR", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with out TFN-@MRR", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -627,4 +627,230 @@ test("RTR is processed without TFN -@withoutTFN_RTR", async ({ memberPage, super
     });
 
 });
+
+test("RTR is processed from SMSF with TFN -@TFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+
+    let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
+    await test.step("Generate XML file for upload", async () => {
+
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithTFN_SMSF.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, MemberToBeSelected.isTFNToBePassed);
+    });
+
+    await test.step("Upload XML file via File transfer", async () => {
+        const xmlFileName = (generatedXMLFileName as { destinationFileName: string }).destinationFileName;
+        await superSteam.uploadXMLFile(`${destinationFolder}/${xmlFileName}`, `${remoteFilePath}/${xmlFileName}`, privateKeyPath, privateKeyContent);
+    });
+
+    await test.step("Verify member SMSF rollover-in by Superstream", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
+    });
+
+    await test.step("Verify Member SMSF rollover-in Details In Transactions Screen", async () => {
+
+        if (MemberToBeSelected.isMemberToSelectExsisting === true) {
+            await memberPage.memberOverview();
+        } else {
+
+            await memberPage.memberNumberLink();
+
+        }
+
+        let xmlData = generatedXMLFileName as { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
+
+        // Get expected values from generated data
+
+        const expectedFirstName = xmlData.member;
+        const expectedLastName = xmlData.surName;
+        const expectedDob = xmlData.dob
+        const formattedDate = UtilsAOL.dateFormat(expectedDob);
+        console.log(`Expected Member Data From XML Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDob} `);
+        allure.logStep(`Expected Member Data From XML Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDob}`);
+
+        // Get expected values from the UI
+        const actualFirstName = await memberPage.getFirstName();
+        const actualLastName = await memberPage.getLastName();
+        const actualDOB = await memberPage.getDOB();
+        const tfnStatus = await memberPage.getTFN();
+        console.log(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`)
+        allure.logStep(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`);
+
+        if (!tfnStatus) {
+            assert.equal(tfnStatus, "Not Supplied");
+            allure.logStep(`Status of the member TFN Is:  ${tfnStatus}`);
+        } else {
+            assert.equal(tfnStatus, "Valid");
+            allure.logStep(`Status of the member TFN Is:  ${tfnStatus}`);
+        }
+        await globalPage.captureScreenshot('Members Overview page');
+
+        if (
+            actualFirstName === expectedFirstName &&
+            actualLastName === expectedLastName &&
+            formattedDate === actualDOB
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+
+
+        await memberPage.rollInTransaction();
+
+        // Get expected values from generated data
+
+        const expectedPaymentReferenceNumber = xmlData.paymentReferenceNumber;
+        const expectedConversationId = xmlData.conversationId;
+        const expectedTaxAmount = xmlData.taxed;
+        const expectedNonTaxAmount = xmlData.unTaxed;
+        const expectedPreservedAmount = xmlData.preserved;
+        const expectedUnPreservedAmount = xmlData.unrestricted;
+        const expectedRestrictedAmount = xmlData.restricted;
+        console.log(`Expected Member payment Details From XML Is: ${expectedTaxAmount} ,${expectedNonTaxAmount},${expectedPreservedAmount},${expectedUnPreservedAmount},${expectedRestrictedAmount}`);
+        const messageType = await memberPage.getMessageType();
+        allure.logStep(`Expected Message Type from xml Is: ${messageType}`);
+        allure.logStep(`Expected Member payment Details From XML Is: taxedAmount = ${expectedTaxAmount} , nonTaxedAmount = ${expectedNonTaxAmount},preservedAmount = ${expectedPreservedAmount},unPreservedAmount = ${expectedUnPreservedAmount},restrictedAmount = ${expectedRestrictedAmount}`);
+
+        const actualTaxAmount = await memberPage.taxedComponent();
+        const actualNonTaxAmount = await memberPage.unTaxedComponent();
+        const actualPreservedAmount = await memberPage.preservedComponent();
+        const actualUnPreservedAmount = await memberPage.unPreservedComponent();
+        const actualRestrictedAmount = await memberPage.unTaxedComponent();
+        const actualPaymentReferenceNumber = await memberPage.paymentReference();
+        const actualConversationId = await memberPage.getConversationId();
+
+        allure.logStep(`Actual Member payment Details from UI Is: taxedAmount = ${actualTaxAmount}, nonTaxedAmount = ${actualNonTaxAmount}, preservedAmount = ${actualPreservedAmount},unPreservedAmount = ${actualUnPreservedAmount},restrictedAmount = ${actualRestrictedAmount}`);
+
+        await globalPage.captureScreenshot('Paymnent Details');
+
+        allure.logStep(`Expected PaymentReferenceNumber is: ${expectedPaymentReferenceNumber}, actual PaymentReferenceNumber is: ${actualPaymentReferenceNumber}`);
+        const message = await memberPage.getMessageType();
+        allure.logStep(`Actual Message Type from UI Is: ${message}`);
+        allure.logStep(`Expected conversationId is: ${expectedConversationId}, actual conversationId is: ${actualConversationId}`);
+
+        if (
+            await actualPaymentReferenceNumber === expectedPaymentReferenceNumber &&
+            await actualConversationId === expectedConversationId
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+    });
+
+});
+
+test("RTR is processed from SMSF without TFN -@withoutTFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+
+    let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
+    await test.step("Generate XML file for upload", async () => {
+
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithoutTFN_SMSF.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, MemberToBeSelected.isTFNToBePassed);
+    });
+
+    await test.step("Upload XML file via File transfer", async () => {
+        const xmlFileName = (generatedXMLFileName as { destinationFileName: string }).destinationFileName;
+        await superSteam.uploadXMLFile(`${destinationFolder}/${xmlFileName}`, `${remoteFilePath}/${xmlFileName}`, privateKeyPath, privateKeyContent);
+    });
+
+    await test.step("Verify member SMSF rollover-in by Superstream", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
+    });
+
+    await test.step("Verify Member SMSF rollover-in Details In Transactions Screen", async () => {
+        if (MemberToBeSelected.isMemberToSelectExsisting === true) {
+            await memberPage.memberOverview();
+        } else {
+
+            await memberPage.memberNumberLink();
+
+        }
+
+        let xmlData = generatedXMLFileName as { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
+
+        // Get expected values from generated data
+
+        const expectedFirstName = xmlData.member;
+        const expectedLastName = xmlData.surName;
+        const expectedDob = xmlData.dob
+        const formattedDate = UtilsAOL.dateFormat(expectedDob);
+        console.log(`Expected Member Data From XML Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDob} `);
+        allure.logStep(`Expected Member Data From XML Is: ${expectedFirstName}, ${expectedLastName}, ${expectedDob}`);
+
+        // Get expected values from the UI
+        const actualFirstName = await memberPage.getFirstName();
+        const actualLastName = await memberPage.getLastName();
+        const actualDOB = await memberPage.getDOB();
+        const tfnStatus = await memberPage.getTFN();
+        console.log(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`)
+        allure.logStep(`Actual Member Data processed from XMl Is: ${actualFirstName}, ${actualLastName}, ${actualDOB}`);
+
+        if (tfnStatus) {
+            assert.equal(tfnStatus, "Not Supplied");
+            allure.logStep(`Status of the member TFN Is:  ${tfnStatus}`);
+        } else {
+            assert.equal(tfnStatus, "Valid");
+            allure.logStep(`Status of the member TFN Is:  ${tfnStatus}`);
+        }
+        await globalPage.captureScreenshot('Members Overview page');
+
+        if (
+            actualFirstName === expectedFirstName &&
+            actualLastName === expectedLastName &&
+            formattedDate === actualDOB
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+
+
+        await memberPage.rollInTransaction();
+
+        // Get expected values from generated data
+
+        const expectedPaymentReferenceNumber = xmlData.paymentReferenceNumber;
+        const expectedConversationId = xmlData.conversationId;
+        const expectedTaxAmount = xmlData.taxed;
+        const expectedNonTaxAmount = xmlData.unTaxed;
+        const expectedPreservedAmount = xmlData.preserved;
+        const expectedUnPreservedAmount = xmlData.unrestricted;
+        const expectedRestrictedAmount = xmlData.restricted;
+        console.log(`Expected Member payment Details From XML Is: ${expectedTaxAmount} ,${expectedNonTaxAmount},${expectedPreservedAmount},${expectedUnPreservedAmount},${expectedRestrictedAmount}`);
+        allure.logStep(`Expected Member payment Details From XML Is: taxedAmount = ${expectedTaxAmount} , nonTaxedAmount = ${expectedNonTaxAmount},preservedAmount = ${expectedPreservedAmount},unPreservedAmount = ${expectedUnPreservedAmount},restrictedAmount = ${expectedRestrictedAmount}`);
+
+        const actualTaxAmount = await memberPage.taxedComponent();
+        const actualNonTaxAmount = await memberPage.unTaxedComponent();
+        const actualPreservedAmount = await memberPage.preservedComponent();
+        const actualUnPreservedAmount = await memberPage.unPreservedComponent();
+        const actualRestrictedAmount = await memberPage.unTaxedComponent();
+        const actualPaymentReferenceNumber = await memberPage.paymentReference();
+        const actualConversationId = await memberPage.getConversationId();
+
+        allure.logStep(`Actual Member payment Details from UI Is: taxedAmount = ${actualTaxAmount}, nonTaxedAmount = ${actualNonTaxAmount}, preservedAmount = ${actualPreservedAmount},unPreservedAmount = ${actualUnPreservedAmount},restrictedAmount = ${actualRestrictedAmount}`);
+
+        await globalPage.captureScreenshot('Paymnent Details');
+
+        allure.logStep(`Expected PaymentReferenceNumber is: ${expectedPaymentReferenceNumber}, actual PaymentReferenceNumber is: ${actualPaymentReferenceNumber}`);
+        const message = await memberPage.getMessageType();
+        allure.logStep(`Message Type Is: ${message}`);
+        allure.logStep(`Expected conversationId is: ${expectedConversationId}, actual conversationId is: ${actualConversationId}`);
+
+        if (
+            await actualPaymentReferenceNumber === expectedPaymentReferenceNumber &&
+            await actualConversationId === expectedConversationId
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+    });
+
+});
+
 
