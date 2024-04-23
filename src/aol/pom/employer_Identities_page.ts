@@ -7,7 +7,7 @@ import { TFN } from "../data/tfn";
 
 import { UtilsAOL } from "../utils_aol";
 import assert from "assert";
-import { error } from "console";
+import { Console, error } from "console";
 
 
 export class EmployerIdentitiesPage extends BasePage {
@@ -87,21 +87,21 @@ export class EmployerIdentitiesPage extends BasePage {
         this.wpnValue = page.getByLabel('WPN *');
 
         this.contactDetailsAddNew = page.getByRole('button', { name: 'Add new' });
-        this.contactGivenName = page.getByLabel('Contact given name *');
-        this.surname = page.getByLabel('Surname *');
+        this.contactGivenName = page.locator('(//label[@for="givenName"]/following::input[@name="givenName"])[1]');
+        this.surname = page.locator('(//label[@for="surname"]/following::input[@name="surname"])[1]');
         this.contactPosition = page.getByLabel('Contact position');
         this.phoneNumber = page.getByLabel('Phone number');
         this.email = page.getByLabel('Email');
 
         this.filter = page.getByRole('button', { name: 'FILTER' });
         this.EmployerNameFilter = page.locator('//div[@class="filter-list-item"][normalize-space()="Employer Name"]');
-        this.EmployerNameFilterValue = page.getByRole('textbox').first();
+        this.EmployerNameFilterValue = page.locator("(//input[@class='el-input__inner'])[2]");
         this.applyButton = page.getByRole('button', { name: 'APPLY' });
         // this.getRecord = page.locator('//tr[contains(@class,"el-table__row tbl-row-rnd")]');
         this.getRecord = page.locator('//table[@class="el-table__body"]');
 
         this.editEmployer = page.locator('div').filter({ hasText: /^Employer detailsEdit Content$/ }).getByRole('button');
-        this.editContactDetails = page.locator('(//*[name()="svg"][@role="presentation"])[17]')
+        this.editContactDetails = page.locator('(//button[contains(@class,"gs-button gs-button-edit-btn")]//span)[2]')
 
 
         this.outcome = page.locator('//div[text()=" Outcome "]/following-sibling::div');
@@ -114,13 +114,14 @@ export class EmployerIdentitiesPage extends BasePage {
 
     }
 
-    async createNewEmployer(businessName: string) {
+    async createNewEmployer() {
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         ///await this.ABN.check();
         await this.abnValue.fill('45004189708');
         //await this.acnValue.fill(acnValue);
-        await this.businessName.fill(businessName);
+        let businessN=UtilsAOL.randomNumber(5);
+        await this.businessName.fill(businessN);
         await this.employerType.click();
         await this.partcipating.click();
         // await this.fundEmployerId.fill(fundEmployerId);
@@ -161,17 +162,21 @@ export class EmployerIdentitiesPage extends BasePage {
         else {
             console.error("New Employer creation using ABN failed");
         }
+        console.log(businessN);
+        return businessN;
     }
 
-    async createNewEmployerWPN(businessName: string) {
+    async createNewEmployerWPN() {
 
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         await this.WPN.click();
+        await this.sleep(2000);
         let tfns =TFN.getValidTFN();
         await this.wpnValue.fill(tfns.tfn);
         //await this.acnValue.fill(acnValue);
-        await this.businessName.fill(businessName);
+        let businessN=UtilsAOL.randomName();
+        await this.businessName.fill(businessN);
         await this.employerType.click();
         await this.partcipating.click();
         //await this.fundEmployerId.fill(fundEmployerId);
@@ -214,22 +219,24 @@ export class EmployerIdentitiesPage extends BasePage {
         }
     }
 
-    async addContactDetails(businessName: string) {
-        await this.employerIdentitiesLink.click();
-        await this.addNewEmployer.click();
-        ///await this.ABN.check();
+    async addContactDetails() {
+        const businessN = await this.createNewEmployer()
+        await this.sleep(3000)
+
         await this.employerIdentitiesLink.click();
         await this.filter.click();
         await this.EmployerNameFilter.click();
-        await this.EmployerNameFilterValue.fill(businessName);
+        await this.page.waitForTimeout(3000).then(()=>this.EmployerNameFilterValue.fill(businessN));
         await this.applyButton.click();
         await this.getRecord.click();
         await this.editContactDetails.click();
-        await this.contactDetailsAddNew.click();
-        await this.contactGivenName.fill('John');
-        await this.surname.fill('Joseph');
-        await this.contactPosition.fill('Primary');
-        await this.phoneNumber.fill('+61 4 1234 5678');
+        await this.contactDetailsAddNew.click(); 
+        let firstName = UtilsAOL.randomName();
+        await this.contactGivenName.fill(firstName);
+        let lastName = UtilsAOL.randomSurname(5);
+        await this.surname.fill(lastName);
+        ///await this.contactPosition.fill('Primary');
+        ///await this.phoneNumber.fill('+61 4 1234 5678');
         await this.email.fill('minal.tate@grow.inc');
         await this.viewCase.click();
         await this.createCase.click();
@@ -263,16 +270,21 @@ export class EmployerIdentitiesPage extends BasePage {
     }
 
 
-    async updateExistingEployer(businessName: string) {
+    async updateExistingEployer() {
+        const businessN = await this.createNewEmployer();
+        await this.sleep(3000);
+
         await this.employerIdentitiesLink.click();
         await this.filter.click();
         await this.EmployerNameFilter.click();
-        await this.EmployerNameFilterValue.fill(businessName);
+        await this.page.waitForTimeout(3000).then(()=>this.EmployerNameFilterValue.fill(businessN));
         await this.applyButton.click();
         await this.getRecord.click();
         await this.editEmployer.click();
-        await this.acnValue.fill('098765470');
-        await this.businessName.fill('Businness06');
+        let acn=UtilsAOL.randomNumber(9);
+        await this.acnValue.fill(acn);
+        let businessNM=UtilsAOL.randomNumber(6)
+        await this.businessName.fill(businessNM);
         await this.viewCase.click();
         await this.createCase.click();
         await this.linkCase.click();
