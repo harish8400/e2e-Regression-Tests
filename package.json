@@ -6,8 +6,11 @@
     "scripts": {
         "postinstall": "npx playwright install",
         "test": "npx playwright test",
-        "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1 --reporter allure",
-        "report": "npx playwright show-report"
+        "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
+        "report": "npx playwright show-report",
+        "test:setup": "npx playwright install && npx playwright install-deps",
+        "test:ui": "npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
+        "ci:e2e-test:pension": "ENVIRONMENT='dev' && npm run test:setup && npm run test:ui"
     },
     "author": "",
     "license": "ISC",

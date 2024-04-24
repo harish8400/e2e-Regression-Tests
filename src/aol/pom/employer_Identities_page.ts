@@ -135,10 +135,11 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.state.click();
         await this.postcode.fill('2640');
         await this.viewCase.click();
+        await this.sleep(2000);
         await this.createCase.click();
         await this.sleep(2000);
         await this.linkCase.click();
-        await this.sleep(3000);
+        await this.sleep(2000);
         await this.statusText.scrollIntoViewIfNeeded();
 
         const employerUpdatedData = await this.statusText.textContent();
