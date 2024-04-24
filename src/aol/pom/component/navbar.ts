@@ -6,6 +6,8 @@ export class Navbar extends BasePage {
 
     readonly accumulationProduct: Locator;
     readonly accumulationMembersLink: Locator;
+    readonly memberIdentities: Locator;
+    readonly addEmployer: Locator;
 
     readonly selectRetirementProduct: Locator;
     readonly membersLink: Locator;
@@ -26,6 +28,9 @@ export class Navbar extends BasePage {
 
         this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
+
+        this.memberIdentities =page.getByText('memberIdentities');
+        this.addEmployer =page.getByText('Add new employer');
 
         this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
         this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
@@ -63,6 +68,11 @@ export class Navbar extends BasePage {
         await this.accumulationProduct.click();
         await this.accumulationMembersLink.click();
       }
+    
+    async navigateToEmployerIdentities(){
+        await this.memberIdentities.click();
+        await this.addEmployer.click();
+    }
 
     async navigateToPensionMembersPage() {
 
