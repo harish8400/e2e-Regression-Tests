@@ -87,7 +87,7 @@ export class EmployerIdentitiesPage extends BasePage {
         this.wpnValue = page.getByLabel('WPN *');
 
         this.contactDetailsAddNew = page.getByRole('button', { name: 'Add new' });
-        this.contactGivenName = page.locator('(//label[@for="givenName"]/following::input[@name="givenName"])[1]');
+        this.contactGivenName = page.locator('//label[@for="givenName"]/following::input[@id="givenName"]');
         this.surname = page.locator('(//label[@for="surname"]/following::input[@name="surname"])[1]');
         this.contactPosition = page.getByLabel('Contact position');
         this.phoneNumber = page.getByLabel('Phone number');
@@ -242,6 +242,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.email.fill('minal.tate@grow.inc');
         await this.viewCase.click();
         await this.createCase.click();
+        await this.sleep(2000);
         await this.linkCase.click();
         await this.sleep(3000);
        await this.statusText1.scrollIntoViewIfNeeded();
@@ -289,6 +290,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.businessName.fill(businessNM);
         await this.viewCase.click();
         await this.createCase.click();
+        await this.sleep(2000);
         await this.linkCase.click();
         await this.sleep(3000);
         await this.statusText2.scrollIntoViewIfNeeded();
