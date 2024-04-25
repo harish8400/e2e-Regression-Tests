@@ -672,6 +672,59 @@ export class MemberPage extends BasePage {
         memberLink.scrollIntoViewIfNeeded().then(() => this.sleep(3000).then(() => memberLink.click()));
     }
 
+    async memberGCTRContribution() {
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='SCC']"))).first();
+        transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
+        transactionType.click();
+        let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Components Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Payment Details']").click());
+        viewCase;
+        await this.sleep(1000).then(() => this.paymentReference);
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+        await this.amountContributedTypeLIT();
+        await this.amountContributedTypeGCC();
+        await this.amountContributedTypeSEC();
+
+
+    }
+
+    async amountContributedTypeLIT() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let litType = await this.page.locator("//div[@class='cell']/following::div[text()='LIT']").first();
+        litType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => litType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from LISTO is: ${amount}`);
+
+    }
+
+    async amountContributedTypeGCC() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let gccType = await this.page.locator("//div[@class='cell']/following::div[text()='GCC']").first();
+        gccType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => gccType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Co-Contribution is: ${amount}`);
+
+    }
+
+    async amountContributedTypeSEC() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let secType = await this.page.locator("//div[@class='cell']/following::div[text()='GCC']").first();
+        secType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => secType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from SHA - Employer is: ${amount}`);
+
+    }
+
+    async getPayrollNumber() {
+        const payrollNumber = await this.page.locator("//p[text()='Payroll number identifier']/following::p[@class='font-semibold']").textContent();
+        return payrollNumber ? payrollNumber.trim() : null;
+    }
 
 
 }

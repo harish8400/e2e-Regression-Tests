@@ -110,7 +110,7 @@ export class xmlUtility {
         }
     }
 
-    static async generateXMLFileIRR (templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean, transferWholeBalance:boolean, wholeBalanceTransfer:string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+    static async generateXMLFileIRR(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean, transferWholeBalance: boolean, wholeBalanceTransfer: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
         let generatedXMLFileName: string = templateName;
         switch (templateName) {
             case 'IRR_APRA.xml':
@@ -118,12 +118,38 @@ export class xmlUtility {
                     return await this.generateIRRWithRolloverOutForNewMember(templateName, apiRequestContext, transferWholeBalance, wholeBalanceTransfer, isTFNToBePassed);
 
                 } else {
-                    return this.generateIRRWithRolloverOut(templateName,apiRequestContext,transferWholeBalance,wholeBalanceTransfer);
+                    return this.generateIRRWithRolloverOut(templateName, apiRequestContext, transferWholeBalance, wholeBalanceTransfer);
                 }
             default:
                 return { destinationFileName: generatedXMLFileName, conversationId: "", member: "", surName: "", dob: "" }; // Adjust the default return type according to your needs
         }
     }
+
+    static async generateXMLFileGCTR(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'GCTR.xml':
+                if (!isNewMember) {
+                    return await this.generateGCTRXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateGCTRXMLForExsistingMember(templateName);
+                }
+            default:
+                // Return a promise that resolves to an object with placeholder values
+                return Promise.resolve({
+                    destinationFileName: '',
+                    paymentReferenceNumber: '',
+                    conversationId: '',
+                    payrollNumber: '',
+                    member: '',
+                    surName: '',
+                    year: 0,
+                    month: '',
+                    day: 0
+                });
+        }
+    }
+    
     
 
 
@@ -1049,7 +1075,7 @@ export class xmlUtility {
     }
 
     // Generate XML for IRR 
-    static generateIRRWithRolloverOut(templateFileName: string,apiRequestContext: APIRequestContext, transferWholeBalance: boolean, wholeBalanceTransfer: string): { destinationFileName: string;  conversationId: string; member: string, surName: string, dob: string} {
+    static generateIRRWithRolloverOut(templateFileName: string, apiRequestContext: APIRequestContext, transferWholeBalance: boolean, wholeBalanceTransfer: string): { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string } {
         try {
             let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -1136,8 +1162,8 @@ export class xmlUtility {
             /// Node values
             const currentUTCTime: Date = new Date();
             const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
-            
-			if (transferWholeBalance) {
+
+            if (transferWholeBalance) {
                 wholeBalanceTransfer = 'YES';
             } else {
                 wholeBalanceTransfer = 'NO';
@@ -1152,7 +1178,7 @@ export class xmlUtility {
             const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
             await new Promise(resolve => setTimeout(resolve, 9000));
             await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-          
+
 
             // Extract member data
             const { memberNo, member, surName, dob, tfn } = memberData;
@@ -1186,8 +1212,8 @@ export class xmlUtility {
 
 
             };
-           allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
-           /// Update XML nodes and save it
+            allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
+            /// Update XML nodes and save it
             this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
 
             return { destinationFileName, member, surName, dob, conversationId };
@@ -1197,7 +1223,150 @@ export class xmlUtility {
         }
     }
 
+    // Generate XML for GCTR with TFN
+    static async generateGCTRXMLForNewMember(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string, conversationId: string, payrollNumber: string, member: string, surName: string, year: number, month: string, day: number }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
 
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.095427.123@superchoice.com.au`;
+            const conversationId: string = `Contribution.84111122223.${formattedDate}1054275${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `GCTR_${formattedDate}_105427_555_${conversationId}_1.xml`;
+            const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const paymentReferenceNumber = 'NA1257412369871005';
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            let { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            const year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            const day = parseInt(parts[2], 10);
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+                "//messageId[1]/ebmsMessageId[1]": superGateMessageId,
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//sourceAbn[1]": superStreamDataCTR.sourceAbn,
+                "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
+                "//targetAbn[1]": superStreamDataCTR.targetAbn,
+                "//targetUsi[1]": superStreamDataCTR.targetUsi,
+                "//paymentReferenceNumber[1]": paymentReferenceNumber,
+                "//payer[1]/paymentReference[1]": paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": paymentReferenceNumber,
+                "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataCTR.targetAbn,
+                "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/gender[1]": superStreamDataCTR.memberGender,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//member[1]//taxFileNumber[1]": tfn,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]//payrollNumber[1]": payrollNumber,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataCTR.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi
+            };
+            allure.logStep(`Super stream contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, paymentReferenceNumber, conversationId, payrollNumber, member, surName, year, month, day };
+        } catch (error) {
+            console.error("Error occurred while generating CTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for CTR with TFN
+    static async generateGCTRXMLForExsistingMember(templateFileName: string): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number; }> {
+
+
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+        const superGateMessageId = `${formattedDate}.095427.123@superchoice.com.au`;
+        const conversationId: string = `Contribution.84111122223.${formattedDate}1054275${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `GCTR_${formattedDate}_105427_555_${conversationId}_1.xml`;
+        const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const paymentReferenceNumber = 'NA1257412369871005';
+        const member = superStreamDataCTR.memberFirstName;
+        const surName = superStreamDataCTR.memberLastName;
+        const year = parseInt(superStreamDataCTR.memberdobYear,10);
+        const month = superStreamDataCTR.memberdobMonth;
+        const day = parseInt(superStreamDataCTR.memberdobDay, 10);
+        const tfn = UtilsAOL.generateValidTFN();
+        const memberNo = superStreamDataCTR.memberNumber;
+
+
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/ebmsMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//sourceAbn[1]": superStreamDataCTR.sourceAbn,
+            "//sourceUsi[1]": superStreamDataCTR.sourceUsi,
+            "//targetAbn[1]": superStreamDataCTR.targetAbn,
+            "//targetUsi[1]": superStreamDataCTR.targetUsi,
+            //paymentReferenceNumber[1]": paymentReferenceNumber,
+            "//payer[1]/paymentReference[1]": paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]": paymentReferenceNumber,
+            "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataCTR.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi,
+            "//name[1]/firstName[1]": member,
+            "//name[1]/lastName[1]": surName,
+            "//member[1]/gender[1]": superStreamDataCTR.memberGender,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
+            "//member[1]//taxFileNumber[1]": tfn,
+            "//member[1]//memberNumber[1]": memberNo,
+            "//member[1]//payrollNumber[1]": payrollNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataCTR.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataCTR.targetUsi
+
+        };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+        return {
+            destinationFileName, paymentReferenceNumber, conversationId, payrollNumber, member, surName, year, month, day
+
+        };
+    }
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {
         try {

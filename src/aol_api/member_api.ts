@@ -4,7 +4,7 @@ import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 import * as assert from 'assert';
-import { FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
+import { FUND, FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
 
 
 
@@ -30,8 +30,18 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createMember(tfnNull: boolean = false, member: string, surName: string, memberNo: string, tfn: string, dob: string): Promise<{ memberId: string, processId: string, member: string, surName: string, memberNo: string, tfn: string, dob: string }> {
-    let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
-    let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    
+    let productId;
+    let investmentId;
+
+    if (process.env.PRODUCT === FUND.HESTA) {
+      productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+      investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    } else {
+      productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+      investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    }
+
     let path = `product/${productId}/process`;
 
     if (!tfnNull && tfn !== null) {
