@@ -3,15 +3,25 @@ import { Admins } from '../../../src/aol/data/admins';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
 import { allure } from "allure-playwright";
 import { fundName } from '../../../src/aol/utils_aol';
+import { TokenManager } from '../../../src/aol_api/token_manager'; // Import TokenManager class
 
-const authFile = 'playwright/.auth/user.json';
 
-setup(fundName()+"authenticate", async ({ page }) => {
-
-    await allure.parentSuite("Login");
-
+// const authFile = 'playwright/.auth/user.json';
+setup(fundName() + "authenticate", async ({ page }) => {
+    await allure.parentSuite("Login"); 
+    let authToken: string | null = null; 
+    page.on('request', async (request) => {
+        const url = request.url();
+        const headers = request.headers();
+        const authorization = headers['authorization'];
+        if (url.startsWith('https://middleware-saturn.dev.tinasuper.com/users/me') && authorization) {
+            authToken = authorization;
+            // console.log(`Found authorization token: ${authToken}`);
+            // Store authToken using TokenManager
+            TokenManager.setToken(authToken);
+        }
+    });    // Perform authentication steps. Replace these actions with your own.
     let admin = Admins.getAdminByUsername("admin@tinasuper.com");
-    // Perform authentication steps. Replace these actions with your own.
     await page.goto(ENVIRONMENT_CONFIG.aolURL);
     await page.getByRole('button').nth(2).click();
     await page.getByPlaceholder('user@company.com').fill(admin.username);
@@ -26,8 +36,7 @@ setup(fundName()+"authenticate", async ({ page }) => {
     // Alternatively, you can wait until the page reaches a state where all cookies are set.
     await new Promise(resolve => setTimeout(resolve, 4000));
     await expect(page.getByText('Open Cases', { exact: true })).toBeVisible();
-
-    // End of authentication steps.
-
-    await page.context().storageState({ path: authFile });
+    // await page.context().storageState({ path: authFile });
+    TokenManager.getToken(authToken!);
+    // console.log(`Token getting from get Method : `+ authToken)
 });
