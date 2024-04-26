@@ -15,5 +15,6 @@ export class TokenManager {
     const authToken1 =this.setToken(token!)
     // console.log(`get Token :`+ authToken1);
     return token;
+
   }
 }

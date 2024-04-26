@@ -6,7 +6,7 @@ import { fundName } from '../../../src/aol/utils_aol';
 import { TokenManager } from '../../../src/aol_api/token_manager'; // Import TokenManager class
 
 
-// const authFile = 'playwright/.auth/user.json';
+
 setup(fundName() + "authenticate", async ({ page }) => {
     await allure.parentSuite("Login"); 
     let authToken: string | null = null; 
@@ -36,7 +36,7 @@ setup(fundName() + "authenticate", async ({ page }) => {
     // Alternatively, you can wait until the page reaches a state where all cookies are set.
     await new Promise(resolve => setTimeout(resolve, 4000));
     await expect(page.getByText('Open Cases', { exact: true })).toBeVisible();
-    // await page.context().storageState({ path: authFile });
+    
     TokenManager.getToken(authToken!);
     // console.log(`Token getting from get Method : `+ authToken)
 });

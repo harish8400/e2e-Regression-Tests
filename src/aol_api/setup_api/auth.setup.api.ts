@@ -47,5 +47,6 @@ export class AuthPageSetup {
         await context.addCookies(cookies);
 
         await this.page.context().storageState({ path: authFile });
+        
     }
 }
