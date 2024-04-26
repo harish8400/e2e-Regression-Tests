@@ -1,6 +1,6 @@
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
-import TokenManager from "./token_manager";
+import {TokenManager} from "./token_manager";
 
 export abstract class BaseDltaAolApi {
     protected readonly userId: string;
