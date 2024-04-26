@@ -1,7 +1,22 @@
+# version: '3.9'
+# services:
+#     e2e_tests:
+#         build:
+#             context: .
+#             dockerfile: buildkite.Dockerfile
+#         working_dir: /e2e
+
 version: '3.9'
 services:
-    e2e_tests:
+    app:
         build:
             context: .
             dockerfile: buildkite.Dockerfile
-        working_dir: /e2e
+        environment:
+            # Enable Buildkite integrations.
+            - BUILDKITE
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+            - BUILDKITE_JOB_ID
+            - BUILDKITE_STEP_ID
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
