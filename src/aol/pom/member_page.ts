@@ -122,6 +122,10 @@ export class MemberPage extends BasePage {
     readonly navBar: Navbar
     readonly contribution: Locator;
     readonly globalPage: GlobalPage;
+    readonly FilterClick: Locator;
+    readonly FilterOption: Locator;
+    readonly FilterOptionInput: Locator;
+    readonly BtnApply: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -228,6 +232,12 @@ export class MemberPage extends BasePage {
         this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
         this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
+
+        // #filter
+        this.FilterClick = page.getByRole('button', { name: 'FILTER' });
+        this.FilterOption = page.getByText('Member Number').nth(1);
+        this.FilterOptionInput = page.locator('textarea');
+        this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean, memberIsChild?: boolean) {
@@ -324,7 +334,14 @@ export class MemberPage extends BasePage {
     async selectMember(memberName: string) {
         await this.sleep(3000);
         await this.page.reload();
-        await this.sleep(5000);
+        
+        //Filter member
+        await this.FilterClick.click();
+        await this.FilterOption.click();
+        await this.sleep(1000);
+        await this.FilterOptionInput.fill(memberName);
+        await this.BtnApply.click();
+        
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }

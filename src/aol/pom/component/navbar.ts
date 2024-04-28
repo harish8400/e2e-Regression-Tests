@@ -45,7 +45,7 @@ export class Navbar extends BasePage {
         this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
         this.FilterValue = page.getByText('Name', { exact: true });
-        this.memberSurname = page.getByRole('textbox').nth(2);
+        this.memberSurname = page.locator('(//div[contains(@class,"el-input el-input--mini")]//input)[2]');
     }
 
     async navigateToDashboard(){
@@ -98,7 +98,7 @@ export class Navbar extends BasePage {
     }
 
     async selectMemberSurName(surname: string){
-        //await this.page.reload();
+        await this.page.reload();
         await this.sleep(2000);
 
         //Filter member
