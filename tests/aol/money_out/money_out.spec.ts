@@ -23,9 +23,10 @@ test(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransfer
     await allure.subSuite("Rollover out full exit");
     let createMemberNo;
     await test.step("Create New Accumulation Account", async () => {
-    const memberData = await memberPage.createAccumulationMember(apiRequestContext);
+    const memberData = await memberPage.createAccumulationMember(apiRequestContext, accountInfoPage, navBar);
     createMemberNo = memberData.createMemberNo;
-    await globalPage.captureScreenshot('Accumulation Account Creation'); });
+    await globalPage.captureScreenshot('Accumulation Account Creation');
+    })
 
     await test.step("Rollover In personal contribution", async () => {
         await memberTransactionPage.memberRolloverIn();

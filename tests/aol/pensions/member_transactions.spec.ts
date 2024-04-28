@@ -10,7 +10,6 @@ import pensionMember from "../../../data/aol_test_data.json";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 import * as data from "../../../data/aol_test_data.json";
 import * as member from "../../../src/aol/data/member.json";
-import { Navbar } from "../../../src/adviser_online/pom/component/navbar";
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -34,7 +33,7 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
     //When api is set to true we will use new Shell account creation for testing.
     if (pensionMember.generate_test_data_from_api) {
 
-        // Create New Pension Shell Account
+        // Create New Accumulation Account
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
         })

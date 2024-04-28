@@ -76,7 +76,7 @@ export class MemberTransactionsPage extends BasePage {
     // Member Termination
     readonly accumulationFirstMember: Locator;
     readonly relationshipBtn: Locator;
-    readonly relationshipEditBtn: Locator;
+    readonly employementEditBtn: Locator;
     readonly employerEndDate: Locator;
     readonly viewCases: Locator;
     readonly reviewCase: ReviewCase;
@@ -167,7 +167,7 @@ export class MemberTransactionsPage extends BasePage {
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
-        this.relationshipEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
+        this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).first();
         this.employerEndDate = page.locator('input[name="linkBroken"]');
         this.viewCases = page.getByRole('button', { name: 'View Cases' });
 
@@ -281,11 +281,14 @@ export class MemberTransactionsPage extends BasePage {
 
     /** Member Termination for Current Date */
     async employmentTerminationForCurrentDate() {
-        await this.sleep(3000);
-        await this.relationshipBtn.click({ timeout: 5000 });
-        await this.relationshipEditBtn.click({ timeout: 5000 });
-        await this.viewCases.click({ timeout: 5000 });
-        await this.createCase.click({ timeout: 5000 });
+        //await this.sleep(5000);
+        await this.relationshipBtn.waitFor();
+        await this.relationshipBtn.click();
+        await this.employementEditBtn.waitFor();
+        await this.employementEditBtn.click();
+        await this.viewCases.waitFor();
+        await this.viewCases.click();
+        await this.createCase.click();
         await this.sleep(3000);
         await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.linkCase.click();
@@ -294,11 +297,11 @@ export class MemberTransactionsPage extends BasePage {
     async employmentTerminationForEarlierDate() {
         await this.sleep(3000);
         await this.relationshipBtn.click({ timeout: 5000 });
-        await this.relationshipEditBtn.click({ timeout: 5000 });
+        await this.employementEditBtn.click({ timeout: 5000 });
         await this.sleep(2000);
-        await this.viewCases.click({ timeout: 5000 });
-        await this.createCase.click({ timeout: 5000 })
-        await this.sleep(3000);;
+        await this.viewCases.click();
+        await this.createCase.click();
+        await this.sleep(3000);
         await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(-2)}`);
         await this.linkCase.click();
     }
