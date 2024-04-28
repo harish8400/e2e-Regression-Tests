@@ -26,5 +26,5 @@ if (!(environment in configContent)) {
 }
 
 console.log(`Running in '${environment}' environment`)
-
 export const ENVIRONMENT_CONFIG = configContent[environment];
+

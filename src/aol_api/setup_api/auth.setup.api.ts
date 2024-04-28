@@ -1,6 +1,6 @@
 import { Page, BrowserContext, Cookie } from '@playwright/test';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
-import TokenManager from '../token_manager';
+import {TokenManager} from '../token_manager';
 import jwt from 'jsonwebtoken'; 
 
 
@@ -13,12 +13,12 @@ export class AuthPageSetup {
         this.page = page;
     }
 
-    async login() {
+    async login(authToken: string) {
         await this.page.goto(ENVIRONMENT_CONFIG.dltaApiURL + 'swagger-ui'); // Change the URL here
-        const token = TokenManager.getToken();
+        const token = TokenManager.getToken(authToken);
 
         await this.page.setExtraHTTPHeaders({
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `${token}`,
         });
 
         // Generate JWT token
@@ -47,5 +47,6 @@ export class AuthPageSetup {
         await context.addCookies(cookies);
 
         await this.page.context().storageState({ path: authFile });
+        
     }
 }
