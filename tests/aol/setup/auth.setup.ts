@@ -4,8 +4,6 @@ import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
 import { allure } from "allure-playwright";
 import { fundName } from '../../../src/aol/utils_aol';
 
-
-
 const authFile = 'playwright/.auth/user.json';
 setup(fundName() + "authenticate", async ({ page }) => {
     await allure.parentSuite("Login"); 
