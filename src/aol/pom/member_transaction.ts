@@ -76,13 +76,14 @@ export class MemberTransactionsPage extends BasePage {
     // Member Termination
     readonly accumulationFirstMember: Locator;
     readonly relationshipBtn: Locator;
-    readonly relationshipEditBtn: Locator;
+    readonly employementEditBtn: Locator;
     readonly employerEndDate: Locator;
     readonly viewCases: Locator;
     readonly reviewCase: ReviewCase;
     readonly memberOverViewPage: MemberOverView;
     readonly firstRowMember:Locator;
     readonly pensionComutation:Locator;
+    readonly partialBalance: Locator;
 
     //Benefit Payment
     readonly benefitPaymentOption: Locator;
@@ -167,7 +168,7 @@ export class MemberTransactionsPage extends BasePage {
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
         this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
-        this.relationshipEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
+        this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).first();
         this.employerEndDate = page.locator('input[name="linkBroken"]');
         this.viewCases = page.getByRole('button', { name: 'View Cases' });
 
@@ -209,6 +210,7 @@ export class MemberTransactionsPage extends BasePage {
         this.benefitTransactionReference = page.getByRole('row', {name: 'Benefit'}).first();
         this.paymentTransactionReference = page.getByRole('row', {name: 'Payment'}).first();
         this.investmentsReference = page.locator("//span[@class='btn-heading' and contains(text(),'Investments')]");
+        this.partialBalance = page.getByText('0.00', { exact: true });
     }
 
     /** Member Rollin, adds a contribution to member account */
@@ -281,11 +283,14 @@ export class MemberTransactionsPage extends BasePage {
 
     /** Member Termination for Current Date */
     async employmentTerminationForCurrentDate() {
-        await this.sleep(3000);
-        await this.relationshipBtn.click({ timeout: 5000 });
-        await this.relationshipEditBtn.click({ timeout: 5000 });
-        await this.viewCases.click({ timeout: 5000 });
-        await this.createCase.click({ timeout: 5000 });
+        //await this.sleep(5000);
+        await this.relationshipBtn.waitFor();
+        await this.relationshipBtn.click();
+        await this.employementEditBtn.waitFor();
+        await this.employementEditBtn.click();
+        await this.viewCases.waitFor();
+        await this.viewCases.click();
+        await this.createCase.click();
         await this.sleep(3000);
         await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.linkCase.click();
@@ -294,11 +299,11 @@ export class MemberTransactionsPage extends BasePage {
     async employmentTerminationForEarlierDate() {
         await this.sleep(3000);
         await this.relationshipBtn.click({ timeout: 5000 });
-        await this.relationshipEditBtn.click({ timeout: 5000 });
+        await this.employementEditBtn.click({ timeout: 5000 });
         await this.sleep(2000);
-        await this.viewCases.click({ timeout: 5000 });
-        await this.createCase.click({ timeout: 5000 })
-        await this.sleep(3000);;
+        await this.viewCases.click();
+        await this.createCase.click();
+        await this.sleep(3000);
         await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(-2)}`);
         await this.linkCase.click();
     }
@@ -336,7 +341,7 @@ export class MemberTransactionsPage extends BasePage {
     }
 
     //Money_out Benefit Payment
-    async benefitPayment(benefitType: string) {
+    async benefitPayment(benefitType: string, FullExit: Boolean) {
 
         //await this.memberHFMFundLink.click();
         await this.memberTransactionTab.click();
@@ -364,9 +369,6 @@ export class MemberTransactionsPage extends BasePage {
             await this.benefitTyoe_UnrestrictedNonPreservedBenefit.click();
 
         }
-        // else if(benefitType == 'Compassionate Grounds - Partial'){
-        //     await this.benefitType_RetirementPreservationAge.click();
-        // }
         else if(benefitType == 'Compassionate Grounds - Partial'){
             await this.benefitType_CompassionateGroundsPartial.click();
         }
@@ -384,6 +386,12 @@ export class MemberTransactionsPage extends BasePage {
         await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.effectiveDate.press('Tab');
         //await this.payFullBalance.click();
+        if (!FullExit) {
+            await this.page.locator('.switch-slider').click();
+            await this.partialBalance.click();
+            await this.sleep(2000);
+            await this.page.getByPlaceholder('0').fill('2000');
+          }
 
         await this.linkCase.click();
         await this.sleep(5000);
