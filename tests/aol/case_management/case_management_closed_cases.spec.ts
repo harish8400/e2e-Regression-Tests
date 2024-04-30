@@ -5,7 +5,7 @@ import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
-        test.setTimeout(600000);
+        test.setTimeout(800000);
         await navBar.selectProduct();
         await allure.suite("Case Management");
         await allure.parentSuite(process.env.PRODUCT!);
@@ -23,7 +23,7 @@ test(fundName()+"-Ensure that comments can be added after a case is closed and u
 })
 
 /** Ensure cases are correctly displayed under Closed Cases tab */
-test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @pipeline", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.navigateToClosedCasesTab();

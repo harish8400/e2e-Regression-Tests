@@ -1,0 +1,25 @@
+{
+    "HESTA for Mercy": {
+        "sourceAbn": "64971749321",
+        "sourceUsi": "64971749321001"
+    },
+    "Vanguard Super": {
+        "sourceAbn": "27923449966",
+        "sourceUsi": "VSF0001AU"
+    },
+    "Australian Ethical Super": {
+        "sourceAbn": "49633667743",
+        "sourceUsi": "CHR0001AU"
+    },
+    "organisationName": {
+        "HESTA for Mercy": {
+            "value": "MERCY SUPER"
+        },
+        "Vanguard Super": {
+            "value": "VANGUARD SUPER"
+        },
+        "Australian Ethical Super": {
+            "value": "Australian Ethical"
+        }
+    }
+}

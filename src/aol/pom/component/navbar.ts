@@ -5,6 +5,8 @@ import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 export class Navbar extends BasePage {
   readonly accumulationProduct: Locator;
   readonly accumulationMembersLink: Locator;
+    readonly memberIdentities: Locator;
+    readonly addEmployer: Locator;
 
   readonly selectRetirementProduct: Locator;
   readonly membersLink: Locator;
@@ -23,28 +25,27 @@ export class Navbar extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.accumulationProduct = page.getByRole("link", { name: "Accumulation" });
-    this.accumulationMembersLink = page.getByRole("link", { name: "Members" });
+        this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
+        this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
-    this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
-    this.selectTTRProduct = page.getByRole("link", {
-      name: "Transition to Retirement",
-    });
-    //this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
-    this.membersLink = page.getByRole("link", { name: "Members" });
-    this.addMemberButton = page.getByRole("button", {
-      name: "add-circle icon Add Member",
-    });
-    this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
-    this.productSelection = page.getByText("HESTA for Mercy");
+        this.memberIdentities =page.getByText('memberIdentities');
+        this.addEmployer =page.getByText('Add new employer');
 
-    this.FilterClick = page.getByRole("button", { name: "FILTER" });
-    this.FilterOption = page.getByText("Member Number").nth(1);
-    this.FilterOptionInput = page.locator("textarea");
-    this.BtnApply = page.getByRole("button", { name: "APPLY" });
-    this.FilterValue = page.getByText("Name", { exact: true });
-    this.memberSurname = page.getByRole("textbox").nth(2);
-  }
+        this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
+        this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
+        //this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
+        this.membersLink = page.getByRole('link', { name: 'Members' });
+        this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
+        this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
+        this.productSelection = page.getByText('HESTA for Mercy');
+        
+        this.FilterClick = page.getByRole('button', { name: 'FILTER' });
+        this.FilterOption = page.getByText('Member Number').nth(1);
+        this.FilterOptionInput = page.locator('textarea');
+        this.BtnApply = page.getByRole('button', { name: 'APPLY' });
+        this.FilterValue = page.getByText('Name', { exact: true });
+        this.memberSurname = page.locator('(//div[contains(@class,"el-input el-input--mini")]//input)[2]');
+    }
 
   async navigateToDashboard() {
     await this.page.goto(ENVIRONMENT_CONFIG.aolURL);
@@ -61,26 +62,32 @@ export class Navbar extends BasePage {
     await this.page.locator("li").filter({ hasText: product }).click();
   }
 
-  async navigateToAccumulationMembersPage() {
-    await this.accumulationProduct.click();
-    await this.accumulationMembersLink.click();
-  }
+    async navigateToAccumulationMembersPage() {
+
+        await this.accumulationProduct.click();
+        await this.accumulationMembersLink.click();
+      }
+    
+    async navigateToEmployerIdentities(){
+        await this.memberIdentities.click();
+        await this.addEmployer.click();
+    }
 
   async navigateToPensionMembersPage() {
     await this.selectRetirementProduct.click();
     await this.membersLink.click();
   }
 
-  async selectMember(member: string) {
-    await this.sleep(3000);
-    await this.page.reload();
-
-    //Filter member
-    await this.FilterClick.click();
-    await this.FilterOption.click();
-    await this.sleep(3000);
-    await this.FilterOptionInput.fill(member);
-    await this.BtnApply.click();
+    async selectMember(member: string){
+        await this.sleep(1500);
+        await this.page.reload();
+        
+        //Filter member
+        await this.FilterClick.click();
+        await this.FilterOption.click();
+        await this.sleep(1000);
+        await this.FilterOptionInput.fill(member);
+        await this.BtnApply.click();
 
     //Select and click on member details
     await expect(
@@ -89,9 +96,9 @@ export class Navbar extends BasePage {
     await this.page.getByRole("cell", { name: member }).first().click();
   }
 
-  async selectMemberSurName(surname: string) {
-    //await this.page.reload();
-    await this.sleep(2000);
+    async selectMemberSurName(surname: string){
+        await this.page.reload();
+        await this.sleep(2000);
 
     //Filter member
     await this.FilterClick.click();

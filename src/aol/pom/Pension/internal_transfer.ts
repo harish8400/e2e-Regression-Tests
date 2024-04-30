@@ -7,7 +7,6 @@ import * as member from "../../data/member.json";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 
-
 export class InternalTransferPage extends BasePage {
     readonly processesLink: Locator;
     readonly reviewCase: ReviewCase;
@@ -140,7 +139,7 @@ export class InternalTransferPage extends BasePage {
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
-        this.verifyFinalizeMoneyOutSuccess = page.getByText('Intra fund Internal Transfer out complete.');;
+        this.verifyFinalizeMoneyOutSuccess = page.getByText('Process step completed with note: Rollout correspondence sent');;
 
         //API Integration Internal Transfer 
         this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
@@ -181,7 +180,7 @@ export class InternalTransferPage extends BasePage {
         this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
         this.beneficiaryName = page.getByLabel('Beneficiary Name *');
         this.beneficiaryType = page.getByText('Non-Binding');
-        this.beneficiaryRelation = page.locator('#gs11__combobox div').first()
+        this.beneficiaryRelation = page.locator('#gs15__combobox').getByLabel('Select', { exact: true });
         this.beneficiaryRelationSelect = page.getByText('Spouse');
         this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
         this.beneficiaryPercentage = page.getByPlaceholder('0');
@@ -200,7 +199,7 @@ export class InternalTransferPage extends BasePage {
         this.verifycreationVG = page.locator(CASE_NOTE.UNAUTHORISED);
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
-        this.summary = page.getByRole('button', { name: 'Member Summary' });
+        this.summary = page.getByRole('button', { name: 'Investor Summary' });
 
         //transferOut
 
@@ -283,7 +282,7 @@ export class InternalTransferPage extends BasePage {
         // Click on Internal Transfer In Process
         await this.processID.click();
         // Click on Internal Transfer In Process
-        await this.processID.first().click();
+        await this.processID.nth(1).click();
         if(process.env.PRODUCT == FUND.HESTA){
             await this.reviewCase.reviewCaseProcess(this.verifyFinalizeMoneyOutSuccess);
             await this.reviewCase.captureScreenshot('Finalize Money Out Case');
@@ -440,7 +439,7 @@ export class InternalTransferPage extends BasePage {
         await this.summary.click();
         await this.sleep(3000);
         let memberBalance = this.page.locator('(//p[@data-cy="info-title"]/following::p[@data-cy="info-value"])[10]');
-        memberBalance.scrollIntoViewIfNeeded();
+        await memberBalance.scrollIntoViewIfNeeded();
         let balance = memberBalance.textContent();
         await this.ButtonTransactions.click();
         await this.sleep(3000);

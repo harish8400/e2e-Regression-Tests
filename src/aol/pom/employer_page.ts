@@ -142,6 +142,7 @@ export class EmployerPage extends BasePage {
 
         await this.accumulationProduct.click();
         await this.employerLink.click();
+        await this.sleep(3000);
         await this.page.getByText('Test').first().click();
         await this.editIcon.click();
         await this.name.fill("Test " + this.employername);
@@ -203,5 +204,9 @@ export class EmployerPage extends BasePage {
         return employerTypes;
 
     }
+
+    
+
+
 
 }

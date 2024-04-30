@@ -4,6 +4,8 @@ import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import *  as data from "../../../data/aol_test_data.json"
+import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -19,54 +21,160 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
-test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar , accountInfoPage ,pensionAccountPage ,apiRequestContext ,pensionTransactionPage}) => {
+test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar, accountInfoPage, apiRequestContext, globalPage, pensionTransactionPage, pensionAccountPage}) => {
     
     try {
-        await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await accountInfoPage.editBankAccount();
+
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
+
+        let memberID: string;
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new ABP Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                memberID = memberData.memberNo;
+                await globalPage.captureScreenshot('TTR Account Creation');
+            });
+        }
+        else {
+            memberID = data.members.Maintain_Income_Stream_Account_Bank_Account;
+        }
+
+        await test.step("Select the ABP Member", async () => {
+            await navBar.selectMember(memberID);
+        });
+
+        await test.step("Validate Bank Account-Update", async () => {
+            await accountInfoPage.editBankAccount();
+        })
+        
     } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+        throw Error;
     }
     
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
-test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
+test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, globalPage, memberApi}) => {
     
     try {
-        await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await pensionAccountPage.editPaymentDetails();
+
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
+        
+        let memberID: string;
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new ABP Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                memberID = memberData.memberNo;
+                await globalPage.captureScreenshot('New ABP Member');
+            });
+        }
+        else {
+            let memberNo = data.members.Maintain_Income_Stream_Account_Payment_Details;
+            await test.step("Select the ABP Member", async () => {
+                await navBar.selectMember(memberNo);
+                const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+                memberID = linearId.id;
+            });
+        }
+
+        await test.step("Validate Pension - Update Payment Details is processed", async () => {
+            await pensionAccountPage.editPaymentDetails();
+        })
+
+        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberID);
+            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+            await globalPage.captureScreenshot("Re-calculated regular pension payment");
+        })
+        
     } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+        throw Error;
     }
     
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
-test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext }) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext, memberApi, globalPage }) => {
     
     try {
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
         
-        await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await pensionAccountPage.editPaymentDetails('Bi-Annualy');
+        let memberID: string;
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new ABP Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                memberID = memberData.memberNo;
+                await globalPage.captureScreenshot('New ABP Member');
+            });
+        }
+        else {
+            let memberNo = data.members.Maintain_Income_Stream_Account_Payment_Details;
+            await test.step("Select the ABP Member", async () => {
+                await navBar.selectMember(memberNo);
+                const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+                memberID = linearId.id;
+            });
+        }
+
+        await test.step("Validate Pension - Update Payment Details is processed", async () => {
+            await pensionAccountPage.editPaymentDetails('Bi-Annualy');
+        })
+
+        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberID);
+            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+            await globalPage.captureScreenshot("Re-calculated regular pension payment");
+        })
+        
     } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+        throw Error;
     }
     
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
-test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, memberApi, globalPage }) => {
     
     try {
-        await navBar.navigateToPensionMembersPage();
-        await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await pensionAccountPage.editPaymentDetails('Quartely');
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToPensionMembersPage();
+        })
+        
+        let memberID: string;
+        if (data.generate_test_data_from_api) {
+            await test.step("Add new ABP Member", async () => {
+                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+                memberID = memberData.memberNo;
+                await globalPage.captureScreenshot('New ABP Member');
+            });
+        }
+        else {
+            let memberNo = data.members.Maintain_Income_Stream_Account_Payment_Details;
+            await test.step("Select the ABP Member", async () => {
+                await navBar.selectMember(memberNo);
+                const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+                memberID = linearId.id;
+            });
+        }
+
+        await test.step("Validate Pension - Update Payment Details is processed", async () => {
+            await pensionAccountPage.editPaymentDetails('Quarterly');
+        })
+
+        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberID);
+            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+            await globalPage.captureScreenshot("Re-calculated regular pension payment");
+        })
+        
     } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
+        throw Error;
     }
     
 })

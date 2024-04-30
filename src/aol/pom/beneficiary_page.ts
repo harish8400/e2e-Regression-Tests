@@ -10,6 +10,7 @@ export class BeneficiaryPage extends BasePage {
   readonly relationshipBtn: Locator;
   readonly addButton: Locator;
   //Beneficiary Input Fields
+  readonly editButton: Locator;
   readonly beneficiaryName: Locator;
   readonly beneficiaryType: Locator;
   readonly bindingLapsing: Locator;
@@ -42,9 +43,10 @@ export class BeneficiaryPage extends BasePage {
     this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
     this.addButton = page.locator("(//span[@class='text-caption'])[3]");
     //Beneficiary Input Fields
+    this.editButton = page.locator('button').filter({ hasText: 'Edit Content' });
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryType = page.locator('#gs3__combobox');
-    this.beneficiaryRelationship = page.locator("(//input[@type='search'])[2]");
+    this.beneficiaryType = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.beneficiaryRelationship = page.locator("(//div[@class='gs__actions'])[3]")
     this.bindingLapsing = page.getByText('Binding Lapsing');
     this.beneficiaryStartDate = page.locator('input[name="effectiveDate"]');
     this.beneficiaryEndDate = page.locator('input[name="endDate"]');
@@ -56,7 +58,7 @@ export class BeneficiaryPage extends BasePage {
     this.emailInputField = page.getByLabel('Email');
     this.genderDropDown = page.locator("(//div[@class='gs__selected-options']//input)[3]");
     this.saveButton = page.getByRole('button', { name: 'SAVE' });
-    this.nonBinding = page.getByText('Non-Binding');
+    this.nonBinding = page.getByRole('option', { name: 'Non-Binding' });
     this.childDropDown = page.getByRole('option', { name: 'Child' });
     this.viewCase = page.getByRole('button', { name: 'View Cases' });
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
@@ -71,19 +73,21 @@ export class BeneficiaryPage extends BasePage {
   }
 
   async selectMemberRelationshipTab() {
-    await this.relationshipBtn.click({ timeout: 5000 });
-    await this.addButton.click({ timeout: 5000 });
+    await this.relationshipBtn.click();
+    await this.addButton.click();
   }
 
   async modifyMemberBeneficiary() {
-    await this.viewCase.click({ timeout: 5000 });
-    await this.createCase.click({ timeout: 5000 });
+    await this.relationshipBtn.click();
+    await this.editButton.click();
+    await this.viewCase.click();
+    await this.createCase.click();
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.nonBinding.click();
     await this.beneficiaryRelationship.click();
     await this.childDropDown.click();
-    await this.beneficiaryShare.click({ timeout: 5000 });
+    await this.beneficiaryShare.click();
     await this.beneficiaryShare1.fill(member.share);
     await this.contactFirstName.fill(member.FirstName);
     await this.contactSurName.fill(member.SurName);
@@ -91,12 +95,16 @@ export class BeneficiaryPage extends BasePage {
     await this.emailInputField.fill(member.email);
     await this.linkCase.click();
     await this.reviewCase.reviewCaseProcess(this.beneficiaryUpdateSuccess);
+    await this.emailInputField.scrollIntoViewIfNeeded();
   }
 
   async bindinglapsingInputFileds() {
     await this.sleep(3000);
-    await this.viewCase.click({ timeout: 5000 });
-    await this.createCase.click({ timeout: 5000 });
+    await this.relationshipBtn.click();
+    await this.editButton.click();
+    await this.viewCase.waitFor();
+    await this.viewCase.click({ timeout: 15000 });
+    await this.createCase.click({ timeout: 15000 });
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.bindingLapsing.click();
@@ -116,8 +124,12 @@ export class BeneficiaryPage extends BasePage {
   }
 
   async beneficiaryInputIsNotEqualToHundredPercent() {
-    await this.viewCase.click({ timeout: 5000 });
-    await this.createCase.click({ timeout: 5000 });
+    await this.sleep(3000);
+    await this.relationshipBtn.click();
+    await this.editButton.click();
+    await this.viewCase.waitFor();
+    await this.viewCase.click({ timeout: 15000 });
+    await this.createCase.click({ timeout: 15000 });
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.bindingLapsing.click();
@@ -125,7 +137,7 @@ export class BeneficiaryPage extends BasePage {
     await this.childDropDown.click();
     await this.beneficiaryStartDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.beneficiaryEndDate.fill(`${DateUtils.ddmmyyyStringDate(365)}`);
-    await this.beneficiaryShare.click({ timeout: 5000 });
+    await this.beneficiaryShare.click({ timeout: 15000 });
     await this.beneficiaryShare1.fill(member.share1);
     await this.contactFirstName.fill(member.FirstName);
     await this.contactSurName.fill(member.SurName);

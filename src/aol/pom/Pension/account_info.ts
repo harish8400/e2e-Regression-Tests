@@ -3,6 +3,8 @@ import { BasePage } from "../../../common/pom/base_page";
 import * as member from "../../data/member.json"
 import { ReviewCase } from "../component/review_case";
 import { DateUtils } from "../../../utils/date_utils";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "../component/global_page";
 
 export class AccountInfoPage extends BasePage {
 
@@ -40,10 +42,12 @@ export class AccountInfoPage extends BasePage {
     readonly review: Locator;
     readonly shellaccount:Locator;
     readonly inReview:Locator;
+    readonly globalPage: GlobalPage;
 
     constructor(page: Page) {
         super(page)
         this.reviewCase = new ReviewCase(page);
+        this.globalPage = new GlobalPage(page);
 
         // Bank Account Details Add/Edit step
         this.accountInfo = page.getByRole('button', { name: 'Account Info' });
@@ -103,6 +107,15 @@ export class AccountInfoPage extends BasePage {
         await this.buttonLinkToCase.click();
 
         await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
+
+        await allure.step("Validate Correspondence is sent with success", async () => {
+            allure.logStep("Verify Correspondence sent success is displayed")
+            expect(this.EditBankAcc_successMessage).toBeVisible();
+        });
+
+        await allure.step("Validate Bank-Update is processed without error", async () => {
+            await this.globalPage.captureScreenshot("Bank-Update case");
+        });
     }
 
     /** this function is for adding New Bank Account Details */
@@ -115,17 +128,18 @@ export class AccountInfoPage extends BasePage {
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
         await this.accountNameField.fill(member.AccountName);
-        await this.sleep(5000);
+        //await this.sleep(5000);
         await this.accountNUmberField.fill(member.AccountNumber);
+        await this.page.keyboard.press('Enter');
         await this.purposeDropdown.click();
         await this.sleep(5000);
         await this.purposeOption.click();
         await this.viewCasesButton.click();
         await this.sleep(5000);
         await this.createCaseButton.click();
-        await this.sleep(5000);
+        await this.sleep(7000);
         await this.buttonLinkToCase.click();
-        await this.sleep(10000);
+        await this.sleep(5000);
         await this.reviewCase.reviewCaseProcess(this.NewBankAcc_successMessage);
 
     }
