@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<superGateClientMessage xmlns="http://www.superchoice.com.au/SuperGateClientXMLSchema/1.0">
+  <xsdVersion>2.0.01</xsdVersion>
+  <action>Client-IRR</action>
+  <messageId>20240320.032208.432@growsuper</messageId>
+  <timestamp>2024-03-20T20:15:27</timestamp>
+  <conversationId>Rollover.64971749321.20240320030808735</conversationId>
+  <payload>
+    <superStreamRequestPayload>
+      <partId>PID20210915030808</partId>
+      <sourceAbn>27923449966</sourceAbn>
+      <sourceUsi>VSF0100AU</sourceUsi>
+      <targetAbn>64971749321</targetAbn>
+      <targetUsi>64971749321001</targetUsi>
+      <recordCount>1</recordCount>
+      <clientIRR>
+        <messageSender>
+          <messageSenderContext>
+            <contextId>SND01</contextId>
+            <entityId>64971749321</entityId>
+            <periodStartDate>2024-03-20Z</periodStartDate>
+            <periodEndDate>2022-08-15Z</periodEndDate>
+          </messageSenderContext>
+          <organisationName>AustralianSuper</organisationName>
+          <familyName>Cuskelly</familyName>
+          <givenName>Trisha</givenName>
+          <emailAddress>information@mercysuper.com.au</emailAddress>
+          <telephoneNumber>
+            <telephoneType>01</telephoneType>
+            <telephoneMinimalNumber>1300368891</telephoneMinimalNumber>
+          </telephoneNumber>
+        </messageSender>
+        <messageReceiver>
+          <messageReceiverContext>
+            <contextId>RCR01</contextId>
+            <entityId>64971749321</entityId>
+            <periodStartDate>2024-03-20Z</periodStartDate>
+            <periodEndDate>2024-03-20Z</periodEndDate>
+          </messageReceiverContext>
+          <organisationName>Mercy Super PLtd ATF Mercy Super</organisationName>
+        </messageReceiver>
+        <memberRolloverTransaction>
+          <memberRolloverTransactionContext>
+            <contextId>MBRROLLVR01</contextId>
+            <entityId>247372805</entityId>
+            <entityIdScheme>tfn</entityIdScheme>
+            <memberID>MER-ACC-356042</memberID>
+            <entitySegmentTransferringFundAbn>27923449966</entitySegmentTransferringFundAbn>
+            <entitySegmentTransferringFundUsi>VSF0100AU</entitySegmentTransferringFundUsi>
+            <entitySegmentReceivingFundAbn>64971749321</entitySegmentReceivingFundAbn>
+            <entitySegmentReceivingFundUsi>64971749321001</entitySegmentReceivingFundUsi>
+            <periodStartDate>2024-03-20Z</periodStartDate>
+            <periodEndDate>2024-03-20Z</periodEndDate>
+          </memberRolloverTransactionContext>
+          <familyName>UAT Member 1</familyName>
+          <givenName>Dezza</givenName>
+          <gender>0</gender>
+          <dateOfBirth>2005-01-16</dateOfBirth>
+
+          <address>
+            <usageCode>RES</usageCode>
+            <street1>842 Amely Landing</street1>
+            <locality>New Brent</locality>
+            <postcode>4000</postcode>
+            <state>QLD</state>
+            <countryCode>au</countryCode>
+          </address>
+
+          <transferWholeBalance>YES</transferWholeBalance>
+          <receiverMemberID>AUS-ACC-SUPER103</receiverMemberID>
+          <otherTuples>
+            <tuple>
+              <key>otherText</key>
+              <value>NA</value>
+            </tuple>
+          </otherTuples>
+        </memberRolloverTransaction>
+      </clientIRR>
+    </superStreamRequestPayload>
+  </payload>
+</superGateClientMessage>

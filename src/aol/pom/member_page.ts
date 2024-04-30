@@ -119,6 +119,7 @@ export class MemberPage extends BasePage {
     readonly investmentDropDown2: Locator;
     readonly sustainbleGrowth1: Locator;
     readonly memberCreated: Locator;
+    readonly rollOut:Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
     readonly rolloverIn: Locator;
@@ -234,6 +235,7 @@ export class MemberPage extends BasePage {
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
         this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
         this.rolloverIn = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
+        this.rollOut = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent.');
 
         // #filter
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
@@ -391,6 +393,9 @@ export class MemberPage extends BasePage {
             await this.reviewCase.reviewCaseProcess(this.contribution);
         } else if (superstreamProcess == 'SuperStream - MRR') {
             await this.reviewCase.reviewCaseProcess(this.memberCreated);
+        }
+        else if (superstreamProcess == 'SuperStream - Rollover Out') {
+            await this.reviewCase.reviewCaseProcess(this.rollOut);
         } else {
             await this.reviewCase.reviewCaseProcess(this.rolloverIn);
         }
@@ -530,6 +535,7 @@ export class MemberPage extends BasePage {
     }
 
     async getMessageType(): Promise<string | null> {
+        await this.sleep(3000);
         const message = await this.page.locator("(//p[text()='Message type']/following::p[@class='font-semibold'])[1]").textContent();
         return message ? message.trim() : null;
     }
@@ -742,6 +748,52 @@ export class MemberPage extends BasePage {
     async getPayrollNumber() {
         const payrollNumber = await this.page.locator("//p[text()='Payroll number identifier']/following::p[@class='font-semibold']").textContent();
         return payrollNumber ? payrollNumber.trim() : null;
+    }
+    async exitAccountTable(IsFullExit?:boolean){
+        if(IsFullExit){
+        let Table  = await this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]/span[1]");
+        await this.sleep(3000).then(()=>{Table.scrollIntoViewIfNeeded()}); 
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Exited Accounts'));
+        await Table.click();
+        }else{
+            (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        }
+            
+            (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLI']"))).first();
+        transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
+        transactionType.click();
+        let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Components Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Payment Details']").click());
+        viewCase;
+        await this.sleep(1000).then(() => this.paymentReference);
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+        viewCase;
+
+    }
+
+    async rolloutType() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let rollout = await this.page.locator("//div[@class='cell']/following::div[text()='RLOP']").first();
+        rollout.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => rollout.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount Transferred to Member after rollout transaction is: ${amount}`);
+
+    }
+
+    async rolloverTypeRLO(){
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLO']"))).first();
+        transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
+        transactionType.click();
+        let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Components Screen'));
+        await this.sleep(3000).then(() => this.page.locator("//span[text()='Payment Details']").click());
+        viewCase;
+        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+
     }
 
 
