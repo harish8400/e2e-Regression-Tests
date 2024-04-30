@@ -14,11 +14,13 @@ import { PensionShellAccount } from "./pension_account_page";
 import { RollinApiHandler } from "../../../aol_api/handler/rollin_api-handler";
 import { TransactionsApiHandler } from "../../../aol_api/handler/transaction_api_handler";
 import { allure } from "allure-playwright";
+import { MemberOverView } from "../member/member_overview";
 
 
 export class PensionTransactionPage extends BasePage {
 
   readonly navbar: Navbar;
+  readonly memberOverView: MemberOverView;
 
   //Rollover In
   readonly memberTransactionTab: Locator;
@@ -121,6 +123,7 @@ export class PensionTransactionPage extends BasePage {
   readonly OverViewEditButton: Locator;
   readonly DOD: Locator;
   readonly HESTAforMercyRetirementTab: Locator;
+  readonly accumulationTab: Locator;
   readonly personalDetailsDODUpdateSuccess: Locator;
   readonly ButtonAddTransactions: Locator;
   readonly ButtonTransactions: Locator;
@@ -131,6 +134,7 @@ export class PensionTransactionPage extends BasePage {
   readonly radioButton: Locator;
   readonly paymentAmount: Locator;
   readonly bankAccountType: Locator;
+  readonly memberUpdate_sucessMessage: Locator;
   //Transactions view 
   readonly TransactioReference: Locator;
   readonly BenefitPaymentId: Locator;
@@ -163,6 +167,7 @@ export class PensionTransactionPage extends BasePage {
 
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
+    this.memberOverView = new MemberOverView(page);
     this.today = new Date();
     this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
 
@@ -260,14 +265,16 @@ export class PensionTransactionPage extends BasePage {
     this.BSBNumber = page.getByLabel('BSB number');
     this.AccountName = page.getByLabel('Name on account');
     this.AccountNumber1 = page.getByLabel('Account number');
-    this.OverviewTab = page.locator('//button[text()="Overview"]')
-    this.OverViewEditButton = page.locator('div').filter({ hasText: /^Personal detailsEdit Content$/ }).getByRole('button');
+    this.OverviewTab = page.getByRole('button', { name: 'Overview' });
+    this.OverViewEditButton = page.locator('div').filter({ hasText: /^Personal DetailsEdit Content$/ }).getByRole('button');
+    this.memberUpdate_sucessMessage = page.getByText('Updated member.');
     this.DOD = page.locator('input[name="dateOfDeath"]');
     this.HESTAforMercyRetirementTab = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
+    this.accumulationTab = page.getByRole('button', { name: 'HESTA for Mercy Super' });
     this.personalDetailsDODUpdateSuccess = page.getByText('Updated member.');
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
-    this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Death');
+    this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Benefit payment correspondence sent.');
     this.commutationTypeDropDown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
     this.UNPPayment = page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span');
     this.bankOption = page.getByRole('option', { name: 'Bank' });
@@ -472,26 +479,24 @@ export class PensionTransactionPage extends BasePage {
 
     await this.sleep(3000);
     await this.OverviewTab.focus();
+    await this.OverviewTab.click();
     await this.sleep(3000);
     await this.OverViewEditButton.click();
 
     let isDODavilable = await this.DOD.textContent();
     if (isDODavilable == '') {
-      await this.viewCase.click();
-      await this.sleep(3000);
-      await this.createCase.click();
-      await this.sleep(3000);
-      await this.DOD.click({ force: true });
-      await this.DOD.fill(`${DateUtils.ddmmyyyStringDate(-1)}`);
-      await this.DOD.press('Tab');
-      await this.linkCase.click();
-      await this.sleep(3000);
-      await this.investmentSwitchTransaction.click();
-      await this.reviewCase.reviewCaseProcess(this.personalDetailsDODUpdateSuccess);
+        await this.sleep(3000);
+          await this.DOD.fill(DateUtils.ddmmyyyStringDate(-1));
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
     }
 
     // locator update todo for vanguard and AE
-    await this.HESTAforMercyRetirementTab.click();
+    await this.accumulationTab.click();
+    //await this.HESTAforMercyRetirementTab.click();
     await this.ButtonTransactions.click();
     await this.sleep(1000);
     await this.ButtonAddTransactions.click();
@@ -531,6 +536,7 @@ export class PensionTransactionPage extends BasePage {
     await this.CheckboxKYC.click();
     await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
+    await this.page.keyboard.down('Tab');
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
     await this.TFN.fill(`${tfn}`);
@@ -540,8 +546,9 @@ export class PensionTransactionPage extends BasePage {
     await this.BSBNumber.click();
     await this.BSBNumber.fill(member.BSBNumber);
     await this.BSBNumber.press('Enter');
-    await this.sleep(2000);
+    await this.sleep(3000);
     await this.AccountNumber1.fill(member.AccountNumber);
+    await this.page.keyboard.down('Tab');
     await this.sleep(3000);
     await this.linkCase.click();
     await this.sleep(3000);
