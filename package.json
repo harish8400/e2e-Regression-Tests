@@ -8,9 +8,9 @@
         "test": "npx playwright test",
         "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
         "report": "npx playwright show-report",
-        "test:setup": "PLAYWRIGHT_JUNIT_OUTPUT_NAME=results.xml npx playwright install && npx playwright install-deps",
+        "test:setup": "npx playwright install && npx playwright install-deps",
         "test:ui": "npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
-        "ci:e2e-test:pension": "ENVIRONMENT='dev' && npm run test:setup && npm run test:ui"
+        "ci:e2e-test:pension": "ENVIRONMENT='dev' PLAYWRIGHT_JUNIT_OUTPUT_NAME=results.xml && npm run test:setup && npm run test:ui"
     },
     "author": "",
     "license": "ISC",
