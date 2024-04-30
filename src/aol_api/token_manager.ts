@@ -12,9 +12,10 @@ export class TokenManager {
     return token
   } 
   static getToken(token?: string) {
-    const authToken1 =this.setToken(token!)
+    const authTokenNew =this.setToken(token!)
     // console.log(`get Token :`+ authToken1);
-    return token;
+    return authTokenNew;
 
   }
 }
+
