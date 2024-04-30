@@ -47,7 +47,7 @@ export default defineConfig({
         ...devices['Desktop Chromium'],
         // Use prepared auth state.
         storageState: 'playwright/.auth/user.json',
-        viewport: null,
+        viewport: { width: 1536, height: 760 },
     
         launchOptions: {
           args: ["--start-maximized"]
