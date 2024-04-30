@@ -522,4 +522,29 @@ export class MemberTransactionsPage extends BasePage {
         await this.reviewCase.reviewCaseProcess(this.rollinSuccessMessage);
         
     }
+
+    async checkAdminFeeTransactionForPensionCommute() {
+      //below step can removed if we are already on transaction page
+      await this.memberTransactionTab.click();
+      await this.sleep(1000);
+      await this.filterButton.click();
+      await this.sleep(1000);
+      await this.typeFilter.click();
+      await this.sleep(1000);
+      await this.selectOption.click();
+      await this.sleep(1000);
+      await this.afeOption.click();
+      await this.applyButton.click();
+      let dateExpected: string = DateUtils.ddMMMyyyStringDate(new Date());
+      // console.log(" the date is " + dateExpected);
+      //await this.page..locator("//td//div[text()='AFE']//following::td[2]//div[text()='"+dateExpected+"']");
+      dateExpected = "26 Mar 2024";
+      await this.page
+        .locator(
+          "//td//div[text()='AFE']//following::td[2]//div[text()='26 Mar 2024']"
+        )
+        .click();
+      await expect(this.fixedFee).toBeVisible();
+      await expect(this.assetBasedFee).toBeVisible();
+    }
 }

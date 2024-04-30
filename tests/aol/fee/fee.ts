@@ -8,7 +8,7 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
-  apiRequestContext: async ({}, use) => {
+  apiRequestContext: async ({ }, use) => {
     await use(await initDltaApiContext());
   },
 });
@@ -20,7 +20,7 @@ test.beforeEach(async ({ navBar }) => {
   await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("Verify admin able create fee transaction for commute pention", async ({
+test("Verify admin fee on redemption and application", async ({
   navBar,
   memberTransactionPage,
   globalPage,
@@ -77,7 +77,7 @@ test("Verify admin able create fee transaction for commute pention", async ({
     await test.step("Verify the Admin fee transaction created for for Pension Commute", async () => {
       await memberTransactionPage.checkAdminFeeTransactionForPensionCommute();
       await globalPage.captureScreenshot(
-        "Admin fee transaction created for for Pension Commute"
+        "Admin fee transaction"
       );
     });
 
