@@ -83,6 +83,7 @@ export class MemberTransactionsPage extends BasePage {
     readonly memberOverViewPage: MemberOverView;
     readonly firstRowMember:Locator;
     readonly pensionComutation:Locator;
+    readonly partialBalance: Locator;
 
     //Benefit Payment
     readonly benefitPaymentOption: Locator;
@@ -209,6 +210,7 @@ export class MemberTransactionsPage extends BasePage {
         this.benefitTransactionReference = page.getByRole('row', {name: 'Benefit'}).first();
         this.paymentTransactionReference = page.getByRole('row', {name: 'Payment'}).first();
         this.investmentsReference = page.locator("//span[@class='btn-heading' and contains(text(),'Investments')]");
+        this.partialBalance = page.getByText('0.00', { exact: true });
     }
 
     /** Member Rollin, adds a contribution to member account */
@@ -339,7 +341,7 @@ export class MemberTransactionsPage extends BasePage {
     }
 
     //Money_out Benefit Payment
-    async benefitPayment(benefitType: string) {
+    async benefitPayment(benefitType: string, FullExit: Boolean) {
 
         //await this.memberHFMFundLink.click();
         await this.memberTransactionTab.click();
@@ -367,9 +369,6 @@ export class MemberTransactionsPage extends BasePage {
             await this.benefitTyoe_UnrestrictedNonPreservedBenefit.click();
 
         }
-        // else if(benefitType == 'Compassionate Grounds - Partial'){
-        //     await this.benefitType_RetirementPreservationAge.click();
-        // }
         else if(benefitType == 'Compassionate Grounds - Partial'){
             await this.benefitType_CompassionateGroundsPartial.click();
         }
@@ -387,6 +386,12 @@ export class MemberTransactionsPage extends BasePage {
         await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.effectiveDate.press('Tab');
         //await this.payFullBalance.click();
+        if (!FullExit) {
+            await this.page.locator('.switch-slider').click();
+            await this.partialBalance.click();
+            await this.sleep(2000);
+            await this.page.getByPlaceholder('0').fill('2000');
+          }
 
         await this.linkCase.click();
         await this.sleep(5000);

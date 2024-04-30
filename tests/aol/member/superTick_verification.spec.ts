@@ -54,7 +54,7 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
     }
 })
 
-test(fundName()+"Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, accountInfoPage, memberPage, navBar, memberOverviewpage, relatedInformationPage, memberApi }) => {
+test(fundName()+"Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, accountInfoPage, memberPage, navBar, memberOverviewpage, relatedInformationPage }) => {
 
     try {
 
