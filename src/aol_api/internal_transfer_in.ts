@@ -241,6 +241,44 @@ export class ShellAccountApi extends BaseDltaAolApi {
         return { linearId: Id, memberNo: memberNo, amount: amount };
     }
 
+    async addContribution(linearId: string): Promise<{ linearId: string, amount: number }> {
+
+        let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+        let path = `member/${linearId}/contribution?strictDuplicateCheck=false`;
+        let randomNumber = UtilsAOL.generateRandomThreeDigitNumber();
+        let paymentReferenceNumber = `Contribution.1234567${randomNumber}`;
+        let data = {
+                "transactionReference": paymentReferenceNumber,
+                "paymentReference": "NA1257412369871812",
+                "amount": 50000,
+                "type": "SGC",
+                "targetInvestments": [
+                    {
+                        "id": investmentId,
+                        "percent": 100
+                    }
+                ],
+                "empCode": "45004189708",
+                "empName": "COLES ONLINE",
+                "employerPayrollNumberIdentifier": "001",
+                "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+                "paymentReceivedDate":`${DateUtils.localISOStringDate(this.today)}`,
+                "payPeriodStartDate": null,
+                "payPeriodEndDate": null,
+                "messageType": "Government",
+                "initiator": null,
+                "historic": true,
+                "caseReference": null,
+                "conversationId": paymentReferenceNumber
+            
+        };
+        let response = await this.post(path, JSON.stringify(data));
+        let responseBody = await response.json();
+        let Id = responseBody?.linearId?.id || null;
+        let amount = responseBody?.amount || 0;
+        return { linearId: Id, amount: amount };
+    }
+
 
     
 

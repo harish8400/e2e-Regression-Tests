@@ -1,6 +1,6 @@
 {
-    "isMemberToSelectExsisting":true ,
-    "isTFNToBePassed":true,
+    "isMemberToSelectExsisting":false ,
+    "isTFNToBePassed":false,
     "sourceAbn":"27923449966",
     "sourceUsi":"VSF0100AU",
     "targetAbn":"64971749321",

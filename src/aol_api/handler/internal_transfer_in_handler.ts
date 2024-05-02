@@ -83,6 +83,12 @@ export class ShellAccountApiHandler {
         return {memberNo,surname};
     }
 
+
+    static async addContribution(apiRequestContext: APIRequestContext,memberId?: string) {
+        const contribution = new ShellAccountApi(apiRequestContext);
+        return contribution.addContribution(memberId!);
+    }
+
     
 }
 

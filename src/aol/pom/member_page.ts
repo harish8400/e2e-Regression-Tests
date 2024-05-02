@@ -13,7 +13,7 @@ import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "./component/global_page";
-import { Console } from "console";
+
 
 export class MemberPage extends BasePage {
 
@@ -119,7 +119,7 @@ export class MemberPage extends BasePage {
     readonly investmentDropDown2: Locator;
     readonly sustainbleGrowth1: Locator;
     readonly memberCreated: Locator;
-    readonly rollOut:Locator;
+    readonly rollOut: Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
     readonly rolloverIn: Locator;
@@ -128,6 +128,7 @@ export class MemberPage extends BasePage {
     readonly FilterOption: Locator;
     readonly FilterOptionInput: Locator;
     readonly BtnApply: Locator;
+    readonly gctarTransaction:Locator;
 
     constructor(page: Page) {
         super(page)
@@ -236,6 +237,7 @@ export class MemberPage extends BasePage {
         this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
         this.rolloverIn = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
         this.rollOut = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent.');
+        this.gctarTransaction = page.getByText('Process step completed with note: GCTAOR sent.');
 
         // #filter
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
@@ -252,10 +254,10 @@ export class MemberPage extends BasePage {
         await this.selectTitle.click();
         await this.givenName.fill(this.memberGivenName);
         await this.surname.fill(this.memberSurname);
-        if(memberIsChild==true){
+        if (memberIsChild == true) {
             await this.dob.fill(member.childDOB);
         }
-        else{
+        else {
             await this.dob.fill(member.dob);
         }
         await this.gender.click();
@@ -396,7 +398,11 @@ export class MemberPage extends BasePage {
         }
         else if (superstreamProcess == 'SuperStream - Rollover Out') {
             await this.reviewCase.reviewCaseProcess(this.rollOut);
-        } else {
+        } else if (superstreamProcess == 'SuperStream GCTAR') {
+            await this.reviewCase.reviewCaseProcess(this.gctarTransaction);
+        }
+
+        else {
             await this.reviewCase.reviewCaseProcess(this.rolloverIn);
         }
     }
@@ -550,7 +556,7 @@ export class MemberPage extends BasePage {
         await this.amountContributedTypeOTP();
         await this.amountContributedTypeEAC();
         await this.amountContributedTypeSAL();
-        await this.amountContributedTypeSGC();
+        await this.amountContributedTypeSPO();
 
 
     }
@@ -602,6 +608,8 @@ export class MemberPage extends BasePage {
         await this.transactionsMessage();
         let amount = await this.getAmountContributed();
         allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
+       
+
 
     }
 
@@ -749,17 +757,17 @@ export class MemberPage extends BasePage {
         const payrollNumber = await this.page.locator("//p[text()='Payroll number identifier']/following::p[@class='font-semibold']").textContent();
         return payrollNumber ? payrollNumber.trim() : null;
     }
-    async exitAccountTable(IsFullExit?:boolean){
-        if(IsFullExit){
-        let Table  = await this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]/span[1]");
-        await this.sleep(3000).then(()=>{Table.scrollIntoViewIfNeeded()}); 
-        await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Exited Accounts'));
-        await Table.click();
-        }else{
+    async exitAccountTable(IsFullExit?: boolean) {
+        if (IsFullExit) {
+            let Table = await this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]/span[1]");
+            await this.sleep(3000).then(() => { Table.scrollIntoViewIfNeeded() });
+            await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Exited Accounts'));
+            await Table.click();
+        } else {
             (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
         }
-            
-            (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLI']"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
         transactionType.click();
@@ -783,7 +791,7 @@ export class MemberPage extends BasePage {
 
     }
 
-    async rolloverTypeRLO(){
+    async rolloverTypeRLO() {
         (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLO']"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
@@ -796,8 +804,41 @@ export class MemberPage extends BasePage {
 
     }
 
+    
+
+    async amountContributedTypeGCTARP() {
+        (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
+        let GCTARPType = await this.page.locator("//div[@class='cell']/following::div[text()='GCTARP']").first();
+        GCTARPType.scrollIntoViewIfNeeded().then(() => this.sleep(2000)).then(() => GCTARPType.click());
+        await this.transactionsMessage();
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Government Amendment of a Contribution Payment is: ${amount}`);
+
+    }
+
+    async amountContributedTypeGCTAR_SGC() {
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        await this.sleep(3000); 
+        let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='SGC']").first();
+        await sgcType.scrollIntoViewIfNeeded();
+        await this.sleep(2000); 
+        await sgcType.click();
+        await this.transactionsMessage(); // Assuming this method performs some actions
+        let amount = await this.getAmountContributed();
+        allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
+        const message = await this.getMessageType();
+        allure.logStep(`Message Type expected for this contribution is: ${message}`);
+    }
+    
+
+    
 
 }
+
+
+
+
 
 
 
