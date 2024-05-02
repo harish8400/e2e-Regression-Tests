@@ -199,7 +199,7 @@ export class InternalTransferPage extends BasePage {
         this.verifycreationVG = page.locator(CASE_NOTE.UNAUTHORISED);
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
-        this.summary = page.getByRole('button', { name: 'Investor Summary' });
+        this.summary = page.getByRole('button', { name: 'Investor Summary' })
 
         //transferOut
 

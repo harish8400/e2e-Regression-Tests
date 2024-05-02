@@ -253,11 +253,13 @@ export class PensionTransactionPage extends BasePage {
     this.FirstName = page.getByLabel('First name *');
     this.LastName = page.getByLabel('Last name *');
     this.DateOfBirth = page.locator('input[name="dob0"]');
-    this.DateOfBirthInput = page.getByRole('cell', { name: '23' }).locator('span');
+    this.DateOfBirthInput = page.locator('input[name="dob0"]');
+    // getByRole('cell', { name: '23' }).locator('span');
     this.City_Town = page.getByLabel('City/Town *');
     // this.State = page.locator('#gs10__combobox div').first();
     this.State = page.locator("(//label[@title='State']//following::div[@name='state']//div//div[2])");
-    this.StateInput = page.getByText('Australian Antarctic Territory');
+
+    this.StateInput = page.getByRole('option', { name: 'New South Wales' });
     this.ResidentialAddress = page.getByLabel('Residential address line 1 *');
     this.CheckboxKYC = page.locator('.top-0');
     this.PostCode = page.getByLabel('Postcode *');
@@ -525,7 +527,7 @@ export class PensionTransactionPage extends BasePage {
     let randomSurname = UtilsAOL.randomSurname(5);
     await this.LastName.click();
     await this.LastName.fill(`${randomSurname}`);
-    await this.DateOfBirth.click();
+    // await this.DateOfBirth.click();
     await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 50)}`);
     await this.City_Town.click();
     await this.City_Town.fill(member.city);
@@ -534,8 +536,9 @@ export class PensionTransactionPage extends BasePage {
     await this.State.click();
     await this.StateInput.click();
     await this.CheckboxKYC.click();
-    await this.PostCode.click();
+    // await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
+    await this.PostCode.press('Enter');
     await this.page.keyboard.down('Tab');
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
@@ -547,8 +550,8 @@ export class PensionTransactionPage extends BasePage {
     await this.BSBNumber.fill(member.BSBNumber);
     await this.BSBNumber.press('Enter');
     await this.sleep(3000);
-    await this.AccountNumber1.fill(member.AccountNumber);
-    await this.page.keyboard.down('Tab');
+    await this.AccountNumber1.fill(member.BeneficiaryAccountNumber);
+    await this.AccountNumber1.press('Enter');
     await this.sleep(3000);
     await this.linkCase.click();
     await this.sleep(3000);

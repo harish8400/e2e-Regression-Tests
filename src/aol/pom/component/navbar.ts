@@ -26,7 +26,8 @@ export class Navbar extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.accumulationProduct = page.getByRole('link', { name: 'Accumulation' });
+        this.accumulationProduct = page.locator('//p[@type="label"][normalize-space()="Accumulation"]')
+        // page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
         this.memberIdentities =page.getByText('memberIdentities');
@@ -66,7 +67,8 @@ export class Navbar extends BasePage {
     async navigateToAccumulationMembersPage() {
 
         await this.accumulationProduct.click();
-        await this.accumulationMembersLink.click();
+        await this.accumulationMembersLink.
+        click();
       }
     
     async navigateToEmployerIdentities(){

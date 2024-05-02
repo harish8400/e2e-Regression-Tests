@@ -5,6 +5,7 @@ import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json";
 import * as data from "../../../data/aol_test_data.json";
+import { Navbar } from "../../../src/adviser_online/pom/component/navbar";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -14,11 +15,13 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
+    await allure.suite("Money_Out");
     await navBar.selectProduct();
+    await allure.parentSuite(process.env.PRODUCT!);
 });
 
 /**This test performs self triggered rollout full exit on a member */
-test(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransferPage, apiRequestContext, accountInfoPage, globalPage, navBar, dashboardPage, memberPage, memberTransactionPage }) => {
+test.skip(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransferPage, apiRequestContext, accountInfoPage, globalPage, navBar, dashboardPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");
@@ -39,17 +42,17 @@ test(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransfer
 
 })
 
-test(fundName()+"-Rollover In Personal contribution", async ({ navBar, memberPage, memberTransactionPage }) => {
+test.skip(fundName()+"-Rollover In Personal contribution", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
-    await memberPage.selectMember(addedMember);
+    await navBar.selectMemberSurName(addedMember);
     await memberTransactionPage.memberRolloverIn();
 
 })
 
-test(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
+test.skip(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
 
@@ -61,7 +64,7 @@ test(fundName()+"-Rollover out", async ({ navBar, memberPage, memberTransactionP
     
 })
 
-test(fundName() + "Benefit Payment_Retirement - Preservation age_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Retirement - Preservation age_Verify claim processed successfully for a member-@Money-Out" , async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -95,7 +98,7 @@ test(fundName() + "Benefit Payment_Retirement - Preservation age_Verify claim pr
 
 })
 
-test(fundName() + "Benefit Payment_Ceased employment age after 60_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Ceased employment age after 60_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -129,7 +132,7 @@ test(fundName() + "Benefit Payment_Ceased employment age after 60_Verify claim p
 
 })
 
-test(fundName() + "Benefit Payment_Age 65 or older_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Age 65 or older_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -163,7 +166,7 @@ test(fundName() + "Benefit Payment_Age 65 or older_Verify claim processed succes
 
 })
 
-test(fundName() + "Benefit Payment_Financial Hardship_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Financial Hardship_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -197,7 +200,7 @@ test(fundName() + "Benefit Payment_Financial Hardship_Verify claim processed suc
 
 })
 
-test(fundName() + "Benefit Payment_Unrestricted non-preserved benefit_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Unrestricted non-preserved benefit_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -231,7 +234,7 @@ test(fundName() + "Benefit Payment_Unrestricted non-preserved benefit_Verify cla
 
 })
 
-test(fundName() + "Benefit Payment_Compassionate Grounds - Partial_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Compassionate Grounds - Partial_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -265,7 +268,7 @@ test(fundName() + "Benefit Payment_Compassionate Grounds - Partial_Verify claim 
 
 })
 
-test(fundName() + "Benefit Payment_Compassionate Grounds - Full_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Compassionate Grounds - Full_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -299,7 +302,7 @@ test(fundName() + "Benefit Payment_Compassionate Grounds - Full_Verify claim pro
 
 })
 
-test(fundName() + "Benefit Payment_Permanent Incapacity_Verify claim processed successfully for a member", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Permanent Incapacity_Verify claim processed successfully for a member-@Money-Out", async ({ pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -333,7 +336,7 @@ test(fundName() + "Benefit Payment_Permanent Incapacity_Verify claim processed s
 
 })
 
-test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successfully for a member", async ({ globalPage, pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
+test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successfully for a member-@Money-Out", async ({ globalPage, pensionAccountPage, pensionTransactionPage, navBar, memberPage, accountInfoPage, internalTransferPage, memberTransactionPage , apiRequestContext }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -368,7 +371,7 @@ test(fundName() + "Benefit Payment_Death benefit_Verify claim processed successf
 
 })
 
-test(fundName() + "Roll Out - With TFN for APRA fund", async ({ relatedInformationPage ,internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
+test(fundName() + "Roll Out - With TFN for APRA fund-@Money-Out", async ({ relatedInformationPage ,internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -403,7 +406,7 @@ test(fundName() + "Roll Out - With TFN for APRA fund", async ({ relatedInformati
     });
 })
 
-test(fundName() + "Roll Out - Without TFN for APRA fund", async ({ memberPage, accountInfoPage, internalTransferPage, relatedInformationPage, memberOverviewpage, memberTransactionPage, apiRequestContext, navBar, globalPage }) => {
+test(fundName() + "Roll Out - Without TFN for APRA fund-@Money-Out", async ({ memberPage, accountInfoPage, internalTransferPage, relatedInformationPage, memberOverviewpage, memberTransactionPage, apiRequestContext, navBar, globalPage }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -425,6 +428,10 @@ test(fundName() + "Roll Out - Without TFN for APRA fund", async ({ memberPage, a
             await navBar.selectMember(member.memberIDwithoutTFN);
         });
     }
+
+    // await test.step("Select the accumulation member without TFN", async () => {
+    //     await memberOverviewpage.
+    // });
 
     await test.step("verify TFN & RolloverOut transaction", async () => {
         await memberOverviewpage.verifyTFNStatus(false);

@@ -414,6 +414,7 @@ export class MemberPage extends BasePage {
 
     async createAccumulationMember(apiRequestContext: APIRequestContext, accountInfoPage: AccountInfoPage, navBar: Navbar) {
         const { memberNo: createMemberNo, processId, memberId } = await MemberApiHandler.createMember(apiRequestContext);
+        await navBar.navigateToAccumulationMembersPage();
         await accountInfoPage.ProcessTab();
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
