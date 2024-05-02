@@ -37,24 +37,73 @@ test.beforeEach(async ({ navBar }) => {
 
 test("Verify if new employer ABN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
 
-    await employerIdentitiesPage.createNewEmployer();
+    await test.step("Navigate to Employer Identities page", async () => {
+        await employerIdentitiesPage.employerIdentities();
+    })
 
+    await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.newEmployer();
+    })
+
+    await test.step("Enter the required member details and Click on Save Button", async () => {
+        await employerIdentitiesPage.createNewEmployer();
+    })
+
+    await test.step("Verify new employer created on Employer Page", async () => {
+        await employerIdentitiesPage.createNewEmployerValidations();
+    })
 })
 
 test.skip("Verify if new employer WPN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+    await test.step("Navigate to Employer Identities page", async () => {
+        await employerIdentitiesPage.employerIdentities();
+    })
 
-    await employerIdentitiesPage.createNewEmployerWPN();
+    await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.newEmployer();
+    })
 
+    await test.step("Enter the required member details and Click on Save Button", async () => {
+        await employerIdentitiesPage.createNewEmployerWPN();
+    })
+
+    await test.step("Verify new employer created on Employer Page", async () => {
+        await employerIdentitiesPage.createNewEmployerWPNValidations();
+    })
 })
 
 test("Verify for new employer Contact Details are added successfully @demorun", async ({ employerIdentitiesPage }) => {
-    
-    await employerIdentitiesPage.addContactDetails();
+    await test.step("Navigate to Employer Identities page", async () => {
+        await employerIdentitiesPage.employerIdentities();
+    })
 
+    await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.newEmployer();
+    })
+
+    await test.step("Add new employer Contact Details", async () => {
+        await employerIdentitiesPage.addContactDetails();
+    })
+
+    await test.step("Verify new employer Contact Details", async () => {
+        await employerIdentitiesPage.addContactDetailsValidation();
+    })
 })
 
 test("Verify existing employer data can be edited successfully @demorun", async ({ employerIdentitiesPage }) => {
-  
-    await employerIdentitiesPage.updateExistingEployer();
+    await test.step("Navigate to Employer Identities page", async () => {
+        await employerIdentitiesPage.employerIdentities();
+    })
 
+    await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.newEmployer();
+    })
+    
+    await test.step("Edit existing employer data", async () => {
+        await employerIdentitiesPage.updateExistingEployer();
+    })
+
+    await test.step("Verify existing employer data edit functionality", async () => {
+        await employerIdentitiesPage.updateExistingEployerValidations();
+    })
 })
