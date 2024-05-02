@@ -22,7 +22,8 @@ export class MemberTransactionsPage extends BasePage {
     readonly effectiveDate: Locator;
     readonly contributionAmount: Locator;
     readonly governmentContribution: Locator;
-    readonly governmentContributionConfirm: Locator;
+    readonly governmentContribution_No: Locator;
+    readonly governmentContribution_Yes: Locator;
     readonly viewCase: Locator;
     readonly createCase: Locator;
     readonly linkCase: Locator;
@@ -147,7 +148,8 @@ export class MemberTransactionsPage extends BasePage {
         this.effectiveDate = page.locator('input[name="effectiveDate"]');
         this.contributionAmount = page.getByPlaceholder('0');
         this.governmentContribution = page.locator("(//div[@class='gs__selected-options'])[3]");
-        this.governmentContributionConfirm = page.getByRole('option', { name: 'No' });
+        this.governmentContribution_No = page.getByRole('option', { name: 'No' });
+        this.governmentContribution_Yes = page.getByRole('option', { name: 'Yes' });
         this.viewCase = page.getByRole('button', { name: 'View Cases' });
         this.createCase = page.getByRole('button', { name: 'Create Case' });
         this.linkCase = page.getByRole('button', { name: 'Link to Case' });
@@ -163,7 +165,7 @@ export class MemberTransactionsPage extends BasePage {
         this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
         this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
         this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
-        this.memberSummaryTab = page.getByRole('button', { name: 'Member Summary' });
+        this.memberSummaryTab = page.getByRole('button', { name: 'Investor Summary' });
         
         // Member Termination   
         this.accumulationFirstMember = page.locator('td > .cell').first();
@@ -214,7 +216,7 @@ export class MemberTransactionsPage extends BasePage {
     }
 
     /** Member Rollin, adds a contribution to member account */
-    async memberRolloverIn(contributionType?: String, TFN?: Boolean) {
+    async memberRolloverIn(contributionType?: String, TFN?: Boolean, GovContribution?: Boolean) {
         let age;
         if(contributionType == 'Child'){
             await this.memberSummaryTab.click();
@@ -259,7 +261,12 @@ export class MemberTransactionsPage extends BasePage {
         await this.effectiveDate.press('Tab');
         await this.contributionAmount.fill(contributionAmount);
         await this.governmentContribution.click();
-        await this.governmentContributionConfirm.click();
+        if(!GovContribution){
+            await this.governmentContribution_No.click();
+        }
+        else{
+            await this.governmentContribution_Yes.click();
+        }
         await this.sleep(3000);
 
         await this.linkCase.click();
