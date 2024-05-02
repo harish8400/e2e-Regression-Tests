@@ -429,10 +429,10 @@ test(fundName() + "Roll Out - Without TFN for APRA fund-@Money-Out", async ({ me
         });
     }
 
-    // await test.step("Select the accumulation member without TFN", async () => {
-    //     await memberOverviewpage.
-    // });
-
+    await test.step("delete TFN", async () => {
+        await memberOverviewpage.deleteTFN();
+    });
+    
     await test.step("verify TFN & RolloverOut transaction", async () => {
         await memberOverviewpage.verifyTFNStatus(false);
         await globalPage.captureScreenshot("TFN Status");
