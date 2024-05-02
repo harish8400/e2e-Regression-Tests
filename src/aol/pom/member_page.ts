@@ -13,6 +13,11 @@ import { InternalTransferPage } from "./Pension/internal_transfer";
 import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_in_handler";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "./component/global_page";
+import * as path from 'path';
+import * as fs from 'fs';
+import { csv_utils } from "../../utils/csv_utils";
+import { xmlUtility } from "../../utils/xml_util";
+
 
 
 export class MemberPage extends BasePage {
@@ -128,7 +133,7 @@ export class MemberPage extends BasePage {
     readonly FilterOption: Locator;
     readonly FilterOptionInput: Locator;
     readonly BtnApply: Locator;
-    readonly gctarTransaction:Locator;
+    readonly gctarTransaction: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -340,14 +345,14 @@ export class MemberPage extends BasePage {
     async selectMember(memberName: string) {
         await this.sleep(3000);
         await this.page.reload();
-        
+
         //Filter member
         await this.FilterClick.click();
         await this.FilterOption.click();
         await this.sleep(1000);
         await this.FilterOptionInput.fill(memberName);
         await this.BtnApply.click();
-        
+
         await expect(this.page.getByRole('cell', { name: memberName }).first()).toBeVisible();
         await this.page.getByRole('cell', { name: memberName }).first().click();
     }
@@ -608,7 +613,7 @@ export class MemberPage extends BasePage {
         await this.transactionsMessage();
         let amount = await this.getAmountContributed();
         allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
-       
+
 
 
     }
@@ -804,7 +809,7 @@ export class MemberPage extends BasePage {
 
     }
 
-    
+
 
     async amountContributedTypeGCTARP() {
         (await this.sleep(3000).then(() => this.page.locator("//i[@class='el-icon el-dialog__close']"))).click();
@@ -819,10 +824,10 @@ export class MemberPage extends BasePage {
     async amountContributedTypeGCTAR_SGC() {
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
-        await this.sleep(3000); 
+        await this.sleep(3000);
         let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='SGC']").first();
         await sgcType.scrollIntoViewIfNeeded();
-        await this.sleep(2000); 
+        await this.sleep(2000);
         await sgcType.click();
         await this.transactionsMessage(); // Assuming this method performs some actions
         let amount = await this.getAmountContributed();
@@ -830,9 +835,111 @@ export class MemberPage extends BasePage {
         const message = await this.getMessageType();
         allure.logStep(`Message Type expected for this contribution is: ${message}`);
     }
-    
 
-    
+    async bankFile() {
+        await this.page.locator("//a[.='Banking']").click();
+        (await this.sleep(3000).then(() => this.page.locator("//span[text()=' Upload File ']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("(//label[text()='Search Related Cases ']/following::input)[2]"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//input[@class='el-input__inner']/following::span[text()='ANZ CSV']"))).click();
+
+    }
+
+
+    async uploadFile(templateFileName: string): Promise<string | null> {
+        try {
+            console.log("Waiting for file chooser event...");
+            const fileChooserPromise = this.page.waitForEvent('filechooser');
+
+            // Click the "Choose File" button to trigger the file chooser dialog
+            await (await this.sleep(3000).then(() => this.page.getByRole('button', { name: 'Choose File' }))).click({ force: true });
+
+            // Generate the file name
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+            formattedDate = DateUtils.yyyymmddStringDate();
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const fileName = `ANZBank_error_${formattedDate}_1${randomThreeDigitNumber}.csv`;
+
+            // Copy the template file to the processed folder with the generated file name
+            xmlUtility.copyTemplateFileToProcessedFolder(templateFileName, fileName);
+            console.log("File chooser event detected.");
+
+            // Wait for the file chooser dialog and set the files to be uploaded
+            const fileChooser = await fileChooserPromise;
+            await fileChooser.setFiles(path.join(__dirname, `../../../src/aol/data/superstream_processed/${fileName}`));
+
+            // Click the upload button
+            await (await this.sleep(3000).then(() => this.page.locator("//span[text()=' Upload ']"))).click();
+
+
+            // Return the fileName after upload
+            return fileName;
+        } catch (error) {
+            console.error("Error selecting file:", error);
+            return null; // Return null in case of error
+        }
+    }
+
+
+
+
+    async fileValidation(fileName: string) {
+        await this.sleep(3000).then(() => this.page.reload());
+        await this.page.locator("//span[text()=' FILTER ']").click();
+        (await this.sleep(3000).then(() => this.page.locator("(//div[text()='File name'])[2]"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//label[text()='File name']/following::input"))).fill(fileName);
+        await this.page.getByRole('button', { name: 'APPLY' }).click();
+        allure.logStep('File that is uploaded : ' + fileName);
+
+    }
+
+    async uploadedcsvFileIs() {
+        const uploadedFile = await this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[6]/div[1]/span[1]").textContent();
+        return uploadedFile ? uploadedFile.trim() : null;
+        if (uploadedFile == 'Failed Process') {
+            allure.logStep("File is uploaded sucessfully but the validation has been failed ")
+        } else {
+            allure.logStep("File is uploaded sucessfully and the validation has been passed ")
+        }
+    }
+
+    async uploadEditedCSVFile(templateFileName: string) {
+
+        try {
+            console.log("Waiting for file chooser event...");
+            const fileChooserPromise = this.page.waitForEvent('filechooser');
+
+            // Click the "Choose File" button to trigger the file chooser dialog
+            await (await this.sleep(3000).then(() => this.page.getByRole('button', { name: 'Choose File' }))).click({ force: true });
+
+            // Generate the file name
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+            formattedDate = DateUtils.yyyymmddStringDate();
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const fileName = `ANZBank_Success_${formattedDate}_${randomThreeDigitNumber}.csv`;
+
+            // Copy the template file to the processed folder with the generated file name
+            xmlUtility.copyTemplateFileToProcessedFolder(templateFileName, fileName);
+
+            // Edit the CSV file to update the "Value Date" and "Post Date" columns to today's date
+            const csvFilePath = path.join(__dirname, `../../../src/aol/data/superstream_processed/${fileName}`);
+            const dateToBeChanged = DateUtils.ddMMMyyyFormatDate(new Date());
+            await csv_utils.editAndSaveCSV(csvFilePath, dateToBeChanged, dateToBeChanged,dateToBeChanged);
+
+            // Wait for the file chooser dialog and set the files to be uploaded
+            const fileChooser = await fileChooserPromise;
+            await fileChooser.setFiles(csvFilePath);
+
+            // Click the upload button
+            await (await this.sleep(3000).then(() => this.page.locator("//span[text()=' Upload ']"))).click();
+
+            // Return the fileName after upload
+            return fileName;
+        } catch (error) {
+            console.error("Error selecting file:", error);
+            return null; // Return null in case of error
+        }
+    }
+
 
 }
 

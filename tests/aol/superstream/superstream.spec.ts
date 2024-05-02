@@ -1398,5 +1398,28 @@ test("GCTAR is processed by superstream-@GCTAR", async ({ memberPage, superSteam
 
 })
 
+test("Verify if valid bank csv file is uploaded successfully and its validation is success", async ({ memberPage, globalPage }) => {
+    await test.step("Verify the Bank CSV File uploading and validate its process", async () => {
+        await memberPage.bankFile();
+        const fileName = await memberPage.uploadEditedCSVFile('ANZBank_sucess.csv');
+        await globalPage.captureScreenshot('File uploaded message')
+        await memberPage.fileValidation(fileName!);
+        await globalPage.captureScreenshot('File Processing status')
+
+    });
+});
+
+
+test("Verify if valid bank csv file is uploaded successfully and its validation is failed", async ({ memberPage, globalPage }) => {
+    await test.step("Verify the Bank CSV File uploading and validate its process", async () => {
+        await memberPage.bankFile();
+        const fileName = await memberPage.uploadFile('ANZBank_error.csv');
+        await globalPage.captureScreenshot('File uploaded message')
+        await memberPage.fileValidation(fileName!);
+        await globalPage.captureScreenshot('File Processing status')
+
+    });
+});
+
 
 

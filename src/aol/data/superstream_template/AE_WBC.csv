@@ -1,2 +1,0 @@
-Transaction date,Account number,Account name,Currency code,Closing balance,Transaction amount,Transaction code,Narrative,Serial number,Segment account number,Payment Information ID,Instruction ID,Transaction ID,Value Date,Transaction Date/Time,Debtor Name,Creditor Name,End To End Id,Remittance Information/Unstructured 1,Remittance Information/Unstructured 2,PayId Type,PayId Value,Reversal Reason Code,Original Transaction Id
-20240422,032999999994,Test Account,AUD,-35.99,,,,,,,,,,,,,,,,,,,

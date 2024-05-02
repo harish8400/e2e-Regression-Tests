@@ -181,7 +181,7 @@ export class xmlUtility {
                     return this.generateGCTARXMLForExsistingMember(templateName);
                 }
             default:
-                
+
                 return Promise.resolve({
                     destinationFileName: '',
                     paymentReferenceNumber: '',
@@ -195,6 +195,8 @@ export class xmlUtility {
                 });
         }
     }
+
+
 
 
     // Generate XML with TFN for MRR
@@ -1348,7 +1350,7 @@ export class xmlUtility {
             const currentUTCTime: Date = new Date();
             const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
             const wholeBalanceTransfer = 'YES';
- this.today = new Date();
+            this.today = new Date();
 
 
             // Fetch member data 
@@ -1936,11 +1938,11 @@ export class xmlUtility {
             await new Promise(resolve => setTimeout(resolve, 9000));
             await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
 
-           // Extract member data
-           const { memberNo, member, surName, dob, tfn } = memberData;
-           allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
-           const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
-           await ShellAccountApiHandler.addContribution(apiRequestContext, linearId.id);
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
+            await ShellAccountApiHandler.addContribution(apiRequestContext, linearId.id);
 
             // Extract year, month, and day from dateOfBirth
             let parts = dob.split('-');
@@ -1995,8 +1997,8 @@ export class xmlUtility {
         }
     }
 
-    
-    
+
+
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {
