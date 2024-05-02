@@ -12,27 +12,28 @@ export class MemberTransactionsPage extends BasePage {
   readonly memberTransactionTab: Locator;
   readonly memberAddTransaction: Locator;
     readonly rollinOption: Locator;
-  readonly memberAddContribution: Locator;
-  readonly memberContributionType: Locator;
-  readonly memberContributionType_personal: Locator;
-  readonly memberContributionType_salarySacrifice: Locator;
-  readonly paymentReference: Locator;
-  readonly paymentReceivedDate: Locator;
-  readonly effectiveDate: Locator;
-  readonly contributionAmount: Locator;
-  readonly governmentContribution: Locator;
-  readonly governmentContributionConfirm: Locator;
-  readonly viewCase: Locator;
-  readonly createCase: Locator;
-  readonly linkCase: Locator;
-  readonly approveProcessStep: Locator;
-  readonly retryProcessStep: Locator;
-  readonly verifyContributionSuccess: Locator;
-  readonly transitionToRetirement: Locator;
-  readonly memberContributionType_superGuarantee: Locator;
-  readonly memberContributionType_Spouse: Locator;
-  readonly memberContributionType_Retirement: Locator;
-  readonly memberContributionErrorMessage: Locator;
+    readonly memberAddContribution: Locator;
+    readonly memberContributionType: Locator;
+    readonly memberContributionType_personal: Locator;
+    readonly memberContributionType_salarySacrifice: Locator;
+    readonly paymentReference: Locator;
+    readonly paymentReceivedDate: Locator;
+    readonly effectiveDate: Locator;
+    readonly contributionAmount: Locator;
+    readonly governmentContribution: Locator;
+    readonly governmentContribution_No: Locator;
+    readonly governmentContribution_Yes: Locator;
+    readonly viewCase: Locator;
+    readonly createCase: Locator;
+    readonly linkCase: Locator;
+    readonly approveProcessStep: Locator;
+    readonly retryProcessStep: Locator;
+    readonly verifyContributionSuccess: Locator;
+    readonly transitionToRetirement: Locator;
+    readonly memberContributionType_superGuarantee: Locator;
+    readonly memberContributionType_Spouse: Locator;
+    readonly memberContributionType_Retirement: Locator;
+    readonly memberContributionErrorMessage: Locator;
     readonly childContributionErrorMessage: Locator;
     readonly memberContributionType_Child: Locator;
     readonly memberSummaryTab: Locator;
@@ -152,53 +153,28 @@ export class MemberTransactionsPage extends BasePage {
         this.rollInTransaction = page.getByRole('row', { name: 'Roll In' }).first();
         this.rollOutTransaction = page.getByRole('row', { name: 'Rollover Out Payment' }).first();
         this.rollOutErrorMessage = page.getByText('Member TFN is required for SuperTick Verification');
-    this.memberAddContribution = page.getByText("Contribution", {
-      exact: true,
-    });
-    this.memberContributionType = page.locator(
-      "(//div[@class='gs__selected-options'])[2]"
-    );
-    this.memberContributionType_personal = page
-      .getByRole("option", { name: "Personal", exact: true })
-      .locator("span");
-    this.memberContributionType_salarySacrifice = page.getByRole("option", {
-      name: "Salary Sacrifice",
-    });
-    this.paymentReference = page.getByLabel("Payment Reference *");
-    this.paymentReceivedDate = page.locator(
-      'input[name="paymentReceivedDate"]'
-    );
-    this.effectiveDate = page.locator('input[name="effectiveDate"]');
-    this.contributionAmount = page.getByPlaceholder("0");
-    this.governmentContribution = page.locator(
-      "(//div[@class='gs__selected-options'])[3]"
-    );
-    this.governmentContributionConfirm = page.getByRole("option", {
-      name: "No",
-    });
-    this.viewCase = page.getByRole("button", { name: "View Cases" });
-    this.createCase = page.getByRole("button", { name: "Create Case" });
-    this.linkCase = page.getByRole("button", { name: "Link to Case" });
-    this.approveProcessStep = page.getByRole("button", { name: "Approve" });
-    this.retryProcessStep = page.getByRole("button", {
-      name: "reset icon Retry",
-    });
-    this.verifyContributionSuccess = page.getByText(
-      "Processed contribution for member."
-    );
-    this.transitionToRetirement = page.getByRole("link", {
-      name: "Transition to Retirement",
-    });
-    this.trasitionMembers = page.getByRole("link", { name: "Members" });
-    this.memberContributionType_Spouse = page.getByRole("option", {
-      name: "Spouse",
-    });
-    this.memberContributionType_Retirement = page.getByRole("option", {
-      name: "CGT Retirement",
-    });
-    this.memberContributionType_superGuarantee = page.getByRole("option", {
-      name: "Super Guarantee",
-    });
+        this.memberAddContribution = page.getByText('Contribution', { exact: true });
+        this.memberContributionType = page.locator("(//div[@class='gs__selected-options'])[2]")
+        this.memberContributionType_personal = page.getByRole('option', { name: 'Personal', exact: true }).locator('span');
+        this.memberContributionType_salarySacrifice = page.getByRole('option', { name: 'Salary Sacrifice' });
+        this.paymentReference = page.getByLabel('Payment Reference *');
+        this.paymentReceivedDate = page.locator('input[name="paymentReceivedDate"]');
+        this.effectiveDate = page.locator('input[name="effectiveDate"]');
+        this.contributionAmount = page.getByPlaceholder('0');
+        this.governmentContribution = page.locator("(//div[@class='gs__selected-options'])[3]");
+        this.governmentContribution_No = page.getByRole('option', { name: 'No' });
+        this.governmentContribution_Yes = page.getByRole('option', { name: 'Yes' });
+        this.viewCase = page.getByRole('button', { name: 'View Cases' });
+        this.createCase = page.getByRole('button', { name: 'Create Case' });
+        this.linkCase = page.getByRole('button', { name: 'Link to Case' });
+        this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
+        this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
+        this.verifyContributionSuccess = page.getByText("Processed contribution for member.");
+        this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
+        this.trasitionMembers = page.getByRole('link', { name: 'Members' });
+        this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
+        this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
+        this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
         this.memberContributionType_Child = page.getByRole('option', { name: 'Child' });
     this.memberContributionErrorMessage = page
       .getByText(
@@ -207,7 +183,7 @@ export class MemberTransactionsPage extends BasePage {
       .first();
         this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
         this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
-        this.memberSummaryTab = page.getByRole('button', { name: 'Member Summary' });
+        this.memberSummaryTab = page.getByRole('button', { name: 'Investor Summary' });
         
     // Member Termination
     this.accumulationFirstMember = page.locator("td > .cell").first();
@@ -288,8 +264,8 @@ export class MemberTransactionsPage extends BasePage {
         this.partialBalance = page.getByText('0.00', { exact: true });
   }
 
-  /** Member Rollin, adds a contribution to member account */
-  async memberRolloverIn(contributionType?: String, TFN?: Boolean) {
+    /** Member Rollin, adds a contribution to member account */
+    async memberRolloverIn(contributionType?: String, TFN?: Boolean, GovContribution?: Boolean) {
         let age;
         if(contributionType == 'Child'){
             await this.memberSummaryTab.click();
@@ -334,7 +310,12 @@ export class MemberTransactionsPage extends BasePage {
         await this.effectiveDate.press('Tab');
         await this.contributionAmount.fill(contributionAmount);
         await this.governmentContribution.click();
-        await this.governmentContributionConfirm.click();
+        if(!GovContribution){
+            await this.governmentContribution_No.click();
+        }
+        else{
+            await this.governmentContribution_Yes.click();
+        }
         await this.sleep(3000);
 
         await this.linkCase.click();
