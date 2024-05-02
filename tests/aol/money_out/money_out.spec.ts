@@ -21,7 +21,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs self triggered rollout full exit on a member */
-test.skip(fundName()+"-Money Out - Rollover out full exit", async ({ internalTransferPage, apiRequestContext, accountInfoPage, globalPage, navBar, dashboardPage, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Money Out - Rollover out full exit", async ({ apiRequestContext, accountInfoPage, globalPage, navBar, dashboardPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");

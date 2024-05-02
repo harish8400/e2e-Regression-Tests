@@ -21,6 +21,7 @@ export class MemberOverView extends BasePage{
     readonly tfnSourceOption_Member: Locator;
     readonly memberUpdate_sucessMessage: Locator;
     readonly DOD: Locator;
+    readonly DOB: Locator;
 
     //Case Review
     readonly viewCase: Locator;
@@ -34,6 +35,7 @@ export class MemberOverView extends BasePage{
 
         this.reviewCase = new ReviewCase(page);
         this.DOD = page.locator('input[name="dateOfDeath"]');
+        this.DOB = page.locator('input[name="dob"]');
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
@@ -100,4 +102,31 @@ export class MemberOverView extends BasePage{
         await this.linkCase.click();
         await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
     }
+
+    async deleteTFN(){
+        await this.sleep(5000)
+        //await this.overViewTab.focus();
+        await this.overViewTab.click();
+        await this.sleep(3000);
+        await this.editPersonalDetails.click();
+        await this.TFN_Field.clear();
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    }
+
+    async updateMemberAgeBelow18(){
+        await this.sleep(5000);
+        await this.overViewTab.click();
+        await this.sleep(3000);
+        await this.editPersonalDetails.click();
+        await this.DOB.fill(DateUtils.ddmmyyyStringDate(0,17));
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    }    
 }
