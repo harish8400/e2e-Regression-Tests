@@ -9,7 +9,7 @@
         "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
         "report": "npx playwright show-report",
         "test:setup": "npx playwright install && npx playwright install-deps",
-        "test:ui": "npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
+        "test:ui": "PLAYWRIGHT_JUNIT_OUTPUT_NAME=playwright-report/results.xml npx playwright test --grep @pipeline --project='chromium' --workers=1 --reporter=junit",
         "ci:e2e-test:pension": "ENVIRONMENT='dev' && npm run test:setup && npm run test:ui"
     },
     "author": "",
@@ -23,6 +23,7 @@
         "@types/ssh2-sftp-client": "^9.0.3",
         "allure-playwright": "^2.15.1",
         "async-wait-until": "^2.0.12",
+        "buildkite-test-collector": "^1.7.1",
         "sinon": "^17.0.1"
     },
     "dependencies": {

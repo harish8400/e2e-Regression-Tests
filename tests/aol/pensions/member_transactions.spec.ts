@@ -11,18 +11,17 @@ import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_tr
 import * as data from "../../../data/aol_test_data.json";
 import * as member from "../../../src/aol/data/member.json";
 
-
-export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
-    apiRequestContext: async ({ }, use) => {
-        await use(await initDltaApiContext());
-    },
+export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
+  apiRequestContext: async ({}, use) => {
+    await use(await initDltaApiContext());
+  },
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
-    await navBar.selectProduct();
-    await allure.suite("Pension");
-    await allure.parentSuite(process.env.PRODUCT!);
+  test.setTimeout(600000);
+  await navBar.selectProduct();
+  await allure.suite("Pension");
+  await allure.parentSuite(process.env.PRODUCT!);
 });
 
 
@@ -87,15 +86,26 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
     await allure.step("Validate the Transaction details", async () => {
         let rollinId = await pensionTransactionPage.transactionView();
 
-        let rollinTransactionId = rollinId!.split(":")[1];
-        await TransactionsApiHandler.fetchTransactionDetails(apiRequestContext, rollinTransactionId!.trim());
-    })
-})
+      let rollinTransactionId = rollinId!.split(":")[1];
+      await TransactionsApiHandler.fetchTransactionDetails(
+        apiRequestContext,
+        rollinTransactionId!.trim()
+      );
+    });
+  }
+);
 
-test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
-
+test(
+  fundName() + "-ABP Rollover Out Commutation - Partial @pension",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    transactionApi,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
-
 
     await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
@@ -113,8 +123,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
             await MemberApiHandler.rpbpPayments(apiRequestContext, membersId);
         });
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -128,7 +137,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
 
     }
 
-    const getMemberId = () => membersId;
+    member_Adminfee;
 
     // Investments and Balances Page
     await allure.step("Investments and Balances Page", async () => {
@@ -204,15 +213,20 @@ test(fundName() + "-ABP Rollover Out Commutation - Partial @pension", async ({ n
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
     });
+  }
+);
 
-
-})
-
-test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
+test(
+  fundName() + "-ABP UNP Commutation - Partial @PensionNewTest",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    transactionApi,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
-
-
-
 
     await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
@@ -231,8 +245,7 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
         });
 
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -324,13 +337,20 @@ test(fundName() + "-ABP UNP Commutation - Partial @PensionNewTest", async ({ nav
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
     });
+  }
+);
 
-})
-
-test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
-
+test(
+  fundName() + "-TTR RLO Commutation - Partial @pension",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    transactionApi,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
-
 
     await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
@@ -354,8 +374,7 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
         });
 
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -441,13 +460,20 @@ test(fundName() + "-TTR RLO Commutation - Partial @pension", async ({ navBar, pe
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
     });
+  }
+);
 
-})
-
-test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
+test(
+  fundName() +
+    "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
-
-
 
     await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToPensionMembersPage();
@@ -486,7 +512,16 @@ test(fundName() + "-ABP UNP Commutation - Review on Step 3 Validate Commutation 
 
 })
 
-test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
+test(
+  fundName() + "-ABP Rollover Out Commutation - Full exit @validation",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    transactionApi,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
 
     await allure.step("Navigate to Pensions Members page", async () => {
@@ -507,8 +542,7 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
         });
 
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -602,12 +636,19 @@ test(fundName() + "-ABP Rollover Out Commutation - Full exit @validation", async
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
     });
+  }
+);
 
-});
-
-
-test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
-
+test(
+  fundName() + "-ABP UNP Commutation - Full Exit @commutation",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    transactionApi,
+    globalPage,
+  }) => {
     let membersId: string | undefined;
 
     await allure.step("Navigate to Pensions Members page", async () => {
@@ -627,8 +668,7 @@ test(fundName() + "-ABP UNP Commutation - Full Exit @commutation", async ({ navB
         });
 
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -868,11 +908,18 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ internal
             console.log("memberId is undefined. Cannot fetch MAAS Report.");
         }
     });
+  }
+);
 
-
-})
-
-test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
+test(
+  fundName() + "-ABP Death Benefit Payment @pension",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    pensionAccountPage,
+    apiRequestContext,
+    globalPage,
+  }) => {
     try {
 
         await allure.step("Navigate to Pensions Members page", async () => {
@@ -910,14 +957,22 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
 
         });
     } catch (error) {
-        throw error
+      throw error;
     }
-})
+  }
+);
 
-test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage }) => {
-
+test(
+  fundName() +
+    "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension",
+  async ({
+    navBar,
+    pensionTransactionPage,
+    globalPage,
+    apiRequestContext,
+    pensionAccountPage,
+  }) => {
     let membersId: string | undefined;
-
 
     await allure.step("Navigate to Pensions Members page", async () => {
         await navBar.navigateToTTRMembersPage();
@@ -936,9 +991,7 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
         });
 
 
-        //If api is set to false, we will use existing member details for testing.
-
-
+      //If api is set to false, we will use existing member details for testing.
     } else {
 
         // Select Existing Pension Member
@@ -958,8 +1011,8 @@ test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are 
 
 
     });
-
-})
+  }
+);
 
 test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, memberPage, accountInfoPage, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
  //Creating test data from api   
@@ -1053,8 +1106,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
         });
 
 
-        //when api is set to false, we will use existing member details for testing.
-
+      //when api is set to false, we will use existing member details for testing.
     } else {
 
         // Create New Member Account

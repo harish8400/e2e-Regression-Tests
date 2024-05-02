@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
@@ -7,11 +7,10 @@ import { MemberOverView } from "./member/member_overview";
 import * as member from "../../aol/data/member.json"
 
 export class MemberTransactionsPage extends BasePage {
-
-    //Rollover In
-    readonly memberHFMFundLink: Locator;
-    readonly memberTransactionTab: Locator;
-    readonly memberAddTransaction: Locator;
+  //Rollover In
+  readonly memberHFMFundLink: Locator;
+  readonly memberTransactionTab: Locator;
+  readonly memberAddTransaction: Locator;
     readonly rollinOption: Locator;
     readonly memberAddContribution: Locator;
     readonly memberContributionType: Locator;
@@ -60,30 +59,30 @@ export class MemberTransactionsPage extends BasePage {
     readonly rollInTransaction: Locator;
     readonly rollOutTransaction: Locator;
 
-    //Rollover Out
+  //Rollover Out
     readonly rollOutErrorMessage: Locator;
-    readonly rolloverOut: Locator;
-    readonly payTo: Locator;
-    readonly payToOption: Locator;
-    readonly fundUSI: Locator;
-    readonly destinationAccountNumber: Locator;
-    readonly payFullBalance: Locator;
-    readonly supertickRetry: Locator;
-    readonly verifyRolloutProcessSuccess: Locator;
-    readonly memberOverview: Locator;
-    readonly exitStatus: Locator;
-    readonly trasitionMembers: Locator;
-    readonly processException: Locator;
-    // Member Termination
-    readonly accumulationFirstMember: Locator;
-    readonly relationshipBtn: Locator;
-    readonly employementEditBtn: Locator;
-    readonly employerEndDate: Locator;
-    readonly viewCases: Locator;
-    readonly reviewCase: ReviewCase;
-    readonly memberOverViewPage: MemberOverView;
-    readonly firstRowMember:Locator;
-    readonly pensionComutation:Locator;
+  readonly rolloverOut: Locator;
+  readonly payTo: Locator;
+  readonly payToOption: Locator;
+  readonly fundUSI: Locator;
+  readonly destinationAccountNumber: Locator;
+  readonly payFullBalance: Locator;
+  readonly supertickRetry: Locator;
+  readonly verifyRolloutProcessSuccess: Locator;
+  readonly memberOverview: Locator;
+  readonly exitStatus: Locator;
+  readonly trasitionMembers: Locator;
+  readonly processException: Locator;
+  // Member Termination
+  readonly accumulationFirstMember: Locator;
+  readonly relationshipBtn: Locator;
+  readonly employementEditBtn: Locator;
+  readonly employerEndDate: Locator;
+  readonly viewCases: Locator;
+  readonly reviewCase: ReviewCase;
+  readonly memberOverViewPage: MemberOverView;
+  readonly firstRowMember: Locator;
+  readonly pensionComutation: Locator;
     readonly partialBalance: Locator;
 
     //Benefit Payment
@@ -106,17 +105,32 @@ export class MemberTransactionsPage extends BasePage {
     readonly paymentTransactionReference: Locator;
     readonly investmentsReference: Locator;
 
-    constructor(page: Page) {
-        super(page)
+  readonly filterButton: Locator;
+  readonly typeFilter: Locator;
+  readonly selectOption: Locator;
+  readonly afeOption: Locator;
+  readonly applyButton: Locator;
+  readonly fixedFee: Locator;
+  readonly assetBasedFee: Locator;
+  constructor(page: Page) {
+    super(page);
 
-        this.reviewCase = new ReviewCase(page);
-        this.memberOverViewPage = new MemberOverView(page)
-        this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]")
+    this.reviewCase = new ReviewCase(page);
+    this.memberOverViewPage = new MemberOverView(page);
+    this.processException = page.locator(
+      "(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]"
+    );
 
-        //Rollover In
-        this.memberHFMFundLink = page.getByRole('button', { name: 'HESTA for Mercy Super' });
-        this.memberTransactionTab = page.getByRole('button', { name: 'Transactions' });
-        this.memberAddTransaction = page.getByRole('button', { name: 'ADD TRANSACTION' });
+    //Rollover In
+    this.memberHFMFundLink = page.getByRole("button", {
+      name: "HESTA for Mercy Super",
+    });
+    this.memberTransactionTab = page.getByRole("button", {
+      name: "Transactions",
+    });
+    this.memberAddTransaction = page.getByRole("button", {
+      name: "ADD TRANSACTION",
+    });
         this.rollinOption = page.getByText('Rollover In');
         this.accountNumber = page.getByLabel('Account number *');
         this.paymentAmount = page.locator("//input[@id='amount']/parent::div");
@@ -162,37 +176,72 @@ export class MemberTransactionsPage extends BasePage {
         this.memberContributionType_Retirement = page.getByRole('option', { name: 'CGT Retirement' });
         this.memberContributionType_superGuarantee = page.getByRole('option', { name: 'Super Guarantee' });
         this.memberContributionType_Child = page.getByRole('option', { name: 'Child' });
-        this.memberContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required.").first();
+    this.memberContributionErrorMessage = page
+      .getByText(
+        "com.growadministration.common.TinaServerException: Validation failed: Member's TFN is required."
+      )
+      .first();
         this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
         this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
         this.memberSummaryTab = page.getByRole('button', { name: 'Investor Summary' });
         
-        // Member Termination   
-        this.accumulationFirstMember = page.locator('td > .cell').first();
-        this.relationshipBtn = page.getByRole('button', { name: 'Relationships' });
-        this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).first();
-        this.employerEndDate = page.locator('input[name="linkBroken"]');
-        this.viewCases = page.getByRole('button', { name: 'View Cases' });
+    // Member Termination
+    this.accumulationFirstMember = page.locator("td > .cell").first();
+    this.relationshipBtn = page.getByRole("button", { name: "Relationships" });
+    this.employementEditBtn = page
+      .locator("button")
+      .filter({ hasText: "Edit Content" }).first();
+    this.employerEndDate = page.locator('input[name="linkBroken"]');
+    this.viewCases = page.getByRole("button", { name: "View Cases" });
 
-        //Rollover out
-        this.rolloverOut = page.getByText('Rollover Out');
-        this.payTo = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
-        this.payToOption = page.getByRole('option', { name: 'Fund' });
-        this.fundUSI = page.getByLabel('Fund USI *');
-        this.destinationAccountNumber = page.getByLabel('Destination account number');
-        this.payFullBalance = page.locator('.switch-slider').first();
-        this.viewCase = page.getByRole('button', { name: 'View Cases' });
-        this.createCase = page.getByRole('button', { name: 'Create Case' });
-        this.linkCase = page.getByRole('button', { name: 'Link to Case' });
-        this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
-        this.supertickRetry = page.getByText('SuperTick verification result is not ready, retry in a few minutes');
-        this.retryProcessStep = page.getByRole('button').filter({ hasText: 'Retry' }).first();
-        this.verifyRolloutProcessSuccess = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent');
-        this.memberOverview = page.getByRole('button', { name: 'Overview' });
-        this.exitStatus = page.getByRole('cell', { name: 'Exited', exact: true });
-        this.firstRowMember =page.locator('td:nth-child(6) > .cell').first();
-        this.pensionComutation=page.getByText('Pension Commutation');
-
+    //Rollover out
+    this.rolloverOut = page.getByText("Rollover Out");
+    this.payTo = page
+      .getByRole("combobox", { name: "Search for option" })
+      .locator("div")
+      .first();
+    this.payToOption = page.getByRole("option", { name: "Fund" });
+    this.fundUSI = page.getByLabel("Fund USI *");
+    this.destinationAccountNumber = page.getByLabel(
+      "Destination account number"
+    );
+    this.payFullBalance = page.locator(".switch-slider").first();
+    this.viewCase = page.getByRole("button", { name: "View Cases" });
+    this.createCase = page.getByRole("button", { name: "Create Case" });
+    this.linkCase = page.getByRole("button", { name: "Link to Case" });
+    this.approveProcessStep = page.getByRole("button", { name: "Approve" });
+    this.supertickRetry = page.getByText(
+      "SuperTick verification result is not ready, retry in a few minutes"
+    );
+    this.retryProcessStep = page
+      .getByRole("button")
+      .filter({ hasText: "Retry" })
+      .first();
+    this.verifyRolloutProcessSuccess = page.getByText(
+      "Process step completed with note: Manual Super Stream rollout correspondence sent"
+    );
+    this.memberOverview = page.getByRole("button", { name: "Overview" });
+    this.exitStatus = page.getByRole("cell", { name: "Exited", exact: true });
+    this.firstRowMember = page.locator("td:nth-child(6) > .cell").first();
+    this.pensionComutation = page.getByText("Pension Commutation");
+    this.filterButton = page.getByRole("button", { name: " FILTER " });
+    this.typeFilter = page.locator(
+      "//div[text()='Type' and @class='filter-list-item']"
+    );
+    this.selectOption = page.getByRole("textbox", { name: "Select" });
+    this.afeOption = page.locator("//li//span[text()='AFE']");
+    this.applyButton = page.getByRole("button", { name: " APPLY " });
+    expect(
+      this.page
+        .getByRole("cell", { name: "Fee", exact: true })
+        .locator("div")
+        .first().isVisible
+    );
+    this.fixedFee = page.getByRole("dialog").getByText("FIXED_FEE").first();
+    this.assetBasedFee = page
+      .getByRole("dialog")
+      .getByText("ASSET_BASED_FEE")
+      .first();
         //Benefit Payment
         this.benefitPaymentOption = page.getByText('Benefit Payment');
         this.benefitType_dropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
@@ -213,7 +262,7 @@ export class MemberTransactionsPage extends BasePage {
         this.paymentTransactionReference = page.getByRole('row', {name: 'Payment'}).first();
         this.investmentsReference = page.locator("//span[@class='btn-heading' and contains(text(),'Investments')]");
         this.partialBalance = page.getByText('0.00', { exact: true });
-    }
+  }
 
     /** Member Rollin, adds a contribution to member account */
     async memberRolloverIn(contributionType?: String, TFN?: Boolean, GovContribution?: Boolean) {
@@ -225,15 +274,15 @@ export class MemberTransactionsPage extends BasePage {
             const value = await this.memberAge.textContent();
             age = parseInt(value!.match(/\d+/)![0]);
         }
-        await this.memberOverViewPage.memberAccumulationAccount_Tab.click();
-        await this.memberTransactionTab.click();
-        await this.memberAddTransaction.click();
-        await this.memberAddContribution.click();
+    await this.memberOverViewPage.memberAccumulationAccount_Tab.click();
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.memberAddContribution.click();
 
-        await this.viewCase.click();
-        await this.createCase.click();
-        await this.sleep(3000);
-        let contributionAmount = '10000';
+    await this.viewCase.click();
+    await this.createCase.click();
+    await this.sleep(3000);
+    let contributionAmount = "10000";
 
         await this.memberContributionType.click();
         if(contributionType == 'Salary Sacrifice'){
@@ -315,26 +364,25 @@ export class MemberTransactionsPage extends BasePage {
         await this.linkCase.click();
     }
 
-    /** Member Rollout, perform rollout and exits member */
-    async memberRolloverOut(TFN: boolean) {
+  /** Member Rollout, perform rollout and exits member */
+  async memberRolloverOut(TFN: boolean) {
+    await this.memberHFMFundLink.click();
+    await this.memberTransactionTab.click();
+    await this.memberAddTransaction.click();
+    await this.rolloverOut.click();
 
-        await this.memberHFMFundLink.click();
-        await this.memberTransactionTab.click();
-        await this.memberAddTransaction.click();
-        await this.rolloverOut.click();
+    await this.viewCase.click();
+    await this.createCase.click();
+    this.sleep(3000);
 
-        await this.viewCase.click();
-        await this.createCase.click();
-        this.sleep(3000);
-
-        await this.payTo.click();
-        await this.payToOption.click();
-        await this.fundUSI.fill('STA0100AU');
-        await this.fundUSI.press('Tab');
-        await this.destinationAccountNumber.fill('MER-ACC-355657');
-        await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-        await this.effectiveDate.press('Tab');
-        await this.payFullBalance.click();
+    await this.payTo.click();
+    await this.payToOption.click();
+    await this.fundUSI.fill("STA0100AU");
+    await this.fundUSI.press("Tab");
+    await this.destinationAccountNumber.fill("MER-ACC-355657");
+    await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+    await this.effectiveDate.press("Tab");
+    await this.payFullBalance.click();
 
         await this.linkCase.click();
         await this.sleep(5000);
@@ -454,5 +502,30 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.reviewCase.reviewCaseProcess(this.rollinSuccessMessage);
         
+    }
+
+    async checkAdminFeeTransactionForPensionCommute() {
+      //below step can removed if we are already on transaction page
+      await this.memberTransactionTab.click();
+      await this.sleep(1000);
+      await this.filterButton.click();
+      await this.sleep(1000);
+      await this.typeFilter.click();
+      await this.sleep(1000);
+      await this.selectOption.click();
+      await this.sleep(1000);
+      await this.afeOption.click();
+      await this.applyButton.click();
+      let dateExpected: string = DateUtils.ddMMMyyyStringDate(new Date());
+      // console.log(" the date is " + dateExpected);
+      //await this.page..locator("//td//div[text()='AFE']//following::td[2]//div[text()='"+dateExpected+"']");
+      dateExpected = "26 Mar 2024";
+      await this.page
+        .locator(
+          "//td//div[text()='AFE']//following::td[2]//div[text()='26 Mar 2024']"
+        )
+        .click();
+      await expect(this.fixedFee).toBeVisible();
+      await expect(this.assetBasedFee).toBeVisible();
     }
 }
