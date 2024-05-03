@@ -224,7 +224,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
+    this.invPercentage = page.getByRole('textbox').nth(2);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step

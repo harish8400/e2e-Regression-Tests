@@ -1,7 +1,16 @@
 import { allure } from "allure-playwright";
-import { aolTest as test } from "../../../src/aol/base_aol_test"
+import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
-import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
+import { APIRequestContext } from "playwright";
+import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as member from "../../../src/aol/data/member.json";
+import pensionMember from "../../../data/aol_test_data.json";
+
+export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
+    apiRequestContext: async ({ }, use) => {
+        await use(await initDltaApiContext());
+    },
+});
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
@@ -11,36 +20,54 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs Employment Termination  tests */
-test(fundName()+"-Verify an employment termination at current system date is processed successfully.", async ({  navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
-    try {
-        await navBar.navigateToAccumulationMembersPage();
-        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
-        await accountInfoPage.ProcessTab();
-        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
-        await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
-        await navBar.selectMember(memberNo);
-        await memberTransactionPage.employmentTerminationForCurrentDate();
+test(fundName()+"-Verify an employment termination at current system date is processed successfully.", async ({ internalTransferPage, apiRequestContext, memberPage, navBar, memberTransactionPage,accountInfoPage }) => {
+    try{
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+
+        //** Create a new accumulation member when data from api is set to true */
+        if(pensionMember.generate_test_data_from_api){
+            await test.step("Create a new Accumulation Member", async () => {
+                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            })
+        }
+        else{
+            //** select existing accumulation member which has employment details when data from api is set to false*/
+            await test.step("Select the Member from Accumulation members list", async () => {
+                await navBar.selectMember(member.memberID);
+            })
+        }
+        await test.step("Verify termination of employment at current system date is processed", async () => {
+            await memberTransactionPage.employmentTerminationForCurrentDate();
+        })
 
     } catch (error) {
         throw error;
     }
 })
 
-test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully.", async ({ navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
+test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully.", async ({ memberPage, internalTransferPage, apiRequestContext, navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
     try {
-        await navBar.navigateToAccumulationMembersPage();
-        let { memberNo ,processId} = await AccumulationMemberApiHandler.createMember(memberApi);
-        await accountInfoPage.ProcessTab();
-        const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi,processId);
-        await AccumulationMemberApiHandler.approveProcess(memberApi,caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
-        await navBar.selectMember(memberNo);
-        await memberTransactionPage.employmentTerminationForEarlierDate();
+        await test.step("Navigate to Accumulation Members page", async () => {
+            await navBar.navigateToAccumulationMembersPage();
+        })
+
+        //** Create a new accumulation member when data from api is set to true */
+        if(pensionMember.generate_test_data_from_api){
+            await test.step("Create a new Accumulation Member", async () => {
+                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            })
+        }
+        else{
+            //** select existing accumulation member which has employment details when data from api is set to false*/
+            await test.step("Select the Member from Accumulation members list", async () => {
+                await navBar.selectMember(member.memberID);
+            })
+        }
+        await test.step("Verify termination of employment with effective date, earlier than current system date is processed", async () => {
+            await memberTransactionPage.employmentTerminationForEarlierDate();
+        })
 
     } catch (error) {
         throw error;

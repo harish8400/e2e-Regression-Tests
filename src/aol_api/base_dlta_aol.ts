@@ -1,6 +1,5 @@
 import { APIRequestContext, APIResponse, request } from "@playwright/test";
 import { ENVIRONMENT_CONFIG } from "../../config/environment_config";
-import TokenManager from "./token_manager";
 
 export abstract class BaseDltaAolApi {
     protected readonly userId: string;
@@ -12,7 +11,7 @@ export abstract class BaseDltaAolApi {
     }
 
     private getJwtUserId() {
-        const token = TokenManager.getToken();
+        const token = process.env.TOKEN;
         if (!token) {
             throw new Error("JWT Token is not available");
         }
@@ -47,7 +46,7 @@ export abstract class BaseDltaAolApi {
 
 export async function initDltaApiContext() {
     // You can modify the token retrieval logic based on your requirements
-    const jwt = TokenManager.getToken();
+    const jwt = process.env.TOKEN;
 
     // Ensure that a valid JWT is available
     if (!jwt) {
@@ -57,7 +56,7 @@ export async function initDltaApiContext() {
     const context = await request.newContext({
         baseURL: ENVIRONMENT_CONFIG.dltaApiURL,
         extraHTTPHeaders: {
-            'Authorization': `Bearer ${jwt}`,
+            'Authorization': `${jwt}`,
             'Content-Type': 'application/json',
         },
         // Workaround for not being able to add custom certs to playwright yet https://github.com/microsoft/playwright/issues/14663

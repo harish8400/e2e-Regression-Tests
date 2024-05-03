@@ -23,7 +23,7 @@ test(fundName()+"-Ensure that comments can be added after a case is closed and u
 })
 
 /** Ensure cases are correctly displayed under Closed Cases tab */
-test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @pipeline", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.navigateToClosedCasesTab();
