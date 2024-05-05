@@ -962,17 +962,16 @@ export class PensionTransactionPage extends BasePage {
       await MemberApiHandler.createPensionShellAccount(apiRequestContext);
 
     // Perform necessary operations related to pension account creation
-    await pensionAccountPage.ProcessTab();
-    const caseGroupId = await MemberApiHandler.getCaseGroupId(
-      apiRequestContext,
-      processId
-    );
+    //await pensionAccountPage.ProcessTab();
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext,processId);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
     await new Promise((resolve) => setTimeout(resolve, 10000));
-    await pensionAccountPage.reload();
+    //await pensionAccountPage.reload();
 
     // Navigate to pension members page and select member
-    await navBar.navigateToPensionMembersPage();
+    // await navBar.navigateToPensionMembersPage();
     await navBar.selectMember(memberNo);
 
     // Return relevant data
