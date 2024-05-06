@@ -235,8 +235,8 @@ export class MemberPage extends BasePage {
 
         // #filter
         this.FilterClick = page.getByRole('button', { name: 'FILTER' });
-        this.FilterOption = page.getByText('Member Number').nth(1);
-        this.FilterOptionInput = page.locator('textarea');
+        this.FilterOption = page.getByText('Name', { exact: true });
+        this.FilterOptionInput = page.getByRole('textbox').nth(1);
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
     }
 
@@ -347,6 +347,7 @@ export class MemberPage extends BasePage {
     }
 
     async verifyIfWelcomeLetterTriggered() {
+        await this.sleep(5000);
         await this.memberInfoTab.click();
         await this.memberCreatedCase.click();
 
