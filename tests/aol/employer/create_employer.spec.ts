@@ -11,31 +11,31 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Verify if new employer ABN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify if new employer ABN is created successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await employerIdentitiesPage.createNewEmployer();
 
 })
 
-test(fundName() + "-Verify if new employer WPN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify if new employer WPN is created successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await employerIdentitiesPage.createNewEmployerWPN();
 
 })
 
-test(fundName() + "-Verify for new employer Contact Details are added successfully @demorun", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify for new employer Contact Details are added successfully @employer", async ({ employerIdentitiesPage }) => {
     
     await employerIdentitiesPage.addContactDetails();
 
 })
 
-test(fundName() + "-Verify existing employer data can be edited successfully @demorun", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
   
     await employerIdentitiesPage.updateExistingEmployer();
 
 })
 
-test(fundName() + "-Verify if error is displayed on empty create employer request", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify if error is displayed on empty create employer request @employer", async ({ employerIdentitiesPage }) => {
 
     await employerIdentitiesPage.validateInvalidEmployerCreation();
 

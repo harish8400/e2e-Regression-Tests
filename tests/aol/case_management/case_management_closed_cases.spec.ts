@@ -12,7 +12,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /** Ensure that comments can be added after a case is closed and user can find last updated date time on a case */
-test(fundName()+"-Ensure that comments can be added after a case is closed and user can find last updated date time on a case", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure that comments can be added after a case is closed and user can find last updated date time on a case @casemanagement", async ({ dashboardPage }) => {
 
     try {
         await dashboardPage.updateClosedCaseWithComment();
@@ -23,7 +23,7 @@ test(fundName()+"-Ensure that comments can be added after a case is closed and u
 })
 
 /** Ensure cases are correctly displayed under Closed Cases tab */
-test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @pipeline", async ({ dashboardPage }) => {
+test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.navigateToClosedCasesTab();

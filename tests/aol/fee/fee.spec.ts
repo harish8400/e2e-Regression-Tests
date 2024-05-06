@@ -21,7 +21,7 @@ test.beforeEach(async ({ navBar }) => {
   await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Verify admin fee on redemption and application", async ({
+test(fundName() + "-Verify admin fee on redemption and application @fee", async ({
   navBar,
   memberTransactionPage,
   globalPage,
