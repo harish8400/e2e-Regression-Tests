@@ -73,7 +73,7 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
         await test.step("Validate MAAS Submit Report", async () => {
             const memberId = getMemberId();
             if (memberId) {
-                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+                const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MAAS Submit');
                 console.log('MAAS Report:', MAASReport);
             } else {
                 console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");

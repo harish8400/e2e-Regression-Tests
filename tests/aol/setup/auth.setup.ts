@@ -26,7 +26,7 @@ setup(fundName() + "authenticate", async ({ page }) => {
     await page.getByPlaceholder('user@company.com').fill(admin.username);
     await page.getByPlaceholder('Your password').fill(admin.password);
     await page.keyboard.press('Tab');
-    await page.getByRole('button', { name: 'Log in' }).click();
+    await page.getByRole('button', { name: 'Log in', exact: true }).click();
     // Wait until the page receives the cookies.
     // Sometimes login flow sets cookies in the process of several redirects.
     // Wait for the final URL to ensure that the cookies are actually set.

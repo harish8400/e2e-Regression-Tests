@@ -224,7 +224,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(2);
+    this.invPercentage = page.getByRole('textbox').nth(1);
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -271,12 +271,12 @@ export class PensionShellAccount extends BasePage {
     // Edit Pension Peyment Details for existing member
     this.pensionTab = page.getByRole('button', { name: 'Pension' });
     this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
-    this.frequency = page.locator('#gs2__combobox').getByLabel('Select', { exact: true });
+    this.frequency = page.locator("(//div[@class='gs__selected-options']//span)[1]");
     this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
     this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
     this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
-    this.annualPaymentMethod = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethod = page.locator("(//input[@class='gs__search'])[3]");
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
 
     this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
@@ -304,7 +304,7 @@ export class PensionShellAccount extends BasePage {
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
-    this.successMessage = page.getByText('Processed insert pension history');
+    this.successMessage = page.getByText('Process step completed with note: Pension payment correspondence sent.');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
@@ -413,7 +413,6 @@ export class PensionShellAccount extends BasePage {
   async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
-    await this.clipBoard_icon.click();
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
@@ -515,11 +514,12 @@ export class PensionShellAccount extends BasePage {
       await this.frequencyValue2.click();
     }
     else {
-      await this.frequencyValue1.click();
+      await this.frequencyValue1.click({force:true});
     }
     await this.nextPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(15)}`);
     await this.annualPaymentMethod.click();
-    await this.annualPaymentMethodValue.click();
+    await this.sleep(3000);
+    await this.annualPaymentMethodValue.click({force:true});
     await this.viewCase.click();
     await this.sleep(3000);
     await this.createCase.click();
@@ -550,7 +550,7 @@ export class PensionShellAccount extends BasePage {
       await this.globalPage.captureScreenshot("New Pension History record");
     });
 
-    this.regularPensionAmount.scrollIntoViewIfNeeded();
+    //await this.regularPensionAmount.scrollIntoViewIfNeeded();
     //this.regularPensionAmount.focus();
     
   }

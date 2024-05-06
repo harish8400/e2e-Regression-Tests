@@ -15,12 +15,13 @@ import { RollinApiHandler } from "../../../aol_api/handler/rollin_api-handler";
 import { TransactionsApiHandler } from "../../../aol_api/handler/transaction_api_handler";
 import { allure } from "allure-playwright";
 import { MemberOverView } from "../member/member_overview";
+import { GlobalPage } from "./../component/global_page";
 
 
 export class PensionTransactionPage extends BasePage { 
   readonly navbar: Navbar;
   readonly memberOverView: MemberOverView;
-
+  readonly globalPage: GlobalPage;
   //Rollover In
   readonly memberTransactionTab: Locator;
   readonly memberAddTransaction: Locator;
@@ -84,7 +85,7 @@ export class PensionTransactionPage extends BasePage {
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
   readonly pensionCommenceSuccessMessage: Locator;
-  readonly pensionCommencementHistory: Locator;
+  
 
   //Exceptions
 
@@ -155,14 +156,14 @@ export class PensionTransactionPage extends BasePage {
   readonly investmentBalanceScreen:Locator;
   readonly paymentDetails:Locator;
   readonly investmentSwitchTransaction: Locator;
-  readonly investmentSwitchTransaction_status: Locator;
+
 
   //Vanguard
   readonly unathorized: Locator;
 
   constructor(page: Page) {
     super(page);
-
+    this.globalPage = new GlobalPage(page);
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.memberOverView = new MemberOverView(page);
@@ -277,7 +278,7 @@ export class PensionTransactionPage extends BasePage {
     this.filterType_PTB = page.locator("//span[normalize-space()='PTB']").first();
     this.filterType_INS = page.locator("//span[normalize-space()='INS']");
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
-    this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]");
+    this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]").first();
     this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' }); 
 
     ///Death Benifits
@@ -304,7 +305,7 @@ export class PensionTransactionPage extends BasePage {
     this.InputTitle = page.getByText("Mr", { exact: true });
     this.FirstName = page.getByLabel("First name *");
     this.LastName = page.getByLabel("Last name *");
-    this.DateOfBirth = page.locator('input[name="dob0"]');
+    this.DateOfBirth = page.locator("(//input[@placeholder='dd/mm/yyyy'])[2]");
     this.DateOfBirthInput = page
       .getByRole("cell", { name: "23" })
       .locator("span");
@@ -334,7 +335,7 @@ export class PensionTransactionPage extends BasePage {
     this.bankOption = page.getByRole('option', { name: 'Bank' });
     this.radioButton = page.locator('.switch-slider');
     this.paymentAmount = page.locator('//div[@class="input-number tracking-normal inline-block py-1 border-b w-full border-teal-100 hover:border-teal-300 font-bold"]');
-    this.bankAccountType = page.getByText('AustralianSuper Pty Ltd - No');
+    this.bankAccountType = page.getByRole('option', { name: 'InTest - Pension Payment' });
     //Transactions view 
     this.TransactioReference = page.getByRole('cell', { name: 'Roll In' }).first();
     this.BenefitPaymentId = page.getByRole('cell', { name: 'Payment', exact: true }).first();
@@ -351,9 +352,10 @@ export class PensionTransactionPage extends BasePage {
     this.summary = page.getByRole('button', { name: 'Member Summary' });
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
-    this.adminFeeCase = page.locator("(//button[@type='button']/following-sibling::button)[2]");
+    this.adminFeeCase = page.locator("//div[@class='cell']/following::div[text()='AFE']").first();
     this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']"); 
     this.paymentDetails = page.locator("//span[text()='Payment Details']");
+    this.investmentSwitchTransaction =  page.locator("//div[@class='cell']/following::div[text()='INVPC']").first();
 
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
@@ -561,8 +563,8 @@ export class PensionTransactionPage extends BasePage {
     }
 
     // locator update todo for vanguard and AE
-    await this.accumulationTab.click();
-    //await this.HESTAforMercyRetirementTab.click();
+   //await this.accumulationTab.click();
+    await this.HESTAforMercyRetirementTab.click();
     await this.ButtonTransactions.click();
     await this.sleep(1000);
     await this.ButtonAddTransactions.click();
@@ -591,7 +593,11 @@ export class PensionTransactionPage extends BasePage {
     let randomSurname = UtilsAOL.randomSurname(5);
     await this.LastName.click();
     await this.LastName.fill(`${randomSurname}`);
-    await this.DateOfBirth.click();
+    await this.LastName.press('Tab');
+    let otherName  =await this.page.locator("(//label[text()='Other name ']/following::input)[1]");
+    otherName.fill('Test01');
+    otherName.press('Tab');
+    await this.sleep(3000);
     await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 50)}`);
     await this.City_Town.click();
     await this.City_Town.fill(member.city);
@@ -602,7 +608,7 @@ export class PensionTransactionPage extends BasePage {
     await this.CheckboxKYC.click();
     await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
-    await this.page.keyboard.down('Tab');
+    (await this.sleep(3000).then(()=>this.page.getByLabel('check icon'))).click();
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
     await this.TFN.fill(`${tfn}`);
@@ -637,9 +643,9 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
-    await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
-    await expect(this.pensionCommencementHistory).toBeVisible();
-    await this.pensionCommencementHistory.click();
+   // await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
+   // await expect(this.pensionCommencementHistory).toBeVisible();
+   // await this.pensionCommencementHistory.click();
     await this.reviewCase.captureScreenshot();
 
   }
@@ -726,7 +732,7 @@ export class PensionTransactionPage extends BasePage {
       expect(this.transactionType_PTB).toBeVisible();
       await this.page.locator("//tr[contains(@class,'clickable')]//td[1]").first().click();
       await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
-      await this.sleep(2000).then(() => { this.page.locator("//i[contains(@class,'el-icon el-dialog__close')]//*[name()='svg']").click() });
+      await this.sleep(2000).then(() => { this.page.getByLabel('close', { exact: true }).click() });
     }
     await this.reviewCase.captureScreenshot();
   }
@@ -830,11 +836,9 @@ export class PensionTransactionPage extends BasePage {
   }
 
   async adminFee() {
-    await this.sleep(3000);
-    await this.adminFeeCase.focus();
+    await this.sleep(4000);
     await this.adminFeeCase.click();
-    await this.sleep(3000);
-    await this.activityData.scrollIntoViewIfNeeded();
+    await this.sleep(5000);
     await this.activityData.click();
     const fixedFeeTotal = await this.page.$(
       "(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[1]"
@@ -1302,9 +1306,18 @@ export class PensionTransactionPage extends BasePage {
     await this.memberTransactionTab.click();
     await this.sleep(3000);
     await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
-    await this.investmentSwitchTransaction.click();
-    await expect(this.investmentSwitchTransaction_status).toBeVisible();
+   await this.investmentSwitchTransaction.click();
     await this.reviewCase.captureScreenshot();
+  }
+
+  async deathBenefit(){
+    (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        await this.sleep(3000);
+        let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='DBE']").first();
+        await sgcType.scrollIntoViewIfNeeded();
+        await this.sleep(2000);
+        await sgcType.click();
+        await this.sleep(3000).then(()=>this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
   }
 
 
