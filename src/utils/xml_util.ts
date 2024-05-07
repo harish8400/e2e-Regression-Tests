@@ -17,6 +17,7 @@ import { allure } from 'allure-playwright';
 import * as superStreamDataRTR from '../aol/data/superstream_RTR_data.json';
 import * as superStreamDataIRR from '../aol/data/superstream_IRR_data.json';
 import { ShellAccountApiHandler } from '../aol_api/handler/internal_transfer_in_handler';
+import * as superStreamDataForVG from '../aol/data/superstream_vg_data.json';
 
 export class xmlUtility {
 
@@ -196,6 +197,50 @@ export class xmlUtility {
         }
     }
 
+    static generateXMLFileForVG(templateName: string): string | { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'MRRWithTFN_VG.xml':
+                return this.generateMRRWithTFNXML_VG(templateName);
+            case 'MRRWithoutTFN_VG.xml':
+                return this.generateMRRWithoutTFNXML_VG(templateName);
+            default:
+                return generatedXMLFileName;
+        }
+
+    }
+
+    static async generateXMLFileCTRForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'CTRWithTFN.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithTFNXML(templateName);
+                }
+            case 'CTRWithTFN_MultipleContribution.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithTFNXML(templateName);
+                }
+            case 'CTRWithoutTFN.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithoutTFNXML(templateName);
+                }
+            case 'CTRWithoutTFN_MultipleContribution.xml':
+                if (!isNewMember) {
+                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateCTRWithoutTFNXML(templateName);
+                }
+            default:
+                return generatedXMLFileName;
+        }
+    }
 
 
 
@@ -1997,8 +2042,129 @@ export class xmlUtility {
         }
     }
 
+// Generate XML for MRR
+static generateMRRWithTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
+
+    let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+    /// Copy template file to processed folder
+    const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
+    const destinationFileName: string = `MRR_${formattedDate}_145952_123_${conversationId}_1.xml`;
+    const superGateMessageId : string =  `${formattedDate}.176048.123@superchoice.com.au`
+    this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+    /// Node values
+    const currentUTCTime: Date = new Date();
+    const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+    const tfn = UtilsAOL.generateValidTFN();
+    const firstName = UtilsAOL.randomName();
+    const lastName = UtilsAOL.randomSurname(5);
+    const year = UtilsAOL.getRandomYear();
+    const month = UtilsAOL.getRandomMonth();
+    const day = UtilsAOL.getRandomDay();
+    const dob = UtilsAOL.formatDate(day, month, year);
+    let tfnIs = false;
 
 
+
+    /// Prepare nodes list to update
+    interface nodes {
+        [key: string]: any;
+    }
+
+    const nodesToUpdate: nodes = {
+        "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+        "//messageId[1]/conversationId[1]": conversationId,
+        "//headers[1]/conversationId[1]": conversationId,
+        "//timeInUTC[1]": timeInUTC,
+        "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
+        "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
+        "//name[1]/firstName[1]": firstName,
+        "//name[1]/lastName[1]": lastName,
+        "//member[1]/dob[1]/year[1]": year,
+        "//member[1]/dob[1]/month[1]": month,
+        "//member[1]/dob[1]/day[1]": day,
+        "//taxFileNumberNotProvided[1]": tfnIs,
+        "//employerProvidedTaxFileNumber[1]": tfn,
+        "//employmentStartDate[1]":timeInUTC,
+        "//tfnEntityIdentifier[1]":tfn
+        
+        
+
+    };
+
+    /// Update XML nodes and save it
+    this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+    return {
+        destinationFileName,
+        firstName,
+        lastName,
+        dob, tfnIs
+    };
+}
+
+
+
+// Generate XML for MRR
+static generateMRRWithoutTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
+
+    let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+    /// Copy template file to processed folder
+    const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
+    const destinationFileName: string = `MRR_${formattedDate}_125733_123_${conversationId}_1.xml`;
+    const superGateMessageId : string =  `${formattedDate}.126035.123@superchoice.com.au`
+    this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+    /// Node values
+    const currentUTCTime: Date = new Date();
+    const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+    const tfn = UtilsAOL.generateValidTFN();
+    const firstName = UtilsAOL.randomName();
+    const lastName = UtilsAOL.randomSurname(5);
+    const year = UtilsAOL.getRandomYear();
+    const month = UtilsAOL.getRandomMonth();
+    const day = UtilsAOL.getRandomDay();
+    const dob = UtilsAOL.formatDate(day, month, year);
+    let tfnIs = true;
+
+
+
+    /// Prepare nodes list to update
+    interface nodes {
+        [key: string]: any;
+    }
+
+    const nodesToUpdate: nodes = {
+        "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+        "//messageId[1]/conversationId[1]": conversationId,
+        "//headers[1]/conversationId[1]": conversationId,
+        "//timeInUTC[1]": timeInUTC,
+        "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
+        "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
+        "//name[1]/firstName[1]": firstName,
+        "//name[1]/lastName[1]": lastName,
+        "//member[1]/dob[1]/year[1]": year,
+        "//member[1]/dob[1]/month[1]": month,
+        "//member[1]/dob[1]/day[1]": day,
+        "//employmentStartDate[1]":timeInUTC,
+        
+        
+        
+
+    };
+
+    /// Update XML nodes and save it
+    this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+    return {
+        destinationFileName,
+        firstName,
+        lastName,
+        dob, tfnIs
+    };
+}
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {

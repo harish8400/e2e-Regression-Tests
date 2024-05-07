@@ -383,9 +383,9 @@ export class MemberPage extends BasePage {
         await this.page.locator(`//div[text()='${superstreamProcess}']`).first().click();
 
         await this.sleep(2000);
-        let process = await this.page.locator("(//div[@class='cell']/following::div[@class='cell'])[11]/span");
+        let process = await this.page.locator("(//div[@class='cell']//span)[1]");
         if (await process.innerText() === "In Review") {
-            await this.page.locator('//span[text()="In Review"]').click();
+            await this.page.getByText('In Review').click({force:true});
         } else if (await process.innerText() === "In Progress") {
             await this.page.locator('//span[text()="In Progress"]').click();
         }
