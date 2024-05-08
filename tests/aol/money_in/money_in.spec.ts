@@ -22,7 +22,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "Contribution with TFN - Verify if contribution is processed successfully ", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
+test(fundName() + "Contribution with TFN - Verify if contribution is processed successfully @moneyin", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -64,7 +64,7 @@ test(fundName() + "Contribution with TFN - Verify if contribution is processed s
 
 })
 
-test(fundName() + " Contribution without TFN - Verify if contribution is process failed for accum member doesn't have TFN where contribution type as Non Government ", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
+test(fundName() + " Contribution without TFN - Verify if contribution is process failed for accum member doesn't have TFN where contribution type as Non Government @moneyin", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -96,7 +96,7 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
 
 })
 
-test(fundName() + " Contribution without TFN - Verify if contribution is process failed for accum member doesn't have TFN where contribution type as Government ", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
+test(fundName() + " Contribution without TFN - Verify if contribution is process failed for accum member doesn't have TFN where contribution type as Government @moneyin", async ({ navBar, memberTransactionPage, memberOverviewpage, memberApi, globalPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -128,7 +128,7 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
 
 })
 
-test(fundName() + " Verify if Personal contribution is processed successfully for Accum member ", async ({ navBar, memberPage, memberTransactionPage, pensionTransactionPage, globalPage, pensionAccountPage }) => {
+test(fundName() + " Verify if Personal contribution is processed successfully for Accum member @moneyin", async ({ navBar, memberPage, memberTransactionPage, pensionTransactionPage, globalPage, pensionAccountPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -156,7 +156,7 @@ test(fundName() + " Verify if Personal contribution is processed successfully fo
 
 })
 
-test(fundName() + "Salary Sacrifice Contribution - Verify if contribution is processed successfully ", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + "Salary Sacrifice Contribution - Verify if contribution is processed successfully @moneyin", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -183,7 +183,7 @@ test(fundName() + "Salary Sacrifice Contribution - Verify if contribution is pro
 
 })
 
-test(fundName() + "Super Guarantee Contribution - Verify if contribution is processed successfully ", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + "Super Guarantee Contribution - Verify if contribution is processed successfully @moneyin", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -210,7 +210,7 @@ test(fundName() + "Super Guarantee Contribution - Verify if contribution is proc
 
 })
 
-test(fundName() + " Spouse Contribution - Verify if contribution is processed successfully ", async ({ internalTransferPage, apiRequestContext, accountInfoPage, pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + " Spouse Contribution - Verify if contribution is processed successfully @moneyin", async ({ internalTransferPage, apiRequestContext, accountInfoPage, pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -239,7 +239,7 @@ test(fundName() + " Spouse Contribution - Verify if contribution is processed su
 
 })
 
-test(fundName() + "Retirement Contribution - Verify if contribution is processed successfully ", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + "Retirement Contribution - Verify if contribution is processed successfully @moneyin", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -266,7 +266,7 @@ test(fundName() + "Retirement Contribution - Verify if contribution is processed
 
 })
 
-test(fundName() + "Verify if Child contribution is processed successfully for Accum member when the age is below 18 ", async ({ memberOverviewpage, internalTransferPage, apiRequestContext, accountInfoPage, pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + "Verify if Child contribution is processed successfully for Accum member when the age is below 18 @moneyin", async ({ memberOverviewpage, internalTransferPage, apiRequestContext, accountInfoPage, pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -296,7 +296,7 @@ test(fundName() + "Verify if Child contribution is processed successfully for Ac
 
 })
 
-test(fundName() + "Verify if Child contribution is processed successfully for Accum member when the age is above 18 ", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName() + "Verify if Child contribution is processed successfully for Accum member when the age is above 18 @moneyin", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage, memberTransactionPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -313,7 +313,7 @@ test(fundName() + "Verify if Child contribution is processed successfully for Ac
 
 })
 
-test(fundName() + "Roll In  - With TFN for APRA fund @MoneyIn", async ({ relatedInformationPage, internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
+test(fundName() + "Roll In  - With TFN for APRA fund @moneyin", async ({ relatedInformationPage, internalTransferPage, apiRequestContext, accountInfoPage, memberPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, navBar, globalPage }) => {
 
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -347,7 +347,7 @@ test(fundName() + "Roll In  - With TFN for APRA fund @MoneyIn", async ({ related
     });
 })
 
-test(fundName() + "Roll In  - Without TFN for APRA fund @MoneyIn", async ({ relatedInformationPage, memberPage, accountInfoPage, internalTransferPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, apiRequestContext, navBar, globalPage }) => {
+test(fundName() + "Roll In  - Without TFN for APRA fund @moneyin", async ({ relatedInformationPage, memberPage, accountInfoPage, internalTransferPage, memberOverviewpage, pensionTransactionPage, memberTransactionPage, apiRequestContext, navBar, globalPage }) => {
     
     await test.step("Navigate to Accumulation Members page", async () => {
         await navBar.navigateToAccumulationMembersPage();

@@ -11,7 +11,7 @@ test.beforeEach(async ({ navBar }) => {
         
 });
 
-test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage,memberApi,pensionAccountPage }) => {
+test(fundName()+"-Stop Correspondence @pension", async ({ navBar , relatedInformationPage,memberApi,pensionAccountPage }) => {
     
     try {
         await navBar.navigateToPensionMembersPage();

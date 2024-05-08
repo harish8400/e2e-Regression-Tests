@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs member creation tests */
-test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
+test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @member", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
 
     try {
 
@@ -45,7 +45,7 @@ test(fundName()+"-Verify a new Active Member Account is created successfully and
     }
 })
 
-test(fundName()+"-Verify new member creation without TFN and welcome letter is triggered", async ({ memberPage, navBar }) => {
+test(fundName()+"-Verify new member creation without TFN and welcome letter is triggered @member", async ({ memberPage, navBar }) => {
 
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -67,7 +67,7 @@ test(fundName()+"-Verify new member creation without TFN and welcome letter is t
     }
 })
 
-test(fundName()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful", async ({ memberPage, navBar }) => {
+test(fundName()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful @member", async ({ memberPage, navBar }) => {
 
     try {
 

@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with TFN @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -91,7 +91,7 @@ test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam, globalP
 
 })
 
-test("MRR is processed with out TFN", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with out TFN @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -162,7 +162,7 @@ test("MRR is processed with out TFN", async ({ memberPage, superSteam, globalPag
 
 })
 
-test("CTR is processed with TFN and Single Contribution", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed with TFN and Single Contribution @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -218,7 +218,7 @@ test("CTR is processed with TFN and Single Contribution", async ({ memberPage, s
 
 })
 
-test("CTR is processed with TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed with TFN and Multiple Contributions @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -274,7 +274,7 @@ test("CTR is processed with TFN and Multiple Contributions", async ({ memberPage
 
 })
 
-test("CTR is processed without TFN and Single Contribution", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed without TFN and Single Contribution @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -330,7 +330,7 @@ test("CTR is processed without TFN and Single Contribution", async ({ memberPage
 
 })
 
-test("CTR is processed without TFN and Multiple Contributions", async ({ memberPage, superSteam, globalPage }) => {
+test("CTR is processed without TFN and Multiple Contributions @superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
