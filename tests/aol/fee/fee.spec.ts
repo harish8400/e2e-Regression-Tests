@@ -6,6 +6,7 @@ import pensionMember from "../../../data/aol_test_data.json";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
+import { fundName } from "../../../src/aol/utils_aol";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
   apiRequestContext: async ({ }, use) => {
@@ -20,7 +21,7 @@ test.beforeEach(async ({ navBar }) => {
   await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("Verify admin fee on redemption and application", async ({
+test(fundName() + "-Verify admin fee on redemption and application @fee", async ({
   navBar,
   memberTransactionPage,
   globalPage,
@@ -68,11 +69,11 @@ test("Verify admin fee on redemption and application", async ({
       });
     }
 
-    // // Commutation Rollout Process
-    // await test.step("Perform the Commutation Rollout Process", async () => {
-    //   await pensionTransactionPage.commutationRolloverOut(true);
-    //   await globalPage.captureScreenshot("Commutation Rollout Process done");
-    // });
+    // Commutation Rollout Process
+    await test.step("Perform the Commutation Rollout Process", async () => {
+      await pensionTransactionPage.commutationRolloverOut(true);
+      await globalPage.captureScreenshot("Commutation Rollout Process done");
+    });
 
     await test.step("Verify the Admin fee transaction created for for Pension Commute", async () => {
       await memberTransactionPage.checkAdminFeeTransactionForPensionCommute();

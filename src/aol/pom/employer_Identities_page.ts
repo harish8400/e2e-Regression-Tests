@@ -176,33 +176,43 @@ export class EmployerIdentitiesPage extends BasePage {
     }
 
     async createNewEmployerWPN() {
+
+    
+        await this.employerIdentitiesLink.click();
+        await this.addNewEmployer.click();
         await this.WPN.click();
         await this.sleep(2000);
-        let tfns =TFN.getValidTFN();
-        await this.wpnValue.fill(tfns.tfn);
+        let tfn = UtilsAOL.generateValidTFN();
+        await this.wpnValue.click();
+        await this.wpnValue.fill(`${tfn}`);
+        await this.sleep(1500)
         //await this.acnValue.fill(acnValue);
         let businessN=UtilsAOL.randomName();
-        await this.businessName.fill(businessN);
+        await this.businessName.fill(businessN + ' ' + UtilsAOL.randomNumber(2));
         await this.employerType.click();
         await this.partcipating.click();
         //await this.fundEmployerId.fill(fundEmployerId);
-        await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(-7)}`);
-        await this.addressLine1.fill('Old castle road');
-        await this.addressLine2.fill('block 2')
-        await this.countryArrow.click();
-        await this.country.click();
-        await this.city.fill('Albury');
-        await this.stateArrow.click();
-        await this.state.click();
-        await this.postcode.fill('2640');
+        //await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        // await this.addressLine1.fill('Old castle road');
+        // await this.addressLine2.fill('block 2')
+        // await this.countryArrow.click();
+        // await this.country.click();
+        // await this.city.fill('Albury');
+        // await this.stateArrow.click();
+        // await this.state.click();
+        // await this.postcode.fill('2640');
+        await this.sleep(1500);
         await this.viewCase.click();
+        await this.sleep(1500);
         await this.createCase.click();
+        await this.sleep(1500);
         await this.linkCase.click();
     }
     async createNewEmployerWPNValidations(){
         await this.sleep(3000);
         await this.statusText.scrollIntoViewIfNeeded();
 
+        await expect(this.statusText).toBeVisible({timeout: 5000})
         const employerUpdatedData = await this.statusText.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
@@ -280,7 +290,9 @@ export class EmployerIdentitiesPage extends BasePage {
 
     }
 
-    async updateExistingEployer() {
+
+
+    async updateExistingEmployer() {
         const businessN = await this.createNewEmployer();
         await this.sleep(3000);
         await this.employerIdentitiesLink.click();
@@ -327,6 +339,20 @@ export class EmployerIdentitiesPage extends BasePage {
             console.error("New Employer creation using WPN failed");
         }
 
+    }
+
+    async validateInvalidEmployerCreation() {
+        await this.employerIdentitiesLink.click();
+        await this.addNewEmployer.click();
+
+        await this.viewCase.click();
+        await this.sleep(2000);
+        await this.createCase.click();
+        await this.sleep(2000);
+        await this.linkCase.click();
+        await this.sleep(2000);
+
+        expect(this.page.getByText('ABN is invalid').first()).toBeVisible();
     }
 
 } 

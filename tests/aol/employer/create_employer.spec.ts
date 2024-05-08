@@ -1,7 +1,7 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { expect } from "@playwright/test";
-import { UtilsAOL } from "../../../src/aol/utils_aol";
+import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ navBar }) => {
@@ -11,31 +11,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-//test("Verify if new employer is created successfully @demorun", async ({ navBar, employerPage }) => {
-//       await navBar.navigateToAccumulationMembersPage();
-//       await employerPage.createNewemployer();
-//  })
-
-// test("Verify if  employer details can be updated successfully @demorun", async ({ navBar, employerPage }) => {
-//     await navBar.navigateToAccumulationMembersPage();
-//     await employerPage.updateNewemployer();
-// })
-
-// test("Verify if newly added Employer is listed under 'select employer' option while adding a new member @demorun", async ({ navBar, employerPage }) => {
-//     await navBar.navigateToAccumulationMembersPage();
-//     let newEmployer = await employerPage.createNewemployer(); 
-//     await navBar.navigateToAccumulationMembersPage();
-//     await employerPage.verifyNewlyAddedMemberUnderSelectMemberInMemberPage(newEmployer);
-// })
-
-// test("Verify employer types available while adding employer @demorun", async ({ navBar, employerPage }) => {
-//     await navBar.navigateToAccumulationMembersPage();
-//     let expectedEmployerTypes: string[] = ['Participating','Associated','Non-Associated'];
-//     let actualEmployerTypes = await employerPage.getEmployerTypes();
-//     expect(actualEmployerTypes).toEqual(expectedEmployerTypes);
-// })
-
-test("Verify if new employer ABN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+test(fundName() + "-Verify if new employer ABN is created successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
@@ -72,10 +48,9 @@ test.skip("Verify if new employer WPN is created successfully @demorun", async (
     })
 })
 
-test("Verify for new employer Contact Details are added successfully @demorun", async ({ employerIdentitiesPage }) => {
-    await test.step("Navigate to Employer Identities page", async () => {
-        await employerIdentitiesPage.employerIdentities();
-    })
+test(fundName() + "-Verify for new employer Contact Details are added successfully @employer", async ({ employerIdentitiesPage }) => {
+
+    await employerIdentitiesPage.addContactDetails();
 
     await test.step("Click on Add new Employers", async () => {
         await employerIdentitiesPage.newEmployer();
@@ -94,16 +69,26 @@ test("Verify existing employer data can be edited successfully @demorun", async 
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
     })
+    test(fundName() + "-Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
 
-    await test.step("Click on Add new Employers", async () => {
-        await employerIdentitiesPage.newEmployer();
-    })
-    
-    await test.step("Edit existing employer data", async () => {
-        await employerIdentitiesPage.updateExistingEployer();
-    })
+        await employerIdentitiesPage.updateExistingEmployer();
 
-    await test.step("Verify existing employer data edit functionality", async () => {
-        await employerIdentitiesPage.updateExistingEployerValidations();
     })
+})    
+
+test(fundName() + "-Verify if error is displayed on empty create employer request @employer", async ({ employerIdentitiesPage }) => {
+
+        await employerIdentitiesPage.validateInvalidEmployerCreation();
+
+        await test.step("Click on Add new Employers", async () => {
+            await employerIdentitiesPage.newEmployer();
+        })
+
+        await test.step("Edit existing employer data", async () => {
+            await employerIdentitiesPage.updateExistingEmployer();
+        })
+
+        await test.step("Verify existing employer data edit functionality", async () => {
+            await employerIdentitiesPage.updateExistingEployerValidations();
+        })
 })

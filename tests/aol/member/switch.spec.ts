@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date.", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
       
     try {
         if (pensionMember.generate_test_data_from_api) {
@@ -50,7 +50,7 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
 
 })
 
-test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to multiple option using current date.", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to multiple option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
     try {
         if (pensionMember.generate_test_data_from_api) {
                 await test.step("Navigate to Accumulation Members page", async () => {
@@ -79,7 +79,7 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
     }
 })
 
-test(fundName()+" Verify Combined switch is processed successfully for a more than one option to single option using current date.", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+test(fundName()+" Verify Combined switch is processed successfully for a more than one option to single option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
     try {
         if (pensionMember.generate_test_data_from_api) {
             await test.step("Navigate to Accumulation Members page", async () => {
