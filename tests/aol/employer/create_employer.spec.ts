@@ -30,7 +30,8 @@ test(fundName() + "-Verify if new employer ABN is created successfully @employer
     })
 })
 
-test.skip("Verify if new employer WPN is created successfully @demorun", async ({ employerIdentitiesPage }) => {
+test.skip("Verify if new employer WPN is created successfully @employer", async ({ employerIdentitiesPage }) => {
+   
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
     })
@@ -50,8 +51,6 @@ test.skip("Verify if new employer WPN is created successfully @demorun", async (
 
 test(fundName() + "-Verify for new employer Contact Details are added successfully @employer", async ({ employerIdentitiesPage }) => {
 
-    await employerIdentitiesPage.addContactDetails();
-
     await test.step("Click on Add new Employers", async () => {
         await employerIdentitiesPage.newEmployer();
     })
@@ -65,14 +64,14 @@ test(fundName() + "-Verify for new employer Contact Details are added successful
     })
 })
 
-test("Verify existing employer data can be edited successfully @demorun", async ({ employerIdentitiesPage }) => {
+test("Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
+
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
     })
-    test(fundName() + "-Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
 
+    test(fundName() + "-Verify existing employer data can be edited successfully", async ({ employerIdentitiesPage }) => {
         await employerIdentitiesPage.updateExistingEmployer();
-
     })
 })    
 

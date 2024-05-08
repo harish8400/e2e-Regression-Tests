@@ -176,8 +176,6 @@ export class EmployerIdentitiesPage extends BasePage {
     }
 
     async createNewEmployerWPN() {
-
-    
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         await this.WPN.click();
@@ -289,8 +287,6 @@ export class EmployerIdentitiesPage extends BasePage {
         }
 
     }
-
-
 
     async updateExistingEmployer() {
         const businessN = await this.createNewEmployer();
