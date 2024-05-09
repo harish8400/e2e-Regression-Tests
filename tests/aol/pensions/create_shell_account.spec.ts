@@ -81,7 +81,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
 
 })
 
-test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member", async ({ navBar, globalPage, pensionAccountPage, memberPage, accountInfoPage, apiRequestContext, internalTransferPage, transactionApi, shellAccountApi }) => {
+test(fundName() + "-Capturing Reversionary and/or beneficiary details while creating a ABP/TTR pension member @pension", async ({ navBar, globalPage, pensionAccountPage, memberPage, accountInfoPage, apiRequestContext, internalTransferPage, transactionApi, shellAccountApi }) => {
 
     let membersId: string | undefined;
 

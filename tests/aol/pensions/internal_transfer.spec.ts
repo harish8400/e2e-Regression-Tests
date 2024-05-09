@@ -20,7 +20,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
 
     try {
 
@@ -67,7 +67,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest",
 
 })
 
-test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
 
     try {
 
@@ -114,7 +114,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest",
 
 })
 
-test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+test(fundName() + "-Internal Transfer from ABP to Accumulation @pension", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
 
     try {
         await test.step("Navigate to Pensions Members page", async () => {
@@ -159,7 +159,7 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar
 
 });
 
-test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, globalPage, apiRequestContext }) => {
+test(fundName() + "-Internal Transfer from TTR to Accumulation @pension", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, globalPage, apiRequestContext }) => {
 
     try {
         await test.step("Navigate to Pensions Members page", async () => {
@@ -205,7 +205,7 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar
 
 })
 
-test(fundName() + "-Validate Retirement Transition process is successful where PTB transaction is processed on TTR account prior to conversion", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, internalTransferPage }) => {
+test(fundName() + "-Validate Retirement Transition process is successful where PTB transaction is processed on TTR account prior to conversion @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, internalTransferPage }) => {
 
     try {
         //navigating to TTR source member and verifying PTB
@@ -250,7 +250,7 @@ test(fundName() + "-Validate Retirement Transition process is successful where P
 
 })
 
-test(fundName() + "-Validate Retirement Transition process completes successfully on TTR account with CoR and NO PTB transaction", async ({ navBar, pensionAccountPage, apiRequestContext, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
+test(fundName() + "-Validate Retirement Transition process completes successfully on TTR account with CoR and NO PTB transaction @pension", async ({ navBar, pensionAccountPage, apiRequestContext, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
 
     try {
         //navigating to TTR source member and verifying PTB

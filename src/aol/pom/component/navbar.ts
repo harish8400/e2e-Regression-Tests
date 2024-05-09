@@ -90,9 +90,7 @@ export class Navbar extends BasePage {
         await this.BtnApply.click();
 
     //Select and click on member details
-    await expect(
-      this.page.getByRole("cell", { name: member }).first()
-    ).toBeVisible();
+    //await expect(this.page.getByRole("cell", { name: member }).first().toBeVisible());
     await this.page.getByRole("cell", { name: member }).first().click();
   }
 

@@ -21,7 +21,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
-test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar, accountInfoPage, apiRequestContext, globalPage, pensionTransactionPage, pensionAccountPage}) => {
+test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details @pension", async ({ navBar, accountInfoPage, apiRequestContext, globalPage, pensionTransactionPage, pensionAccountPage}) => {
     
     try {
 
@@ -56,7 +56,7 @@ test(fundName()+"- Maintain Income Stream Account (documentation required): Bank
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
-test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, globalPage, memberApi}) => {
+test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options) @pension", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, globalPage, memberApi}) => {
     
     try {
 
@@ -98,7 +98,7 @@ test(fundName()+"- Maintain Income Steam Account - Payment details (payment amou
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
-test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext, memberApi, globalPage }) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency @pension", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext, memberApi, globalPage }) => {
     
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -139,7 +139,7 @@ test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
-test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, memberApi, globalPage }) => {
+test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency @pension", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext, memberApi, globalPage }) => {
     
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
