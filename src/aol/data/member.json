@@ -1,5 +1,6 @@
 {
-    "memberID":"9010103",
+    "memberID" : "90101131",
+    
     "memberIdUNP":"9020227",
     "memberIDwithTFN": "9010125",
     "memberIDwithoutTFN": "9020226",
@@ -10,7 +11,7 @@
   "phone": "61412345678",
   "address": "11 high street",
   "city": "Sydney",
-  "postcode": "2000",
+  "postcode": "2001",
   "dateJoined": "01/01/2024",
   "AccNumber": "AUS-ACC-102030",
   "USI": "STA0100AU",
@@ -25,6 +26,7 @@
   "AccountName": "InTest",
   "PensionMembershipAccountNumber": "9020227",
   "AccountNumber": "123456",
+  "BeneficiaryAccountNumber": "123789",
   "CRN": "103675704651001506",
   "names": [
     "Michelle",
