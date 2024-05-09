@@ -236,6 +236,27 @@ export class xmlUtility {
         }
     }
 
+    static async generateXMLFileRTRForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<string | { destinationFileName: string, paymentReferenceNumber: string, conversationId: string, member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'RTRWithAPRA_VG.xml':
+                if (!isNewMember) {
+                    return await this.generateRTRWithTFNXMLForNewMemberVG(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateRTRWithTFNXML(templateName);
+                }
+            case 'RTRWithSMSF_VG.xml':
+                if (!isNewMember) {
+                    return await this.generateRTRWithTFNXMLForNewMemberVGSMSF(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateRTRForSMSFWithTFNXML(templateName);
+                }
+
+            default:
+                return generatedXMLFileName;
+        }
+    }
+
 
 
     // Generate XML with TFN for MRR
@@ -2439,6 +2460,161 @@ export class xmlUtility {
         }
     }
 
+    // Generate XML for RTR with TFN for a New Member
+    static async generateRTRWithTFNXMLForNewMemberVG(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.134530.123@superchoice.com.au`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.26382680885.${formattedDate}1623341${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-RTR_${formattedDate}_1234567891${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const paymentReferenceNumber = superStreamDataRTR.paymentReferenceNo;
+            this.today = new Date();
+            const taxed = superStreamDataRTR.taxedComponent;
+            const unTaxed = superStreamDataRTR.nonTaxableComponent;
+            const preserved = superStreamDataRTR.benefitComponentsPreserved;
+            const unrestricted = superStreamDataRTR.benefitComponentsUnrestricted;
+            const restricted = superStreamDataRTR.benefitComponentsRestricted;
+
+
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceAbn,
+                "//*[local-name()='sourceUsi'][1]": superStreamDataForVG.sourceUsi,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//clientRTR/*[local-name()='paymentReferenceNumber'][1]": paymentReferenceNumber,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entityId'][1]": tfn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": tfn,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": surName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": member,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": dob,
+                "//*[local-name()='clientRTR']//*[local-name()='memberClientIdentifier'][1]": memberNo,
+                "//rolloverComponents/taxableComponentTaxed[1]": taxed,
+                "//rolloverComponents/taxableComponentUntaxed[1]": unTaxed,
+                "//rolloverComponents/benefitComponentsPreserved[1]": preserved,
+                "//rolloverComponents/benefitComponentsUnrestricted[1]": unrestricted,
+                "//rolloverComponents/benefitComponentsRestricted[1]": restricted,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='initiatorConversationId'][1]": conversationId,
+
+            };
+            allure.logStep(`Rollover-In happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, paymentReferenceNumber, member, surName, dob, conversationId, taxed, unTaxed, preserved, unrestricted, restricted };
+
+
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for RTR with TFN for a New Member
+    static async generateRTRWithTFNXMLForNewMemberVGSMSF(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.134530.123@superchoice.com.au`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.27923449966.${formattedDate}_1234567891${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-RTR_${formattedDate}_1234567891${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const paymentReferenceNumber = superStreamDataRTR.paymentReferenceNo;
+            this.today = new Date();
+            const taxed = superStreamDataRTR.taxedComponent;
+            const unTaxed = superStreamDataRTR.nonTaxableComponent;
+            const preserved = superStreamDataRTR.benefitComponentsPreserved;
+            const unrestricted = superStreamDataRTR.benefitComponentsUnrestricted;
+            const restricted = superStreamDataRTR.benefitComponentsRestricted;
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceAbn,
+                "//*[local-name()='sourceUsi'][1]": superStreamDataForVG.sourceUsi,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//clientRTR/*[local-name()='paymentReferenceNumber'][1]": paymentReferenceNumber,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entityId'][1]": tfn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": tfn,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": surName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": member,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": dob,
+                "//*[local-name()='clientRTR']//*[local-name()='memberClientIdentifier'][1]": memberNo,
+                "//rolloverComponents/taxableComponentTaxed[1]": taxed,
+                "//rolloverComponents/taxableComponentUntaxed[1]": unTaxed,
+                "//rolloverComponents/benefitComponentsPreserved[1]": preserved,
+                "//rolloverComponents/benefitComponentsUnrestricted[1]": unrestricted,
+                "//rolloverComponents/benefitComponentsRestricted[1]": restricted,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='initiatorConversationId'][1]": conversationId,
+
+            };
+            allure.logStep(`Rollover-In happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, paymentReferenceNumber, member, surName, dob, conversationId, taxed, unTaxed, preserved, unrestricted, restricted };
+
+
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {

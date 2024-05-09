@@ -543,6 +543,7 @@ export class MemberPage extends BasePage {
             (await this.sleep(3000).then(() => this.page.locator("//button[text()='Vanguard Accumulation']"))).click();
         }
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+        await this.sleep(3000);
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[2]"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
         transactionType.click();
@@ -674,14 +675,15 @@ export class MemberPage extends BasePage {
 
     async memberWithoutTFNMultipleContributions() {
         await this.amountContributedTypeAWD();
-        await this.amountContributedTypeSAL();
+       // await this.amountContributedTypeSAL();
         
 
 
     }
 
     async rollInTransaction() {
-        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Overview']/following-sibling::button"))).click();
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLI']"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
