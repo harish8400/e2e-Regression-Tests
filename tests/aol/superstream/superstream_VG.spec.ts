@@ -8,6 +8,8 @@ import { DataUtils } from '../../../src/utils/data_utils';
 import assert from 'assert';
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
+import * as SelectionOfMember from "../../../src/aol/data/superstream_vg_data.json";
+
 
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
@@ -179,7 +181,64 @@ test("CTR is processed with TFN and Single Contribution-@TFN_CTR", async ({ memb
 
         //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
         //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
-        generatedXMLFileName = await xmlUtility.generateXMLFileCTR("CTRWithTFN.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTRForVG("CTRWithTFN_VG.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
+    });
+
+    await test.step("Upload XML file via File transfer", async () => {
+        const xmlFileName = (generatedXMLFileName as { destinationFileName: string }).destinationFileName;
+        await superSteam.uploadXMLFile(`${destinationFolder}/${xmlFileName}`, `${remoteFilePath}/${xmlFileName}`, privateKeyPath, privateKeyContent);
+    });
+
+    await test.step("Verify member contribution by Superstream", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 70000));
+        await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
+    });
+
+    await test.step("Verify Member Contribution Details In Transactions Screen", async () => {
+        await memberPage.memberTransaction();
+        let xmlData = generatedXMLFileName as { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
+
+        // Get expected values from generated data
+        const expectedEmployerOrganisationName = xmlData.employerOrganisationName;
+        const expectedAustralianBusinessNumber = xmlData.australianBusinessNumber;
+        const expectedConversationId = xmlData.conversationId;
+        console.log(`Expected Member Data From XML Is: ${expectedEmployerOrganisationName}, ${expectedAustralianBusinessNumber}, ${expectedConversationId}`);
+        allure.logStep(`Expected Member Data From XML Is: ${expectedEmployerOrganisationName}, ${expectedAustralianBusinessNumber}, ${expectedConversationId}`);
+
+
+        // Get expected values from the UI
+        const actualEmployerOrganisationName = await memberPage.getEmployerOrganisationName();
+        const actualAustralianBusinessNumber = await memberPage.getAustralianBusinessNumber();
+        const actualConversationId = await memberPage.getConversationId();
+
+        allure.logStep(`Actual Member Data processed from UI Is: ${actualEmployerOrganisationName}, ${actualAustralianBusinessNumber}, ${actualConversationId}`);
+        await globalPage.captureScreenshot('Paymnent Details');
+
+        const amount = await memberPage.getAmountContributed();
+        allure.logStep(`Amount contributed to the member is: ${amount}`);
+        const message = await memberPage.getMessageType();
+        allure.logStep(`Message Type Is: ${message}`);
+
+        if (
+            actualEmployerOrganisationName === expectedEmployerOrganisationName &&
+            actualAustralianBusinessNumber === expectedAustralianBusinessNumber &&
+            await actualConversationId === expectedConversationId
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+    });
+
+})
+
+test("CTR is processed without TFN and Single Contribution-@withoutTFN_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+
+    let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
+    await test.step("Generate XML file for upload", async () => {
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTRForVG("CTRWithoutTFN_VG.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -230,6 +289,61 @@ test("CTR is processed with TFN and Single Contribution-@TFN_CTR", async ({ memb
 
 })
 
+test("CTR is processed without TFN and Multiple Contributions-@withoutTFN_Multiple_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
+    let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
+    await test.step("Generate XML file for upload", async () => {
+        //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
+        //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
+        generatedXMLFileName = await xmlUtility.generateXMLFileCTRForVG("CTRMultiple.xml", apiRequestContext, SelectionOfMember.isMemberToSelectExsisting, SelectionOfMember.isTFNToBePassed);
+    });
+
+    await test.step("Upload XML file via File transfer", async () => {
+        const xmlFileName = (generatedXMLFileName as { destinationFileName: string }).destinationFileName;
+        await superSteam.uploadXMLFile(`${destinationFolder}/${xmlFileName}`, `${remoteFilePath}/${xmlFileName}`, privateKeyPath, privateKeyContent);
+    });
+
+    await test.step("Verify member contribution by Superstream", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
+    });
+
+    await test.step("Verify Member Contribution Details In Transactions Screen", async () => {
+        await memberPage.memberTransaction();
+        let xmlData = generatedXMLFileName as { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
+
+        // Get expected values from generated data
+        const expectedEmployerOrganisationName = xmlData.employerOrganisationName;
+        const expectedAustralianBusinessNumber = xmlData.australianBusinessNumber;
+        const expectedConversationId = xmlData.conversationId;
+        console.log(`Expected Member Data From XML Is: ${expectedEmployerOrganisationName}, ${expectedAustralianBusinessNumber}, ${expectedConversationId}`);
+        allure.logStep(`Expected Member Data From XML Is: ${expectedEmployerOrganisationName}, ${expectedAustralianBusinessNumber}, ${expectedConversationId}`);
+
+        // Get expected values from the UI
+        const actualEmployerOrganisationName = await memberPage.getEmployerOrganisationName();
+        const actualAustralianBusinessNumber = await memberPage.getAustralianBusinessNumber();
+        const amount = await memberPage.getAmountContributed();
+        allure.logStep(`Amount contributed to the member is: ${amount}`);
+        const message = await memberPage.getMessageType();
+        allure.logStep(`Message Type Is: ${message}`);
+        const actualConversationId = await memberPage.getConversationId();
+
+        allure.logStep(`Actual Member Data processed from UI Is: ${actualEmployerOrganisationName}, ${actualAustralianBusinessNumber}, ${actualConversationId}`);
+        await globalPage.captureScreenshot('Paymnent Details');
+
+        if (
+            actualEmployerOrganisationName === expectedEmployerOrganisationName &&
+            actualAustralianBusinessNumber === expectedAustralianBusinessNumber &&
+            await actualConversationId === expectedConversationId
+        ) {
+            allure.logStep("Validation: UI values matched with expected values from XML.");
+        } else {
+            allure.logStep("Validation: UI values do not match with expected values from XML.");
+        }
+
+        await memberPage.memberWithoutTFNMultipleContributions();
+    });
+
+})
 
 

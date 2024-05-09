@@ -518,14 +518,14 @@ test("RTR is processed with TFN -@TFN_RTR", async ({ memberPage, superSteam, glo
 
 });
 
-test("RTR is processed without TFN -@withoutTFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed without TFN -@RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
 
         //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
         //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
-        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithoutTFN_APRA.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, MemberToBeSelected.isTFNToBePassed);
+        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithoutTFN_APRA.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, true);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -629,7 +629,7 @@ test("RTR is processed without TFN -@withoutTFN_RTR", async ({ memberPage, super
 
 });
 
-test("RTR is processed from SMSF with TFN -@TFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed from SMSF with TFN -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
@@ -645,7 +645,7 @@ test("RTR is processed from SMSF with TFN -@TFN_RTR", async ({ memberPage, super
     });
 
     await test.step("Verify member SMSF rollover-in by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 70000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
     });
 
@@ -743,14 +743,14 @@ test("RTR is processed from SMSF with TFN -@TFN_RTR", async ({ memberPage, super
 
 });
 
-test("RTR is processed from SMSF without TFN -@withoutTFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed from SMSF without TFN -@SMSF-RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
 
         //Here we have set first parameter as isMemberToSelectExsisting which is passing from JSON, so if we make it as true will select Exsisting Member or else if it will create a New Member from API and perform remaining process
         //Here we have set second parameter as isTFNToBePassed which is passing from JSON, so if we make it as false it will provide a TFN for the New Member created from API If we set to true it will create a new member without TFN from API
-        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithoutTFN_SMSF.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, MemberToBeSelected.isTFNToBePassed);
+        generatedXMLFileName = await xmlUtility.generateXMLFileRTR("RTRWithoutTFN_SMSF.xml", apiRequestContext, MemberToBeSelected.isMemberToSelectExsisting, true);
     });
 
     await test.step("Upload XML file via File transfer", async () => {
@@ -1053,7 +1053,7 @@ test("Member is processed with Partial Rollover-Out Exit with APRA Fund -@IRR", 
 
 })
 
-test("Member is processed with Full Rollover-Out Exit with APRA Fund -@IRR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Full Rollover-Out Exit with APRA Fund -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1069,7 +1069,7 @@ test("Member is processed with Full Rollover-Out Exit with APRA Fund -@IRR", asy
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 70000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 
@@ -1227,7 +1227,7 @@ test("Member is processed with Partial Rollover-Out Exit with SMSF Fund -@IRR", 
 
 })
 
-test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@IRR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1243,7 +1243,7 @@ test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@IRR", asy
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 70000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 

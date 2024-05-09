@@ -14,11 +14,12 @@ import { ShellAccountApiHandler } from "../../aol_api/handler/internal_transfer_
 import { allure } from "allure-playwright";
 import { GlobalPage } from "./component/global_page";
 import * as path from 'path';
-import * as fs from 'fs';
 import { csv_utils } from "../../utils/csv_utils";
 import { xmlUtility } from "../../utils/xml_util";
+import process from 'process';
+import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 
-
+let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 
 export class MemberPage extends BasePage {
 
@@ -127,6 +128,8 @@ export class MemberPage extends BasePage {
     readonly rollOut: Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
+    readonly contribution_vg: Locator;
+
     readonly rolloverIn: Locator;
     readonly globalPage: GlobalPage;
     readonly FilterClick: Locator;
@@ -240,6 +243,8 @@ export class MemberPage extends BasePage {
         this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
         this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
+        this.contribution_vg = page.getByText('Process step completed with note: Superstream contribution payload sent.');
+
         this.rolloverIn = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
         this.rollOut = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent.');
         this.gctarTransaction = page.getByText('Process step completed with note: GCTAOR sent.');
@@ -385,19 +390,41 @@ export class MemberPage extends BasePage {
         await this.sleep(2000);
         let process = await this.page.locator("(//div[@class='cell']//span)[1]");
         if (await process.innerText() === "In Review") {
-            await this.page.getByText('In Review').click({force:true});
+            await this.page.getByText('In Review').click({ force: true });
         } else if (await process.innerText() === "In Progress") {
-            await this.page.locator('//span[text()="In Progress"]').click();
+            await this.page.locator("//span[text()='In Progress ']").click({ force: true });
         }
         else if (await process.innerText() === "Pending") {
-            await this.page.locator('//span[text()="Pending"]').click();
+            await this.page.getByRole('cell', { name: 'Pending' }).locator('span').click({ force: true });
         }
         else {
-            await this.page.locator('//span[text()="Closed"]').click();
+            await this.page.getByRole('cell', { name: 'Closed' }).click({ force: true });
         }
 
         if (superstreamProcess == 'SuperStream - Contribution') {
-            await this.reviewCase.reviewCaseProcess(this.contribution);
+
+            switch (product) {
+                case 'HESTA for Mercy':
+                    await this.reviewCase.reviewCaseProcess(this.contribution);
+                    break;
+                    case 'Vanguard Super':
+                        const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
+                        const text = await textContent.textContent();
+                        console.log(text);
+                        const outcome = text?.trim();
+                        console.log(outcome);
+                        if (outcome === 'Process step completed with note: Superstream contribution payload sent.') {
+                            await this.reviewCase.reviewCaseProcess(this.contribution_vg);
+                        } else {
+                            await this.reviewCase.reviewCaseProcess(this.contribution);
+                        }
+                        break;
+                
+                default:
+                    throw new Error(`Unsupported product: ${product}`);
+            }
+
+
         } else if (superstreamProcess == 'SuperStream - MRR') {
             await this.reviewCase.reviewCaseProcess(this.memberCreated);
         }
@@ -504,11 +531,16 @@ export class MemberPage extends BasePage {
     }
 
     async memberTransaction() {
+        await this.sleep(3000);
         await this.page.reload();
         let memberLink = await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");;
         await this.sleep(3000)
         memberLink.scrollIntoViewIfNeeded().then(() => this.sleep(3000).then(() => memberLink.click()));
-        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        if (process.env.PRODUCT === FUND.HESTA) {
+            (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        } else {
+            (await this.sleep(3000).then(() => this.page.locator("//button[text()='Vanguard Accumulation']"))).click();
+        }
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[2]"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
@@ -641,7 +673,8 @@ export class MemberPage extends BasePage {
 
     async memberWithoutTFNMultipleContributions() {
         await this.amountContributedTypeAWD();
-        await this.amountContributedTypeSGC();
+        await this.amountContributedTypeSAL();
+        
 
 
     }
@@ -924,7 +957,7 @@ export class MemberPage extends BasePage {
             // Edit the CSV file to update the "Value Date" and "Post Date" columns to today's date
             const csvFilePath = path.join(__dirname, `../../../src/aol/data/superstream_processed/${fileName}`);
             const dateToBeChanged = DateUtils.ddMMMyyyFormatDate(new Date());
-            await csv_utils.editAndSaveCSV(csvFilePath, dateToBeChanged, dateToBeChanged,dateToBeChanged);
+            await csv_utils.editAndSaveCSV(csvFilePath, dateToBeChanged, dateToBeChanged, dateToBeChanged);
 
             // Wait for the file chooser dialog and set the files to be uploaded
             const fileChooser = await fileChooserPromise;
@@ -941,7 +974,7 @@ export class MemberPage extends BasePage {
         }
     }
 
-    async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToAnotherOption(){
+    async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToAnotherOption() {
         await this.investementBalancesTab.click();
         await this.investmentEditBtn.click();
         await this.viewCases.click({ timeout: 5000 });
@@ -977,49 +1010,49 @@ export class MemberPage extends BasePage {
         await this.leftArrow.click();
         await this.investmentProfileDropDown.click();
         await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
-     }
-  
-  
-     async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToMultipleOption(){
-         await this.investementBalancesTab.click();
-         await this.investmentEditBtn.click();
-         await this.viewCases.click({ timeout: 15000 });
-         await this.createCase.click({ timeout: 15000 });
-         await this.investmentDropDown.click();
-         await this.highGrowth.click();
-         await this.balanceAllocation.fill('0');
-         await this.transactionAllocation.fill('100');
-         await this.addBtn.click();
-         await this.linkCase.click({ timeout: 10000 });
-         await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
-         await this.leftArrow.click();
-         await this.investmentProfileDropDown.click()
-         await this.investementBalancesTab.click();
-         await this.investmentEditBtn.click();
-         await this.sleep(2000);
-         await this.viewCases.click({ timeout: 15000 });
-         await this.sleep(2000);
-         await this.createCase.click({ timeout: 15000 });
-         await this.sleep(2000);
-         await this.investmentDropDown.click();
-         await this.conservative.click();
-         await this.balanceAllocation.fill('0');
-         await this.transactionAllocation.fill('50');
-         await this.addBtn.click();
-         await this.investmentDropDown1.click();
-         await this.sustainbleGrowth1.click();
-         await this.balanceAllocation1.fill('0');
-         await this.transactionAllocation1.fill('50');
-         await this.addBtn1.click();
-         await this.linkCase.click({ timeout: 10000 });
-         await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
-         await this.leftArrow.click();
-         await this.investmentProfileDropDown.click()
-         //await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
-         await this.globalPage.captureScreenshot();
-      }
-  
-      async verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption(){
+    }
+
+
+    async verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToMultipleOption() {
+        await this.investementBalancesTab.click();
+        await this.investmentEditBtn.click();
+        await this.viewCases.click({ timeout: 15000 });
+        await this.createCase.click({ timeout: 15000 });
+        await this.investmentDropDown.click();
+        await this.highGrowth.click();
+        await this.balanceAllocation.fill('0');
+        await this.transactionAllocation.fill('100');
+        await this.addBtn.click();
+        await this.linkCase.click({ timeout: 10000 });
+        await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+        await this.leftArrow.click();
+        await this.investmentProfileDropDown.click()
+        await this.investementBalancesTab.click();
+        await this.investmentEditBtn.click();
+        await this.sleep(2000);
+        await this.viewCases.click({ timeout: 15000 });
+        await this.sleep(2000);
+        await this.createCase.click({ timeout: 15000 });
+        await this.sleep(2000);
+        await this.investmentDropDown.click();
+        await this.conservative.click();
+        await this.balanceAllocation.fill('0');
+        await this.transactionAllocation.fill('50');
+        await this.addBtn.click();
+        await this.investmentDropDown1.click();
+        await this.sustainbleGrowth1.click();
+        await this.balanceAllocation1.fill('0');
+        await this.transactionAllocation1.fill('50');
+        await this.addBtn1.click();
+        await this.linkCase.click({ timeout: 10000 });
+        await this.reviewCase.reviewCaseProcess(this.verifySwitchSuccess);
+        await this.leftArrow.click();
+        await this.investmentProfileDropDown.click()
+        //await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
+        await this.globalPage.captureScreenshot();
+    }
+
+    async verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption() {
         await this.investementBalancesTab.click();
         await this.investmentEditBtn.click();
         await this.viewCases.click({ timeout: 15000 });
@@ -1053,12 +1086,9 @@ export class MemberPage extends BasePage {
         await this.investmentProfileDropDown.click();
         //await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
         await this.globalPage.captureScreenshot();
-      }
+    }
 
 }
-
-
-
 
 
 

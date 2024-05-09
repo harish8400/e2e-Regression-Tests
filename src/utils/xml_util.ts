@@ -61,7 +61,7 @@ export class xmlUtility {
                 } else {
                     return this.generateCTRWithTFNXML(templateName);
                 }
-            case 'CTRWithoutTFN.xml':
+            case 'CTRWithoutTFN_VG.xml':
                 if (!isNewMember) {
                     return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
                 } else {
@@ -213,27 +213,21 @@ export class xmlUtility {
     static async generateXMLFileCTRForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string }> {
         let generatedXMLFileName: string = templateName;
         switch (templateName) {
-            case 'CTRWithTFN.xml':
+            case 'CTRWithTFN_VG.xml':
                 if (!isNewMember) {
-                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                    return await this.generateCTRWithTFNXMLForVGNewMember(templateName, apiRequestContext, isTFNToBePassed);
                 } else {
-                    return this.generateCTRWithTFNXML(templateName);
+                    return this.generateCTRWithTFNXMLForExsistingVGMember(templateName);
                 }
-            case 'CTRWithTFN_MultipleContribution.xml':
+            case 'CTRWithoutTFN_VG.xml':
                 if (!isNewMember) {
-                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
-                } else {
-                    return this.generateCTRWithTFNXML(templateName);
-                }
-            case 'CTRWithoutTFN.xml':
-                if (!isNewMember) {
-                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                    return await this.generateCTRWithoutTFNXMLForVGNewMember(templateName, apiRequestContext, isTFNToBePassed);
                 } else {
                     return this.generateCTRWithoutTFNXML(templateName);
                 }
-            case 'CTRWithoutTFN_MultipleContribution.xml':
+            case 'CTRMultiple.xml':
                 if (!isNewMember) {
-                    return await this.generateCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
+                    return await this.generateMultipleCTRCTRWithTFNXMLForNewMember(templateName, apiRequestContext, isTFNToBePassed);
                 } else {
                     return this.generateCTRWithoutTFNXML(templateName);
                 }
@@ -2042,129 +2036,409 @@ export class xmlUtility {
         }
     }
 
-// Generate XML for MRR
-static generateMRRWithTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
+    // Generate XML for MRR
+    static generateMRRWithTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
-    let formattedDate: string = DateUtils.yyyymmddStringDate();
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
 
-    /// Copy template file to processed folder
-    const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
-    const destinationFileName: string = `MRR_${formattedDate}_145952_123_${conversationId}_1.xml`;
-    const superGateMessageId : string =  `${formattedDate}.176048.123@superchoice.com.au`
-    this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+        /// Copy template file to processed folder
+        const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `MRR_${formattedDate}_145952_123_${conversationId}_1.xml`;
+        const superGateMessageId: string = `${formattedDate}.176048.123@superchoice.com.au`
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
 
-    /// Node values
-    const currentUTCTime: Date = new Date();
-    const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
-    const tfn = UtilsAOL.generateValidTFN();
-    const firstName = UtilsAOL.randomName();
-    const lastName = UtilsAOL.randomSurname(5);
-    const year = UtilsAOL.getRandomYear();
-    const month = UtilsAOL.getRandomMonth();
-    const day = UtilsAOL.getRandomDay();
-    const dob = UtilsAOL.formatDate(day, month, year);
-    let tfnIs = false;
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN();
+        const firstName = UtilsAOL.randomName();
+        const lastName = UtilsAOL.randomSurname(5);
+        const year = UtilsAOL.getRandomYear();
+        const month = UtilsAOL.getRandomMonth();
+        const day = UtilsAOL.getRandomDay();
+        const dob = UtilsAOL.formatDate(day, month, year);
+        let tfnIs = false;
 
 
 
-    /// Prepare nodes list to update
-    interface nodes {
-        [key: string]: any;
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
+            "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
+            "//name[1]/firstName[1]": firstName,
+            "//name[1]/lastName[1]": lastName,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
+            "//taxFileNumberNotProvided[1]": tfnIs,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//employmentStartDate[1]": timeInUTC,
+            "//tfnEntityIdentifier[1]": tfn
+
+
+
+        };
+
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return {
+            destinationFileName,
+            firstName,
+            lastName,
+            dob, tfnIs
+        };
     }
 
-    const nodesToUpdate: nodes = {
-        "//messageId[1]/superGateMessageId[1]": superGateMessageId,
-        "//messageId[1]/conversationId[1]": conversationId,
-        "//headers[1]/conversationId[1]": conversationId,
-        "//timeInUTC[1]": timeInUTC,
-        "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
-        "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
-        "//name[1]/firstName[1]": firstName,
-        "//name[1]/lastName[1]": lastName,
-        "//member[1]/dob[1]/year[1]": year,
-        "//member[1]/dob[1]/month[1]": month,
-        "//member[1]/dob[1]/day[1]": day,
-        "//taxFileNumberNotProvided[1]": tfnIs,
-        "//employerProvidedTaxFileNumber[1]": tfn,
-        "//employmentStartDate[1]":timeInUTC,
-        "//tfnEntityIdentifier[1]":tfn
-        
-        
 
-    };
 
-    /// Update XML nodes and save it
-    this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+    // Generate XML for MRR
+    static generateMRRWithoutTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
-    return {
-        destinationFileName,
-        firstName,
-        lastName,
-        dob, tfnIs
-    };
-}
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+        const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `MRR_${formattedDate}_125733_123_${conversationId}_1.xml`;
+        const superGateMessageId: string = `${formattedDate}.126035.123@superchoice.com.au`
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const tfn = UtilsAOL.generateValidTFN();
+        const firstName = UtilsAOL.randomName();
+        const lastName = UtilsAOL.randomSurname(5);
+        const year = UtilsAOL.getRandomYear();
+        const month = UtilsAOL.getRandomMonth();
+        const day = UtilsAOL.getRandomDay();
+        const dob = UtilsAOL.formatDate(day, month, year);
+        let tfnIs = true;
 
 
 
-// Generate XML for MRR
-static generateMRRWithoutTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
 
-    let formattedDate: string = DateUtils.yyyymmddStringDate();
-
-    /// Copy template file to processed folder
-    const conversationId: string = `Contribution.84111122223.${formattedDate}161811${UtilsAOL.generateRandomThreeDigitNumber()}`;
-    const destinationFileName: string = `MRR_${formattedDate}_125733_123_${conversationId}_1.xml`;
-    const superGateMessageId : string =  `${formattedDate}.126035.123@superchoice.com.au`
-    this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
-
-    /// Node values
-    const currentUTCTime: Date = new Date();
-    const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
-    const tfn = UtilsAOL.generateValidTFN();
-    const firstName = UtilsAOL.randomName();
-    const lastName = UtilsAOL.randomSurname(5);
-    const year = UtilsAOL.getRandomYear();
-    const month = UtilsAOL.getRandomMonth();
-    const day = UtilsAOL.getRandomDay();
-    const dob = UtilsAOL.formatDate(day, month, year);
-    let tfnIs = true;
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
+            "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
+            "//name[1]/firstName[1]": firstName,
+            "//name[1]/lastName[1]": lastName,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
+            "//employmentStartDate[1]": timeInUTC,
 
 
 
-    /// Prepare nodes list to update
-    interface nodes {
-        [key: string]: any;
+
+        };
+
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+        return {
+            destinationFileName,
+            firstName,
+            lastName,
+            dob, tfnIs
+        };
     }
 
-    const nodesToUpdate: nodes = {
-        "//messageId[1]/superGateMessageId[1]": superGateMessageId,
-        "//messageId[1]/conversationId[1]": conversationId,
-        "//headers[1]/conversationId[1]": conversationId,
-        "//timeInUTC[1]": timeInUTC,
-        "//employer[1]/organisationName[1]/value[1]": superStreamDataForVG.employerOrganisationName,
-        "//australianBusinessNumber[1]": superStreamDataForVG.australianBusinessNumber,
-        "//name[1]/firstName[1]": firstName,
-        "//name[1]/lastName[1]": lastName,
-        "//member[1]/dob[1]/year[1]": year,
-        "//member[1]/dob[1]/month[1]": month,
-        "//member[1]/dob[1]/day[1]": day,
-        "//employmentStartDate[1]":timeInUTC,
-        
-        
-        
+    // Generate XML for CTR with TFN
+    static async generateCTRWithTFNXMLForVGNewMember(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
 
-    };
+            /// Copy template file to processed folder
 
-    /// Update XML nodes and save it
-    this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+            const conversationId: string = `Contribution.78109509739.3-1070407194895663-2061455${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `CTR_${formattedDate}_113003_134_${conversationId}_1.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
 
-    return {
-        destinationFileName,
-        firstName,
-        lastName,
-        dob, tfnIs
-    };
-}
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const employerOrganisationName = superStreamDataForVG.employerOrganisationName;
+            const australianBusinessNumber = superStreamDataForVG.australianBusinessNumber;
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            let year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            let day = parseInt(parts[2], 10);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//targetAbn[1]": superStreamDataForVG.targetAbn,
+                "//targetUsi[1]": superStreamDataForVG.targetUsi,
+                "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+                "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+                "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+                "//payer[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//employerProvidedTaxFileNumber[1]": tfn,
+                "//tfnEntityIdentifier[1]": tfn,
+                "//employersABN[1]": australianBusinessNumber,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+            };
+            allure.logStep(`contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating CTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for CTR with TFN
+    static generateCTRWithTFNXMLForExsistingVGMember(templateFileName: string): { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string } {
+
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+
+        const conversationId: string = `Contribution.78109509739.3-1070407194895663-2061455${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `CTR_${formattedDate}_113003_134_${conversationId}_1.xml`;
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const employerOrganisationName = superStreamDataForVG.employerOrganisationName;
+        const australianBusinessNumber = superStreamDataForVG.australianBusinessNumber;
+        const tfn = UtilsAOL.generateValidTFN();
+
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//targetAbn[1]": superStreamDataForVG.targetAbn,
+            "//targetUsi[1]": superStreamDataForVG.targetUsi,
+            "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+            "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+            "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+            "//payer[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+            "//name[1]/firstName[1]": superStreamDataForVG.memberFirstName,
+            "//name[1]/lastName[1]": superStreamDataForVG.memberLastName,
+            "//member[1]/dob[1]/year[1]": superStreamDataForVG.dobYear,
+            "//member[1]/dob[1]/month[1]": superStreamDataForVG.dobMonth,
+            "//member[1]/dob[1]/day[1]": superStreamDataForVG.dobDay,
+            "//employerProvidedTaxFileNumber[1]": tfn,
+            "//tfnEntityIdentifier[1]": tfn,
+            "//employersABN[1]": australianBusinessNumber,
+            "//member[1]//memberNumber[1]": superStreamDataForVG.memberNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+        };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+        return {
+            destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId
+
+        };
+    }
+
+    static async generateCTRWithoutTFNXMLForVGNewMember(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+
+            const conversationId: string = `Contribution.78109509739.3-34747321096500002109803${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `CTR_${formattedDate}_124409_777_${conversationId}_1.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const employerOrganisationName = superStreamDataForVG.employerOrganisationName;
+            const australianBusinessNumber = superStreamDataForVG.australianBusinessNumber;
+            const scMemberGlobalIdentifier = `658656512446094120${UtilsAOL.generateRandomThreeDigitNumber()}`
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            let year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            let day = parseInt(parts[2], 10);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//targetAbn[1]": superStreamDataForVG.targetAbn,
+                "//targetUsi[1]": superStreamDataForVG.targetUsi,
+                "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+                "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+                "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+                "//payer[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//employersABN[1]": australianBusinessNumber,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]//scMemberGlobalIdentifier[1]": scMemberGlobalIdentifier,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+            };
+            allure.logStep(`contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating CTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for CTR with TFN
+    static async generateMultipleCTRCTRWithTFNXMLForNewMember(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; employerOrganisationName: string; australianBusinessNumber: string; conversationId: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const conversationId: string = `Contribution.78109509739.3-1070407194895663-2061455${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `CTR_${formattedDate}_113003_134_${conversationId}_1.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const employerOrganisationName = superStreamDataForVG.employerOrganisationName;
+            const australianBusinessNumber = superStreamDataForVG.australianBusinessNumber;
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            let year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            let day = parseInt(parts[2], 10);
+
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//targetAbn[1]": superStreamDataForVG.targetAbn,
+                "//targetUsi[1]": superStreamDataForVG.targetUsi,
+                "//employer[1]/organisationName[1]/value[1]": employerOrganisationName,
+                "//employer[1]/australianBusinessNumber[1]": australianBusinessNumber,
+                "//employer[1]/context[1]/entityIdentifier[1]": australianBusinessNumber,
+                "//payer[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": superStreamDataForVG.paymentReferenceNumber,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//employersABN[1]": australianBusinessNumber,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+            };
+            allure.logStep(`contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, employerOrganisationName, australianBusinessNumber, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating CTR XML:", error);
+            throw error;
+        }
+    }
+
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {

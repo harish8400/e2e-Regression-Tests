@@ -75,12 +75,12 @@
 				<employer>
 					<organisationName>
 						<type>Main or legal name</type>
-						<value>AA Dezza Testing 2</value>
+						<value>IFYS LIMITED</value>
 					</organisationName>
-					<australianBusinessNumber>47053741478</australianBusinessNumber>
+					<australianBusinessNumber>69131388102</australianBusinessNumber>
 					<context>
 						<contextIdentifier>Employer1</contextIdentifier>
-						<entityIdentifier>47053741478</entityIdentifier>
+						<entityIdentifier>69131388102</entityIdentifier>
 					</context>
 				</employer>
 				<member>
@@ -139,7 +139,7 @@
 					<context>
 						<contextIdentifier>Member1</contextIdentifier>
 						<tfnEntityIdentifier>434369024</tfnEntityIdentifier>
-						<employersABN>47053741478</employersABN>
+						<employersABN>69131388102</employersABN>
 						<superannuationFundABN>27923449966</superannuationFundABN>
 						<superannuationFundUSI>VSF0001AU</superannuationFundUSI>
 					</context>
