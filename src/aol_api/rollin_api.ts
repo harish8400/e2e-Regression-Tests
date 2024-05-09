@@ -18,7 +18,7 @@ export class RollinApi extends BaseDltaAolApi {
 
   async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
     let { investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.BALANCED_GROWTH.ID;
+    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.BALANCED_GROWTH.ID;
     let path = `member/${linearId}/rollin`;
     let moneyIn = UtilsAOL.generateMoney();
     let data = {

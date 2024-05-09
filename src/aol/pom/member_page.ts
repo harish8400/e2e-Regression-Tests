@@ -98,7 +98,7 @@ export class MemberPage extends BasePage {
     readonly balanceAllocation: Locator
     readonly transactionAllocation: Locator
     readonly addBtn: Locator
-    readonly sustainableGrowth: Locator
+    readonly australianShares: Locator
     readonly investmentDropDown1: Locator
     readonly balanceAllocation1: Locator
     readonly transactionAllocation1: Locator
@@ -117,7 +117,7 @@ export class MemberPage extends BasePage {
     readonly verifySwitchSuccess: Locator;
     readonly highGrowth: Locator;
     readonly investmentDropDown2: Locator;
-    readonly sustainbleGrowth1: Locator;
+    readonly australianShares1: Locator;
     readonly memberCreated: Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
@@ -206,13 +206,13 @@ export class MemberPage extends BasePage {
         //SwitchProcess
         this.investementBalancesTab = page.getByRole('button', { name: 'Investments and Balances' });
         this.investmentEditBtn = page.locator('button').filter({ hasText: 'Edit Content' });
-        this.investmentDropDown = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).locator('i').getByRole('img');
-        this.conservative = page.locator("//li[@class='el-select-dropdown__item option__Conservative_2']");
+        this.investmentDropDown = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByPlaceholder('Select');
+        this.conservative = page.locator('li').filter({ hasText: 'Conservative' })
         this.balanceAllocation = page.getByRole('spinbutton').first();
         this.transactionAllocation = page.getByRole('spinbutton').nth(1);
         this.addBtn = page.getByRole('button', { name: 'ADD', exact: true });
-        this.sustainableGrowth = page.locator('li').filter({ hasText: 'Sustainable Growth' }).nth(0);
-        this.sustainbleGrowth1 = page.locator("(//span[contains(text(),'Sustainable Growth')]/parent::li)[1]");
+        this.australianShares = page.locator('li').filter({ hasText: 'Australian Shares' }).first();
+        this.australianShares1 = page.locator('li').filter({ hasText: 'Australian Shares' });
         this.investmentDropDown1 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img').nth(1);
         this.balanceAllocation1 = page.getByRole('spinbutton').nth(2);
         this.transactionAllocation1 = page.getByRole('spinbutton').nth(3);
@@ -397,7 +397,9 @@ export class MemberPage extends BasePage {
     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
         const { memberNo: createMemberNo, processId, memberId } = await MemberApiHandler.createMember(apiRequestContext);
         await accountInfoPage.ProcessTab();
+        await new Promise(resolve => setTimeout(resolve, 10000));
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await new Promise(resolve => setTimeout(resolve, 10000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
         await accountInfoPage.reload();
@@ -406,7 +408,7 @@ export class MemberPage extends BasePage {
         const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
-        await internalTransferPage.memberSummary();
+        //await internalTransferPage.memberSummary();
         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
@@ -610,10 +612,14 @@ export class MemberPage extends BasePage {
         await this.viewCases.click({ timeout: 5000 });
         await this.createCase.click({ timeout: 15000 });
         await this.investmentDropDown.click();
-        await this.conservative.click();
+        await this,this.sleep(3000);
+        await this.conservative.scrollIntoViewIfNeeded();
+        await this.conservative.click({force:true});
+        await this.conservative.press('Enter');
         await this.balanceAllocation.fill('0');
         await this.transactionAllocation.fill('100');
         await this.addBtn.click();
+        await this.sleep(3000);
         //await this.investmentDropDown1.click();
         //await this.sustainableGrowth.click();
         //await this.balanceAllocation1.fill('0');
@@ -631,7 +637,7 @@ export class MemberPage extends BasePage {
         await this.createCase.click({ timeout: 15000 });
         await this.sleep(2000);
         await this.investmentDropDown.click();
-        await this.sustainableGrowth.click();
+        await this.australianShares.click();
         await this.balanceAllocation.fill('0');
         await this.transactionAllocation.fill('100');
         await this.addBtn.click();
@@ -669,8 +675,12 @@ export class MemberPage extends BasePage {
          await this.balanceAllocation.fill('0');
          await this.transactionAllocation.fill('50');
          await this.addBtn.click();
-         await this.investmentDropDown1.click();
-         await this.sustainbleGrowth1.click();
+         await this.investmentDropDown1.click({ timeout: 15000 });
+         await this.sleep(3000)
+         await this.australianShares.scrollIntoViewIfNeeded();
+         await this.australianShares.click({force:true});
+         await this.australianShares.press('Enter');
+         await this.sleep(3000);
          await this.balanceAllocation1.fill('0');
          await this.transactionAllocation1.fill('50');
          await this.addBtn1.click();
@@ -693,7 +703,7 @@ export class MemberPage extends BasePage {
         await this.transactionAllocation.fill('50');
         await this.addBtn.click();
         await this.investmentDropDown1.click();
-        await this.sustainableGrowth.click();
+        await this.australianShares.click();
         await this.balanceAllocation1.fill('0');
         await this.transactionAllocation1.fill('50');
         await this.addBtn1.click();

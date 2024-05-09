@@ -1037,7 +1037,7 @@ export class PensionTransactionPage extends BasePage {
       commencePension
     );
 
-    await pensionAccountPage.reload();
+    //await pensionAccountPage.reload();
 
     // Return relevant data
     return { memberNo, surname };

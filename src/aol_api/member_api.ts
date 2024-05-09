@@ -52,7 +52,7 @@ export class MemberApi extends BaseDltaAolApi {
           givenName: member,
           otherNames: 'Seaborn',
           surname: surname,
-          dob: '1959-04-16',
+          dob: '1962-04-16',
           gender: 'M',
           title: 'Dr.',
           tfn: tfn,

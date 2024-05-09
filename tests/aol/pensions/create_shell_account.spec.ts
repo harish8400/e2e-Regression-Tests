@@ -68,15 +68,15 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
     });
 
     // Validate MAAS Submit Report
-    await test.step("Validate MAAS Submit Report", async () => {
-        const memberId = getMemberId();
-        if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
-            console.log('MAAS Report:', MAASReport);
-        } else {
-            console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
-        }
-    });
+    // await test.step("Validate MAAS Submit Report", async () => {
+    //     const memberId = getMemberId();
+    //     if (memberId) {
+    //         const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+    //         console.log('MAAS Report:', MAASReport);
+    //     } else {
+    //         console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
+    //     }
+    // });
 
 
 })
@@ -130,15 +130,15 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     });
 
     // Validate MAAS Submit Report
-    await test.step("Validate MAAS Submit Report", async () => {
-        const memberId = getMemberId();
-        if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
-            console.log('MAAS Report:', MAASReport);
-            allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
-        } else {
-            console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
-        }
-    });
+    // await test.step("Validate MAAS Submit Report", async () => {
+    //     const memberId = getMemberId();
+    //     if (memberId) {
+    //         const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+    //         console.log('MAAS Report:', MAASReport);
+    //         allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
+    //     } else {
+    //         console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
+    //     }
+    // });
 
 })

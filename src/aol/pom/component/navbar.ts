@@ -25,7 +25,8 @@ export class Navbar extends BasePage {
   constructor(page: Page) {
     super(page);
 
-        this.accumulationProduct = page.locator('//p[@type="label"][normalize-space()="Accumulation"]')
+        this.accumulationProduct = page.getByRole('link', { name: 'Vanguard Accumulation' });
+        // locator('//p[@type="label"][normalize-space()="Accumulation"]')
         // page.getByRole('link', { name: 'Accumulation' });
         this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
@@ -40,7 +41,7 @@ export class Navbar extends BasePage {
         this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
         this.productSelection = page.getByText('HESTA for Mercy');
         
-        this.FilterClick = page.getByRole('button', { name: 'FILTER' });
+        this.FilterClick = page.getByRole('button', { name: 'FILTER' }).first();
         this.FilterOption = page.getByText('Member Number').nth(1);
         this.FilterOptionInput = page.locator('textarea');
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
@@ -66,8 +67,7 @@ export class Navbar extends BasePage {
     async navigateToAccumulationMembersPage() {
 
         await this.accumulationProduct.click();
-        await this.accumulationMembersLink.
-        click();
+        await this.accumulationMembersLink.click();
       }
     
     async navigateToEmployerIdentities(){

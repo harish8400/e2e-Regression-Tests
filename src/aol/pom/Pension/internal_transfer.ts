@@ -95,16 +95,16 @@ export class InternalTransferPage extends BasePage {
     readonly verifycreationVG: Locator;
     readonly verifyVGMember: Locator
     readonly valueSourceProduct_VG: Locator;
-    readonly summary:Locator;
-    readonly sourceProduct:Locator;
+    readonly summary: Locator;
+    readonly sourceProduct: Locator;
 
     //transferOut
 
-     readonly memberProcessId :Locator;
-     readonly abpscreenOverview:Locator;
-     readonly ttrScreen:Locator;
-     readonly ttrScreenOverview:Locator;
-     readonly verifyFinalizeMoneyOutSuccess: Locator;
+    readonly memberProcessId: Locator;
+    readonly abpscreenOverview: Locator;
+    readonly ttrScreen: Locator;
+    readonly ttrScreenOverview: Locator;
+    readonly verifyFinalizeMoneyOutSuccess: Locator;
 
 
     constructor(page: Page) {
@@ -124,13 +124,13 @@ export class InternalTransferPage extends BasePage {
         this.viewCasesButton = page.getByRole('button', { name: 'View Cases' });
         this.createCaseButton = page.getByRole('button', { name: 'Create Case' });
         this.collapseButton = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
-        this.dropdownInternalTransferType = page.locator("(//div[@class='gs__actions'])[2]");
+        this.dropdownInternalTransferType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first()
         this.valueInternalTransferType = page.getByRole('option', { name: 'Internal Transfer' });
         this.dropdownSourceProduct = page.locator("//div[@id='sourceProduct']");
         this.valueSourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Super' });
         this.sourceProduct = page.getByRole('option', { name: 'HESTA for Mercy Retirement' });
         this.valueSourceProductVG = page.getByRole('option').filter({ hasText: 'Accumulation' });
-        this.sourceAccount = page.locator("//input[@id='sourceMemberNumber']");
+        this.sourceAccount = page.getByRole('searchbox', { name: 'MemberNo-' });
         this.buttonLinkToCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
@@ -139,10 +139,10 @@ export class InternalTransferPage extends BasePage {
         this.processID = page.getByLabel('Related Cases add-circle iconarrow-down iconSearch Related Cases CloseSelect').locator('a');
         this.verifySuccessMessage = page.getByText('Processed Payment.');
         this.verifySuccessMessageVG = page.getByText('Intra fund Internal Transfer out complete.');
-        this.verifyFinalizeMoneyOutSuccess = page.getByText('Process step completed with note: Rollout correspondence sent');;
+        this.verifyFinalizeMoneyOutSuccess = page.getByText('Processed payment.');;
 
         //API Integration Internal Transfer 
-        this.overViewTab = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
+        this.overViewTab = page.locator('//button[text()="Overview"]');
         this.addAccount = page.getByRole('button', { name: 'Add new account' });
         this.hestaAccount = page.locator('//li[text()="HESTA for Mercy Super"]');
         this.vanguardAccount = page.locator('//li[text()="Vanguard Accumulation"]');
@@ -180,7 +180,7 @@ export class InternalTransferPage extends BasePage {
         this.addNewBeneficiary = page.getByRole('button', { name: 'Add New' });
         this.beneficiaryName = page.getByLabel('Beneficiary Name *');
         this.beneficiaryType = page.getByText('Non-Binding');
-        this.beneficiaryRelation = page.locator('#gs15__combobox').getByLabel('Select', { exact: true });
+        this.beneficiaryRelation = page.locator('#gs12__combobox div').first();
         this.beneficiaryRelationSelect = page.getByText('Spouse');
         this.beneficiaryEffectiveDate = page.locator('input[name="effectiveDate"]');
         this.beneficiaryPercentage = page.getByPlaceholder('0');
@@ -199,26 +199,30 @@ export class InternalTransferPage extends BasePage {
         this.verifycreationVG = page.locator(CASE_NOTE.UNAUTHORISED);
         this.verifyVGMember = page.getByText('Process step completed with note: IRR2Out sent.');
         this.valueSourceProduct_VG = page.getByRole('option', { name: 'Vanguard Super SpendSmart' });
+<<<<<<< Updated upstream
         this.summary = page.getByRole('button', { name: 'Member Summary' });
+=======
+        this.summary = page.getByRole('button', { name: 'Member Summary' })
+>>>>>>> Stashed changes
 
         //transferOut
 
         this.memberProcessId = page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");
-        this.abpscreenOverview =page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
+        this.abpscreenOverview = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
         this.ttrScreen = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
         this.ttrScreenOverview = page.getByRole('button', { name: 'HESTA for Mercy Transition to' });
-       
+
 
 
     }
 
     /** Internal Transaction from Accumulation to Retirement Income Sream */
-    async internalTransferMember(transferType: string ,memberNo: String) {
+    async internalTransferMember(transferType: string, memberNo: String) {
 
         await this.ButtonTransactions.click();
         await this.ButtonAddTransactions.click();
         await this.internalTransferOption.click();
-
+        await this.sleep(3000);
         await this.viewCasesButton.click();
         await this.createCaseButton.click();
         await this.sleep(3000);
@@ -234,22 +238,51 @@ export class InternalTransferPage extends BasePage {
             } else {
                 await this.valueSourceProductVG.click();
             }
-            await this.sourceAccount.fill(memberNo.toString());
+            await this.sleep(3000);
+            let sourceAccountb = await this.page.locator("//div[@id='gs37__combobox']/div[1]");
+            sourceAccountb.focus();
+            sourceAccountb.click();
+            await this.sleep(3000);
+            let memberNumber = await this.page.locator('#gs18__listbox');
+            memberNumber.focus();
+            memberNumber.click({ force:true});
+            // await this.page.locator('#gs18__listbox').click({ force: true });
+            // //await this.page.getByText(`${memberNo.toString()}`).click({force:true});
+            // //await this.sourceAccount.fill(memberNo.toString());
         }
         else if (transferType == 'ABP') {
             await this.page.getByRole('option').nth(2).click();
-            await this.sourceAccount.fill(memberNo.toString());
+            await this.sleep(3000);
+            let sourceAccountSearchBox = await this.page.locator('#gs18__combobox div').first();
+
+            sourceAccountSearchBox.focus();
+            sourceAccountSearchBox.click();
+            await this.sleep(3000);
+            let memberNo = await this.page.locator('#gs18__listbox');
+            memberNo.focus();
+            memberNo.click({ force: true });
         }
         else if (transferType == 'TTR') {
             await this.page.getByRole('option', { name: 'HESTA for Mercy Transition to' }).click();
-            await this.sourceAccount.fill(memberNo.toString());
-        }
-        else{
-            await this.page.getByRole('option').nth(2).click();
-            await this.sourceAccount.fill(memberNo.toString());
-        }
+            await this.sleep(3000);
+            let sourceAccountbox = await this.page.locator('#gs5__combobox div').first();
+            sourceAccountbox.focus();
+            sourceAccountbox.click();
+            await this.sleep(3000);
+            let memberNum = await this.page.locator('#gs5__listbox');
+            memberNum.focus();
+            memberNum.click({ force: true })
 
-        await this.page.keyboard.down('Tab');
+        }
+        else {
+            await this.page.getByRole('option').nth(2).click();
+            await this.sleep(3000);
+            await this.sourceAccount.click();
+            await this.sourceAccount.focus();
+        }
+        await this.sleep(2000);
+
+        //await this.sourceAccount.press('Enter');
         await this.sleep(2000);
         await this.payFullBalance.click();
         await this.sleep(2000);
@@ -259,7 +292,7 @@ export class InternalTransferPage extends BasePage {
 
         await this.buttonLinkToCase.click();
         await this.sleep(3000);
-        
+
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
         } else {
@@ -271,7 +304,7 @@ export class InternalTransferPage extends BasePage {
         await this.sleep(3000);
         await this.processID.click();
         await this.sleep(3000);
-        
+
         if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifySuccessMessage);
         } else {
@@ -283,7 +316,7 @@ export class InternalTransferPage extends BasePage {
         await this.processID.click();
         // Click on Internal Transfer In Process
         await this.processID.nth(1).click();
-        if(process.env.PRODUCT == FUND.HESTA){
+        if (process.env.PRODUCT == FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifyFinalizeMoneyOutSuccess);
             await this.reviewCase.captureScreenshot('Finalize Money Out Case');
         }
@@ -292,9 +325,9 @@ export class InternalTransferPage extends BasePage {
 
     async accumulationAccountCreation(addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean) {
 
-        await this.sleep(3000);
-        await this.overViewTab.waitFor();
-        await this.overViewTab.focus();
+        await this.sleep(5000);
+        // await this.overViewTab.waitFor();
+        await this.overViewTab.scrollIntoViewIfNeeded();
         await this.overViewTab.click({ force: true });
         await this.addAccount.click();
         await this.sleep(3000);
@@ -361,6 +394,10 @@ export class InternalTransferPage extends BasePage {
         }
         //Create account
         await this.createAccount.click();
+        await this.sleep(3000);
+        let memberLink = await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");
+        memberLink.scrollIntoViewIfNeeded();
+        await this.sleep(3000).then(() => memberLink.click({ force: true }))
     }
 
     async ProcessTab() {
@@ -373,14 +410,14 @@ export class InternalTransferPage extends BasePage {
         const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");
         await caseId.waitFor();
         let id = await caseId.textContent();
-       
+
         return id!.trim();
     }
 
-    async vanguard(){
+    async vanguard() {
         if (ENVIRONMENT_CONFIG.name === "dev" && process.env.PRODUCT != FUND.HESTA) {
             await this.reviewCase.reviewCaseProcess(this.verifycreationVG);
-          } 
+        }
     }
 
 
@@ -446,7 +483,7 @@ export class InternalTransferPage extends BasePage {
         return balance;
     }
 
-    async transferOut(){
+    async transferOut() {
         await this.memberProcessId.scrollIntoViewIfNeeded();
         await this.memberProcessId.click();
         await this.sleep(3000);
@@ -455,13 +492,17 @@ export class InternalTransferPage extends BasePage {
 
     }
 
-    async transferOutTTR(){
+    async transferOutTTR() {
         await this.memberProcessId.scrollIntoViewIfNeeded();
         await this.memberProcessId.click();
         await this.sleep(3000);
         await this.ttrScreenOverview.click();
         await this.ButtonTransactions.click();
 
+    }
+     async accumulationAccountLink(){
+        await this.sleep(3000);
+        await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
     }
 
 

@@ -1,0 +1,19 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="201.38097399999998">
+<testsuite name="aol/setup/auth.setup.ts" timestamp="2024-05-08T11:48:23.413Z" hostname="setup" tests="1" failures="0" skipped="0" time="7.163" errors="0">
+<testcase name="Vanguard Superauthenticate" classname="aol/setup/auth.setup.ts" time="7.163">
+</testcase>
+</testsuite>
+<testsuite name="aol/member/switch.spec.ts" timestamp="2024-05-08T11:48:23.413Z" hostname="chromium" tests="1" failures="0" skipped="0" time="190.483" errors="0">
+<testcase name="Vanguard Super Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date." classname="aol/member/switch.spec.ts" time="190.483">
+<system-out>
+<![CDATA[Test running for product 'Vanguard Super'
+Created member with memberNo: 859294044 and memberId: b8ae68f0-897e-4734-93d6-d15214a0fa01
+Case ID: 09af5ae0-c078-4214-83f0-ea10a8b8d494
+Case ID: f758806b-4a94-4a0c-a6c1-38246de3fbad
+
+[[ATTACHMENT|test-results/aol-member-switch-Vanguard-4c4a6-options-using-current-date--chromium/test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

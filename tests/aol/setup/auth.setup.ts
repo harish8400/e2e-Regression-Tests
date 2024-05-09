@@ -12,7 +12,7 @@ setup(fundName() + "authenticate", async ({ page }) => {
         const url = request.url();
         const headers = request.headers();
         const authorization = headers['authorization'];
-        if (url.startsWith('https://middleware-saturn.dev.tinasuper.com/users/me') && authorization) {
+        if (url.startsWith('https://middleware-saturn.dev.tinasuper.com/users/me') && authorization) {  
             authToken = authorization;
            process.env.TOKEN = authToken;
         }

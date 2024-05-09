@@ -82,7 +82,7 @@ export class AccountInfoPage extends BasePage {
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
         this.review = page.locator('//span[text()="In Progress "]');
         this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-        this.inReview = page.locator('//span[text()="In Review"]');
+        this.inReview = page.getByText('In Review')
 
     }
 
@@ -163,9 +163,9 @@ export class AccountInfoPage extends BasePage {
 
     async ProcessTab() {
         await this.processesLink.click();
-        await this.sleep(3000);
+        await this.sleep(5000);
         await this.memberaccount.click();
-        await this.review.click();
+        await this.page.getByRole('cell', { name: 'In Review' }).locator('div').click();
         await this.page.reload();
         await this.sleep(3000);
         const caseId = this.page.locator("(//div[@class='gs-column case-table-label']/following-sibling::div)[1]");

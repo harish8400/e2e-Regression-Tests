@@ -233,8 +233,8 @@ export class PensionShellAccount extends BasePage {
     this.beneficiaryRelation = page.locator('.gs__actions').nth(1);
     this.beneficiaryRelationSelect = page.getByRole('option', { name: 'Spouse' })
     this.beneficiaryEffectiveDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.select_gender = page.getByRole('option', { name: 'Male', exact: true })
-    this.gender_select = page.locator('.gs__actions').nth(2);
+    this.select_gender = page.getByText('Male', { exact: true });
+    this.gender_select = page.locator('#gs11__combobox').getByLabel('Select', { exact: true }).locator('path');
     this.beneficiaryContactName = page.getByLabel('Contact First Name');
     this.countrySelect = page.locator('.gs__actions').nth(3);
     this.selectCountry = page.getByRole('option', { name: 'Australia' });
@@ -312,14 +312,14 @@ export class PensionShellAccount extends BasePage {
     //process link
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-    this.review = page.locator('//span[text()="In Review"]');
+    this.review = page.getByText('In Review');
     this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
     this.transactionsTab = page.locator('//button[text()="Transactions"]');
     this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
     this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
-    this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
+    this.abp = page.getByText('HESTA for Mercy Retirement');
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
     const date = DateUtils.ddMMMyyyStringDate(new Date());
     this.pensionHistory = page.getByRole('row', { name: date+' Pension Payment Details Update' }).first();
@@ -395,7 +395,7 @@ export class PensionShellAccount extends BasePage {
     await this.beneficiaryRelationSelect.click();
     await this.beneficiaryEffectiveDate.fill(member.beneficiaryDOB);
     await this.beneficiaryEffectiveDate.press('Tab');
-    await this.gender_select.click();
+    //await this.gender_select.click();
     await this.select_gender.click();
     await this.countrySelect.click();
     await this.selectCountry.click();
@@ -413,7 +413,7 @@ export class PensionShellAccount extends BasePage {
   async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
-    await this.clipBoard_icon.click();
+   // await this.clipBoard_icon.click();
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
@@ -568,7 +568,8 @@ export class PensionShellAccount extends BasePage {
     await this.abpScreenView.first().waitFor();
     await this.abpScreenView.first().click();
     await this.sleep(3000);
-    await this.transactionsTab.click();
+    await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
+    // await this.transactionsTab.click();
 
   }
 
@@ -604,9 +605,10 @@ export class PensionShellAccount extends BasePage {
   async createShellAccountExistingMember(addBeneficiary: boolean = false, memberNo: string = '') {
 
     await this.sleep(3000);
-    await this.memberOverview.waitFor();
-    await this.memberOverview.click();
-    await this.addAccount.click();
+    //await this.memberOverview.waitFor();
+    await this.memberOverview.click({force:true});
+    await this.sleep(5000).then(()=>this.addAccount.scrollIntoViewIfNeeded());
+    await this.addAccount.click({force:true});
     await this.abp.click();
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();

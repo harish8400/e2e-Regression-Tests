@@ -104,8 +104,9 @@ export class EmployerIdentitiesPage extends BasePage {
         this.editContactDetails = page.locator('(//button[contains(@class,"gs-button gs-button-edit-btn")]//span)[2]')
 
 
-        this.outcome = page.locator('//div[text()=" Outcome "]/following-sibling::div');
-        this.status = page.locator('div').filter({ hasText: /^Closed$/ });
+        this.outcome = page.locator("//div[text()=' Outcome ']/following-sibling::div");
+        this.status = page.locator("//span[@class='gs-tag closed']");
+        //locator('div').filter({ hasText: /^Closed$/ });
         this.statusText = page.locator('//div[contains(@class,"text-xs text-neutral-900")]/following::p[text()="Processed Create Employer."]');
         this.statusText1 = page.locator('//p[normalize-space()="Processed Update Employer Contacts."]');
         this.statusText2 = page.locator('//p[normalize-space()="Processed Update Employer."]')
