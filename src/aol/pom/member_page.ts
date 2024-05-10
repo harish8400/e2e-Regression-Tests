@@ -18,6 +18,8 @@ import { csv_utils } from "../../utils/csv_utils";
 import { xmlUtility } from "../../utils/xml_util";
 import process from 'process';
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
+import { AssertionError } from "assert";
+import { error } from "console";
 
 let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 
@@ -126,6 +128,7 @@ export class MemberPage extends BasePage {
     readonly sustainbleGrowth1: Locator;
     readonly memberCreated: Locator;
     readonly rollOut: Locator;
+    readonly rollOut_VG: Locator;
     readonly navBar: Navbar
     readonly contribution: Locator;
     readonly contribution_vg: Locator;
@@ -137,6 +140,7 @@ export class MemberPage extends BasePage {
     readonly FilterOptionInput: Locator;
     readonly BtnApply: Locator;
     readonly gctarTransaction: Locator;
+    readonly caseID: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -242,11 +246,12 @@ export class MemberPage extends BasePage {
         this.highGrowth = page.locator('li').filter({ hasText: 'High Growth' });
         this.investmentDropDown2 = page.getByRole('main').locator('section').filter({ hasText: 'Investment REBALANCE Member' }).getByRole('img');
         this.memberCreated = page.getByText('Process step completed with note: New member welcome letter sent.');
-        this.contribution = page.getByText('Process step Send Stream Contribution Payload to Chandler did not meet conditions.');
+        this.contribution = page.getByText('Process step Send Superstream Contribution Payload. did not meet conditions.');
         this.contribution_vg = page.getByText('Process step completed with note: Superstream contribution payload sent.');
 
         this.rolloverIn = page.getByText('Process step completed with note: Member roll in payload sent to Chandler.');
         this.rollOut = page.getByText('Process step completed with note: Manual Super Stream rollout correspondence sent.');
+        this.rollOut_VG = page.getByText('Process step completed with note: Rollover received from other fund letter sent.')
         this.gctarTransaction = page.getByText('Process step completed with note: GCTAOR sent.');
 
         // #filter
@@ -254,6 +259,7 @@ export class MemberPage extends BasePage {
         this.FilterOption = page.getByText('Name', { exact: true });
         this.FilterOptionInput = page.getByRole('textbox').nth(1);
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
+        this.caseID = page.locator(`(//span[@class='inline-block align-middle text-xs font-semibold'])[1]`);
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean, memberIsChild?: boolean) {
@@ -387,7 +393,7 @@ export class MemberPage extends BasePage {
         await this.sleep(3000);
         await this.reloadPageWithDelay(this.page, 1);
         await this.page.locator(`//div[text()='${superstreamProcess}']`).first().click();
-
+    
         await this.sleep(2000);
         let process = await this.page.locator("(//div[@class='cell']//span)[1]");
         if (await process.innerText() === "In Review") {
@@ -401,44 +407,79 @@ export class MemberPage extends BasePage {
         else {
             await this.page.getByRole('cell', { name: 'Closed' }).click({ force: true });
         }
-
+    
         if (superstreamProcess == 'SuperStream - Contribution') {
-
             switch (product) {
                 case 'HESTA for Mercy':
                     await this.reviewCase.reviewCaseProcess(this.contribution);
                     break;
-                    case 'Vanguard Super':
-                        const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
-                        const text = await textContent.textContent();
-                        console.log(text);
-                        const outcome = text?.trim();
-                        console.log(outcome);
-                        if (outcome === 'Process step completed with note: Superstream contribution payload sent.') {
-                            await this.reviewCase.reviewCaseProcess(this.contribution_vg);
-                        } else {
-                            await this.reviewCase.reviewCaseProcess(this.contribution);
-                        }
-                        break;
-                
+                case 'Vanguard Super':
+                    const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
+                    const text = await textContent.textContent();
+                    console.log(text);
+                    const outcome = text?.trim();
+                    console.log(outcome);
+                    await this.page.waitForTimeout(3000);
+                    if (outcome === 'Process step completed with note: Superstream contribution payload sent.') {
+                        await this.reviewCase.reviewCaseProcess(this.contribution_vg);
+                    } else if (outcome?.includes('Process step Send Superstream Contribution Payload. did not meet conditions')) {
+                        await this.reviewCase.reviewCaseProcess(this.contribution);
+                    } else {
+                        console.log('undefined');
+                    }                    
+                    
+                    break;
                 default:
                     throw new Error(`Unsupported product: ${product}`);
             }
-
-
         } else if (superstreamProcess == 'SuperStream - MRR') {
             await this.reviewCase.reviewCaseProcess(this.memberCreated);
-        }
-        else if (superstreamProcess == 'SuperStream - Rollover Out') {
-            await this.reviewCase.reviewCaseProcess(this.rollOut);
+        } else if (superstreamProcess == 'SuperStream - Rollover Out') {
+            switch (product) {
+                case 'HESTA for Mercy':
+                    await this.reviewCase.reviewCaseProcess(this.rollOut);
+                    break;
+                case 'Vanguard Super':
+                    const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
+                    const text = await textContent.textContent();
+                    console.log(text);
+                    const outcome = text?.trim();
+                    console.log(outcome);
+                    if (outcome === 'Process step completed with note: Rollover received from other fund letter sent.') {
+                        await this.sleep(3000);
+                        await this.reviewCase.reviewCaseProcess(this.rollOut_VG);
+                    } else {
+                        await this.reviewCase.reviewCaseProcess(this.rollOut);
+                    }
+                    break;
+                default:
+                    throw new Error(`Unsupported product: ${product}`);
+            }
         } else if (superstreamProcess == 'SuperStream GCTAR') {
-            await this.reviewCase.reviewCaseProcess(this.gctarTransaction);
-        }
-
-        else {
+            switch (product) {
+                case 'HESTA for Mercy':
+                    await this.reviewCase.reviewCaseProcess(this.gctarTransaction);
+                    break;
+                case 'Vanguard Super':
+                    const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
+                    const text = await textContent.textContent();
+                    console.log(text);
+                    const outcome = text?.trim();
+                    console.log(outcome);
+                    if (outcome === 'Process step completed with note: Rollover received from other fund letter sent.') {
+                        console.log('java.lang.IllegalArgumentException: This transaction has pending dependencies and cannot be processed yet.')
+                    } else {
+                        await this.reviewCase.reviewCaseProcess(this.gctarTransaction);
+                    }
+                    break;
+                default:
+                    throw new Error(`Unsupported product: ${product}`);
+            }
+        } else {
             await this.reviewCase.reviewCaseProcess(this.rolloverIn);
         }
     }
+    
 
 
     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
@@ -675,14 +716,14 @@ export class MemberPage extends BasePage {
 
     async memberWithoutTFNMultipleContributions() {
         await this.amountContributedTypeAWD();
-       // await this.amountContributedTypeSAL();
-        
+        await this.amountContributedTypeSAL();
+
 
 
     }
 
     async rollInTransaction() {
-        
+
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Overview']/following-sibling::button"))).click();
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
         let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='RLI']"))).first();
@@ -747,9 +788,9 @@ export class MemberPage extends BasePage {
     }
 
     async memberGCTRContribution() {
-        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Overview']/following-sibling::button"))).click();
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
-        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//div[@class='cell']/following::div[text()='SCC']"))).first();
+        let transactionType = (await this.sleep(3000).then(() => this.page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[2]/div[1]"))).first();
         transactionType.scrollIntoViewIfNeeded().then(() => this.sleep(3000));
         transactionType.click();
         let viewCase = await this.page.locator("//span[text()=' VIEW CASE ']").scrollIntoViewIfNeeded().then(() => this.sleep(2000));
@@ -806,7 +847,7 @@ export class MemberPage extends BasePage {
             await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Exited Accounts'));
             await Table.click();
         } else {
-            (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+            (await this.sleep(3000).then(() => this.page.locator("//button[text()='Overview']/following-sibling::button"))).click();
         }
 
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
@@ -1090,6 +1131,92 @@ export class MemberPage extends BasePage {
         //await expect(this.page.getByTitle('Conservative')).toContainText('Conservative');
         await this.globalPage.captureScreenshot();
     }
+
+    async verifySuperstreamProcessForVG(superstreamProcess: string, expectedTexts: string[]) {
+        await this.page.locator("(//a[@class='NxLAj'])[1]").click();
+        await this.processeslink.click();
+        await this.sleep(3000);
+        await this.reloadPageWithDelay(this.page, 1);
+        await this.page.locator(`//div[text()='${superstreamProcess}']`).first().click()
+        await this.sleep(2000);
+        let process = await this.page.locator("(//div[@class='cell']//span)[1]");
+        if (await process.innerText() === "In Review") {
+            await this.page.getByText('In Review').click({ force: true });
+        } else if (await process.innerText() === "In Progress") {
+            await this.page.locator("//span[text()='In Progress ']").click({ force: true });
+        }
+        else if (await process.innerText() === "Pending") {
+            await this.page.getByRole('cell', { name: 'Pending' }).locator('span').click({ force: true });
+        }
+        else {
+            await this.page.getByRole('cell', { name: 'Closed' }).click({ force: true });
+        }
+    
+        for (const expectedText of expectedTexts) {
+            await this.reviewCaseProcess(this.rollOut_VG, expectedText);
+        }
+    }
+    
+    async reviewCaseProcess(successLocator: Locator, expectedText: string) {
+        console.log('Case ID: ' + await this.caseID.textContent());
+    
+        // Review case process steps, approve/retry or exit on exception
+        do {
+            // Approve step
+            if (await this.approveProcessStep.count() > 0) {
+                try {
+                    await this.approveProcessStep.click({ timeout: 5000 });
+                } catch (TimeoutException) { }
+            }
+    
+            // Retry step
+            if (await this.retryProcessStep.count() > 0) {
+                try {
+                    await this.retryProcessStep.click({ timeout: 5000 });
+                } catch (TimeoutException) { }
+            }
+    
+            // Break if there is a process exception
+            if (await this.processException.count() > 0) {
+                throw new AssertionError({ message: "Case Process has Failed" });
+            }
+    
+            await this.sleep(5000);
+    
+        } while (await successLocator.count() === 0);
+    
+        await successLocator.scrollIntoViewIfNeeded();
+        await expect(successLocator).toBeVisible();
+    
+        // Check if the expected text is present
+        await this.waitForTextMatch("(//div[contains(@class,'leading-snug break-words')]//p)[1]", expectedText);
+    
+        // Log the completion of the process
+        console.log(`Process step completed with note: ${expectedText}`);
+    }
+    
+    // Define the waitForTextMatch method to accept a string selector
+    async waitForTextMatch(selector: string, expectedText: string, timeout: number = 30000) {
+        // Use the provided selector to locate the element
+        const element = await this.page.locator(selector);
+        if (!element) {
+            throw new Error(`Element with selector '${selector}' not found`);
+        }
+    
+        const startTime = Date.now();
+        while (Date.now() - startTime < timeout) {
+            await this.sleep(1000); // Adjust the delay as per your requirement
+    
+            // Get the text content of the element
+            const text = await element.textContent();
+            if (text && text.trim() === expectedText) {
+                return; // Text content matches, exit the loop
+            }
+        }
+    
+        throw new Error(`Timeout: Text '${expectedText}' not found within ${timeout}ms`);
+    }
+    
 
 }
 

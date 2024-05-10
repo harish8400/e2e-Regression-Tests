@@ -18,6 +18,10 @@ import * as superStreamDataRTR from '../aol/data/superstream_RTR_data.json';
 import * as superStreamDataIRR from '../aol/data/superstream_IRR_data.json';
 import { ShellAccountApiHandler } from '../aol_api/handler/internal_transfer_in_handler';
 import * as superStreamDataForVG from '../aol/data/superstream_vg_data.json';
+import { ReviewCase } from '../aol/pom/component/review_case';
+
+
+
 
 export class xmlUtility {
 
@@ -26,9 +30,13 @@ export class xmlUtility {
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
     static today: Date;
+    static reviewCase: ReviewCase;
+    static page: Page;
 
     constructor(page: Page) {
+        
         xmlUtility.memberPage = new MemberPage(page);
+        xmlUtility.reviewCase = new ReviewCase(page);
 
 
     }
@@ -257,6 +265,77 @@ export class xmlUtility {
         }
     }
 
+    static async generateXMLFileIRRForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+
+            case 'IRR_Partial-Exit_VG_SMSF.xml':
+                if (!isNewMember) {
+                    return await this.generateIRRWithSMSFPartialRolloverOutForNewMemberVG(templateName, apiRequestContext, isTFNToBePassed);
+
+                } else {
+                    return this.generateIRRWithSMSFPartialRolloverOutForExsistingMemberVG(templateName);
+                }
+            case 'IRR_Full-Exit_VG_SMSF.xml':
+                if (!isNewMember) {
+                    return await this.generateIRRWithSMSFFullExitRolloverOutForNewMemberVG(templateName, apiRequestContext, isTFNToBePassed);
+
+                } else {
+                    return this.generateIRRWithSMSFFullExitRolloverOutForExsistingMemberVG(templateName);
+                }
+            default:
+                return { destinationFileName: generatedXMLFileName, conversationId: "", member: "", surName: "", dob: "" }; // Adjust the default return type according to your needs
+        }
+    }
+
+    static async generateXMLFileGCTRForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'GCTR_VG.xml':
+                if (!isNewMember) {
+                    return await this.generateGCTRXMLForNewMemberVG(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateGCTRXMLForExsistingMemberVG(templateName);
+                }
+            default:
+                // Return a promise that resolves to an object with placeholder values
+                return Promise.resolve({
+                    destinationFileName: '',
+                    paymentReferenceNumber: '',
+                    conversationId: '',
+                    payrollNumber: '',
+                    member: '',
+                    surName: '',
+                    year: 0,
+                    month: '',
+                    day: 0
+                });
+        }
+    }
+
+    static async generateXMLFileGCTARForVG(templateName: string, apiRequestContext: APIRequestContext, isNewMember: boolean, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number }> {
+        let generatedXMLFileName: string = templateName;
+        switch (templateName) {
+            case 'GCTAR_VG.xml':
+                if (!isNewMember) {
+                    return await this.generateGCTARXMLForNewMemberVG(templateName, apiRequestContext, isTFNToBePassed);
+                } else {
+                    return this.generateGCTARXMLForExsistingMemberVG(templateName);
+                }
+            default:
+
+                return Promise.resolve({
+                    destinationFileName: '',
+                    conversationId: '',
+                    payrollNumber: '',
+                    member: '',
+                    surName: '',
+                    year: 0,
+                    month: '',
+                    day: 0
+                });
+        }
+    }
 
 
     // Generate XML with TFN for MRR
@@ -2120,7 +2199,6 @@ export class xmlUtility {
     }
 
 
-
     // Generate XML for MRR
     static generateMRRWithoutTFNXML_VG(templateFileName: string): { destinationFileName: string, firstName: string, lastName: string, dob: string, tfnIs: boolean } {
 
@@ -2614,6 +2692,524 @@ export class xmlUtility {
             console.error("Error occurred while generating RTR XML:", error);
             throw error;
         }
+    }
+
+    // Generate XML for IRR for a New Member
+    static async generateIRRWithSMSFPartialRolloverOutForNewMemberVG(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.052650.058@growsuper`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.11789425178.${formattedDate}050450${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const wholeBalanceTransfer = 'NO';
+
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            await new Promise(resolve => setTimeout(resolve, 6000))
+            const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
+            await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceABN,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='messageSenderContext']/*[local-name()='entityId']": superStreamDataForVG.sourceABN,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": memberNo,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": surName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": member,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": dob,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='transferWholeBalance']": wholeBalanceTransfer,
+            };
+            allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
+            /// Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, member, surName, dob, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
+
+    static async generateIRRWithSMSFFullExitRolloverOutForNewMemberVG(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.052650.058@growsuper`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.11789425178.${formattedDate}050450${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const wholeBalanceTransfer = 'YES';
+
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            await new Promise(resolve => setTimeout(resolve, 10000))
+            const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
+            await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceABN,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='messageSenderContext']/*[local-name()='entityId']": superStreamDataForVG.sourceABN,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": memberNo,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": surName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": member,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": dob,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='transferWholeBalance']": wholeBalanceTransfer,
+            };
+            allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
+            /// Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, member, surName, dob, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
+
+     // Generate XML for IRR for a New Member
+     static async generateIRRWithSMSFPartialRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.052650.058@growsuper`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.11789425178.${formattedDate}050450${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+             /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const surName = superStreamDataForVG.memberLastName;
+            const member = superStreamDataForVG.memberFirstName;
+            const dob = superStreamDataForVG.dob;
+            const memberNo = superStreamDataForVG.memberNumber;
+            const wholeBalanceTransfer = 'NO';
+            this.today = new Date();
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceABN,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='messageSenderContext']/*[local-name()='entityId']": superStreamDataForVG.sourceABN,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": superStreamDataForVG.memberNumber,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": superStreamDataForVG.memberLastName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": superStreamDataForVG.memberFirstName,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": superStreamDataForVG.dob,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='transferWholeBalance']": wholeBalanceTransfer,
+            };
+            allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
+            /// Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, member, surName, dob, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
+
+     // Generate XML for IRR for a New Member
+     static async generateIRRWithSMSFFullExitRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.052650.058@growsuper`;
+            const randomThreeDigitNumber = UtilsAOL.generateRandomThreeDigitNumber();
+            const conversationId = `Rollover.11789425178.${formattedDate}050450${randomThreeDigitNumber}`;
+            const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+             /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const surName = superStreamDataForVG.memberLastName;
+            const member = superStreamDataIRR.memberFirstName;
+            const dob = superStreamDataForVG.dob;
+            const memberNo = superStreamDataForVG.memberNumber;
+            const wholeBalanceTransfer = 'YES';
+            this.today = new Date();
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+
+                "//*[local-name()='messageId'][1]": superGateMessageId,
+                "//*[local-name()='conversationId'][1]": conversationId,
+                "//*[local-name()='timestamp'][1]": timeInUTC,
+                "//*[local-name()='sourceAbn'][1]": superStreamDataForVG.sourceABN,
+                "//*[local-name()='targetAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='targetUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='messageSenderContext']/*[local-name()='entityId']": superStreamDataForVG.sourceABN,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='memberID'][1]": superStreamDataForVG.memberNumber_FullExit,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundAbn'][1]": superStreamDataForVG.targetAbn,
+                "//*[local-name()='memberRolloverTransactionContext']/*[local-name()='entitySegmentReceivingFundUsi'][1]": superStreamDataForVG.targetUsi,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='familyName']": superStreamDataForVG.memberLastName_FullExit,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='givenName']": superStreamDataForVG.memberFirstName_FullExit,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='dateOfBirth']": superStreamDataForVG.dob_FullExit,
+                "//*[local-name()='memberRolloverTransaction']/*[local-name()='transferWholeBalance']": wholeBalanceTransfer,
+            };
+            allure.logStep(`Rollover-Out happened for the member is: ${memberNo}, ${member}, ${surName}, ${dob}`);
+            /// Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, member, surName, dob, conversationId };
+        } catch (error) {
+            console.error("Error occurred while generating RTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for GCTR with TFN
+    static async generateGCTRXMLForNewMemberVG(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string; paymentReferenceNumber: string, conversationId: string, payrollNumber: string, member: string, surName: string, year: number, month: string, day: number }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.095427.123@superchoice.com.au`;
+            const conversationId: string = `Contribution.84111122223.${formattedDate}1054275${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `GCTR_${formattedDate}_105427_555_${conversationId}_1.xml`;
+            const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+            const paymentReferenceNumber = 'PAYA25256455129103';
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+
+            // Extract member data
+            let { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            const year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            const day = parseInt(parts[2], 10);
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+                "//messageId[1]/ebmsMessageId[1]": superGateMessageId,
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//targetAbn[1]": superStreamDataForVG.targetAbn,
+                "//targetUsi[1]": superStreamDataForVG.targetUsi,
+                "//paymentReferenceNumber[1]": paymentReferenceNumber,
+                "//payer[1]/paymentReference[1]": paymentReferenceNumber,
+                "//payee[1]/paymentReference[1]": paymentReferenceNumber,
+                "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataForVG.targetAbn,
+                "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//member[1]//taxFileNumber[1]": tfn,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]//payrollNumber[1]": payrollNumber,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+            };
+            allure.logStep(`Super stream contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, paymentReferenceNumber, conversationId, payrollNumber, member, surName, year, month, day };
+        } catch (error) {
+            console.error("Error occurred while generating GCTR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for GCTR with TFN
+    static async generateGCTRXMLForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; paymentReferenceNumber: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number; }> {
+
+
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+        const superGateMessageId = `${formattedDate}.095427.123@superchoice.com.au`;
+        const conversationId: string = `Contribution.84111122223.${formattedDate}1054275${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `GCTR_${formattedDate}_105427_555_${conversationId}_1.xml`;
+        const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const paymentReferenceNumber = 'PAYA25256455129103';
+        const member = superStreamDataForVG.memberFirstName;
+        const surName = superStreamDataForVG.memberLastName;
+        const year = parseInt(superStreamDataForVG.dobYear, 10);
+        const month = superStreamDataForVG.dobMonth;
+        const day = parseInt(superStreamDataForVG.dobDay, 10);
+        const tfn = UtilsAOL.generateValidTFN();
+        const memberNo = superStreamDataForVG.memberNumber;
+
+
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/ebmsMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//targetAbn[1]": superStreamDataForVG.targetAbn,
+            "//targetUsi[1]": superStreamDataForVG.targetUsi,
+            "//payer[1]/paymentReference[1]": paymentReferenceNumber,
+            "//payee[1]/paymentReference[1]": paymentReferenceNumber,
+            "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataForVG.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi,
+            "//name[1]/firstName[1]": member,
+            "//name[1]/lastName[1]": surName,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
+            "//member[1]//taxFileNumber[1]": tfn,
+            "//member[1]//memberNumber[1]": memberNo,
+            "//member[1]//payrollNumber[1]": payrollNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+
+        };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+        return {
+            destinationFileName, paymentReferenceNumber, conversationId, payrollNumber, member, surName, year, month, day
+
+        };
+    }
+
+    // Generate XML for GCTR with TFN
+    static async generateGCTARXMLForNewMemberVG(templateFileName: string, apiRequestContext: APIRequestContext, isTFNToBePassed: boolean): Promise<{ destinationFileName: string, conversationId: string, payrollNumber: string, member: string, surName: string, year: number, month: string, day: number }> {
+        try {
+            let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+            /// Copy template file to processed folder
+            const superGateMessageId = `${formattedDate}.132848.874@superchoice.com.au`;
+            const conversationId: string = `Contribution.11260931967.${formattedDate}1408281${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            const destinationFileName: string = `GCTAR_${formattedDate}_134530_123_${conversationId}_1.xml`;
+            const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+            this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+            /// Node values
+            const currentUTCTime: Date = new Date();
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", ""); 
+
+            // Fetch member data 
+            const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
+            // Call necessary API methods
+            await new Promise(resolve => setTimeout(resolve, 6000));
+            const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, memberData.processId!);
+            await new Promise(resolve => setTimeout(resolve, 9000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+            
+
+            // Extract member data
+            const { memberNo, member, surName, dob, tfn } = memberData;
+            allure.logStep(`Newly created Member data is: ${memberNo}, ${member}, ${surName}, ${dob}, ${tfn}`);
+            const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
+            await ShellAccountApiHandler.addContribution(apiRequestContext, linearId.id);
+
+            // Extract year, month, and day from dateOfBirth
+            let parts = dob.split('-');
+            const year = parseInt(parts[0], 10);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            // Extract month name from numeric month
+            const month = monthNames[parseInt(parts[1], 10) - 1];
+            const day = parseInt(parts[2], 10);
+
+            /// Prepare nodes list to update
+            interface nodes {
+                [key: string]: any;
+            }
+            const nodesToUpdate: nodes = {
+                "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+                "//messageId[1]/conversationId[1]": conversationId,
+                "//headers[1]/conversationId[1]": conversationId,
+                "//timeInUTC[1]": timeInUTC,
+                "//targetAbn[1]": superStreamDataForVG.targetAbn,
+                "//targetUsi[1]": superStreamDataForVG.targetUsi,
+                "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataForVG.targetAbn,
+                "//name[1]/firstName[1]": member,
+                "//name[1]/lastName[1]": surName,
+                "//member[1]/dob[1]/year[1]": year,
+                "//member[1]/dob[1]/month[1]": month,
+                "//member[1]/dob[1]/day[1]": day,
+                "//member[1]//taxFileNumber[1]": tfn,
+                "//member[1]//memberNumber[1]": memberNo,
+                "//member[1]//payPeriodStartDate[1]": timeInUTC,
+                "//member[1]//payPeriodEndDate[1]": timeInUTC,
+                "//member[1]//paymentTransactionDate[1]": timeInUTC,
+                "//member[1]//payrollNumber[1]": payrollNumber,
+                "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+                "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+            };
+            allure.logStep(`Super stream contribution happened for the member is: ${memberNo}, ${member}, ${surName}, ${year} ${month} ${day}, ${tfn}`);
+            // Update XML nodes and save it
+            this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+
+            return { destinationFileName, conversationId, payrollNumber, member, surName, year, month, day };
+        } catch (error) {
+            console.error("Error occurred while generating GCTAR XML:", error);
+            throw error;
+        }
+    }
+
+    // Generate XML for CTR with TFN
+    static async generateGCTARXMLForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; payrollNumber: string; member: string; surName: string; year: number; month: string; day: number; }> {
+
+
+        let formattedDate: string = DateUtils.yyyymmddStringDate();
+
+        /// Copy template file to processed folder
+        const superGateMessageId = `${formattedDate}.132848.874@superchoice.com.au`;
+        const conversationId: string = `Contribution.11260931967.${formattedDate}1408281${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        const destinationFileName: string = `GCTAR_${formattedDate}_134530_123_${conversationId}_1.xml`;
+        const payrollNumber = `person45${UtilsAOL.generateRandomThreeDigitNumber()}`;
+        this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
+
+        /// Node values
+        const currentUTCTime: Date = new Date();
+        const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
+        const member = superStreamDataForVG.memberFirstName;
+        const surName = superStreamDataForVG.memberLastName;
+        const year = parseInt(superStreamDataForVG.dobYear, 10);
+        const month = superStreamDataForVG.dobMonth;
+        const day = parseInt(superStreamDataForVG.dobDay, 10);
+        const tfn = UtilsAOL.generateValidTFN();
+        const memberNo = superStreamDataForVG.memberNumber;
+
+
+        /// Prepare nodes list to update
+        interface nodes {
+            [key: string]: any;
+        }
+        const nodesToUpdate: nodes = {
+            "//messageId[1]/superGateMessageId[1]": superGateMessageId,
+            "//messageId[1]/ebmsMessageId[1]": superGateMessageId,
+            "//messageId[1]/conversationId[1]": conversationId,
+            "//headers[1]/conversationId[1]": conversationId,
+            "//timeInUTC[1]": timeInUTC,
+            "//sourceAbn[1]": superStreamDataForVG.sourceAbn,
+            "//sourceUsi[1]": superStreamDataForVG.sourceUsi,
+            "//targetAbn[1]": superStreamDataForVG.targetAbn,
+            "//targetUsi[1]": superStreamDataForVG.targetUsi,
+            "//payee[1]/context[1]/entityIdentifier[1]": superStreamDataForVG.targetAbn,
+            "//payee[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi,
+            "//name[1]/firstName[1]": member,
+            "//name[1]/lastName[1]": surName,
+            "//member[1]/dob[1]/year[1]": year,
+            "//member[1]/dob[1]/month[1]": month,
+            "//member[1]/dob[1]/day[1]": day,
+            "//member[1]//taxFileNumber[1]": tfn,
+            "//member[1]//memberNumber[1]": memberNo,
+            "//member[1]//payrollNumber[1]": payrollNumber,
+            "//member[1]/context[1]/superannuationFundABN[1]": superStreamDataForVG.targetAbn,
+            "//member[1]/context[1]/superannuationFundUSI[1]": superStreamDataForVG.targetUsi
+
+        };
+        /// Update XML nodes and save it
+        this.updateAndSaveXML(`${this.destinationFolder}/${destinationFileName}`, nodesToUpdate);
+        return {
+            destinationFileName, conversationId, payrollNumber, member, surName, year, month, day
+
+        };
     }
 
     // Update nodes and save xml
