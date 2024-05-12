@@ -900,7 +900,7 @@ export class MemberPage extends BasePage {
     }
 
     async amountContributedTypeGCTAR_SGC() {
-        (await this.sleep(3000).then(() => this.page.locator("//button[text()='HESTA for Mercy Super']"))).click();
+        (await this.sleep(3000).then(() => this.page.locator("//button[text()='Overview']/following-sibling::button"))).click();
         (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
         await this.sleep(3000);
         let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='SGC']").first();
