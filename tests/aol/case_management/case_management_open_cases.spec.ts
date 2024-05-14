@@ -226,16 +226,14 @@ test(fundName() + "-Verify if existing case can be updated by adding attachment 
     }
 })
 
-test.describe("Test describe block @casemanagement", () => {
+test("Verify disabled user login functionality @Invalid", async ({ loginPage, dashboardPage }) => {
+    await dashboardPage.logout();
+    let admin = Admins.getAdminByUsername("admin@123.com");
 
-    test("Verify disabled user login functionality @Invalid", async ({ loginPage }) => {
+    await test.step("Login", async () => {
+        await loginPage.navigateTo();
+        await loginPage.doLogin(admin.username[2], admin.password[2]);
 
-        let admin = Admins.getAdminByUsername("admin@123.com");
-
-        await test.step("Login", async () => {
-            await loginPage.navigateTo();
-            await loginPage.doLogin(admin.username[2], admin.password[2]);
-
-        })
     })
 })
+
