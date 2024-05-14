@@ -312,7 +312,7 @@ export class PensionShellAccount extends BasePage {
     //process link
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-    this.review = page.locator('//span[text()="In Review"]');
+    this.review = page.getByRole('cell', { name: 'In Review' }).locator('div');
     this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
     this.transactionsTab = page.locator('//button[text()="Transactions"]');
     this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
