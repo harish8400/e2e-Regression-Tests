@@ -418,7 +418,7 @@ test(fundName()+"-For future drawdown Members should not be able to select any i
     }
 })
 
-test(fundName()+"Verify if user can add investment price for Investment product", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify if user can add investment price for Investment product @pension", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.addInvestmentPrice();
@@ -427,7 +427,7 @@ test(fundName()+"Verify if user can add investment price for Investment product"
     }
 })
 
-test(fundName()+"Verify edit/updating an existing investment product", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify edit/updating an existing investment product @pension", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.editInvestment();

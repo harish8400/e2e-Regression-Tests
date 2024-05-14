@@ -1125,7 +1125,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
     });
 })
 
-test(fundName() + "-Validate Retirement Transition process is sucessful where PTB transactionm is processed on TTR account prior to conversion @PTB", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
+test(fundName() + "-Validate Retirement Transition process is sucessful where PTB transactionm is processed on TTR account prior to conversion @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
 
     let membersId: string | undefined;
     let memberNo: string | undefined;
@@ -1260,7 +1260,7 @@ test(fundName() + "-Validate Retirement Transition process is sucessful where PT
     });
 })
 
-test(fundName() + "-Validate Retirement Transition process completes sucessfully on TTR account with COR and No PTB Transactions @PTB", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
+test(fundName() + "-Validate Retirement Transition process completes sucessfully on TTR account with COR and No PTB Transactions @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage, transactionApi, memberApi }) => {
 
     let membersId: string | undefined;
     let memberNo: string | undefined;

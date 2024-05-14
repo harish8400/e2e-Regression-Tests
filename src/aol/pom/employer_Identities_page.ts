@@ -113,10 +113,15 @@ export class EmployerIdentitiesPage extends BasePage {
 
 
     }
+    async employerIdentities(){
+        await this.employerIdentitiesLink.click();
+    }
+     
+    async newEmployer(){
+        await this.addNewEmployer.click();
+    }
 
     async createNewEmployer() {
-        await this.employerIdentitiesLink.click();
-        await this.addNewEmployer.click();
         ///await this.ABN.check();
         await this.abnValue.fill('45004189708');
         //await this.acnValue.fill(acnValue);
@@ -139,9 +144,12 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.createCase.click();
         await this.sleep(2000);
         await this.linkCase.click();
+        console.log(businessN);
+        return businessN;
+    }
+    async createNewEmployerValidations(){
         await this.sleep(2000);
         await this.statusText.scrollIntoViewIfNeeded();
-
         const employerUpdatedData = await this.statusText.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
@@ -164,12 +172,10 @@ export class EmployerIdentitiesPage extends BasePage {
         else {
             console.error("New Employer creation using ABN failed");
         }
-        console.log(businessN);
-        return businessN;
+       
     }
 
     async createNewEmployerWPN() {
-        
         await this.employerIdentitiesLink.click();
         await this.addNewEmployer.click();
         await this.WPN.click();
@@ -199,8 +205,10 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.createCase.click();
         await this.sleep(1500);
         await this.linkCase.click();
-        await this.sleep(2000);
-        //await this.statusText.scrollIntoViewIfNeeded();
+    }
+    async createNewEmployerWPNValidations(){
+        await this.sleep(3000);
+        await this.statusText.scrollIntoViewIfNeeded();
 
         await expect(this.statusText).toBeVisible({timeout: 5000})
         const employerUpdatedData = await this.statusText.textContent();
@@ -230,7 +238,6 @@ export class EmployerIdentitiesPage extends BasePage {
     async addContactDetails() {
         const businessN = await this.createNewEmployer()
         await this.sleep(3000)
-
         await this.employerIdentitiesLink.click();
         await this.filter.click();
         await this.EmployerNameFilter.click();
@@ -250,8 +257,11 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.createCase.click();
         await this.sleep(2000);
         await this.linkCase.click();
+    }
+
+    async addContactDetailsValidation(){
         await this.sleep(3000);
-       await this.statusText1.scrollIntoViewIfNeeded();
+        await this.statusText1.scrollIntoViewIfNeeded();
 
         const employerUpdatedData = await this.statusText1.textContent();
         const trimmedText = employerUpdatedData?.trim();
@@ -278,11 +288,9 @@ export class EmployerIdentitiesPage extends BasePage {
 
     }
 
-
     async updateExistingEmployer() {
         const businessN = await this.createNewEmployer();
         await this.sleep(3000);
-
         await this.employerIdentitiesLink.click();
         await this.filter.click();
         await this.EmployerNameFilter.click();
@@ -298,6 +306,9 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.createCase.click();
         await this.sleep(2000);
         await this.linkCase.click();
+    }
+
+    async updateExistingEployerValidations(){
         await this.sleep(3000);
         await this.statusText2.scrollIntoViewIfNeeded();
 

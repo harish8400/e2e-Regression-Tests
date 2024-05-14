@@ -312,7 +312,8 @@ export class PensionTransactionPage extends BasePage {
     this.City_Town = page.getByLabel("City/Town *");
     // this.State = page.locator('#gs10__combobox div').first();
     this.State = page.locator("(//label[@title='State']//following::div[@name='state']//div//div[2])");
-    this.StateInput = page.getByText('Australian Antarctic Territory');
+
+    this.StateInput = page.getByRole('option', { name: 'New South Wales' });
     this.ResidentialAddress = page.getByLabel('Residential address line 1 *');
     this.CheckboxKYC = page.locator('.top-0');
     this.PostCode = page.getByLabel('Postcode *');
@@ -606,7 +607,7 @@ export class PensionTransactionPage extends BasePage {
     await this.State.click();
     await this.StateInput.click();
     await this.CheckboxKYC.click();
-    await this.PostCode.click();
+    // await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
     (await this.sleep(3000).then(()=>this.page.getByLabel('check icon'))).click();
     await this.TFN.click();
@@ -619,8 +620,8 @@ export class PensionTransactionPage extends BasePage {
     await this.BSBNumber.fill(member.BSBNumber);
     await this.BSBNumber.press('Enter');
     await this.sleep(3000);
-    await this.AccountNumber1.fill(member.AccountNumber);
-    await this.page.keyboard.down('Tab');
+    await this.AccountNumber1.fill(member.BeneficiaryAccountNumber);
+    await this.AccountNumber1.press('Enter');
     await this.sleep(3000);
     await this.linkCase.click();
     await this.sleep(3000);
@@ -966,17 +967,16 @@ export class PensionTransactionPage extends BasePage {
       await MemberApiHandler.createPensionShellAccount(apiRequestContext);
 
     // Perform necessary operations related to pension account creation
-    await pensionAccountPage.ProcessTab();
-    const caseGroupId = await MemberApiHandler.getCaseGroupId(
-      apiRequestContext,
-      processId
-    );
+    //await pensionAccountPage.ProcessTab();
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext,processId);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
     await new Promise((resolve) => setTimeout(resolve, 10000));
-    await pensionAccountPage.reload();
+    //await pensionAccountPage.reload();
 
     // Navigate to pension members page and select member
-    await navBar.navigateToPensionMembersPage();
+    // await navBar.navigateToPensionMembersPage();
     await navBar.selectMember(memberNo);
 
     // Return relevant data

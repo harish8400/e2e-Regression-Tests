@@ -28,7 +28,7 @@ test(fundName() + "-Verify new case creation without assigning to a member @case
 })
 
 /** Verify that adhoc case can be created*/
-test(fundName() + "-Verify that adhoc (shell) cases can be created successfully", async ({ dashboardPage }) => {
+test(fundName() + "-Verify that adhoc (shell) cases can be created successfully @casemanagement", async ({ dashboardPage }) => {
 
     try {
         //Create shell case and assign to a user
@@ -39,7 +39,7 @@ test(fundName() + "-Verify that adhoc (shell) cases can be created successfully"
 })
 
 /** Verify that adhoc case can be created and assigned to an existing member */
-test(fundName() + "-Verify that adhoc (shell) case can be linked to a member or to an existing case", async ({ dashboardPage, globalPage }) => {
+test(fundName() + "-Verify that adhoc (shell) case can be linked to a member or to an existing case @casemanagement", async ({ dashboardPage, globalPage }) => {
 
     try {
         //Create shell case and assign to a use
@@ -50,7 +50,7 @@ test(fundName() + "-Verify that adhoc (shell) case can be linked to a member or 
     }
 })
 
-test(fundName() + "-Verify that if user is able to close case with log of username, date and time when it was closed", async ({ dashboardPage, globalPage }) => {
+test(fundName() + "-Verify that if user is able to close case with log of username, date and time when it was closed @casemanagement", async ({ dashboardPage, globalPage }) => {
 
     try {
         //Create shell case and assign to a user
@@ -201,7 +201,7 @@ test(fundName() + "-Verify that an existing case can be updated by adding notes/
     }
 })
 
-test(fundName() + "-Verify if existing case can be updated by adding attachment", async ({ dashboardPage }) => {
+test(fundName() + "-Verify if existing case can be updated by adding attachment @casemanagement", async ({ dashboardPage }) => {
 
     try {
 

@@ -46,6 +46,7 @@ export class InvestmentsAndPricing extends BasePage {
         this.addInvestmentPrice_button = page.getByRole('button', { name: 'ADD INVESTMENT PRICE' });
         this.investmentName_dropdown = page.getByPlaceholder('Select').nth(1);
         this.investmentName_option = page.getByText(investments.investmentName).first();
+        //getByText('Australian Shares (AUST)').first()
         this.custodianName_dropdown = page.getByPlaceholder('Select').nth(2)
         this.custodianName_option = page.getByText('trader', { exact: true });
         this.referenceDate = page.getByPlaceholder('dd/mm/yyyy');

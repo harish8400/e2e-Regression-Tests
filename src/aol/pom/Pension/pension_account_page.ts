@@ -204,7 +204,7 @@ export class PensionShellAccount extends BasePage {
     this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
-    this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
+    this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon'});
     this.createdMemberCaseLink = page.locator("//a[@class='gs-link text-teal-300 cursor-pointer relative no-underline font-bold']");
     this.memberID = page.locator("(//p[@data-cy='info-value'])[2]");
     //Consolidate step
