@@ -511,8 +511,8 @@ export class MemberPage extends BasePage {
         const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
 
-        //await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-        //await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
+        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+        await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
 
         return { memberNo };
     }

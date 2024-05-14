@@ -100,6 +100,10 @@ export class MemberApiHandler {
     static async getRegularPensionPaymentAmount(memberApi:MemberApi,memberId?: string) {
         return memberApi.getRegularPensionPaymentAmount(memberId!);
     }
+
+    static async addMemberRollIn(memberApi:MemberApi,memberId?: string) {
+        return memberApi.addMemberRollIn(memberId!);
+    }
 }
 
 

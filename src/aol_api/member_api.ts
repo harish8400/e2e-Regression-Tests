@@ -609,4 +609,59 @@ export class MemberApi extends BaseDltaAolApi {
 
   }
 
+  async addMemberRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
+
+    
+    let investmentId;
+
+    if (process.env.PRODUCT === FUND.HESTA) {
+      
+      investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+    } else {
+      
+      investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+    }
+     
+    let path = `member/${linearId}/rollin`;
+    let data = {
+      "paymentReference": "InternalTransfer_902010134",
+      "transferringFundABN": "11789425178",
+      "transferringFundUSI": "11789425178799",
+      "transferringClientIdentifier": "902010134",
+      "amount": "50000",
+      "preserved": "50000",
+      "restrictedNonPreserved": "0",
+      "unrestrictedNonPreserved": "0",
+      "kiwiPreserved": "0",
+      "taxed": "50000",
+      "untaxed": "0",
+      "taxFree": "0",
+      "kiwiTaxFree": "0",
+      "type": "RLI",
+      "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "eligibleServicePeriodStartDate": null,
+      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "messageType": null,
+      "historic": true,
+      "caseReference": null,
+      "targetInvestments": [
+        {
+          id: investmentId,
+          "percent": 100
+        }
+      ]
+    };
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    const rollIn = responseBody.rollin;
+    expect(rollIn.type).toBe('RLI');
+    expect(rollIn.name).toBe('Roll In');
+    expect(rollIn.historic).toBe(true);
+    let Id = responseBody?.linearId?.id || null;
+    let memberNo = responseBody?.memberNo || null;
+    let amount = responseBody?.amount || 0;
+    return { linearId: Id, memberNo: memberNo, amount: amount };
+  }
+
+
 }
