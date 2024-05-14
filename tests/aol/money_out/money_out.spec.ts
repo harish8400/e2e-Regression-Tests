@@ -5,6 +5,7 @@ import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json";
 import * as data from "../../../data/aol_test_data.json";
+import { Navbar } from "../../../src/adviser_online/pom/component/navbar";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -14,7 +15,9 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 
 test.beforeEach(async ({ navBar }) => {
     test.setTimeout(600000);
+    await allure.suite("Money_Out");
     await navBar.selectProduct();
+    await allure.parentSuite(process.env.PRODUCT!);
 });
 
 /**This test performs self triggered rollout full exit on a member */
@@ -44,7 +47,7 @@ test(fundName()+"-Rollover In Personal contribution @moneyout", async ({ navBar,
     await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
-    await memberPage.selectMember(addedMember);
+    await navBar.selectMemberSurName(addedMember);
     await memberTransactionPage.memberRolloverIn();
 
 })
@@ -426,6 +429,10 @@ test(fundName() + "Roll Out - Without TFN for APRA fund @moneyout", async ({ mem
         });
     }
 
+    await test.step("delete TFN", async () => {
+        await memberOverviewpage.deleteTFN();
+    });
+    
     await test.step("verify TFN & RolloverOut transaction", async () => {
         await memberOverviewpage.verifyTFNStatus(false);
         await globalPage.captureScreenshot("TFN Status");
