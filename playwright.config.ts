@@ -10,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/aol/',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -20,10 +20,10 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["html"],["line"],["allure-playwright"],['junit', { outputFile: 'results.xml' }],['buildkite-test-collector/playwright/reporter',{ token: 'c6nTypqVzDfxnZ3pF51JVVtd' }]],
+  reporter: [["html"],["line"],["allure-playwright"],['junit', { outputFile: 'results.xml' }], ['buildkite-test-collector/playwright/reporter',{ token: process.env.CI ?'c6nTypqVzDfxnZ3pF51JVVtd' : '' }] ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    headless: false,
+    headless: true,
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
