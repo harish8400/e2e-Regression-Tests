@@ -15,8 +15,6 @@ async function setupInvalid(page: Page) {
     await page.getByPlaceholder('Your password').fill('1234#');
     await page.keyboard.press('Tab');
     await page.getByRole('button', { name: 'Log in', exact: true }).click();
-    await page.waitForTimeout(3000);
-    await page.screenshot({ path: 'Invalid credentials.png' });
 }
 
 // Define test cases
