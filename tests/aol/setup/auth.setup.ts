@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup, expect, test as setupInvalid } from '@playwright/test';
 import { Admins } from '../../../src/aol/data/admins';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
 import { allure } from "allure-playwright";
@@ -36,3 +36,17 @@ setup(fundName() + "authenticate", async ({ page }) => {
     await expect(page.getByText('Open Cases', { exact: true })).toBeVisible();
     await page.context().storageState({ path: authFile });
 });
+
+setupInvalid(fundName() + "authenticateInvalid", async ({ page }) => {
+    await allure.parentSuite("Login"); 
+    // Perform authentication steps with invalid credentials
+    await page.goto(ENVIRONMENT_CONFIG.aolURL);
+    await page.getByRole('button').nth(2).click();
+    await page.getByPlaceholder('user@company.com').fill('admin@123');
+    await page.getByPlaceholder('Your password').fill('1234#');
+    await page.keyboard.press('Tab');
+    await page.getByRole('button', { name: 'Log in', exact: true }).click();
+});
+
+
+export { setupInvalid };
