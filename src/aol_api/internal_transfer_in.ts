@@ -184,7 +184,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async getMemberInfo(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-        let productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+        let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
         let fundProductId = productId;
         let queryParams = new URLSearchParams({});
         let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -199,7 +199,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
 
     async addRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
 
-        let investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+        let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
         let path = `member/${linearId}/rollin`;
         let data = {
             "paymentReference": "InternalTransfer_902010134",
