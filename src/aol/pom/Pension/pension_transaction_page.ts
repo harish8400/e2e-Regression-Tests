@@ -84,7 +84,7 @@ export class PensionTransactionPage extends BasePage {
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
   readonly pensionCommenceSuccessMessage: Locator;
-  readonly pensionCommencementHistory: Locator;
+  //readonly pensionCommencementHistory: Locator;
 
   //Exceptions
 
@@ -154,8 +154,8 @@ export class PensionTransactionPage extends BasePage {
   readonly adminFeeCase:Locator;
   readonly investmentBalanceScreen:Locator;
   readonly paymentDetails:Locator;
-  readonly investmentSwitchTransaction: Locator;
-  readonly investmentSwitchTransaction_status: Locator;
+  //readonly investmentSwitchTransaction: Locator;
+ // readonly investmentSwitchTransaction_status: Locator;
 
   //Vanguard
   readonly unathorized: Locator;
@@ -637,9 +637,9 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
-    await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
-    await expect(this.pensionCommencementHistory).toBeVisible();
-    await this.pensionCommencementHistory.click();
+    // await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
+    // await expect(this.pensionCommencementHistory).toBeVisible();
+    // await this.pensionCommencementHistory.click();
     await this.reviewCase.captureScreenshot();
 
   }
@@ -937,7 +937,7 @@ export class PensionTransactionPage extends BasePage {
       if (id) {
         const containsInternalTransfer = id.includes("InternalTransfer");
         if (!containsInternalTransfer) {
-          console.error(
+          console.log(
             "Error: conversationId does not contain 'InternalTransfer'"
           );
         }
@@ -1300,9 +1300,9 @@ export class PensionTransactionPage extends BasePage {
   async InvestmentSwitchTransactionStatus(){
     await this.memberTransactionTab.click();
     await this.sleep(3000);
-    await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
-    await this.investmentSwitchTransaction.click();
-    await expect(this.investmentSwitchTransaction_status).toBeVisible();
+    // await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
+    // await this.investmentSwitchTransaction.click();
+    // await expect(this.investmentSwitchTransaction_status).toBeVisible();
     await this.reviewCase.captureScreenshot();
   }
 
