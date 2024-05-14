@@ -4,7 +4,7 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
