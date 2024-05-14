@@ -30,8 +30,8 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createMember(tfnNull: boolean = false): Promise<{ memberId: string, memberNo: string, processId: string }> {
-    let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
-    let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    let productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+    let investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
     let path = `product/${productId}/process`;
     let tfn = null;
     if (!tfnNull) {
