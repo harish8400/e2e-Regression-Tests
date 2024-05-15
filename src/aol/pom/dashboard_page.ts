@@ -1204,8 +1204,11 @@ export class DashboardPage extends BasePage {
     }
   }
 
-  async selectExistingCase() {
-
+  async logout() {
+    (await this.sleep(3000).then(()=>this.page.getByRole('button', { name: 'AU' }))).click();
+    (await this.sleep(3000).then(()=>this.page.locator("//li[@class='el-dropdown-menu__item avatar-dropdown-item']/following-sibling::li[1]"))).click();
+    await this.page.locator("(//button[@type='button']/following-sibling::button)[2]").click({force:true});
+    
   }
 
 }

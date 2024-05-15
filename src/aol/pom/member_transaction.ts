@@ -188,7 +188,7 @@ export class MemberTransactionsPage extends BasePage {
     // Member Termination
     this.accumulationFirstMember = page.locator("td > .cell").first();
     this.relationshipBtn = page.getByRole("button", { name: "Relationships" });
-    this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).nth(0);
     this.employerEndDate = page.locator('input[name="linkBroken"]');
     this.viewCases = page.getByRole("button", { name: "View Cases" });
 
@@ -340,7 +340,8 @@ export class MemberTransactionsPage extends BasePage {
         //await this.sleep(5000);
         await this.relationshipBtn.waitFor();
         await this.relationshipBtn.click();
-        await this.employementEditBtn.waitFor();
+        //await this.employementEditBtn.waitFor();
+        await this.sleep(5000);
         await this.employementEditBtn.click();
         await this.viewCases.waitFor();
         await this.viewCases.click();

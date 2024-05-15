@@ -26,7 +26,7 @@ let privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
 let destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Superstream");
     await allure.parentSuite(process.env.PRODUCT!);
