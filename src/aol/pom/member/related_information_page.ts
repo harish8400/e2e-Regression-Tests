@@ -57,7 +57,7 @@ export class RelatedInformationPage extends BasePage {
 
         //edit correspondence
         this.relatedInformationTab = page.getByRole('button', { name: 'Related Information', exact: true });
-        this.editCorrespondenceButton = page.locator('div').filter({ hasText: /^Manage Case - CorrespondenceEdit ContentSend correspondence status Active$/ }).getByRole('button');
+        this.editCorrespondenceButton = page.locator('.menu-options > .gs-button').first();
         this.correspondenceDropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
         this.correspondeceOptionInactive = page.getByRole('option', { name: 'Inactive' });
         this.reasonDropdown = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });

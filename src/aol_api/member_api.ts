@@ -157,13 +157,26 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
+   let memberInvestmentId :string;
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
     let memberNo = UtilsAOL.memberNumber('MER-PEN-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
     let dob = UtilsAOL.generateDOB();
-    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+    switch (product) {
+      case 'HESTA for Mercy':
+        memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
+          break;
+      case 'Vanguard Super':
+        memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.CONSERVATIVE.ID;
+          break;
+
+      default:
+          throw new Error(`Unsupported product: ${product}`);
+  }
+     
     let data = {
       templateReference: 'createPensionMemberShellAccount',
       filterGroups: [],
@@ -285,7 +298,18 @@ export class MemberApi extends BaseDltaAolApi {
 
 
   async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-    let productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+    switch (product) {
+      case 'HESTA for Mercy':
+          productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+          break;
+      case 'Vanguard Super':
+          productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
+          break;
+
+      default:
+          throw new Error(`Unsupported product: ${product}`);
+  }
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
     let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;

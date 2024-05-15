@@ -25,7 +25,7 @@ test(fundName()+"- Maintain Income Stream Account (documentation required): Bank
     
     try {
 
-        await test.step("Navigate to Accumulation Members page", async () => {
+        await test.step("Navigate to Pension Members page", async () => {
             await navBar.navigateToPensionMembersPage();
         })
 
