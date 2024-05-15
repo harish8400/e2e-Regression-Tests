@@ -6,5 +6,10 @@
     {
         "username": "adviser2UsernameHere",
         "password": "adviser2PasswordHere"
+    },
+    {
+        "username": "admin@123.com",
+        "password": "1234"
     }
+
 ]

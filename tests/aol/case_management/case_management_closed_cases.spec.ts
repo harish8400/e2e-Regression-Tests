@@ -5,14 +5,14 @@ import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
-        test.setTimeout(800000);
-        await navBar.selectProduct();
-        await allure.suite("Case Management");
-        await allure.parentSuite(process.env.PRODUCT!);
+    test.setTimeout(120000);
+    await navBar.selectProduct();
+    await allure.suite("Case Management");
+    await allure.parentSuite(process.env.PRODUCT!);
 });
 
 /** Ensure that comments can be added after a case is closed and user can find last updated date time on a case */
-test(fundName()+"-Ensure that comments can be added after a case is closed and user can find last updated date time on a case @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Ensure that comments can be added after a case is closed and user can find last updated date time on a case @casemanagement", async ({ dashboardPage }) => {
 
     try {
         await dashboardPage.updateClosedCaseWithComment();
@@ -23,7 +23,7 @@ test(fundName()+"-Ensure that comments can be added after a case is closed and u
 })
 
 /** Ensure cases are correctly displayed under Closed Cases tab */
-test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Ensure cases are correctly displayed under Closed Cases tab @casemanagement", async ({ dashboardPage }) => {
     try {
 
         await dashboardPage.navigateToClosedCasesTab();
@@ -34,11 +34,11 @@ test(fundName()+"-Ensure cases are correctly displayed under Closed Cases tab @c
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed : Verifying cases displayed under Closed Cases tab log has failed " + error });
     }
-    
+
 });
 
 /** Ensure filtering is available on Closed Cases in Case Management & user can filter on multiple parameters */
-test(fundName()+"-Verify filter option on closed cases @casemanagement", async ({ dashboardPage }) => {
+test(fundName() + "-Verify filter option on closed cases @casemanagement", async ({ dashboardPage }) => {
     try {
 
         await test.step("Verify filters", async () => {
@@ -56,7 +56,7 @@ test(fundName()+"-Verify filter option on closed cases @casemanagement", async (
         })
 
         console.log('Test Execution Success : Verify filter option on closed cases')
-        
+
     } catch (error) {
         throw new AssertionError({ message: "Test Execution Failed : Verifying filter option on closed cases has failed " + error });
     }

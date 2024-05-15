@@ -18,7 +18,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-  test.setTimeout(600000);
+    test.setTimeout(120000);
   await navBar.selectProduct();
   await allure.suite("Pension");
   await allure.parentSuite(process.env.PRODUCT!);
@@ -41,7 +41,7 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         
         await test.step("Create Shell Account for same Member", async () => {
@@ -782,7 +782,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ internal
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         
         await test.step("Create Shell Account for same Member", async () => {
@@ -1025,7 +1025,7 @@ if (data.generate_test_data_from_api) {
     let createMemberNo: string | undefined;
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
     })
     let linearId: string | undefined;
     await test.step("Create Shell Account for same Member", async () => {
@@ -1101,8 +1101,8 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
 
         // Create New Member Account
         await allure.step("Create New Member Account", async () => {
-            const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            await navBar.selectMember(createMemberNo);
+            const { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.selectMember(memberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });
 
@@ -1114,6 +1114,8 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
         await allure.step("Create New Member Account", async () => {
             const memberId = data.members.Accum_Member_PTB;
         await navBar.selectMember(memberId);
+            const { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.selectMember(memberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });
 

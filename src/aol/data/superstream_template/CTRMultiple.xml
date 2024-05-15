@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message:superGateXmlMessage xmlns:address="http://integration.universal.superchoice.com.au/domain/address/address" xmlns:amount="http://integration.universal.superchoice.com.au/domain/amount/amount" xmlns:australianBusinessNumber="http://integration.universal.superchoice.com.au/domain/government/australianBusinessNumber" xmlns:australianTaxFileNumber="http://integration.universal.superchoice.com.au/domain/government/australianTaxFileNumber" xmlns:bankAccount="http://integration.universal.superchoice.com.au/domain/banking/bankAccount" xmlns:bankStateBranch="http://integration.universal.superchoice.com.au/domain/banking/bankStateBranch" xmlns:basicMember="http://integration.universal.superchoice.com.au/domain/member/basicMember" xmlns:company="http://integration.universal.superchoice.com.au/domain/company/company" xmlns:contributionTransaction="http://integration.universal.superchoice.com.au/domain/transaction/contributionTransaction" xmlns:contributionTransactionResponse="http://integration.universal.superchoice.com.au/domain/transaction/contributionTransactionResponse" xmlns:conversationIdentifier="http://integration.universal.superchoice.com.au/domain/identifiers/conversationIdentifier" xmlns:countryCode="http://integration.universal.superchoice.com.au/domain/country/countryCode" xmlns:currency="http://integration.universal.superchoice.com.au/domain/amount/currency" xmlns:dateTime="http://integration.universal.superchoice.com.au/domain/moment/dateTime" xmlns:dayOfMonth="http://integration.universal.superchoice.com.au/domain/moment/dayOfMonth" xmlns:definedBenefits="http://integration.universal.superchoice.com.au/domain/employment/definedBenefits" xmlns:emailAddress="http://integration.universal.superchoice.com.au/domain/email/emailAddress" xmlns:employer="http://integration.universal.superchoice.com.au/domain/employer/employer" xmlns:employmentAttributes="http://integration.universal.superchoice.com.au/domain/employment/employmentAttributes" xmlns:employmentPayrollNumber="http://integration.universal.superchoice.com.au/domain/employment/employmentPayrollNumber" xmlns:employmentStatus="http://integration.universal.superchoice.com.au/domain/employment/employmentStatus" xmlns:gender="http://integration.universal.superchoice.com.au/domain/person/gender" xmlns:memberContributionsContext="http://integration.universal.superchoice.com.au/domain/member/memberContributionsContext" xmlns:memberNumber="http://integration.universal.superchoice.com.au/domain/member/memberNumber" xmlns:memberTransaction="http://integration.universal.superchoice.com.au/domain/transaction/memberTransaction" xmlns:memberTransactionResponse="http://integration.universal.superchoice.com.au/domain/transaction/memberTransactionResponse" xmlns:message="http://integration.universal.superchoice.com.au/messages/message" xmlns:messageIdentifier="http://integration.universal.superchoice.com.au/domain/identifiers/messageIdentifier" xmlns:month="http://integration.universal.superchoice.com.au/domain/moment/month" xmlns:name="http://integration.universal.superchoice.com.au/domain/person/name" xmlns:nameCurrency="http://integration.universal.superchoice.com.au/domain/person/nameCurrency" xmlns:nameType="http://integration.universal.superchoice.com.au/domain/person/nameType" xmlns:nameUsageCode="http://integration.universal.superchoice.com.au/domain/person/nameUsageCode" xmlns:negativeAmounts="http://integration.universal.superchoice.com.au/domain/employment/negativeAmounts" xmlns:parameters="http://integration.universal.superchoice.com.au/domain/framework/parameters" xmlns:partIdentifier="http://integration.universal.superchoice.com.au/domain/identifiers/partIdentifier" xmlns:payee="http://integration.universal.superchoice.com.au/domain/payment/payee" xmlns:payer="http://integration.universal.superchoice.com.au/domain/payment/payer" xmlns:paymentReferenceNumber="http://integration.universal.superchoice.com.au/domain/payment/paymentReferenceNumber" xmlns:paymentType="http://integration.universal.superchoice.com.au/domain/payment/paymentType" xmlns:person="http://integration.universal.superchoice.com.au/domain/person/person" xmlns:personAttributes="http://integration.universal.superchoice.com.au/domain/person/personAttributes" xmlns:phoneNumber="http://integration.universal.superchoice.com.au/domain/phoneNumber/phoneNumber" xmlns:receiver="http://integration.universal.superchoice.com.au/domain/receiver/receiver" xmlns:sender="http://integration.universal.superchoice.com.au/domain/sender/sender" xmlns:standardMember="http://integration.universal.superchoice.com.au/domain/member/standardMember" xmlns:standardMemberAttributes="http://integration.universal.superchoice.com.au/domain/member/standardMemberAttributes" xmlns:standardMemberContribution="http://integration.universal.superchoice.com.au/domain/member/standardMemberContribution" xmlns:standardMemberEmployment="http://integration.universal.superchoice.com.au/domain/member/standardMemberEmployment" xmlns:standardRequestTransactionContent="http://integration.universal.superchoice.com.au/domain/transaction/standardRequestTransactionContent" xmlns:standardTransaction="http://integration.universal.superchoice.com.au/domain/transaction/standardTransaction" xmlns:state="http://integration.universal.superchoice.com.au/domain/country/state" xmlns:superFundGeneratedEmployerIdentifier="http://integration.universal.superchoice.com.au/domain/funds/superFundGeneratedEmployerIdentifier" xmlns:text="http://integration.universal.superchoice.com.au/domain/framework/text" xmlns:transactionResponse="http://integration.universal.superchoice.com.au/domain/transaction/transactionResponse" xmlns:transportHeaders="http://integration.universal.superchoice.com.au/domain/transport/transportHeaders" xmlns:uniqueSuperFundIdentifier="http://integration.universal.superchoice.com.au/domain/government/uniqueSuperFundIdentifier" xmlns:version="http://integration.universal.superchoice.com.au/domain/version/version" xmlns:withDate="http://integration.universal.superchoice.com.au/domain/framework/withDate" xmlns:workingHours="http://integration.universal.superchoice.com.au/domain/employment/workingHours" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xsdVersion>VERSION 2.0.0</xsdVersion>
+  <request>
+    <ctr>
+      <messageId>
+        <superGateMessageId>4226d71d-2759-48a3-a3bc-fd36a55d8202</superGateMessageId>
+        <conversationId>Contribution.78109509739.3-1070407194895663-2061435594</conversationId>
+      </messageId>
+      <timeInUTC>2022-09-21T11:30:03</timeInUTC>
+      <headers>
+        <conversationId>Contribution.78109509739.3-1070407194895663-2061435594</conversationId>
+        <partId>1</partId>
+        <from>
+          <value>78109509739</value>
+        </from>
+        <source>
+          <sourceAbn>78109509739</sourceAbn>
+        </source>
+        <target>
+          <targetAbn>27923449966</targetAbn>
+          <targetUsi>VSF0001AU</targetUsi>
+        </target>
+        <electronicErrorMessaging>true</electronicErrorMessaging>
+        <paymentReferenceNumber>PAYA25256455129103</paymentReferenceNumber>
+        <senderAbn>78109509739</senderAbn>
+        <senderName>SuperChoice Services Pty Ltd</senderName>
+        <totalBatchAmount>
+          <value>5250000</value>
+          <currency>AUD</currency>
+        </totalBatchAmount>
+        <totalOfAllPartsAmount>
+          <value>0</value>
+          <currency>AUD</currency>
+        </totalOfAllPartsAmount>
+      </headers>
+      <content>
+        <sender>
+          <organisationName>
+            <type>Main or legal name</type>
+            <value>SuperChoice Services Pty Ltd</value>
+          </organisationName>
+          <personName>
+            <firstName>SuperChoice</firstName>
+            <lastName>Help Desk</lastName>
+          </personName>
+          <emailAddress>
+            <emailAddressUsage>Contact</emailAddressUsage>
+            <value>scadmin@superchoice.com.au</value>
+          </emailAddress>
+          <phoneNumber>
+            <phoneNumberType>LAND_LINE</phoneNumberType>
+            <landLineNumber>
+              <landLineNumber>1300 659 456</landLineNumber>
+            </landLineNumber>
+          </phoneNumber>
+          <context>
+            <contextIdentifier>Sender</contextIdentifier>
+            <entityIdentifier>78109509739</entityIdentifier>
+          </context>
+        </sender>
+        <receiver>
+          <organisationName>
+            <type>Main or legal name</type>
+            <value>VANGUARD SUPER</value>
+          </organisationName>
+          <context>
+            <contextIdentifier>Receiver</contextIdentifier>
+            <entityIdentifier>27923449966</entityIdentifier>
+          </context>
+        </receiver>
+        <employer>
+          <organisationName>
+            <type>Main or legal name</type>
+            <value>IFYS LIMITED</value>
+          </organisationName>
+          <australianBusinessNumber>69131388102</australianBusinessNumber>
+          <superFundGeneratedEmployerIdentifier>8287</superFundGeneratedEmployerIdentifier>
+          <context>
+            <contextIdentifier>Employer1</contextIdentifier>
+            <entityIdentifier>69131388102</entityIdentifier>
+          </context>
+        </employer>
+        <payer>
+          <organisationName>
+            <type>Main or legal name</type>
+            <value>IFYS LIMITED</value>
+          </organisationName>
+          <paymentAmount>
+            <value>5250000</value>
+            <currency>AUD</currency>
+          </paymentAmount>
+          <account>
+            <accountName>oijwdweoj</accountName>
+            <bsb>062512</bsb>
+            <accountNumber>852369</accountNumber>
+          </account>
+          <context>
+            <contextIdentifier>Payer</contextIdentifier>
+            <entityIdentifier>63158319414</entityIdentifier>
+          </context>
+        </payer>
+        <payee>
+          <paymentType>DIRECTCREDIT</paymentType>
+          <transactionDateInUTC>2021-05-18T12:00:00</transactionDateInUTC>
+          <paymentReference>PAYA25256455129103</paymentReference>
+          <paymentAmount>
+            <value>5250000</value>
+            <currency>AUD</currency>
+          </paymentAmount>
+          <financialInstitutionAccount>
+            <accountName>AMG Super</accountName>
+            <bsb>124001</bsb>
+            <accountNumber>11010139</accountNumber>
+          </financialInstitutionAccount>
+          <context>
+            <contextIdentifier>Payee</contextIdentifier>
+            <entityIdentifier>30099320583</entityIdentifier>
+            <superannuationFundUSI>PTC0133AU</superannuationFundUSI>
+          </context>
+        </payee>
+        <member>
+          <name>
+            <title>Mr</title>
+            <firstName>Xantiel</firstName>
+            <lastName>Vouganville</lastName>
+            <type>Legal name</type>
+            <currency>Current</currency>
+            <usage>Contact</usage>
+          </name>
+          <gender>MALE</gender>
+          <dob>
+            <year>1985</year>
+			<month>October</month>
+			<day>26</day>
+          </dob>
+          <address>
+            <australianAddress>
+              <type>RES</type>
+							<line1>500</line1>
+							<line2>George Street</line2>
+							<suburb>Liverpool</suburb>
+							<postCode>2170</postCode>
+							<stateOrTerritory>NSW</stateOrTerritory>
+							<countryCode>AU</countryCode>
+            </australianAddress>
+          </address>
+          <email>
+            <emailAddressUsage>Personal</emailAddressUsage>
+            <value>SuperAutoTest@vanguard.com</value>
+          </email>
+          <phoneNumber>
+            <phoneNumberType>LAND_LINE</phoneNumberType>
+            <phoneNumberUsage>Unknown</phoneNumberUsage>
+            <landLineNumber>
+              <landLineNumber>610491570006</landLineNumber>
+            </landLineNumber>
+          </phoneNumber>
+          <taxFileNumberNotProvided>true</taxFileNumberNotProvided>
+          <scMemberGlobalIdentifier>b0497aad-f6b6-4429</scMemberGlobalIdentifier>
+          <memberNumber>274571892</memberNumber>
+          <employmentPayrollNumber>person45</employmentPayrollNumber>
+          <employmentStartDate>2022-01-02T12:00:00</employmentStartDate>
+          <employmentEndReason>End reason, can be anything here</employmentEndReason>
+          <employmentStatus>Casual</employmentStatus>
+          <payPeriodStartDate>2021-04-02T12:00:00</payPeriodStartDate>
+          <payPeriodEndDate>2021-04-02T12:00:00</payPeriodEndDate>
+          <totalMemberContributionAmount>
+            <value>14000</value>
+            <currency>AUD</currency>
+          </totalMemberContributionAmount>
+         
+          <superGuaranteeAmount>
+              <value>1000</value>
+              <currency>AUD</currency>
+            </superGuaranteeAmount>
+            <awardOrProductivityAmount>
+              <value>2000</value>
+              <currency>AUD</currency>
+            </awardOrProductivityAmount>
+            <personalContributionsAmount>
+              <value>3000</value>
+              <currency>AUD</currency>
+            </personalContributionsAmount>
+            <salarySacrificedAmount>
+              <value>500</value>
+              <currency>AUD</currency>
+            </salarySacrificedAmount>
+            <voluntaryAmount>
+              <value>500</value>
+              <currency>AUD</currency>
+            </voluntaryAmount>
+            <spouseContributionsAmount>
+              <value>1000</value>
+              <currency>AUD</currency>
+            </spouseContributionsAmount>
+            <childContributionsAmount>
+              <value>2500</value>
+              <currency>AUD</currency>
+            </childContributionsAmount>
+            <otherThirdPartyContributionsAmount>
+              <value>3500</value>
+              <currency>AUD</currency>
+            </otherThirdPartyContributionsAmount>
+
+          <context>
+            <contextIdentifier>Member1</contextIdentifier>
+            <otherEntityIdentifier>274571892</otherEntityIdentifier>
+            <employersABN>69131388102</employersABN>
+            <superannuationFundABN>27923449966</superannuationFundABN>
+            <superannuationFundUSI>VSF0001AU</superannuationFundUSI>
+          </context>
+
+        </member>
+      </content>
+    </ctr>
+  </request>
+</message:superGateXmlMessage>

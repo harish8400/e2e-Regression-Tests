@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<superGateClientMessage xmlns="http://www.superchoice.com.au/SuperGateClientXMLSchema/1.0">
+  <xsdVersion>2.0.01</xsdVersion>
+  <action>Client-IRR</action>
+  <messageId>20240425.052650.058@growsuper</messageId>
+  <timestamp>2024-04-25T20:15:27</timestamp>
+  <conversationId>Rollover.64971749321.20240425050450404</conversationId>
+  <payload>
+    <superStreamRequestPayload>
+      <partId>PID20210917050450</partId>
+      <sourceAbn>64971749321</sourceAbn>
+      <sourceESA>AUSPOSTSMSF</sourceESA>
+      <targetAbn>64971749321</targetAbn>
+      <targetUsi>64971749321001</targetUsi>
+      <recordCount>1</recordCount>
+      <clientIRR>
+        <messageSender>
+          <messageSenderContext>
+            <contextId>SND01</contextId>
+            <entityId>64971749321</entityId>
+            <periodStartDate>2024-04-25Z</periodStartDate>
+            <periodEndDate>2024-04-25Z</periodEndDate>
+          </messageSenderContext>
+          <organisationName>Mercy Super</organisationName>
+          <familyName>Cuskelly</familyName>
+          <givenName>Trisha</givenName>
+          <emailAddress>information@mercysuper.com.au</emailAddress>
+          <telephoneNumber>
+            <telephoneType>01</telephoneType>
+            <telephoneMinimalNumber>1300368891</telephoneMinimalNumber>
+          </telephoneNumber>
+        </messageSender>
+        <messageReceiver>
+          <messageReceiverContext>
+            <contextId>RCR01</contextId>
+            <entityId>64971749321</entityId>
+            <periodStartDate>2024-04-25Z</periodStartDate>
+            <periodEndDate>2024-04-25Z</periodEndDate>
+          </messageReceiverContext>
+          <organisationName>Mercy Super PLtd ATF Mercy Super</organisationName>
+        </messageReceiver>
+        <memberRolloverTransaction>
+          <memberRolloverTransactionContext>
+            <contextId>MBRROLLVR01</contextId>
+            <entityId>599552533</entityId>
+            <entityIdScheme>tfn</entityIdScheme>
+            <memberID>9010258</memberID>
+            <entitySegmentTransferringFundAbn>64971749321</entitySegmentTransferringFundAbn>
+            <entitySegmentTransferringFundUsi>64971749321001</entitySegmentTransferringFundUsi>
+            <entitySegmentReceivingFundAbn>64971749321</entitySegmentReceivingFundAbn>
+            <periodStartDate>2024-04-25Z</periodStartDate>
+            <periodEndDate>2024-04-25Z</periodEndDate>
+          </memberRolloverTransactionContext>
+          <familyName>New Member 1</familyName>
+          <givenName>Dezza</givenName>
+          <otherGivenName>DO NOT TOUCH</otherGivenName>
+          <gender>1</gender>
+          <dateOfBirth>2006-09-23</dateOfBirth>
+
+          <address>
+            <usageCode>RES</usageCode>
+            <street1>1225 Foreb Loop</street1>
+            <locality>Dargal Plains</locality>
+            <postcode>3597</postcode>
+            <state>NT</state>
+            <countryCode>au</countryCode>
+          </address>
+
+          <transferWholeBalance>YES</transferWholeBalance>
+          <receiverMemberID>AUS-ACC-103050</receiverMemberID>
+          <otherTuples>
+            <tuple>
+              <key>otherText</key>
+              <value>NA</value>
+            </tuple>
+          </otherTuples>
+          <financialInstitutionAccount>
+            <accountName>Smith-Johnson SMSF</accountName>
+            <bsb>112401</bsb>
+            <accountNo>420001124</accountNo>
+          </financialInstitutionAccount>
+          <electronicContactEsaAlias>AUSPOSTSMSF</electronicContactEsaAlias>
+        </memberRolloverTransaction>
+      </clientIRR>
+    </superStreamRequestPayload>
+  </payload>
+</superGateClientMessage>

@@ -18,7 +18,7 @@ import { MemberOverView } from "../member/member_overview";
 import { GlobalPage } from "./../component/global_page";
 
 
-export class PensionTransactionPage extends BasePage { 
+export class PensionTransactionPage extends BasePage {
   readonly navbar: Navbar;
   readonly memberOverView: MemberOverView;
   readonly globalPage: GlobalPage;
@@ -85,7 +85,8 @@ export class PensionTransactionPage extends BasePage {
   readonly check_box: Locator;
   readonly commence_pension_button: Locator;
   readonly pensionCommenceSuccessMessage: Locator;
-  
+  readonly pensionCommencementHistory: Locator;
+
 
   //Exceptions
 
@@ -150,11 +151,11 @@ export class PensionTransactionPage extends BasePage {
   readonly closePopUp: Locator;
   readonly investmentScreen: Locator;
   readonly summary: Locator;
-  readonly activityData:Locator;
-  readonly closeTheData:Locator;
-  readonly adminFeeCase:Locator;
-  readonly investmentBalanceScreen:Locator;
-  readonly paymentDetails:Locator;
+  readonly activityData: Locator;
+  readonly closeTheData: Locator;
+  readonly adminFeeCase: Locator;
+  readonly investmentBalanceScreen: Locator;
+  readonly paymentDetails: Locator;
   readonly investmentSwitchTransaction: Locator;
 
 
@@ -279,7 +280,8 @@ export class PensionTransactionPage extends BasePage {
     this.filterType_INS = page.locator("//span[normalize-space()='INS']");
     this.applyButton = page.getByRole('button', { name: 'APPLY' });
     this.transactionType_PTB = page.locator("//div[@class='cell' and contains(text(),'PTB')]").first();
-    this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' }); 
+    this.transactionType_Insurance = page.getByRole('row', { name: 'Insurance Premium' });
+    this.pensionCommencementHistory = page.locator("//table[@class='el-table__body']/tbody[1]/tr[1]/td[3]/div[1]");
 
     ///Death Benifits
 
@@ -354,9 +356,9 @@ export class PensionTransactionPage extends BasePage {
     this.activityData = page.locator("(//p[text()='Process step completed with note: Member fee calculated.']/following::span[contains(@class,'flex items-center')])[1]");
     this.closeTheData = page.locator("//div[contains(@class, 'case-process-drawer') and contains(@class, 'show') and contains(@class, 'case-process-details')]//span[@class='flex items-center justify-center']//*[local-name()='svg']//*[contains(@fill,'currentCol')]//*[contains(@d,'m13.4062 1')]")
     this.adminFeeCase = page.locator("//div[@class='cell']/following::div[text()='AFE']").first();
-    this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']"); 
+    this.investmentBalanceScreen = page.locator("//button[text()='Investments and Balances']");
     this.paymentDetails = page.locator("//span[text()='Payment Details']");
-    this.investmentSwitchTransaction =  page.locator("//div[@class='cell']/following::div[text()='INVPC']").first();
+    this.investmentSwitchTransaction = page.locator("//div[@class='cell']/following::div[text()='INVPC']").first();
 
     //vanguard
     this.unathorized = page.locator(CASE_NOTE.UNAUTHORISED);
@@ -554,17 +556,17 @@ export class PensionTransactionPage extends BasePage {
 
     let isDODavilable = await this.DOD.textContent();
     if (isDODavilable == '') {
-        await this.sleep(3000);
-          await this.DOD.fill(DateUtils.ddmmyyyStringDate(-1));
-        await this.viewCase.click();
-        await this.createCase.click();
-        await this.sleep(5000);
-        await this.linkCase.click();
-        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+      await this.sleep(3000);
+      await this.DOD.fill(DateUtils.ddmmyyyStringDate(-1));
+      await this.viewCase.click();
+      await this.createCase.click();
+      await this.sleep(5000);
+      await this.linkCase.click();
+      await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
     }
 
     // locator update todo for vanguard and AE
-   //await this.accumulationTab.click();
+    //await this.accumulationTab.click();
     await this.HESTAforMercyRetirementTab.click();
     await this.ButtonTransactions.click();
     await this.sleep(1000);
@@ -595,7 +597,7 @@ export class PensionTransactionPage extends BasePage {
     await this.LastName.click();
     await this.LastName.fill(`${randomSurname}`);
     await this.LastName.press('Tab');
-    let otherName  =await this.page.locator("(//label[text()='Other name ']/following::input)[1]");
+    let otherName = await this.page.locator("(//label[text()='Other name ']/following::input)[1]");
     otherName.fill('Test01');
     otherName.press('Tab');
     await this.sleep(3000);
@@ -609,7 +611,7 @@ export class PensionTransactionPage extends BasePage {
     await this.CheckboxKYC.click();
     // await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
-    (await this.sleep(3000).then(()=>this.page.getByLabel('check icon'))).click();
+    (await this.sleep(3000).then(() => this.page.getByLabel('check icon'))).click();
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
     await this.TFN.fill(`${tfn}`);
@@ -644,9 +646,8 @@ export class PensionTransactionPage extends BasePage {
     await this.commence_pension_button.click();
     this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
-   // await this.pensionCommencementHistory.scrollIntoViewIfNeeded();
-   // await expect(this.pensionCommencementHistory).toBeVisible();
-   // await this.pensionCommencementHistory.click();
+    await expect(this.pensionCommencementHistory).toBeVisible();
+    await this.pensionCommencementHistory.click();
     await this.reviewCase.captureScreenshot();
 
   }
@@ -942,7 +943,7 @@ export class PensionTransactionPage extends BasePage {
       if (id) {
         const containsInternalTransfer = id.includes("InternalTransfer");
         if (!containsInternalTransfer) {
-          console.error(
+          console.log(
             "Error: conversationId does not contain 'InternalTransfer'"
           );
         }
@@ -969,7 +970,7 @@ export class PensionTransactionPage extends BasePage {
     // Perform necessary operations related to pension account creation
     //await pensionAccountPage.ProcessTab();
     await new Promise((resolve) => setTimeout(resolve, 10000));
-    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext,processId);
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
     await new Promise((resolve) => setTimeout(resolve, 10000));
     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
     await new Promise((resolve) => setTimeout(resolve, 10000));
@@ -1022,9 +1023,9 @@ export class PensionTransactionPage extends BasePage {
   }
 
   async memberWithPTBTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-    let { linearId,memberNo } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+    let { linearId, memberNo } = await this.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
     await MemberApiHandler.ptbTransactions(apiRequestContext, linearId.id)
-    return { linearId: linearId.id ,memberNo};
+    return { linearId: linearId.id, memberNo };
   }
 
   async memberShellAccountCreation(
@@ -1294,30 +1295,30 @@ export class PensionTransactionPage extends BasePage {
 
   }
 
-  async accountBalance(){
+  async accountBalance() {
     await this.sleep(3000);
     await this.page.getByRole('button', { name: 'Investments and Balances' }).click();
-    await this.sleep(2000).then(()=>{this.page.locator("(//div[contains(text(),'Total')])[5]").scrollIntoViewIfNeeded()});
+    await this.sleep(2000).then(() => { this.page.locator("(//div[contains(text(),'Total')])[5]").scrollIntoViewIfNeeded() });
     await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
 
   }
 
-  async InvestmentSwitchTransactionStatus(){
+  async InvestmentSwitchTransactionStatus() {
     await this.memberTransactionTab.click();
     await this.sleep(3000);
     await this.investmentSwitchTransaction.scrollIntoViewIfNeeded();
-   await this.investmentSwitchTransaction.click();
+    await this.investmentSwitchTransaction.click();
     await this.reviewCase.captureScreenshot();
   }
 
-  async deathBenefit(){
+  async deathBenefit() {
     (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
-        await this.sleep(3000);
-        let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='DBE']").first();
-        await sgcType.scrollIntoViewIfNeeded();
-        await this.sleep(2000);
-        await sgcType.click();
-        await this.sleep(3000).then(()=>this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
+    await this.sleep(3000);
+    let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='DBE']").first();
+    await sgcType.scrollIntoViewIfNeeded();
+    await this.sleep(2000);
+    await sgcType.click();
+    await this.sleep(3000).then(() => this.globalPage.captureScreenshot('Transactions -Payment Details Screen'));
   }
 
 

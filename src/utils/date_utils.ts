@@ -44,4 +44,13 @@ export class DateUtils {
         return year + month + day;
     }
 
+    /** format Example 01-Apr-2024 */
+
+    static ddMMMyyyFormatDate(date: Date) {
+        const day = date.toLocaleString('en-US', { day: '2-digit' });
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
 }

@@ -81,7 +81,8 @@ export class AccountInfoPage extends BasePage {
 
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
-        this.review = page.locator('//span[text()="In Progress "]');
+        this.review = page.getByText('In Review');
+        //locator('//span[text()="In Progress "]');
         this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
         this.inReview = page.locator('//span[text()="In Review"]');
 

@@ -17,7 +17,7 @@ export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -40,7 +40,7 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
             // Create New Accumulation Account
             await test.step("Create New Accumulation Account", async () => {
                 const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                membersId = memberId.createMemberNo;
+                membersId = memberId.memberNo
                 await globalPage.captureScreenshot('Accumulation Account Creation');
             });
 
@@ -100,7 +100,7 @@ test(fundName()+"ABP - Pension draw-down as Proportional @pension", async ({ mem
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         let linearId: string | undefined;
         await test.step("Create Shell Account for same Member", async () => {
@@ -153,7 +153,7 @@ test(fundName()+"Pension draw-down as Specific order @pension", async ({ memberP
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         let linearId: string | undefined;
         await test.step("Create Shell Account for same Member", async () => {
@@ -206,7 +206,7 @@ test(fundName()+"ABP - Pension draw-down as Percentage @pension", async ({ pensi
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         let linearId: string | undefined;
         await test.step("Create Shell Account for same Member", async () => {
@@ -259,7 +259,7 @@ if (data.generate_test_data_from_api) {
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
     })
     
     await test.step("Create Shell Account for same Member", async () => {
@@ -310,7 +310,7 @@ test(fundName()+"TTR - Pension draw-down as Specific order @pension", async ({ p
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
         
         await test.step("Create Shell Account for same Member", async () => {
@@ -361,7 +361,7 @@ if (data.generate_test_data_from_api) {
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
     })
     
     await test.step("Create Shell Account for same Member", async () => {

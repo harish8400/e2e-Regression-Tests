@@ -5,7 +5,7 @@ import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Employer");
     await allure.parentSuite(process.env.PRODUCT!);

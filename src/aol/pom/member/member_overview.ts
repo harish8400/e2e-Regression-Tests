@@ -48,7 +48,7 @@ export class MemberOverView extends BasePage{
         this.TFN_Field = page.getByLabel('TFN');
         this.tfnSource_dropdown = page.locator('#gs5__combobox div').first();
         this.tfnSourceOption_Member = page.getByRole('option', { name: 'Member' });
-        this.memberUpdate_sucessMessage = page.getByText('Updated member.');
+        this.memberUpdate_sucessMessage = page.locator("//p[contains(text(),'Updated member.')]");
 
         //case review
         this.viewCase = page.getByRole('button', { name: 'View Cases' });

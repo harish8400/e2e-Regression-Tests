@@ -4,9 +4,10 @@ import { allure } from "allure-playwright";
 import * as caseManagement from '../../../src/aol/data/case_data.json';
 import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
+import { Admins } from "../../../src/aol/data/admins";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Case Management");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -126,23 +127,23 @@ test(fundName() + "-Verify filter option on open cases @casemanagement", async (
     try {
 
         // verify if all filters are displayed correctly
-        
-            await dashboardPage.clickFilter();
-            const expectedFilters = caseManagement.expectedItems;
-            const actualFilters = await dashboardPage.getListItemsAndHighlight();
-            expect(actualFilters).toEqual(expectedFilters);
-            await globalPage.captureScreenshot('Verify filters');
-        
+
+        await dashboardPage.clickFilter();
+        const expectedFilters = caseManagement.expectedItems;
+        const actualFilters = await dashboardPage.getListItemsAndHighlight();
+        expect(actualFilters).toEqual(expectedFilters);
+        await globalPage.captureScreenshot('Verify filters');
+
 
         // verify if all filters are filtering results correctly 
-        
-            await dashboardPage.validateMemberAccountNumberFilter({ dashboardPage });
-            await dashboardPage.validateEffectiveDateFilter({ dashboardPage });
-            await dashboardPage.validateMemberTobeAssignedFilter({ dashboardPage });
-            await dashboardPage.validateCaseTypeFilter({ dashboardPage });
-            await dashboardPage.validateCaseIdFilter({ dashboardPage });
-            await dashboardPage.validateReferenceFilter({ dashboardPage });
-    
+
+        await dashboardPage.validateMemberAccountNumberFilter({ dashboardPage });
+        await dashboardPage.validateEffectiveDateFilter({ dashboardPage });
+        await dashboardPage.validateMemberTobeAssignedFilter({ dashboardPage });
+        await dashboardPage.validateCaseTypeFilter({ dashboardPage });
+        await dashboardPage.validateCaseIdFilter({ dashboardPage });
+        await dashboardPage.validateReferenceFilter({ dashboardPage });
+
 
         console.log('Test Execution Success : Verify filter option on open cases')
 
@@ -224,3 +225,15 @@ test(fundName() + "-Verify if existing case can be updated by adding attachment 
 
     }
 })
+
+test("Verify disabled user login functionality @Invalid", async ({ loginPage, dashboardPage }) => {
+    await dashboardPage.logout();
+    let admin = Admins.getAdminByUsername("admin@123.com");
+
+    await test.step("Login", async () => {
+        await loginPage.navigateTo();
+        await loginPage.doLogin(admin.username[2], admin.password[2]);
+
+    })
+})
+
