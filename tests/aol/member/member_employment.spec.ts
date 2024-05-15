@@ -20,7 +20,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs Employment Termination  tests */
-test(fundName()+"-Verify an employment termination at current system date is processed successfully @demorun", async ({ internalTransferPage, apiRequestContext, memberPage, navBar, memberTransactionPage,accountInfoPage }) => {
+test(fundName()+"-Verify an employment termination at current system date is processed successfully @member", async ({ internalTransferPage, apiRequestContext, memberPage, navBar, memberTransactionPage,accountInfoPage }) => {
     try{
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
@@ -47,7 +47,7 @@ test(fundName()+"-Verify an employment termination at current system date is pro
     }
 })
 
-test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully @demorun", async ({ memberPage, internalTransferPage, apiRequestContext, navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
+test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully @member", async ({ memberPage, internalTransferPage, apiRequestContext, navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();

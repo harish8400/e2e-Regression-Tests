@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs member creation tests */
-test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @demorun", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
+test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @member", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
 
     try {
 
