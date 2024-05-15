@@ -5,9 +5,9 @@ import { RollinApi } from '../rollin_api';
 
 
 export class MemberApiHandler {
-    static async createMember(apiRequestContext: APIRequestContext) {
+    static async createMember(apiRequestContext: APIRequestContext,tfnNull: boolean = false,member?: string, surName?: string, memberNo?: string, tfn?: string,dob?: string) {
         const memberCreation = new MemberApi(apiRequestContext);
-        return memberCreation.createMember();
+        return memberCreation.createMember(tfnNull,member!, surName!, memberNo!, tfn!,dob!);
     }
 
     static async approveProcess(apiRequestContext: APIRequestContext, caseGroupId?: string, notes: string = "E2E auto test - approve") {
@@ -99,6 +99,10 @@ export class MemberApiHandler {
 
     static async getRegularPensionPaymentAmount(memberApi:MemberApi,memberId?: string) {
         return memberApi.getRegularPensionPaymentAmount(memberId!);
+    }
+
+    static async addMemberRollIn(memberApi:MemberApi,memberId?: string) {
+        return memberApi.addMemberRollIn(memberId!);
     }
 }
 

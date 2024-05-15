@@ -4,12 +4,12 @@
   <request>
     <mrr>
       <messageId>
-        <superGateMessageId>20240321.115734.123@superchoice.com.au</superGateMessageId>
-        <conversationId>Contribution.84111122223.20240321111812569</conversationId>
+        <superGateMessageId>20240507.126035.123@superchoice.com.au</superGateMessageId>
+        <conversationId>Contribution.84111122223.20240507161811845</conversationId>
       </messageId>
-      <timeInUTC>2024-03-19T11:57:34</timeInUTC>
+      <timeInUTC>2024-05-07T13:59:33</timeInUTC>
       <headers>
-        <conversationId>Contribution.84111122223.20240321111812569</conversationId>
+        <conversationId>Contribution.84111122223.20240507161811834</conversationId>
         <partId>1</partId>
         <from>
           <value>84111122223</value>
@@ -21,13 +21,13 @@
           <value>http://sbr.gov.au/agreement/Gateway/1.0/Push/PKI</value>
         </agreementReference>
         <source>
-          <sourceAbn>64971749321</sourceAbn>
-          <sourceUsi>64971749321001</sourceUsi>
+          <sourceAbn>27923449966</sourceAbn>
+          <sourceUsi>VSF0001AU</sourceUsi>
           <electronicServiceAddress>172.10.10.3</electronicServiceAddress>
         </source>
         <target>
-          <targetAbn>64971749321</targetAbn>
-          <targetUsi>64971749321001</targetUsi>
+          <targetAbn>27923449966</targetAbn>
+          <targetUsi>VSF0001AU</targetUsi>
           <electronicServiceAddress>172.10.10.4</electronicServiceAddress>
         </target>
         <electronicErrorMessaging>true</electronicErrorMessaging>
@@ -65,87 +65,85 @@
         <receiver>
           <organisationName>
             <type>Main or legal name</type>
-            <value>MERCY SUPER</value>
+            <value>Vanguard SUPER</value>
           </organisationName>
           <context>
             <contextIdentifier>RCR01</contextIdentifier>
-            <entityIdentifier>64971749321</entityIdentifier>
+            <entityIdentifier>27923449966</entityIdentifier>
           </context>
         </receiver>
         <employer>
           <organisationName>
             <type>Main or legal name</type>
-            <value>HCE</value>
+            <value>IFYS LIMITED</value>
           </organisationName>
-          <australianBusinessNumber>48109369048</australianBusinessNumber>
+          <australianBusinessNumber>69131388102</australianBusinessNumber>
           <context>
             <contextIdentifier>Employer1</contextIdentifier>
-            <entityIdentifier>48109369048</entityIdentifier>
+            <entityIdentifier>69131388102</entityIdentifier>
           </context>
         </employer>
         <member>
           <name>
-            <title>Ms.</title>
-            <firstName>xeed</firstName>
-            <lastName>fleming</lastName>
+            <title>Mr</title>
+            <firstName>El</firstName>
+            <middleName>NO TFN</middleName>
+            <lastName>Villareal</lastName>
           </name>
           <gender>MALE</gender>
           <dob>
-            <year>1988</year>
-            <month>July</month>
-            <day>25</day>
+            <year>1992</year>
+            <month>January</month>
+            <day>21</day>
           </dob>
           <address>
             <australianAddress>
               <type>RES</type>
-              <line1>31 Pitt Street</line1>
-              <suburb>Summer</suburb>
-              <postCode>3125</postCode>
-              <stateOrTerritory>QLD</stateOrTerritory>
+              <line1>32</line1>
+              <line2>George Street</line2>
+              <suburb>Liverpool</suburb>
+              <postCode>2170</postCode>
+              <stateOrTerritory>NSW</stateOrTerritory>
               <countryCode>AU</countryCode>
             </australianAddress>
           </address>
           <email>
             <emailAddressUsage>Contact</emailAddressUsage>
-            <value>Test.Test@grow.inc</value>
+            <value>af@growsuper.com</value>
           </email>
           <phoneNumber>
             <phoneNumberType>MOBILE_PHONE</phoneNumberType>
             <phoneNumberUsage>Personal</phoneNumberUsage>
-            <mobileNumber>0430187865</mobileNumber>
+            <mobileNumber>61430187865</mobileNumber>
           </phoneNumber>
           <phoneNumber>
             <phoneNumberType>MOBILE_PHONE</phoneNumberType>
             <phoneNumberUsage>Contact</phoneNumberUsage>
-            <mobileNumber>0430187123</mobileNumber>
+            <mobileNumber>61430187122</mobileNumber>
           </phoneNumber>
-          <taxFileNumberNotProvided>false</taxFileNumberNotProvided>
-          <employerProvidedTaxFileNumber>247451316</employerProvidedTaxFileNumber>
-          <employmentPayrollNumber>001</employmentPayrollNumber>
-          <employmentStartDate>2022-06-30T12:00:00</employmentStartDate>
+          <taxFileNumberNotProvided>true</taxFileNumberNotProvided>
+          <employmentStartDate>2024-05-07T10:06:01.622</employmentStartDate>
           <annualSalaryforBenefits>
-            <value>850</value>
+            <value>700</value>
             <currency>AUD</currency>
           </annualSalaryforBenefits>
           <annualSalaryforContributions>
-            <value>200</value>
+            <value>600</value>
             <currency>AUD</currency>
           </annualSalaryforContributions>
           <annualSalaryforInsurance>
-            <value>100</value>
+            <value>900</value>
             <currency>AUD</currency>
           </annualSalaryforInsurance>
           <employmentStatus>Contractor</employmentStatus>
           <context>
             <contextIdentifier>Member1</contextIdentifier>
-            <tfnEntityIdentifier>247451316</tfnEntityIdentifier>
-            <employersABN>48109369048</employersABN>
-            <superannuationFundABN>60905115061</superannuationFundABN>
-            <superannuationFundUSI>60905115061001</superannuationFundUSI>
+            <otherEntityIdentifier>89879420774508212025</otherEntityIdentifier>
+            <employersABN>69131388102</employersABN>
+            <superannuationFundABN>27923449966</superannuationFundABN>
+            <superannuationFundUSI>VSF0001AU</superannuationFundUSI>
           </context>
         </member>
-
-	
       </content>
     </mrr>
   </request>

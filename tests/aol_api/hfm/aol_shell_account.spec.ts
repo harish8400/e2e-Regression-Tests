@@ -22,7 +22,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 
-test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext,internalTransferPage,pensionTransactionPage}) => {
+test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ navBar, pensionAccountPage ,apiRequestContext,internalTransferPage,pensionTransactionPage,memberApi}) => {
 
     try {
 
@@ -40,7 +40,7 @@ test(fundName() + "-Pensionshell Account Creation @API-shellaccount", async ({ n
         await navBar.selectMember(memberNo);
         let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
         await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
-        await RollinApiHandler.createRollin(apiRequestContext, linearId.id)
+        await MemberApiHandler.addMemberRollIn(memberApi, linearId.id)
          await pensionAccountPage.reload();
          await internalTransferPage.memberSummary();
          await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
