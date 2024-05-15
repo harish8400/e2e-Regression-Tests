@@ -484,12 +484,14 @@ export class MemberPage extends BasePage {
 
     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
         const { memberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-        await accountInfoPage.ProcessTab();
+        // await accountInfoPage.ProcessTab();
+        await new Promise(resolve => setTimeout(resolve, 5000));
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        //await accountInfoPage.reload();
+        //await navBar.navigateToAccumulationMembersPage();
         await navBar.selectMember(memberNo);
         const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);

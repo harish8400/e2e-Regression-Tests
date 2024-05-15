@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs member creation tests */
-test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @member", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
+test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @demorun", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
 
     try {
 
@@ -30,8 +30,8 @@ test(fundName()+"-Verify a new Active Member Account is created successfully and
         await test.step("Create a new Active member & Verify welcome letter is triggered", async () => {
             
             let memberID;
-            let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = createMemberNo;
+            let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                memberID = memberNo;
             if(process.env.PRODUCT! == FUND.HESTA){
                 //await memberPage.selectMember(addedMember);
                 await memberPage.verifyIfWelcomeLetterTriggered();

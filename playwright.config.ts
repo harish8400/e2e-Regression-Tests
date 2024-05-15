@@ -23,7 +23,7 @@ export default defineConfig({
   reporter: [["html"],["line"],["allure-playwright"],['junit', { outputFile: 'results.xml' }], ['buildkite-test-collector/playwright/reporter',{ token: process.env.CI ?'c6nTypqVzDfxnZ3pF51JVVtd' : '' }] ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    headless: true,
+    headless: false,
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 

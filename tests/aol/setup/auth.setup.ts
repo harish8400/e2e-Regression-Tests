@@ -3,8 +3,6 @@ import { Admins } from '../../../src/aol/data/admins';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
 import { allure } from "allure-playwright";
 import { fundName } from '../../../src/aol/utils_aol';
-import { error } from 'console';
-
 const authFile = 'playwright/.auth/user.json';
 
 
