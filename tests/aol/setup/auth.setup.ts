@@ -30,18 +30,10 @@ test(fundName() + "Verify successful user login functionality ", async ({ page }
         const url = request.url();
         const headers = request.headers();
         const authorization = headers['authorization'];
-        if (ENVIRONMENT_CONFIG.name === 'dev') {
             if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
-            }
-        } else if (ENVIRONMENT_CONFIG.name === 'uat') {
-            if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
-            }
-        }
-        else {
-            throw new Error("Un Expected Environment type");
-        }
         authToken = authorization;
         process.env.TOKEN = authToken;
+            }
     });
 
     // Perform authentication steps. Replace these actions with your own.
