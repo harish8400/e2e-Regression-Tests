@@ -3,6 +3,7 @@ import { Admins } from '../../../src/aol/data/admins';
 import { ENVIRONMENT_CONFIG } from '../../../config/environment_config';
 import { allure } from "allure-playwright";
 import { fundName } from '../../../src/aol/utils_aol';
+import { error } from 'console';
 
 const authFile = 'playwright/.auth/user.json';
 
@@ -29,10 +30,18 @@ test(fundName() + "Verify successful user login functionality ", async ({ page }
         const url = request.url();
         const headers = request.headers();
         const authorization = headers['authorization'];
-        if (url.startsWith('https://middleware-saturn.dev.tinasuper.com/users/me') && authorization) {
-            authToken = authorization;
-            process.env.TOKEN = authToken;
+        if (ENVIRONMENT_CONFIG.name === 'dev') {
+            if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
+            }
+        } else if (ENVIRONMENT_CONFIG.name === 'uat') {
+            if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
+            }
         }
+        else {
+            throw new Error("Un Expected Environment type");
+        }
+        authToken = authorization;
+        process.env.TOKEN = authToken;
     });
 
     // Perform authentication steps. Replace these actions with your own.

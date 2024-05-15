@@ -13,6 +13,7 @@ interface ConfigContent {
         molHfmMolApiVersion?: string
         molVgURL: string,
         molVgMolApiVersion?: string,
+        middlewareURL: string,
         product: string
     };
 }
