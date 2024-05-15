@@ -169,7 +169,7 @@ export class MemberTransactionsPage extends BasePage {
         this.linkCase = page.getByRole('button', { name: 'Link to Case' });
         this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
         this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' })
-        this.verifyContributionSuccess = page.getByText("Processed contribution for member.");
+        this.verifyContributionSuccess = page.getByText("Process step completed with note: Member contribution payload sent.");
         this.transitionToRetirement = page.getByRole('link', { name: 'Transition to Retirement' });
         this.trasitionMembers = page.getByRole('link', { name: 'Members' });
         this.memberContributionType_Spouse = page.getByRole('option', { name: 'Spouse' });
@@ -188,7 +188,7 @@ export class MemberTransactionsPage extends BasePage {
     // Member Termination
     this.accumulationFirstMember = page.locator("td > .cell").first();
     this.relationshipBtn = page.getByRole("button", { name: "Relationships" });
-    this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).first();
+    this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).nth(0);
     this.employerEndDate = page.locator('input[name="linkBroken"]');
     this.viewCases = page.getByRole("button", { name: "View Cases" });
 
@@ -340,7 +340,8 @@ export class MemberTransactionsPage extends BasePage {
         //await this.sleep(5000);
         await this.relationshipBtn.waitFor();
         await this.relationshipBtn.click();
-        await this.employementEditBtn.waitFor();
+        //await this.employementEditBtn.waitFor();
+        await this.sleep(5000);
         await this.employementEditBtn.click();
         await this.viewCases.waitFor();
         await this.viewCases.click();
@@ -365,7 +366,7 @@ export class MemberTransactionsPage extends BasePage {
 
   /** Member Rollout, perform rollout and exits member */
   async memberRolloverOut(TFN: boolean) {
-    await this.memberHFMFundLink.click();
+    //await this.memberHFMFundLink.click();
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.rolloverOut.click();
@@ -385,6 +386,7 @@ export class MemberTransactionsPage extends BasePage {
 
         await this.linkCase.click();
         await this.sleep(5000);
+        
         if(TFN == true){
             await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
         }

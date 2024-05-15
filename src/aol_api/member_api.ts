@@ -4,7 +4,7 @@ import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 import * as assert from 'assert';
-import { FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
+import { FUND, FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
 
 
 
@@ -29,18 +29,29 @@ export class MemberApi extends BaseDltaAolApi {
     this.firstPensionPaymentDate.setDate(this.commencementDate.getDate() + 15);
   }
 
-  async createMember(tfnNull: boolean = false): Promise<{ memberId: string, memberNo: string, processId: string }> {
-    let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
-    let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-    let path = `product/${productId}/process`;
-    let tfn = null;
-    if (!tfnNull) {
-      tfn = UtilsAOL.generateValidTFN();
+  async createMember(tfnNull: boolean = false, member: string, surName: string, memberNo: string, tfn: string, dob: string): Promise<{ memberId: string, processId: string, member: string, surName: string, memberNo: string, tfn: string, dob: string }> {
+    
+    let productId;
+    let investmentId;
+
+    if (process.env.PRODUCT === FUND.HESTA) {
+      productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+      investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+    } else {
+      productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+      investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
     }
-    let member = UtilsAOL.randomName();
-    let surname = UtilsAOL.randomSurname(5);
-    let memberNo = UtilsAOL.memberNumber('', 9);
+
+    let path = `product/${productId}/process`;
+
+    if (!tfnNull && tfn !== null) {
+      tfn = UtilsAOL.generateValidTFN().toString();
+    }
+    member = UtilsAOL.randomName();
+    surName = UtilsAOL.randomSurname(5);
+    memberNo = UtilsAOL.memberNumber('', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
+    dob = '1961-04-16';
     let data = {
       templateReference: 'createMember',
       filterGroups: [],
@@ -51,8 +62,8 @@ export class MemberApi extends BaseDltaAolApi {
           choice: true,
           givenName: member,
           otherNames: 'Seaborn',
-          surname: surname,
-          dob: '1962-04-16',
+          surname: surName,
+          dob: dob,
           gender: 'M',
           title: 'Dr.',
           tfn: tfn,
@@ -117,11 +128,11 @@ export class MemberApi extends BaseDltaAolApi {
     let response = await this.post(path, JSON.stringify(data));
     let responseBody = await response.json();
     let memberId: string = responseBody.linearId?.id || null;
-    let MemberNo: string = responseBody.initialData.memberData.memberNo;
     let processId: string = responseBody?.linearId?.id || null;
-    console.log(`Created member with memberNo: ${MemberNo} and memberId: ${memberId}`);
-    return { memberId, memberNo: MemberNo, processId };
+    console.log(`Created member is: ${memberNo} and memberId: ${memberId},${member},${surName},${dob},${tfn}`);
+    return { memberId, processId, member, surName, memberNo, tfn, dob };
   }
+
 
   async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
     let path = `case/group/${caseGroupId}/approve`;
@@ -146,13 +157,26 @@ export class MemberApi extends BaseDltaAolApi {
   }
 
   async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
+   let memberInvestmentId :string;
     let tfn = UtilsAOL.generateValidTFN();
     let member = UtilsAOL.randomName();
     let surname = UtilsAOL.randomSurname(5);
     let memberNo = UtilsAOL.memberNumber('MER-PEN-', 9);
     let identityNo = UtilsAOL.memberIdentityNumber('MER-ACC-', 6);
     let dob = UtilsAOL.generateDOB();
-    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+    switch (product) {
+      case 'HESTA for Mercy':
+        memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.DIVERSIFIED_BONDS.ID;
+          break;
+      case 'Vanguard Super':
+        memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.CONSERVATIVE.ID;
+          break;
+
+      default:
+          throw new Error(`Unsupported product: ${product}`);
+  }
+     
     let data = {
       templateReference: 'createPensionMemberShellAccount',
       filterGroups: [],
@@ -274,7 +298,18 @@ export class MemberApi extends BaseDltaAolApi {
 
 
   async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-    let productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+    switch (product) {
+      case 'HESTA for Mercy':
+          productId = FUND_IDS.MERCY.PRODUCT_ID.RETIREMENT;
+          break;
+      case 'Vanguard Super':
+          productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
+          break;
+
+      default:
+          throw new Error(`Unsupported product: ${product}`);
+  }
     let fundProductId = productId;
     let queryParams = new URLSearchParams({});
     let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -436,6 +471,7 @@ export class MemberApi extends BaseDltaAolApi {
 
   async getCaseGroupId(processId: String) {
     let path = `process/${processId}/case`;
+    console.log(path)
 
     try {
       let response = await this.get(path);
@@ -596,5 +632,60 @@ export class MemberApi extends BaseDltaAolApi {
     return responseBody;
 
   }
+
+  async addMemberRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
+
+    
+    let investmentId;
+
+    if (process.env.PRODUCT === FUND.HESTA) {
+      
+      investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+    } else {
+      
+      investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+    }
+     
+    let path = `member/${linearId}/rollin`;
+    let data = {
+      "paymentReference": "InternalTransfer_902010134",
+      "transferringFundABN": "11789425178",
+      "transferringFundUSI": "11789425178799",
+      "transferringClientIdentifier": "902010134",
+      "amount": "50000",
+      "preserved": "50000",
+      "restrictedNonPreserved": "0",
+      "unrestrictedNonPreserved": "0",
+      "kiwiPreserved": "0",
+      "taxed": "50000",
+      "untaxed": "0",
+      "taxFree": "0",
+      "kiwiTaxFree": "0",
+      "type": "RLI",
+      "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "eligibleServicePeriodStartDate": null,
+      "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+      "messageType": null,
+      "historic": true,
+      "caseReference": null,
+      "targetInvestments": [
+        {
+          id: investmentId,
+          "percent": 100
+        }
+      ]
+    };
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    const rollIn = responseBody.rollin;
+    expect(rollIn.type).toBe('RLI');
+    expect(rollIn.name).toBe('Roll In');
+    expect(rollIn.historic).toBe(true);
+    let Id = responseBody?.linearId?.id || null;
+    let memberNo = responseBody?.memberNo || null;
+    let amount = responseBody?.amount || 0;
+    return { linearId: Id, memberNo: memberNo, amount: amount };
+  }
+
 
 }

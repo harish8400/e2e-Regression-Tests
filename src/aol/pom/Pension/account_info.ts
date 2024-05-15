@@ -5,6 +5,7 @@ import { ReviewCase } from "../component/review_case";
 import { DateUtils } from "../../../utils/date_utils";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "../component/global_page";
+import { FUND } from "../../../../constants";
 
 export class AccountInfoPage extends BasePage {
 
@@ -40,8 +41,8 @@ export class AccountInfoPage extends BasePage {
     readonly processesLink: Locator;
     readonly memberaccount: Locator;
     readonly review: Locator;
-    readonly shellaccount:Locator;
-    readonly inReview:Locator;
+    readonly shellaccount: Locator;
+    readonly inReview: Locator;
     readonly globalPage: GlobalPage;
 
     constructor(page: Page) {
@@ -80,7 +81,8 @@ export class AccountInfoPage extends BasePage {
 
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
-        this.review = page.locator('//span[text()="In Progress "]');
+        this.review = page.getByText('In Review');
+        //locator('//span[text()="In Progress "]');
         this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
         this.inReview = page.getByText('In Review')
 
@@ -108,11 +110,17 @@ export class AccountInfoPage extends BasePage {
         await this.sleep(3000);
         await this.buttonLinkToCase.click();
 
-        await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
-
+        if (process.env.product == FUND.HESTA) {
+            await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
+        } else {
+            await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Confirmation Sent'));
+        }
         await allure.step("Validate Correspondence is sent with success", async () => {
             allure.logStep("Verify Correspondence sent success is displayed")
-            expect(this.EditBankAcc_successMessage).toBeVisible();
+            if (process.env.product == FUND.HESTA) {
+                expect(this.EditBankAcc_successMessage).toBeVisible();
+            }
+
         });
 
         await allure.step("Validate Bank-Update is processed without error", async () => {

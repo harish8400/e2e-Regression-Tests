@@ -14,7 +14,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -37,7 +37,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
         // Create New Accumulation Account
         await test.step("Create New Pension Shell Account", async () => {
             const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            membersId = memberId.createMemberNo
+            membersId = memberId.memberNo
             await globalPage.captureScreenshot('Accumulation Account Creation');
         });
 
@@ -99,7 +99,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
         // Create New Accumulation Account
         await test.step("Create New Pension Shell Account", async () => {
             const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            membersId = memberId.createMemberNo
+            membersId = memberId.memberNo
             await globalPage.captureScreenshot('Accumulation Account Creation');
         });
 

@@ -137,11 +137,11 @@ export class PensionInvestmentPage extends BasePage {
 
     this.RolloverType = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.RolloverOption = page.getByText('Client-RTR');
-    this.ViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
+    this.ViewCase = page.getByRole('button', { name: 'View Cases' });
     this.CreateCase = page.getByRole('button', { name: 'Create Case' });
-    this.LinkCase = page.getByRole('button', { name: 'Link to Case' }).nth(1);
+    this.LinkCase = page.getByRole('button', { name: 'Link to Case' });
 
-    this.viewCaseButton = page.getByRole('button', { name: 'View Cases' });
+    this.viewCaseButton = page.getByRole('button', { name: 'View Cases' }).nth(1);
     this.linkCaseButton = page.getByRole('button', { name: 'Link to Case' });
 
     //DrawDown 
@@ -174,7 +174,12 @@ export class PensionInvestmentPage extends BasePage {
     }
 
     async RolloverInTransaction() {
-
+        await this.sleep(3000);
+       let memberLink = await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]");
+       memberLink.scrollIntoViewIfNeeded();
+       await this.sleep(3000).then(()=>memberLink.click());
+       (await this.sleep(3000).then(()=>this.page.getByRole('button', { name: 'HESTA for Mercy Retirement' }))).click();
+       await this.sleep(3000);
         await this.InvestmentsandBalances.click();
 
         await this.sleep(3000);
@@ -190,8 +195,9 @@ export class PensionInvestmentPage extends BasePage {
         await this.sleep(1000);
         await this.ButtonAddTransactions.click();
         await this.OptionRolloverIn.click();
-
+        await this.sleep(3000);
         await this.ViewCase.click();
+        await this.sleep(3000);
         await this.CreateCase.click();
 
         await this.FundUSI.click();
@@ -250,7 +256,7 @@ export class PensionInvestmentPage extends BasePage {
         await this.PensionTab.click();
         await this.sleep(3000);
         await this.BtnEdit.click();
-        await this.viewCaseButton.click();
+        await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
@@ -281,7 +287,7 @@ export class PensionInvestmentPage extends BasePage {
         await this.BtnEdit.click();
         await this.sleep(3000);
         //await this.PensionDrawdownDetailsEdit.click();
-        await this.viewCaseButton.click();
+        await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);
@@ -309,7 +315,7 @@ export class PensionInvestmentPage extends BasePage {
         await this.sleep(3000);
         await this.BtnEdit.click();
         //await this.PensionDrawdownDetailsEdit.click();
-        await this.viewCaseButton.click();
+        await this.ViewCase.click();
         await this.sleep(3000);
         await this.CreateCase.click();
         await this.sleep(3000);

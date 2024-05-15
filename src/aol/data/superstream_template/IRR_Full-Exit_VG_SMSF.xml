@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<superGateClientMessage xmlns="http://www.superchoice.com.au/SuperGateClientXMLSchema/1.0">
+  <xsdVersion>2.0.01</xsdVersion>
+  <action>Client-IRR</action>
+  <messageId>20240509.052650.058@growsuper</messageId>
+  <timestamp>2024-05-09T05:28:50.058Z</timestamp>
+  <conversationId>Rollover.11789425178.20240509050450002</conversationId>
+  <payload>
+    <superStreamRequestPayload>
+      <partId>PID20210917050450</partId>
+      <sourceAbn>65714394898</sourceAbn>
+      <sourceESA>AUSPOSTSMSF</sourceESA>
+      <targetAbn>27923449966</targetAbn>
+      <targetUsi>VSF0001AU</targetUsi>
+      <recordCount>1</recordCount>
+      <clientIRR>
+        <messageSender>
+          <messageSenderContext>
+            <contextId>SND01</contextId>
+            <entityId>65714394898</entityId>
+            <periodStartDate>2024-05-09</periodStartDate>
+            <periodEndDate>2024-05-09</periodEndDate>
+          </messageSenderContext>
+          <organisationName>VANGUARD SUPER</organisationName>
+          <familyName>Cuskelly</familyName>
+          <givenName>Trisha</givenName>
+          <emailAddress>information@mercysuper.com.au</emailAddress>
+          <telephoneNumber>
+            <telephoneType>01</telephoneType>
+            <telephoneMinimalNumber>1300368891</telephoneMinimalNumber>
+          </telephoneNumber>
+        </messageSender>
+        <messageReceiver>
+          <messageReceiverContext>
+            <contextId>RCR01</contextId>
+            <entityId>18647348650</entityId>
+            <periodStartDate>2024-05-09</periodStartDate>
+            <periodEndDate>2024-05-09</periodEndDate>
+          </messageReceiverContext>
+          <organisationName>Vanguard Super</organisationName>
+        </messageReceiver>
+        <memberRolloverTransaction>
+          <memberRolloverTransactionContext>
+            <contextId>MBRROLLVR01</contextId>
+            <entityId>234872541</entityId>
+            <entityIdScheme>tfn</entityIdScheme>
+            <memberID>TTR-691478530</memberID>
+            <entitySegmentTransferringFundAbn>18647348650</entitySegmentTransferringFundAbn>
+            <entitySegmentTransferringFundUsi>60905115063001</entitySegmentTransferringFundUsi>
+            <entitySegmentReceivingFundAbn>27923449966</entitySegmentReceivingFundAbn>
+            <entitySegmentReceivingFundUsi>VSF0001AU</entitySegmentReceivingFundUsi>
+            <periodStartDate>2024-05-09</periodStartDate>
+            <periodEndDate>2024-05-09</periodEndDate>
+          </memberRolloverTransactionContext>
+          <familyName>362Uf</familyName>
+          <givenName>Glenn</givenName>
+          <otherGivenName></otherGivenName>
+          <gender>0</gender>
+          <dateOfBirth>1961-04-16</dateOfBirth>
+          <address>
+            <usageCode>RES</usageCode>
+            <street1>32</street1>
+            <street2>George Street</street2>
+            <locality>Liverpool</locality>
+            <postcode>2170</postcode>
+            <state>NSW</state>
+            <countryCode>au</countryCode>
+          </address>
+          <transferWholeBalance>YES</transferWholeBalance>
+        
+
+
+          <otherTuples>
+            <tuple>
+              <key>otherText</key>
+              <value>NA</value>
+            </tuple>
+          </otherTuples>
+          <financialInstitutionAccount>
+            <accountName>Smith-Johnson SMSF</accountName>
+            <bsb>112401</bsb>
+            <accountNo>420001124</accountNo>
+          </financialInstitutionAccount>
+          <electronicContactEsaAlias>AUSPOSTSMSF</electronicContactEsaAlias>
+        </memberRolloverTransaction>
+      </clientIRR>
+    </superStreamRequestPayload>
+  </payload>
+</superGateClientMessage>
