@@ -29,7 +29,7 @@ test(fundName()+"- Add new non binding nomination on an existing account with al
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
 
         await test.step("Add non binding nomination", async () => {
@@ -53,7 +53,7 @@ test(fundName()+"-Add new Binding lapsing nomination on an existing account with
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
 
         await test.step("Add binding lapsing nomination", async () => {
@@ -76,7 +76,7 @@ test(fundName()+"-Non binding or Binding lapsing nomination cannot be updated if
         
         await test.step("Add new Accumulation Member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
 
         await test.step("Add Non binding lapsing nomination", async () => {
