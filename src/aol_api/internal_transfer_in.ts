@@ -4,6 +4,7 @@ import { UtilsAOL } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
 import { FUND, FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
+
 let fundProduct = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 
 export class ShellAccountApi extends BaseDltaAolApi {
@@ -25,9 +26,26 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
-        let productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
-        let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
-        let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
+        let productId: string;
+
+        let memberInvestmentId: string;
+        let investmentId: string;
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+                investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
+                break;
+            case 'Vanguard Super':
+                productId = FUND_IDS.VANGUARD.PRODUCT_ID.TTR;
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.TTR.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.TTR.CONSERVATIVE.ID;
+                break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
+
+
         let path = `/product/${productId}/process`;
         let tfn = UtilsAOL.generateValidTFN();
         let member = UtilsAOL.randomName();
@@ -154,7 +172,18 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-        let productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+        let productId:string;
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+                
+                break;
+            case 'Vanguard Super':
+                productId = FUND_IDS.VANGUARD.PRODUCT_ID.TTR;
+                break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
         let fundProductId = productId;
         let queryParams = new URLSearchParams({});
         let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -217,11 +246,11 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let investmentId: string;
         switch (fundProduct) {
             case 'HESTA for Mercy':
-            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-            break;
+                investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
             case 'Vanguard Super':
-            investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-            break;
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
             default:
                 throw new Error(`Unsupported product: ${fundProduct}`);
         }
@@ -270,11 +299,11 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let investmentId: string;
         switch (fundProduct) {
             case 'HESTA for Mercy':
-            investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-            break;
+                investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
             case 'Vanguard Super':
-            investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-            break;
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
             default:
                 throw new Error(`Unsupported product: ${fundProduct}`);
         }
