@@ -33,12 +33,15 @@ export class Navbar extends BasePage {
         this.memberIdentities =page.getByText('memberIdentities');
         this.addEmployer =page.getByText('Add new employer');
 
-        this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
-        this.selectTTRProduct = page.getByRole('link', { name: 'Transition to Retirement' });
+        this.selectRetirementProduct = page.getByRole('link', { name: 'Vanguard SpendSmart' });
+        //page.locator("(//a[@class='NxLAj'])[2]");
+        this.selectTTRProduct = page.getByRole('link', { name: 'Vanguard TransitionSmart' });
+        //getByRole('link', { name: 'Transition to Retirement' });
         //this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
         this.membersLink = page.getByRole('link', { name: 'Members' });
         this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
-        this.productOptionDropDown = page.locator("(//div[@class='eBloA'])[1]");
+        this.productOptionDropDown = page.locator("(//div[@class='bWJdlu']/following-sibling::div)[1]");
+        // locator("(//div[@class='eBloA'])[1]");
         this.productSelection = page.getByText('HESTA for Mercy');
         
         this.FilterClick = page.getByRole('button', { name: 'FILTER' }).first();

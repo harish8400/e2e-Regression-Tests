@@ -227,9 +227,7 @@ export class PensionTransactionPage extends BasePage {
     });
 
     //Pension commutation roll-out
-    this.pensionCommutation = page.getByText("Pension Commutation", {
-      exact: true,
-    });
+    this.pensionCommutation = page.getByText('Pension Commutation');
     this.commutation_type = page
       .getByRole("combobox", { name: "Search for option" })
       .getByLabel("CloseSelect");
@@ -404,20 +402,14 @@ export class PensionTransactionPage extends BasePage {
   //Pension commutation roll-out
   async commutationRolloverOut(FullExit: boolean) {
     await this.memberTransactionTab.click();
-    await this.memberAddTransaction.click();
-    await this.pensionCommutation.click();
-
+    (await this.sleep(300).then(()=>this.memberAddTransaction)).click({force:true});
+    (await this.page.waitForTimeout(3000).then(()=>this.pensionCommutation)).click();
+    await this.sleep(3000);
     await this.commutation_type.click();
     await this.reviewCase.captureScreenshot();
     await this.commutation_type.press("Enter");
     await this.sleep(3000);
     await this.commutation_rollout.click();
-
-    await this.viewCase.click();
-    await this.sleep(3000);
-    await this.createCase.click();
-    await this.sleep(3000);
-
     await this.payTo.click();
     await this.fund.click();
     await this.USI.fill(pensions.USI);
@@ -435,18 +427,22 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(2000);
       await this.page.getByPlaceholder("0").fill("2000");
     }
-
+    
+    (await this.sleep(300).then(()=>this.viewCase)).click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
     await this.linkCase.click();
-    await this.sleep(30000);
-    if (
-      ENVIRONMENT_CONFIG.name === "dev" &&
-      process.env.PRODUCT != FUND.HESTA
-    ) {
-      await this.reviewCase.reviewCaseProcess(this.unathorized);
-    } else {
+    await this.sleep(3000);
+    // if (
+    //   ENVIRONMENT_CONFIG.name === "dev" &&
+    //   process.env.PRODUCT != FUND.HESTA
+    // ) {
+    //   await this.reviewCase.reviewCaseProcess(this.unathorized);
+    // } else {
       await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
-    }
-    await this.sleep(30000);
+    //}
+    await this.sleep(3000);
   }
 
   async commutationUNPBenefit(FullExit: boolean) {
@@ -503,22 +499,23 @@ export class PensionTransactionPage extends BasePage {
   }
 
   async commutationUNPBenefitReject(FullExit: boolean) {
+    await this.page.waitForTimeout(3000);
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.pensionCommutation.click();
-
+    await this.sleep(3000);
+    await this.viewCase.click();
+    await this.sleep(3000)
+    await this.createCase.click();
+    await this.sleep(3000);
     await this.commutation_type.click();
     await this.commutation_type.press("Enter");
     //await this.sleep(3000);
     await this.page
       .getByRole("option", { name: "Commutation - UNP Benefit" })
       .click();
-
-    await this.viewCase.click();
-    await this.sleep(3000);
-    await this.createCase.click();
-    await this.sleep(3000);
-
+    
+    
     await this.page.locator("#gs4__combobox div").first().click();
     await this.page
       .getByRole("option", { name: "Commutation - UNP Payment" })

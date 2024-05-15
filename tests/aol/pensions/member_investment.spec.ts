@@ -142,7 +142,7 @@ else{
     })
 })
 
-test(fundName()+"Pension draw-down as Specific order @pension", async ({ memberPage, accountInfoPage, internalTransferPage, navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"ABP - Pension draw-down as Specific order @pension", async ({ memberPage, accountInfoPage, internalTransferPage, navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {

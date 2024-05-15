@@ -77,17 +77,17 @@ test("Verify existing employer data can be edited successfully @employer", async
 
 test(fundName() + "-Verify if error is displayed on empty create employer request @employer", async ({ employerIdentitiesPage }) => {
 
-        await employerIdentitiesPage.validateInvalidEmployerCreation();
+        // await employerIdentitiesPage.validateInvalidEmployerCreation();
+
+        await test.step("Navigate to Employer Identities page", async () => {
+            await employerIdentitiesPage.employerIdentities();
+        })
 
         await test.step("Click on Add new Employers", async () => {
             await employerIdentitiesPage.newEmployer();
         })
 
-        await test.step("Edit existing employer data", async () => {
-            await employerIdentitiesPage.updateExistingEmployer();
-        })
-
-        await test.step("Verify existing employer data edit functionality", async () => {
-            await employerIdentitiesPage.updateExistingEployerValidations();
+        await test.step("Verify error is displayed on empty create employer request @employer", async () => {
+            await employerIdentitiesPage.validateInvalidEmployerCreation();
         })
 })

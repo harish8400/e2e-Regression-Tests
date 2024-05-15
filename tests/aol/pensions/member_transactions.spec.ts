@@ -1101,6 +1101,7 @@ test(fundName() + "Verify the updating of member's CRN in the account details @p
         // Create New Member Account
         await allure.step("Create New Member Account", async () => {
             const { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            await navBar.navigateToAccumulationMembersPage();
             await navBar.selectMember(createMemberNo);
             await globalPage.captureScreenshot('New Member Account account ');
         });

@@ -402,13 +402,15 @@ export class MemberPage extends BasePage {
         await new Promise(resolve => setTimeout(resolve, 10000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
+        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+        await new Promise(resolve => setTimeout(resolve, 3000));
         await accountInfoPage.reload();
         await navBar.navigateToAccumulationMembersPage();
         await navBar.selectMember(createMemberNo);
         const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, createMemberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
-        //await internalTransferPage.memberSummary();
+        await internalTransferPage.memberSummary();
         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);

@@ -9,6 +9,7 @@ import { ReviewCase } from "../component/review_case";
 import { DashboardPage } from "../dashboard_page";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "../component/global_page";
+import { FUND } from "../../../../constants";
 
 export class PensionShellAccount extends BasePage {
 
@@ -170,6 +171,8 @@ export class PensionShellAccount extends BasePage {
   readonly pensionHistory: Locator;
   readonly regularPensionAmount: Locator;
   readonly caseHeading: Locator;
+  readonly transferIn: Locator;
+  readonly transferOut: Locator;
 
   constructor(page: Page) {
     super(page)
@@ -204,7 +207,7 @@ export class PensionShellAccount extends BasePage {
     this.preferredContactName = page.getByTitle('Preferred Contact Name').getByRole('textbox');
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
-    this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon'});
+    this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
     this.createdMemberCaseLink = page.locator("//a[@class='gs-link text-teal-300 cursor-pointer relative no-underline font-bold']");
     this.memberID = page.locator("(//p[@data-cy='info-value'])[2]");
     //Consolidate step
@@ -252,7 +255,8 @@ export class PensionShellAccount extends BasePage {
     this.proRata = page.locator("(//label[text()='Yes'])[1]");
     this.taxThreshold = page.locator("(//label[text()='Yes'])[2]");
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' })
+    this.select_eligibility = page.getByText('Retired - at least');
+    // locator('li').filter({ hasText: 'Reached Preservation Age' })
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
     this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
     this.clipBoard_icon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
@@ -271,12 +275,12 @@ export class PensionShellAccount extends BasePage {
     // Edit Pension Peyment Details for existing member
     this.pensionTab = page.getByRole('button', { name: 'Pension' });
     this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
-    this.frequency = page.locator('#gs2__combobox').getByLabel('Select', { exact: true });
+    this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
     this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
     this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
     this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
-    this.annualPaymentMethod = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
 
     this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
@@ -304,7 +308,7 @@ export class PensionShellAccount extends BasePage {
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
-    this.successMessage = page.getByText('Processed insert pension history');
+    this.successMessage = page.getByText('Process step completed with note: Pension payment correspondence sent.');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
@@ -319,12 +323,15 @@ export class PensionShellAccount extends BasePage {
     this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
-    this.abp = page.getByText('HESTA for Mercy Retirement');
+    this.abp = page.getByText('Vanguard Super SpendSmart').first();
+    // getByText('HESTA for Mercy Retirement');
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
     const date = DateUtils.ddMMMyyyStringDate(new Date());
-    this.pensionHistory = page.getByRole('row', { name: date+' Pension Payment Details Update' }).first();
+    this.pensionHistory = page.getByRole('row', { name: date + ' Pension Payment Details Update' }).first();
     this.regularPensionAmount = page.locator('div').filter({ hasText: /^Regular Pension Payment Amount\$0\.00$/ }).first();
     this.caseHeading = page.getByRole('heading', { name: 'Pension - Update Payment' });
+    this.transferIn = page.getByText('Intra Fund - Internal Transfer In is completed.');
+    this.transferOut = page.getByText('Intra fund Internal Transfer out complete.')
   }
 
   async navigateToPensionMemberPage() {
@@ -413,7 +420,7 @@ export class PensionShellAccount extends BasePage {
   async addMemberPensionDetails() {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
-   // await this.clipBoard_icon.click();
+    // await this.clipBoard_icon.click();
     await this.PensionPaymentDate.click();
     await this.PensionPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(10)}`);
     await this.PensionPaymentDate.press('Enter');
@@ -507,12 +514,14 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(8000);
     await this.editIcon.click();
     await this.sleep(3000)
+    await this.frequency.scrollIntoViewIfNeeded();
     await this.frequency.click();
     if (frequency == 'Bi-Annualy') {
       await this.frequencyValue3.click();
     }
-    else if (frequency == 'Quarterly') {
-      await this.frequencyValue2.click();
+    else if (frequency === 'Quarterly') {
+      await this.page.waitForTimeout(4000);
+      await this.frequencyValue2.click({ force: true });
     }
     else {
       await this.frequencyValue1.click();
@@ -525,14 +534,14 @@ export class PensionShellAccount extends BasePage {
     await this.createCase.click();
     await this.sleep(3000);
     await this.linkCase.click();
-    await this.sleep(5000);
+    await this.page.waitForTimeout(5000);
     await this.reviewCase.reviewCaseProcess(this.successMessage);
 
     await allure.step("Validate Correspondence is sent with success", async () => {
       allure.logStep("Verify Correspondence sent success is displayed")
       expect(this.successMessage).toBeVisible();
       await this.caseHeading.focus();
-      await this.successMessage.scrollIntoViewIfNeeded();
+      //await this.successMessage.scrollIntoViewIfNeeded();
       await this.globalPage.captureScreenshot("Correspondence triggered");
     });
 
@@ -550,9 +559,9 @@ export class PensionShellAccount extends BasePage {
       await this.globalPage.captureScreenshot("New Pension History record");
     });
 
-    this.regularPensionAmount.scrollIntoViewIfNeeded();
+    // await this.regularPensionAmount.scrollIntoViewIfNeeded();
     //this.regularPensionAmount.focus();
-    
+
   }
 
   async ProcessTab() {
@@ -573,18 +582,18 @@ export class PensionShellAccount extends BasePage {
 
   }
 
-  async getMemberId(account: string){
+  async getMemberId(account: string) {
     await this.createdMemberCaseLink.click();
     await this.sleep(3000)
-    if(account == 'ABP'){
-    await this.abpScreenView.waitFor();
-    await this.abpScreenView.click();
+    if (account == 'ABP') {
+      await this.abpScreenView.waitFor();
+      await this.abpScreenView.click();
     }
-    if(account == 'TTR'){
+    if (account == 'TTR') {
       await this.ttrScreenView.waitFor();
       await this.ttrScreenView.click();
     }
-    if(account == 'Accumulation'){
+    if (account == 'Accumulation') {
       await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).waitFor();
       await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
     }
@@ -606,9 +615,10 @@ export class PensionShellAccount extends BasePage {
 
     await this.sleep(3000);
     //await this.memberOverview.waitFor();
-    await this.memberOverview.click({force:true});
-    await this.sleep(5000).then(()=>this.addAccount.scrollIntoViewIfNeeded());
-    await this.addAccount.click({force:true});
+    await this.memberOverview.click({ force: true });
+    await this.sleep(5000).then(() => this.addAccount.scrollIntoViewIfNeeded());
+    await this.addAccount.click({ force: true });
+    await this.sleep(3000);
     await this.abp.click();
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
@@ -627,38 +637,56 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000);
     await this.initCreateCase();
     await this.createAcc.click();
-    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
-    await this.reviewCase.captureScreenshot("Shell account creation");
 
-  }
+
+    if (process.env.PRODUCT == FUND.HESTA) {
+      await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+    } else {
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('Intra Fund - Internal Transfer In is completed.'));
+      // Click on Internal transfer out process
+      await this.sleep(3000);
+      await this.page.locator("(//div[contains(@class,'gs-column full-row-gutter')]/following-sibling::div)[1]").click();
+      await this.sleep(3000);
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('Pipeline item Check Intra Fund - Internal Transfer has been skipped'));
+      await this.reviewCase.captureScreenshot('Internal Transfer Out Case');
+
+      // Click on Internal Transfer In Process
+      await this.page.locator("(//div[contains(@class,'gs-column full-row-gutter')]/following::div[contains(@class,'gs-column full-row-gutter')])[18]").click();
+    
+        await this.reviewCase.reviewCaseProcess(this.page.getByText('Transfer Out Finalised.'));
+        await this.reviewCase.captureScreenshot('Finalize Money Out Case');
+      }
+      await this.reviewCase.captureScreenshot("Shell account creation");
+
+    }
 
   async ttrAccountCreation(addBeneficiary: boolean = false) {
-    await this.sleep(3000);
-    await this.memberOverview.waitFor();
-    await this.memberOverview.click();
-    await this.addAccount.click();
-    await this.ttr.click();
-    await this.preferredContactMethod.click();
-    await this.preferredContactMethodSelect.click();
-    await this.residencyStatus.click();
-    await this.residencyStatusSelect.click();
-    await this.nextStep.click();
-    await this.addMemberConsolidation();
-    await this.addMemberInvestments();
-    if (addBeneficiary) {
-      await this.addMemberBeneficiaries();
-    } else {
-
+      await this.sleep(3000);
+      await this.memberOverview.waitFor();
+      await this.memberOverview.click();
+      await this.addAccount.click();
+      await this.ttr.click();
+      await this.preferredContactMethod.click();
+      await this.preferredContactMethodSelect.click();
+      await this.residencyStatus.click();
+      await this.residencyStatusSelect.click();
       await this.nextStep.click();
+      await this.addMemberConsolidation();
+      await this.addMemberInvestments();
+      if (addBeneficiary) {
+        await this.addMemberBeneficiaries();
+      } else {
+
+        await this.nextStep.click();
+      }
+      await this.addMemberPensionDetails();
+      await this.sleep(3000);
+      await this.initCreateCase();
+      await this.createAcc.click();
+      await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
     }
-    await this.addMemberPensionDetails();
-    await this.sleep(3000);
-    await this.initCreateCase();
-    await this.createAcc.click();
-    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+
 
   }
-
-
-
-}
