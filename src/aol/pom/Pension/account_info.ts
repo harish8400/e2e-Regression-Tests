@@ -84,14 +84,16 @@ export class AccountInfoPage extends BasePage {
         this.review = page.getByRole('cell', { name: 'In Review' });
         //locator('//span[text()="In Progress "]');
         this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-        this.inReview = page.locator('//span[text()="In Review"]');
+        this.inReview = page.getByText('In Review')
 
     }
 
     /** this function is for edit or update the existing bank account details  */
     async editBankAccount() {
+        await this.sleep(4000);
         await this.accountInfo.click();
-        await this.editAccountIcon.click();
+        await this.sleep(4000);
+        await this.editAccountIcon.click({force:true});
         await this.bsbNumberField.click();
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
@@ -154,6 +156,7 @@ export class AccountInfoPage extends BasePage {
 
     //CRN Update
     async updateCRN() {
+        await this.page.waitForTimeout(3000);
         await this.accountInfo.click();
         await this.sleep(3000);
         await this.editCRN.click();

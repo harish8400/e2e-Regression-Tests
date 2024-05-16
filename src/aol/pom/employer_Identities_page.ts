@@ -62,7 +62,7 @@ export class EmployerIdentitiesPage extends BasePage {
         super(page)
 
         this.employerIdentitiesLink = page.getByRole('link', { name: 'Employer Identities' });
-        this.addNewEmployer = page.getByRole('button', { name: 'add-circle icon' });
+        this.addNewEmployer = page.locator("//span[text()='Add new employer']");
         this.ABN = page.getByText('ABN');
         this.abnValue = page.locator('id=abn');
         this.acnValue = page.locator('id=acn');

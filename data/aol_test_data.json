@@ -1,7 +1,7 @@
 {
   "generate_test_data_from_api": true,
   "members": {
-    "Accumulation_member": "BC4D9-1745-1",
+    "Accumulation_member": "9020429",
         "Capturing_Beneficiary_Accumulation_member_Internal_transfer":"1C13F-115-1",
     "Manual_Rollin": "MER-PEN-450898",
     "Pension_Member_Rollin_And_Verify_Cash_Investment": "90101073",

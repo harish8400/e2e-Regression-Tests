@@ -72,7 +72,7 @@ export class ShellAccountApiHandler {
         if (id) {
           await MemberApiHandler.memberIdentity(apiRequestContext, id, { tfn, dob, givenName, fundName });
         }
-        await pensionAccountPage.reload();
+        //await pensionAccountPage.reload();
         // Return relevant data
         return { memberNo, surname ,linearId };
       }

@@ -117,6 +117,7 @@ export class RelatedInformationPage extends BasePage {
         await this.relatedInformationTab.click();
         await this.sleep(3000);
         await this.addConditionOfRelease_button.click();
+        await this.sleep(3000);
         await this.viewCase.click();
         await this.sleep(3000);
         await this.createCase.click();
@@ -124,10 +125,12 @@ export class RelatedInformationPage extends BasePage {
         await this.conditionForRelease_dropdown.click();
         await this.option_65orOlder.click();
         await this.expiryDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.expiryDate.press("Enter");
+        await this.sleep(3000);
         await this.linkCase.click();
         await this.sleep(5000);
         expect(this.confirmationMessage).toBeVisible();
-        await this.clipBoardIcon.click();
+        //await this.clipBoardIcon.click();
     }
 
     async verifySuperTickStatus(activeMember?: boolean){

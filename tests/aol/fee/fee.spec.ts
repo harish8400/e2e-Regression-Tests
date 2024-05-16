@@ -88,9 +88,12 @@ test(fundName() + "-Verify admin fee on redemption and application @fee", async 
         apiRequestContext,
         data.members.member_Adminfee!
       );
-      const memberId = linearId.id;
 
+      const getMemberId = () => membersId;
+      const memberId = getMemberId()
+      
       if (memberId) {
+       
         const MemberPayments =
           await ShellAccountCreationApiHandler.getMemberPayment(
             transactionApi,

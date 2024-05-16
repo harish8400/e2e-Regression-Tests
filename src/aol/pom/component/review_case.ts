@@ -44,6 +44,7 @@ export class ReviewCase extends BasePage {
             }
             catch (TimeoutException) {
             }
+            
           }
     
           //Break if there is an process exception

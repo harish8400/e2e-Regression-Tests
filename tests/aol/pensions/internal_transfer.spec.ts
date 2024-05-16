@@ -6,6 +6,7 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { AssertionError } from "assert";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 import *  as data from "../../../data/aol_test_data.json"
+import { Navbar } from "../../../src/adviser_online/pom/component/navbar";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -41,6 +42,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async 
         }
 
         await test.step("Select the Accumulation Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
             await navBar.selectMember(memberID!);
         });
 
@@ -88,6 +90,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async 
         }
 
         await test.step("Select the Accumulation Member", async () => {
+            await navBar.navigateToAccumulationMembersPage();
             await navBar.selectMember(memberID);
         });
 
@@ -134,7 +137,9 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation @pension", async 
         }
 
         await test.step("Select the ABP Member", async () => {
-            await navBar.selectMember(memberID);
+            await new Promise((resolve) => setTimeout(resolve, 10000));
+           // await navBar.navigateToPensionMembersPage();
+          //  await navBar.selectMember(memberID);
         });
 
         await test.step("Create accumulation account for same Member", async () => {
@@ -142,7 +147,8 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation @pension", async 
         });
 
         await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            await navBar.selectMember(memberID);
+            //await navBar.navigateToAccumulationMembersPage();
+           // await navBar.selectMember(memberID);
             await pensionAccountPage.selectABPTab();
             await internalTransferPage.internalTransferMember('ABP', memberID);
         });
@@ -180,6 +186,7 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation @pension", async 
         }
 
         await test.step("Select the TTR Member", async () => {
+            await navBar.navigateToTTRMembersPage();
             await navBar.selectMember(memberID);
         });
 
@@ -188,8 +195,9 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation @pension", async 
         });
 
         await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            await navBar.selectMemberSurName(memberID);
-            await internalTransferPage.internalTransferMember('TTR', memberID);
+          //await navBar.selectMember(memberID);
+          await internalTransferPage.accumulationAccountLink()
+          await internalTransferPage.internalTransferMember('TTR', memberID);
 
         });
 
@@ -247,7 +255,6 @@ test(fundName() + "-Validate Retirement Transition process is successful where P
     } catch (error) {
         throw error;
     }
-
 })
 
 test(fundName() + "-Validate Retirement Transition process completes successfully on TTR account with CoR and NO PTB transaction @pension", async ({ navBar, pensionAccountPage, apiRequestContext, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {

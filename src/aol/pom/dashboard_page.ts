@@ -154,7 +154,9 @@ export class DashboardPage extends BasePage {
         await this.page.getByRole('button', { name: 'APPLY' }).click();
         await this.page.getByRole('button', { name: 'Go' }).click();
 
-        let actualOutcome = await this.page.getByRole('row', { name: `${caseRef}` }).locator('span').nth(2).textContent();
+        let actualOutcome = await this.page.getByRole('row', { name: `${caseRef}` }).locator('span').nth(2).innerText();
+
+        console.log(actualOutcome)
         expect(expectedOutcome).toContain(actualOutcome);
         await this.globalPage.captureScreenshot('Add new case');
       });
