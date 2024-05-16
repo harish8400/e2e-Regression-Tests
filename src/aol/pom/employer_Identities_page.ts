@@ -284,13 +284,21 @@ export class EmployerIdentitiesPage extends BasePage {
     }
     
 
-    async updateExistingEmployer() {
-        
+    async updateExistingEmployer(isExisting: boolean) {
+        let businessN: string;
+    
+        if (!isExisting) {
+            businessN = await this.createNewEmployer();
+        } else {
+            businessN = employer.employerName; 
+        }
+    
         await this.sleep(3000);
+        await this.employerIdentitiesLink.click();
         await this.filter.click();
+        await this.sleep(3000);
         await this.EmployerNameFilter.click();
-        const name = employer.employerName;
-        await this.page.waitForTimeout(3000).then(()=>this.EmployerNameFilterValue.fill(name));
+        await this.page.waitForTimeout(3000).then(() => this.EmployerNameFilterValue.fill(businessN));
         await this.applyButton.click();
         await this.page.locator("(//td[@colspan='1']//div)[1]").click();
         await this.editEmployer.click();

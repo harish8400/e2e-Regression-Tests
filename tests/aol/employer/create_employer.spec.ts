@@ -73,7 +73,7 @@ test(fundName() +"Verify existing employer data can be edited successfully @empl
     })
 
     await test.step("- Existing employer", async () => {
-        await employerIdentitiesPage.updateExistingEmployer();
+        await employerIdentitiesPage.updateExistingEmployer(false);
     })
 })    
 
