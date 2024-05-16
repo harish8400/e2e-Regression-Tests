@@ -1,17 +1,49 @@
-<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="201.38097399999998">
-<testsuite name="aol/setup/auth.setup.ts" timestamp="2024-05-08T11:48:23.413Z" hostname="setup" tests="1" failures="0" skipped="0" time="7.163" errors="0">
-<testcase name="Vanguard Superauthenticate" classname="aol/setup/auth.setup.ts" time="7.163">
+<testsuites id="" name="" tests="3" failures="1" skipped="0" errors="0" time="134.493168">
+<testsuite name="setup/auth.setup.ts" timestamp="2024-05-16T06:19:36.947Z" hostname="setup" tests="2" failures="0" skipped="0" time="10.052" errors="0">
+<testcase name="HESTA for MercyVerify disabled user login functionality " classname="setup/auth.setup.ts" time="3.359">
+</testcase>
+<testcase name="HESTA for MercyVerify successful user login functionality " classname="setup/auth.setup.ts" time="6.693">
 </testcase>
 </testsuite>
-<testsuite name="aol/member/switch.spec.ts" timestamp="2024-05-08T11:48:23.413Z" hostname="chromium" tests="1" failures="0" skipped="0" time="190.483" errors="0">
-<testcase name="Vanguard Super Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date." classname="aol/member/switch.spec.ts" time="190.483">
-<system-out>
-<![CDATA[Test running for product 'Vanguard Super'
-Created member with memberNo: 859294044 and memberId: b8ae68f0-897e-4734-93d6-d15214a0fa01
-Case ID: 09af5ae0-c078-4214-83f0-ea10a8b8d494
-Case ID: f758806b-4a94-4a0c-a6c1-38246de3fbad
+<testsuite name="employer/create_employer.spec.ts" timestamp="2024-05-16T06:19:36.947Z" hostname="chromium" tests="1" failures="1" skipped="0" time="120.445" errors="0">
+<testcase name="HESTA for MercyVerify existing employer data can be edited successfully @employer" classname="employer/create_employer.spec.ts" time="120.445">
+<failure message="create_employer.spec.ts:68:5 HESTA for MercyVerify existing employer data can be edited successfully @employer" type="FAILURE">
+<![CDATA[  [chromium] › employer/create_employer.spec.ts:68:5 › HESTA for MercyVerify existing employer data can be edited successfully @employer › - Existing employer 
 
-[[ATTACHMENT|test-results/aol-member-switch-Vanguard-4c4a6-options-using-current-date--chromium/test-finished-1.png]]
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('xpath=(//td[@colspan=\'1\']//div)[1]')
+      -   locator resolved to <div class="cell">…</div>
+      - attempting click action
+      -   waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+
+
+       at ../../src/aol/pom/employer_Identities_page.ts:295
+
+      293 |         await this.page.waitForTimeout(3000).then(()=>this.EmployerNameFilterValue.fill(name));
+      294 |         await this.applyButton.click();
+    > 295 |         await this.page.locator("(//td[@colspan='1']//div)[1]").click();
+          |                                                                 ^
+      296 |         await this.editEmployer.click();
+      297 |         let acn=UtilsAOL.randomNumber(9);
+      298 |         await this.acnValue.fill(acn);
+
+        at EmployerIdentitiesPage.updateExistingEmployer (/home/minal.tate/MinalAutomation/e2e-regression-tests/src/aol/pom/employer_Identities_page.ts:295:65)
+        at /home/minal.tate/MinalAutomation/e2e-regression-tests/tests/aol/employer/create_employer.spec.ts:75:9
+        at /home/minal.tate/MinalAutomation/e2e-regression-tests/tests/aol/employer/create_employer.spec.ts:74:5
+
+    attachment #3: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/employer-create_employer-H-2ab35-dited-successfully-employer-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[Test running for product 'HESTA for Mercy'
+
+[[ATTACHMENT|test-results/employer-create_employer-H-2ab35-dited-successfully-employer-chromium/test-failed-1.png]]
 ]]>
 </system-out>
 </testcase>
