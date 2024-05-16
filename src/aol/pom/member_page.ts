@@ -19,7 +19,6 @@ import { xmlUtility } from "../../utils/xml_util";
 import process from 'process';
 import { ENVIRONMENT_CONFIG } from "../../../config/environment_config";
 import { AssertionError } from "assert";
-import { error } from "console";
 
 let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 

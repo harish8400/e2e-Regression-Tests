@@ -20,14 +20,14 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs self triggered rollout full exit on a member */
-test(fundName()+"-Money Out - Rollover out full exit @moneyout", async ({ apiRequestContext, accountInfoPage, globalPage, navBar, memberPage, memberTransactionPage }) => {
+test(fundName()+"-Money Out - Rollover out full exit @moneyout", async ({ apiRequestContext, globalPage, memberPage, memberTransactionPage }) => {
 
     await allure.suite("Money Out");
     await allure.subSuite("Rollover out full exit");
     let createMemberNo;
     await test.step("Create New Accumulation Account", async () => {
-    const memberData = await memberPage.createAccumulationMember(apiRequestContext, accountInfoPage, navBar);
-    createMemberNo = memberData.createMemberNo;
+    const memberData = await memberPage.createAccumulationMember(apiRequestContext);
+    createMemberNo = memberData.memberNo;
     await globalPage.captureScreenshot('Accumulation Account Creation');
     })
 
@@ -73,7 +73,7 @@ test(fundName() + " Benefit Payment_Retirement - Preservation age_Verify claim p
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -107,7 +107,7 @@ test(fundName() + " Benefit Payment_Ceased employment age after 60_Verify claim 
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -141,7 +141,7 @@ test(fundName() + " Benefit Payment_Age 65 or older_Verify claim processed succe
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -175,7 +175,7 @@ test(fundName() + " Benefit Payment_Financial Hardship_Verify claim processed su
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -209,7 +209,7 @@ test(fundName() + " Benefit Payment_Unrestricted non-preserved benefit_Verify cl
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -243,7 +243,7 @@ test(fundName() + " Benefit Payment_Compassionate Grounds - Partial_Verify claim
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -277,7 +277,7 @@ test(fundName() + " Benefit Payment_Compassionate Grounds - Full_Verify claim pr
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -311,7 +311,7 @@ test(fundName() + " Benefit Payment_Permanent Incapacity_Verify claim processed 
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -345,7 +345,7 @@ test(fundName() + " Benefit Payment_Death benefit_Verify claim processed success
     
     await test.step("Add new Accumulation Member", async () => {
         const memberData = await memberPage.accumulationMember( navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.createMemberNo;
+        createMemberNo = memberData.memberNo;
         await navBar.navigateToAccumulationMembersPage();
     })
 
@@ -383,7 +383,7 @@ test(fundName() + " Roll Out - With TFN for APRA fund @moneyout", async ({ relat
         
         await test.step("Add new Accumulation Member & select the created member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
     
     }
@@ -418,7 +418,7 @@ test(fundName() + " Roll Out - Without TFN for APRA fund @moneyout", async ({ me
         
         await test.step("Add new Accumulation Member & select the created member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            createMemberNo = memberData.createMemberNo;
+            createMemberNo = memberData.memberNo;
         })
     }
     //when api is set to false, we will use existing member details for testing.
