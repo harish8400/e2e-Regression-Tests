@@ -242,18 +242,19 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async addRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
-
+       
         let investmentId: string;
-        switch (fundProduct) {
-            case 'HESTA for Mercy':
+        let memberInvestmentId: string
+        if (process.env.PRODUCT === FUND.HESTA) {
+       
                 investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-                break;
-            case 'Vanguard Super':
+                memberInvestmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.BALANCED_GROWTH.ID;
+        }else{
+                
                 investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
-                break;
-            default:
-                throw new Error(`Unsupported product: ${fundProduct}`);
+                memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.CONSERVATIVE.ID;
         }
+                
         let path = `member/${linearId}/rollin`;
         let data = {
             "paymentReference": "InternalTransfer_902010134",
@@ -279,7 +280,11 @@ export class ShellAccountApi extends BaseDltaAolApi {
             "targetInvestments": [
                 {
                     id: investmentId,
-                    "percent": 100
+                    "percent": 50
+                },
+                {
+                    id: memberInvestmentId,
+                    "percent": 50
                 }
             ]
         };

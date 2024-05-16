@@ -866,18 +866,20 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
     expect(balance).not.toBeNull();
-    await this.sleep(2000);
+    await this.sleep(3000);
     await this.page
       .locator("//h2[text()='Asset Allocation']")
       .scrollIntoViewIfNeeded();
     await this.reviewCase.captureScreenshot();
-    await this.sleep(2000);
+    await this.sleep(3000);
     await this.page.locator("//p[text()=' Target ']").scrollIntoViewIfNeeded();
+    await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
-    await this.sleep(2000);
+    await this.sleep(4000);
     await this.page
       .locator("(//div[text()='Market value'])[1]")
       .scrollIntoViewIfNeeded();
+      await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
   }
 

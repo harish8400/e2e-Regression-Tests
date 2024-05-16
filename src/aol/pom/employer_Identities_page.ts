@@ -293,12 +293,12 @@ export class EmployerIdentitiesPage extends BasePage {
             businessN = employer.employerName; 
         }
     
-        await this.sleep(3000);
+        await this.sleep(5000);
         await this.employerIdentitiesLink.click();
         await this.filter.click();
-        await this.sleep(3000);
+        await this.sleep(5000);
         await this.EmployerNameFilter.click();
-        await this.page.waitForTimeout(3000).then(() => this.EmployerNameFilterValue.fill(businessN));
+        await this.page.waitForTimeout(4000).then(() => this.EmployerNameFilterValue.fill(businessN));
         await this.applyButton.click();
         await this.page.locator("(//td[@colspan='1']//div)[1]").click();
         await this.editEmployer.click();

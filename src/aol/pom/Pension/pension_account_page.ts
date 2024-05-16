@@ -685,7 +685,30 @@ export class PensionShellAccount extends BasePage {
       await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
     }
+    async TransactionsTab(){
+      await this.sleep(3000);
+      await this.transactionsTab.click();
+      await this.sleep(3000);
+      let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='CCO']").first();
+      await sgcType.scrollIntoViewIfNeeded();
+      await this.sleep(2000);
+      await sgcType.click();
+      let amount = await this.getAmountContributed();
+      allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
+      const message = await this.getMessageType();
+      allure.logStep(`Message Type expected for this contribution is: ${message}`);
+    }
 
+    async getAmountContributed(): Promise<string | null> {
+      const amount = await this.page.locator("(//p[text()='Amount']/following::p[@class='font-semibold'])[1]").textContent();
+      return amount ? amount.trim() : null;
+  }
+
+  async getMessageType(): Promise<string | null> {
+    await this.sleep(3000);
+    const message = await this.page.locator("(//p[text()='Message type']/following::p[@class='font-semibold'])[1]").textContent();
+    return message ? message.trim() : null;
+}
 
 
   }
