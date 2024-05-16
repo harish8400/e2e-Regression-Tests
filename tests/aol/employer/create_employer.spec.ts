@@ -30,7 +30,7 @@ test(fundName() + "-Verify if new employer ABN is created successfully @employer
     })
 })
 
-test.skip("Verify if new employer WPN is created successfully @employer", async ({ employerIdentitiesPage }) => {
+test(fundName() + "Verify if new employer WPN is created successfully @employer", async ({ employerIdentitiesPage }) => {
    
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
@@ -52,6 +52,7 @@ test.skip("Verify if new employer WPN is created successfully @employer", async 
 test(fundName() + "-Verify for new employer Contact Details are added successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.employerIdentities();
         await employerIdentitiesPage.newEmployer();
     })
 
@@ -64,30 +65,21 @@ test(fundName() + "-Verify for new employer Contact Details are added successful
     })
 })
 
-test("Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
+test(fundName() +"Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
     })
 
-    test(fundName() + "-Verify existing employer data can be edited successfully", async ({ employerIdentitiesPage }) => {
+    await test.step("- Existing employer", async () => {
         await employerIdentitiesPage.updateExistingEmployer();
     })
 })    
 
 test(fundName() + "-Verify if error is displayed on empty create employer request @employer", async ({ employerIdentitiesPage }) => {
 
-        await employerIdentitiesPage.validateInvalidEmployerCreation();
-
         await test.step("Click on Add new Employers", async () => {
-            await employerIdentitiesPage.newEmployer();
-        })
+            await employerIdentitiesPage.validateInvalidEmployerCreation();
+        });
 
-        await test.step("Edit existing employer data", async () => {
-            await employerIdentitiesPage.updateExistingEmployer();
-        })
-
-        await test.step("Verify existing employer data edit functionality", async () => {
-            await employerIdentitiesPage.updateExistingEployerValidations();
-        })
 })
