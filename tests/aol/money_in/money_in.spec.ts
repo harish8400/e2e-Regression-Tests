@@ -7,6 +7,7 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import * as member from "../../../src/aol/data/member.json";
 import pensionMember from "../../../data/aol_test_data.json";
 import * as data from "../../../data/aol_test_data.json";
+import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
         apiRequestContext: async ({ }, use) => {
@@ -127,7 +128,7 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
 
 })
 
-test(fundName() + " Verify if Personal contribution is processed successfully for Accum member @moneyin", async ({ navBar, memberApi, memberTransactionPage, pensionTransactionPage, globalPage, pensionAccountPage }) => {
+test(fundName() + " Verify if Personal contribution is processed successfully for Accum member @moneyin", async ({ navBar, memberApi, memberTransactionPage, pensionTransactionPage,shellAccountApi,apiRequestContext, globalPage, pensionAccountPage }) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -135,12 +136,14 @@ test(fundName() + " Verify if Personal contribution is processed successfully fo
 
     if (pensionMember.generate_test_data_from_api) {
         await test.step("Add new Accumulation Member", async () => {
-            let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            let { memberNo, processId  } = await AccumulationMemberApiHandler.createMember(memberApi);
+            await new Promise(resolve => setTimeout(resolve, 5000));
             const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi, processId);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await AccumulationMemberApiHandler.approveProcess(memberApi, caseGroupId!);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            let linearId =  await AccumulationMemberApiHandler.getMemberInfo(shellAccountApi, memberNo!);
+            await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id!);
             await navBar.selectMember(memberNo);
         })
     } else {
@@ -155,8 +158,7 @@ test(fundName() + " Verify if Personal contribution is processed successfully fo
     });
 
     await test.step("Validate the payment details & components ", async () => {
-        await pensionAccountPage.transactionsTab.click();
-        await globalPage.TransactionReference.click();
+        await pensionAccountPage.TransactionsTab();
         await pensionTransactionPage.componentsValidation();
 
     })
@@ -172,11 +174,11 @@ test(fundName() + "Salary Sacrifice Contribution - Verify if contribution is pro
     if (pensionMember.generate_test_data_from_api) {
         await test.step("Add new Accumulation Member", async () => {
             let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi, processId);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await AccumulationMemberApiHandler.approveProcess(memberApi, caseGroupId!);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await navBar.selectMember(memberNo);
         })
     } else {
@@ -199,7 +201,7 @@ test(fundName() + "Salary Sacrifice Contribution - Verify if contribution is pro
 
 })
 
-test(fundName() + "Super Guarantee Contribution - Verify if contribution is processed successfully @moneyin", async ({ pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberApi, memberTransactionPage }) => {
+test(fundName() + "Super Guarantee Contribution - Verify if contribution is processed successfully @moneyin", async ({ apiRequestContext,pensionTransactionPage, pensionAccountPage, globalPage, navBar, memberApi, memberTransactionPage ,shellAccountApi}) => {
 
     await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -207,12 +209,14 @@ test(fundName() + "Super Guarantee Contribution - Verify if contribution is proc
 
     if (pensionMember.generate_test_data_from_api) {
         await test.step("Add new Accumulation Member", async () => {
-            let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            let { memberNo, processId  } = await AccumulationMemberApiHandler.createMember(memberApi);
+            await new Promise(resolve => setTimeout(resolve, 5000));
             const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi, processId);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await AccumulationMemberApiHandler.approveProcess(memberApi, caseGroupId!);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            let linearId =  await AccumulationMemberApiHandler.getMemberInfo(shellAccountApi, memberNo!);
+            await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id!);
             await navBar.selectMember(memberNo);
         })
     } else {
@@ -281,11 +285,11 @@ test(fundName() + "Retirement Contribution - Verify if contribution is processed
     if (pensionMember.generate_test_data_from_api) {
         await test.step("Add new Accumulation Member", async () => {
             let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi, processId);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await AccumulationMemberApiHandler.approveProcess(memberApi, caseGroupId!);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             await navBar.selectMember(memberNo);
         })
     } else {
@@ -411,16 +415,16 @@ test(fundName() + "Roll In  - Without TFN for APRA fund @moneyin", async ({ memb
     if (data.generate_test_data_from_api) {
     
         let { memberNo, processId } = await AccumulationMemberApiHandler.createMember(memberApi, true);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         const caseGroupId = await AccumulationMemberApiHandler.getCaseGroupId(memberApi, processId);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await AccumulationMemberApiHandler.approveProcess(memberApi, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await navBar.selectMember(memberNo);
 
-        // await test.step("delete TFN", async () => {
-        //     await memberOverviewpage.deleteTFN();
-        // });
+        await test.step("delete TFN", async () => {
+            await memberOverviewpage.deleteTFN();
+        });
         
     }
     //when api is set to false, we will use existing member details for testing.

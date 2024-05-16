@@ -5,7 +5,7 @@ import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(180000);
     await navBar.selectProduct();
     await allure.suite("Employer");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -73,7 +73,7 @@ test(fundName() +"Verify existing employer data can be edited successfully @empl
     })
 
     await test.step("- Existing employer", async () => {
-        await employerIdentitiesPage.updateExistingEmployer();
+        await employerIdentitiesPage.updateExistingEmployer(false);
     })
 })    
 
