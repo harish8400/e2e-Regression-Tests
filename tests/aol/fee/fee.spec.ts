@@ -84,11 +84,11 @@ test(fundName() + "-Verify admin fee on redemption and application @fee", async 
 
     // Validate Member Payment Details
     await test.step("Validate Member Fee Details", async () => {
-      // const linearId = await MemberApiHandler.fetchMemberDetails(
-      //   apiRequestContext,
-      //   data.members.member_Adminfee!
-      // );
-      // const memberId = linearId.id;
+      const linearId = await MemberApiHandler.fetchMemberDetails(
+        apiRequestContext,
+        data.members.member_Adminfee!
+      );
+
       const getMemberId = () => membersId;
       const memberId = getMemberId()
       

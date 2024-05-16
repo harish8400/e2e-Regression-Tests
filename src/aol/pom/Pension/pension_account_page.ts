@@ -323,8 +323,7 @@ export class PensionShellAccount extends BasePage {
     this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
-    this.abp = page.getByText('Vanguard Super SpendSmart').first();
-    // getByText('HESTA for Mercy Retirement');
+    this.abp = page.locator("(//ul[@class='gmzECJ']//li)[3]");
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
     const date = DateUtils.ddMMMyyyStringDate(new Date());
     this.pensionHistory = page.getByRole('row', { name: date + ' Pension Payment Details Update' }).first();
