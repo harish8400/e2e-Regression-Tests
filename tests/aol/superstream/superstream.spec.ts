@@ -32,7 +32,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with TFN -@superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -104,7 +104,7 @@ test("MRR is processed with TFN -@MRR", async ({ memberPage, superSteam, globalP
 
 })
 
-test("MRR is processed with out TFN-@MRR", async ({ memberPage, superSteam, globalPage }) => {
+test("MRR is processed with out TFN -@superstream", async ({ memberPage, superSteam, globalPage }) => {
 
     try {
 
@@ -175,7 +175,7 @@ test("MRR is processed with out TFN-@MRR", async ({ memberPage, superSteam, glob
 
 })
 
-test("CTR is processed with TFN and Single Contribution-@TFN_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("CTR is processed with TFN and Single Contribution -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -233,7 +233,7 @@ test("CTR is processed with TFN and Single Contribution-@TFN_CTR", async ({ memb
 
 })
 
-test("CTR is processed with TFN and Multiple Contributions-@TFN_Multiple_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("CTR is processed with TFN and Multiple Contributions -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -290,7 +290,7 @@ test("CTR is processed with TFN and Multiple Contributions-@TFN_Multiple_CTR", a
 
 })
 
-test("CTR is processed without TFN and Single Contribution-@withoutTFN_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("CTR is processed without TFN and Single Contribution -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -347,7 +347,7 @@ test("CTR is processed without TFN and Single Contribution-@withoutTFN_CTR", asy
 
 })
 
-test("CTR is processed without TFN and Multiple Contributions-@withoutTFN_Multiple_CTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("CTR is processed without TFN and Multiple Contributions -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string, employerOrganisationName: string, australianBusinessNumber: string, conversationId: string };
     await test.step("Generate XML file for upload", async () => {
@@ -404,7 +404,7 @@ test("CTR is processed without TFN and Multiple Contributions-@withoutTFN_Multip
 
 })
 
-test("RTR is processed with TFN -@TFN_RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed with TFN -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
@@ -518,7 +518,7 @@ test("RTR is processed with TFN -@TFN_RTR", async ({ memberPage, superSteam, glo
 
 });
 
-test("RTR is processed without TFN -@RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed without TFN -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
@@ -629,7 +629,7 @@ test("RTR is processed without TFN -@RTR", async ({ memberPage, superSteam, glob
 
 });
 
-test("RTR is processed from SMSF with TFN -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed from SMSF with TFN -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
@@ -743,7 +743,7 @@ test("RTR is processed from SMSF with TFN -@wed", async ({ memberPage, superStea
 
 });
 
-test("RTR is processed from SMSF without TFN -@SMSF-RTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("RTR is processed from SMSF without TFN -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string; conversationId: string; member: string, surName: string, dob: string, taxed: string, unTaxed: string, preserved: string, unrestricted: string, restricted: string };
     await test.step("Generate XML file for upload", async () => {
@@ -855,7 +855,7 @@ test("RTR is processed from SMSF without TFN -@SMSF-RTR", async ({ memberPage, s
 });
 
 
-test("GCTR is processed by superstream-@GCTR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("GCTR is processed by superstream -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string, conversationId: string, payrollNumber: string, member: string, surName: string, year: number, month: string, day: number };
     await test.step("Generate XML file for upload", async () => {
@@ -966,7 +966,7 @@ test("GCTR is processed by superstream-@GCTR", async ({ memberPage, superSteam, 
 })
 
 
-test("Member is processed with Partial Rollover-Out Exit with APRA Fund -@IRR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Partial Rollover-Out Exit with APRA Fund -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1053,7 +1053,7 @@ test("Member is processed with Partial Rollover-Out Exit with APRA Fund -@IRR", 
 
 })
 
-test("Member is processed with Full Rollover-Out Exit with APRA Fund -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Full Rollover-Out Exit with APRA Fund -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1140,7 +1140,7 @@ test("Member is processed with Full Rollover-Out Exit with APRA Fund -@wed", asy
 
 })
 
-test("Member is processed with Partial Rollover-Out Exit with SMSF Fund -@IRR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Partial Rollover-Out Exit with SMSF Fund -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1227,7 +1227,7 @@ test("Member is processed with Partial Rollover-Out Exit with SMSF Fund -@IRR", 
 
 })
 
-test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@wed", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; conversationId: string; member: string, surName: string, dob: string };
     await test.step("Generate XML file for upload", async () => {
@@ -1314,7 +1314,7 @@ test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@wed", asy
 
 })
 
-test("GCTAR is processed by superstream-@GCTAR", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
+test("GCTAR is processed by superstream -@superstream", async ({ memberPage, superSteam, globalPage, apiRequestContext }) => {
 
     let generatedXMLFileName: string | { destinationFileName: string; paymentReferenceNumber: string, conversationId: string, payrollNumber: string, member: string, surName: string, year: number, month: string, day: number };
     await test.step("Generate XML file for upload", async () => {
@@ -1398,7 +1398,7 @@ test("GCTAR is processed by superstream-@GCTAR", async ({ memberPage, superSteam
 
 })
 
-test("Verify if valid bank csv file is uploaded successfully and its validation is success", async ({ memberPage, globalPage }) => {
+test("Verify if valid bank csv file is uploaded successfully and its validation is success @superstream", async ({ memberPage, globalPage }) => {
     await test.step("Verify the Bank CSV File uploading and validate its process", async () => {
         await memberPage.bankFile();
         const fileName = await memberPage.uploadEditedCSVFile('ANZBank_sucess.csv');
@@ -1410,7 +1410,7 @@ test("Verify if valid bank csv file is uploaded successfully and its validation 
 });
 
 
-test("Verify if valid bank csv file is uploaded successfully and its validation is failed", async ({ memberPage, globalPage }) => {
+test("Verify if valid bank csv file is uploaded successfully and its validation is failed @superstream", async ({ memberPage, globalPage }) => {
     await test.step("Verify the Bank CSV File uploading and validate its process", async () => {
         await memberPage.bankFile();
         const fileName = await memberPage.uploadFile('ANZBank_error.csv');
