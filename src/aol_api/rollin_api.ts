@@ -20,18 +20,19 @@ export class RollinApi extends BaseDltaAolApi {
 
   async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
     let investmentId: string;
+    let memberInvestmentId:string
         switch (fundProduct) {
             case 'HESTA for Mercy':
             investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.BALANCED_GROWTH.ID;
             break;
             case 'Vanguard Super':
             investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.CONSERVATIVE.ID;
             break;
             default:
                 throw new Error(`Unsupported product: ${fundProduct}`);
         }
-
-    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.BALANCED_GROWTH.ID;
     let path = `member/${linearId}/rollin`;
     let moneyIn = UtilsAOL.generateMoney();
     let data = {

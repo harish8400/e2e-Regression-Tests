@@ -136,11 +136,8 @@ test(fundName() + "-Verify a new pension membership account creation, then alter
         }
         else {
             memberID = data.members.Modify_Beneficiary_ABP_Active_Member;
-        }
-
-        await test.step("Select the ABP Member", async () => {
             await navBar.selectMember(memberID);
-        });
+        }
 
         await test.step("Alter Beneficiary of ABP Member", async () => {
             //await beneficiaryPage.selectMemberRelationshipTab();

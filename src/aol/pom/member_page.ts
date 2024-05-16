@@ -141,6 +141,8 @@ export class MemberPage extends BasePage {
     readonly BtnApply: Locator;
     readonly gctarTransaction: Locator;
     readonly caseID: Locator;
+    
+    readonly sustainbleGrowth1: Locator;
 
     constructor(page: Page) {
         super(page)
@@ -260,6 +262,8 @@ export class MemberPage extends BasePage {
         this.FilterOptionInput = page.getByRole('textbox').nth(1);
         this.BtnApply = page.getByRole('button', { name: 'APPLY' });
         this.caseID = page.locator(`(//span[@class='inline-block align-middle text-xs font-semibold'])[1]`);
+
+        this.sustainbleGrowth1 = page.locator("(//span[contains(text(),'Sustainable Growth')]/parent::li)[1]");
     }
 
     async addNewMember(tfnNull?: boolean, addBeneficiary?: boolean, dateJoinedFundEarlier?: boolean, memberIsChild?: boolean) {
@@ -484,16 +488,14 @@ export class MemberPage extends BasePage {
 
     async accumulationMember(navBar: Navbar, accountInfoPage: AccountInfoPage, apiRequestContext: APIRequestContext, internalTransferPage: InternalTransferPage) {
         const { memberNo, processId } = await MemberApiHandler.createMember(apiRequestContext);
-        await accountInfoPage.ProcessTab();
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        // await accountInfoPage.ProcessTab();
+        await new Promise(resolve => setTimeout(resolve, 5000));
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        //await accountInfoPage.reload();
+        //await navBar.navigateToAccumulationMembersPage();
         await navBar.selectMember(memberNo);
         const linearId = await ShellAccountApiHandler.getMemberInfo(apiRequestContext, memberNo);
         await ShellAccountApiHandler.addRollIn(apiRequestContext, linearId.id);

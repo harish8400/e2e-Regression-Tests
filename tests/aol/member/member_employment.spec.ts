@@ -29,7 +29,7 @@ test(fundName()+"-Verify an employment termination at current system date is pro
         //** Create a new accumulation member when data from api is set to true */
         if(pensionMember.generate_test_data_from_api){
             await test.step("Create a new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             })
         }
         else{
@@ -56,7 +56,7 @@ test(fundName()+"-Verify an employment termination with effective date earlier t
         //** Create a new accumulation member when data from api is set to true */
         if(pensionMember.generate_test_data_from_api){
             await test.step("Create a new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             })
         }
         else{

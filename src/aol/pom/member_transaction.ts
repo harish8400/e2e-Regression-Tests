@@ -4,7 +4,8 @@ import { DateUtils } from "../../utils/date_utils";
 import { InvalidResultAttributeException } from "@aws-sdk/client-ssm";
 import { ReviewCase } from "./component/review_case";
 import { MemberOverView } from "./member/member_overview";
-import * as member from "../../aol/data/member.json"
+import * as member from "../../aol/data/member.json";
+import pensionMember from "../../../data/aol_test_data.json";
 
 export class MemberTransactionsPage extends BasePage {
   //Rollover In
@@ -188,7 +189,7 @@ export class MemberTransactionsPage extends BasePage {
     // Member Termination
     this.accumulationFirstMember = page.locator("td > .cell").first();
     this.relationshipBtn = page.getByRole("button", { name: "Relationships" });
-    this.employementEditBtn = page.locator('button').filter({ hasText: 'Edit Content' }).nth(0);
+    this.employementEditBtn = page.locator("(//h2[@class='heading-md mb-5']/following::span[contains(@class,'flex items-center')])[6]");
     this.employerEndDate = page.locator('input[name="linkBroken"]');
     this.viewCases = page.getByRole("button", { name: "View Cases" });
 
@@ -337,17 +338,30 @@ export class MemberTransactionsPage extends BasePage {
 
     /** Member Termination for Current Date */
     async employmentTerminationForCurrentDate() {
-        //await this.sleep(5000);
         await this.relationshipBtn.waitFor();
         await this.relationshipBtn.click();
-        //await this.employementEditBtn.waitFor();
         await this.sleep(5000);
-        await this.employementEditBtn.click();
+        if(pensionMember.generate_test_data_from_api){
+          await this.page.locator("(//h2[@class='heading-md mb-5']/following::span[@class='text-caption'])[1]").click();
+          (await this.sleep(3000).then(()=>this.page.getByRole('combobox', { name: 'Search for option' }).locator('div').first())).click();
+          (await this.sleep(3000).then(()=>this.page.locator("(//li[@role='option'])[1]"))).click();
+         const employeeStartDate = await this.page.locator('input[name="linkInitiated"]');
+         await this.sleep(3000);
+         employeeStartDate.click();
+         employeeStartDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+         employeeStartDate.press('Enter')
+         await this.sleep(3000);
+
+        }else{
+          await this.employementEditBtn.click();
+        }
+        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.employerEndDate.press('Enter');
         await this.viewCases.waitFor();
         await this.viewCases.click();
+        await this.sleep(3000);
         await this.createCase.click();
         await this.sleep(3000);
-        await this.employerEndDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         await this.linkCase.click();
     }
     /** Member Termination for Earlier Date */
@@ -355,7 +369,20 @@ export class MemberTransactionsPage extends BasePage {
         await this.sleep(3000);
         await this.relationshipBtn.click();
         await this.sleep(5000)
-        await this.employementEditBtn.click();
+        if(pensionMember.generate_test_data_from_api){
+          await this.page.locator("(//h2[@class='heading-md mb-5']/following::span[@class='text-caption'])[1]").click();
+          (await this.sleep(3000).then(()=>this.page.getByRole('combobox', { name: 'Search for option' }).locator('div').first())).click();
+          (await this.sleep(3000).then(()=>this.page.locator("(//li[@role='option'])[1]"))).click();
+         const employeeStartDate = await this.page.locator('input[name="linkInitiated"]');
+         await this.sleep(3000);
+         employeeStartDate.click();
+         employeeStartDate.fill(`${DateUtils.ddmmyyyStringDate(-15)}`);
+         employeeStartDate.press('Enter')
+         await this.sleep(3000);
+
+        }else{
+          await this.employementEditBtn.click();
+        }
         await this.sleep(2000);
         await this.viewCases.click();
         await this.createCase.click();

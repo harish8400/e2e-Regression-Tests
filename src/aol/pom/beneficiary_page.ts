@@ -45,8 +45,8 @@ export class BeneficiaryPage extends BasePage {
     //Beneficiary Input Fields
     this.editButton = page.locator('button').filter({ hasText: 'Edit Content' });
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryType = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
-    this.beneficiaryRelationship = page.locator("(//div[@class='gs__actions'])[3]")
+    this.beneficiaryType = page.locator("(//input[@class='gs__search'])[2]");
+    this.beneficiaryRelationship = page.locator("(//input[@class='gs__search'])[3]")
     this.bindingLapsing = page.getByText('Binding Lapsing');
     this.beneficiaryStartDate = page.locator('input[name="effectiveDate"]');
     this.beneficiaryEndDate = page.locator('input[name="endDate"]');
@@ -81,7 +81,9 @@ export class BeneficiaryPage extends BasePage {
     await this.relationshipBtn.click();
     await this.editButton.click();
     await this.viewCase.click();
+    await this.sleep(3000);
     await this.createCase.click();
+    await this.sleep(3000);
     await this.beneficiaryName.fill(member.beneficiary);
     await this.beneficiaryType.click();
     await this.nonBinding.click();
