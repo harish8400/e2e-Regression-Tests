@@ -25,7 +25,7 @@ export class Navbar extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.accumulationProduct = page.locator('(//a[@class="NxLAj"])[1]');
+    this.accumulationProduct = page.locator("(//div[@index='0']//a)[1]");
     // page.getByRole('link', { name: 'Accumulation' });
     this.accumulationMembersLink = page.getByRole('link', { name: 'Members' });
 
@@ -64,7 +64,7 @@ export class Navbar extends BasePage {
   }
 
   async navigateToAccumulationMembersPage() {
-
+    await this.sleep(3000);
     await this.accumulationProduct.click();
     await this.accumulationMembersLink.click();
   }
