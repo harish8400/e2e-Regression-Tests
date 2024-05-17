@@ -1,7 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
-import { expect } from "@playwright/test";
-import { UtilsAOL, fundName } from "../../../src/aol/utils_aol";
+import {fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ navBar }) => {

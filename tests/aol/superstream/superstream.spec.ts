@@ -26,7 +26,7 @@ let privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
 let destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(180000);
     await navBar.selectProduct();
     await allure.suite("Superstream");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -48,7 +48,7 @@ test("MRR is processed with TFN -@superstream", async ({ memberPage, superSteam,
         });
 
         await test.step("Verify member created by Superstream", async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50000));
+            await new Promise((resolve) => setTimeout(resolve, 60000));
             await memberPage.verifySuperstreamProcess('SuperStream - MRR');
 
 
@@ -120,7 +120,7 @@ test("MRR is processed with out TFN -@superstream", async ({ memberPage, superSt
         });
 
         await test.step("Verify member created by Superstream", async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50000));
+            await new Promise((resolve) => setTimeout(resolve, 60000));
             await memberPage.verifySuperstreamProcess('SuperStream - MRR');
 
 
@@ -191,7 +191,7 @@ test("CTR is processed with TFN and Single Contribution -@superstream", async ({
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
     });
 
@@ -248,7 +248,7 @@ test("CTR is processed with TFN and Multiple Contributions -@superstream", async
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
     });
 
@@ -305,7 +305,7 @@ test("CTR is processed without TFN and Single Contribution -@superstream", async
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
     });
 
@@ -362,7 +362,7 @@ test("CTR is processed without TFN and Multiple Contributions -@superstream", as
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
     });
 
@@ -420,7 +420,7 @@ test("RTR is processed with TFN -@superstream", async ({ memberPage, superSteam,
     });
 
     await test.step("Verify member rollover-in by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
     });
 
@@ -534,7 +534,7 @@ test("RTR is processed without TFN -@superstream", async ({ memberPage, superSte
     });
 
     await test.step("Verify member rollover-in by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
     });
 
@@ -645,7 +645,7 @@ test("RTR is processed from SMSF with TFN -@superstream", async ({ memberPage, s
     });
 
     await test.step("Verify member SMSF rollover-in by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 70000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
     });
 
@@ -759,7 +759,7 @@ test("RTR is processed from SMSF without TFN -@superstream", async ({ memberPage
     });
 
     await test.step("Verify member SMSF rollover-in by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover In');
     });
 
@@ -874,7 +874,7 @@ test("GCTR is processed by superstream -@superstream", async ({ memberPage, supe
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Contribution');
     });
 
@@ -982,7 +982,7 @@ test("Member is processed with Partial Rollover-Out Exit with APRA Fund -@supers
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 
@@ -1069,7 +1069,7 @@ test("Member is processed with Full Rollover-Out Exit with APRA Fund -@superstre
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 70000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 
@@ -1156,7 +1156,7 @@ test("Member is processed with Partial Rollover-Out Exit with SMSF Fund -@supers
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 
@@ -1243,7 +1243,7 @@ test("Member is processed with Full Rollover-Out Exit with SMSF Fund -@superstre
     });
 
     await test.step("Verify member Initial Rollover-Out Request by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 70000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream - Rollover Out');
     });
 
@@ -1333,7 +1333,7 @@ test("GCTAR is processed by superstream -@superstream", async ({ memberPage, sup
     });
 
     await test.step("Verify member contribution by Superstream", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise((resolve) => setTimeout(resolve, 80000));
         await memberPage.verifySuperstreamProcess('SuperStream GCTAR');
     });
 

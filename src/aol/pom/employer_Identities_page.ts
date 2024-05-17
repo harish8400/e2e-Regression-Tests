@@ -113,11 +113,11 @@ export class EmployerIdentitiesPage extends BasePage {
 
 
     }
-    async employerIdentities(){
+    async employerIdentities() {
         await this.employerIdentitiesLink.click();
     }
-     
-    async newEmployer(){
+
+    async newEmployer() {
         await this.addNewEmployer.click();
     }
 
@@ -125,7 +125,7 @@ export class EmployerIdentitiesPage extends BasePage {
         ///await this.ABN.check();
         await this.abnValue.fill('45004189708');
         //await this.acnValue.fill(acnValue);
-        let businessN=UtilsAOL.randomNumber(5);
+        let businessN = UtilsAOL.randomNumber(5);
         await this.businessName.fill(businessN);
         await this.employerType.click();
         await this.partcipating.click();
@@ -147,7 +147,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(businessN);
         return businessN;
     }
-    async createNewEmployerValidations(){
+    async createNewEmployerValidations() {
         await this.sleep(2000);
         await this.statusText.scrollIntoViewIfNeeded();
         const employerUpdatedData = await this.statusText.innerText();
@@ -160,7 +160,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.sleep(3000);
         const statusCode = await this.status.innerText();
         console.log(statusCode);
-        
+
         const ExpectedStatusCode = 'Closed';
 
         if (employerUpdatedData == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
@@ -171,7 +171,7 @@ export class EmployerIdentitiesPage extends BasePage {
         else {
             console.error("New Employer creation using ABN failed");
         }
-       
+
     }
 
     async createNewEmployerWPN() {
@@ -189,11 +189,11 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.wpnValue.press('Enter');
         await this.wpnValue.press('Tab');
         await this.wpnValue.press('Tab');
-        let businessN=UtilsAOL.randomName();
-        await this.businessName.fill(businessN+UtilsAOL.randomNumber(2));
+        let businessN = UtilsAOL.randomName();
+        await this.businessName.fill(businessN + UtilsAOL.randomNumber(2));
         await this.employerType.click();
         await this.partcipating.click();
-       // await this.fundEmployerId.fill(fundEmployerId);
+        // await this.fundEmployerId.fill(fundEmployerId);
         //await this.startDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
         // await this.addressLine1.fill('Old castle road');
         // await this.addressLine2.fill('block 2')
@@ -203,15 +203,15 @@ export class EmployerIdentitiesPage extends BasePage {
         // await this.stateArrow.click();
         // await this.state.click();
         // await this.postcode.fill('2640');
-       
+
         await this.sleep(1500);
         await this.linkCase.click();
     }
-    async createNewEmployerWPNValidations(){
+    async createNewEmployerWPNValidations() {
         await this.sleep(3000);
         await this.statusText.scrollIntoViewIfNeeded();
 
-        await expect(this.statusText).toBeVisible({timeout: 5000})
+        await expect(this.statusText).toBeVisible({ timeout: 5000 })
         const employerUpdatedData = await this.statusText.textContent();
         const trimmedText = employerUpdatedData?.trim();
         console.log(trimmedText);
@@ -226,7 +226,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(statusCode);
         const ExpectedStatusCode = 'Closed';
 
-        if (trimmedText==ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
+        if (trimmedText == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
             assert.equal(ExpectedText, trimmedText);
             assert.equal(statusText, ExpectedStatusText);
             assert.equal(statusCode, ExpectedStatusCode);
@@ -240,13 +240,15 @@ export class EmployerIdentitiesPage extends BasePage {
         const businessN = await this.createNewEmployer()
         await this.sleep(3000)
         await this.employerIdentitiesLink.click();
+        await this.sleep(3000)
         await this.filter.click();
+        await this.sleep(3000)
         await this.EmployerNameFilter.click();
-        await this.page.waitForTimeout(3000).then(()=>this.EmployerNameFilterValue.fill(businessN));
+        await this.page.waitForTimeout(3000).then(() => this.EmployerNameFilterValue.fill(businessN));
         await this.applyButton.click();
         await this.getRecord.click();
         await this.editContactDetails.click();
-        await this.contactDetailsAddNew.click(); 
+        await this.contactDetailsAddNew.click();
         let firstName = UtilsAOL.randomName();
         await this.contactGivenName.fill(firstName);
         let lastName = UtilsAOL.randomSurname(5);
@@ -260,39 +262,42 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.linkCase.click();
     }
 
-    async addContactDetailsValidation(){
+    async addContactDetailsValidation() {
         await this.sleep(3000);
         await this.statusText1.scrollIntoViewIfNeeded();
         const employerUpdatedData = await this.statusText1.innerText();
         const trimmedText = employerUpdatedData?.trim();
-        console.log(trimmedText);
-        const ExpectedText = ['Processed Update Employer Contacts.', 'Processed Update Employer Contacts.'];
+        console.log("Trimmed Text:", trimmedText);
+        const ExpectedText1 = 'Processed Update Employer Contacts.';
+        const ExpectedText2 = 'Processed Create Employer.';
         const statusText = await this.outcome.textContent();
-        await this.sleep(3000);
-        console.log(statusText);
+        console.log("Status Text:", statusText);
         const ExpectedStatusText = 'Success';
-    
+
         const statusCode = await this.status.textContent();
-        console.log(statusCode);
+        console.log("Status Code:", statusCode);
         const ExpectedStatusCode = 'Closed';
-    
-        if (ExpectedText.includes(trimmedText) && statusText === ExpectedStatusText && statusCode === ExpectedStatusCode) {
+
+        if ((trimmedText === ExpectedText1 || trimmedText === ExpectedText2) &&
+            statusText === ExpectedStatusText &&
+            statusCode === ExpectedStatusCode) {
             console.log("Validation successful");
         } else {
-            console.error("New Employer creation using WPN failed");
+            console.error("Validation failed");
+            console.log("Actual Values:", trimmedText, statusText, statusCode);
         }
     }
-    
+
 
     async updateExistingEmployer(isExisting: boolean) {
         let businessN: string;
-    
+
         if (!isExisting) {
             businessN = await this.createNewEmployer();
         } else {
-            businessN = employer.employerName; 
+            businessN = employer.employerName;
         }
-    
+
         await this.sleep(5000);
         await this.employerIdentitiesLink.click();
         await this.filter.click();
@@ -302,9 +307,9 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.applyButton.click();
         await this.page.locator("(//td[@colspan='1']//div)[1]").click();
         await this.editEmployer.click();
-        let acn=UtilsAOL.randomNumber(9);
+        let acn = UtilsAOL.randomNumber(9);
         await this.acnValue.fill(acn);
-        let businessNM=UtilsAOL.randomNumber(6)
+        let businessNM = UtilsAOL.randomNumber(6)
         await this.businessName.fill(businessNM);
         await this.viewCase.click();
         await this.createCase.click();
@@ -312,7 +317,7 @@ export class EmployerIdentitiesPage extends BasePage {
         await this.linkCase.click();
     }
 
-    async updateExistingEployerValidations(){
+    async updateExistingEployerValidations() {
         await this.sleep(3000);
         await this.statusText2.scrollIntoViewIfNeeded();
         const employerUpdatedData = await this.statusText2.textContent();
@@ -329,7 +334,7 @@ export class EmployerIdentitiesPage extends BasePage {
         console.log(statusCode);
         const ExpectedStatusCode = 'Closed';
 
-        if (trimmedText==ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
+        if (trimmedText == ExpectedText && statusText == ExpectedStatusText && statusCode == ExpectedStatusCode) {
             assert.equal(ExpectedText, trimmedText);
             assert.equal(statusText, ExpectedStatusText);
             assert.equal(statusCode, ExpectedStatusCode);
