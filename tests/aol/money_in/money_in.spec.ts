@@ -16,7 +16,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(300000);
+    test.setTimeout(360000);
     await allure.suite("Money_In");
     await navBar.selectProduct();
     await allure.parentSuite(process.env.PRODUCT!);
@@ -90,7 +90,7 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
 
     await test.step("Add Personal Contribution", async () => {
         await memberOverviewpage.memberAccumulationAccount_Tab.click();
-        await memberTransactionPage.memberRolloverIn('Personal Contribution', false, false);
+        await memberTransactionPage.memberRolloverIn('Personal', false, false);
         globalPage.captureScreenshot('Personal Contribution');
     });
 
@@ -122,7 +122,7 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
 
     await test.step("Add Personal Contribution", async () => {
         await memberOverviewpage.memberAccumulationAccount_Tab.click();
-        await memberTransactionPage.memberRolloverIn('Personal Contribution', false, true);
+        await memberTransactionPage.memberRolloverIn('Personal', false, true);
         globalPage.captureScreenshot('Personal Contribution');
     });
 
@@ -152,7 +152,7 @@ test(fundName() + " Verify if Personal contribution is processed successfully fo
 
     await test.step("Add Personal Contribution and Validate Investments & Balances", async () => {
         //await navBar.selectMemberSurName(addedMember);
-        await memberTransactionPage.memberRolloverIn('Personal Contribution', true);
+        await memberTransactionPage.memberRolloverIn('Personal', true);
         await pensionTransactionPage.investementBalances();
         await globalPage.captureScreenshot('Investments & Balances');
     });

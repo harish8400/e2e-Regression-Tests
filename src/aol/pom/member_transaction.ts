@@ -183,8 +183,8 @@ export class MemberTransactionsPage extends BasePage {
       )
       .first();
     this.childContributionErrorMessage = page.getByText("com.growadministration.common.TinaServerException: Validation failed: Member's age should be less than 18.");
-    this.memberAge = page.locator("(//div[@class='ihgyFx'])[9]");
-    this.memberSummaryTab = page.locator("//div[@class='jQfUMx']//button[1]");
+    this.memberAge = page.locator("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[16]");
+    this.memberSummaryTab = page.getByRole('button', { name: 'Member Summary' });
 
     // Member Termination
     this.accumulationFirstMember = page.locator("td > .cell").first();
@@ -217,7 +217,7 @@ export class MemberTransactionsPage extends BasePage {
       .filter({ hasText: "Retry" })
       .first();
     this.verifyRolloutProcessSuccess = page.getByText(
-      "Process step completed with note: Manual Super Stream rollout correspondence sent"
+      "Process step completed with note: Manual Super Stream rollout correspondence sent."
     );
     this.memberOverview = page.getByRole("button", { name: "Overview" });
     this.exitStatus = page.getByRole("cell", { name: "Exited", exact: true });
@@ -268,7 +268,9 @@ export class MemberTransactionsPage extends BasePage {
     let age;
     if (contributionType == 'Child') {
       await this.memberSummaryTab.click();
+      await this.sleep(3000);
       await this.memberAge.scrollIntoViewIfNeeded();
+      await this.sleep(3000);
       await this.reviewCase.captureScreenshot();
       const value = await this.memberAge.textContent();
       age = parseInt(value!.match(/\d+/)![0]);
@@ -299,7 +301,8 @@ export class MemberTransactionsPage extends BasePage {
     else if (contributionType == 'Child') {
       await this.memberContributionType_Child.click();
     }
-    else {
+    else if (contributionType == 'Personal') {
+
       await this.memberContributionType_personal.click();
     }
     await this.paymentReference.fill('NA1257412369871812');
@@ -321,33 +324,29 @@ export class MemberTransactionsPage extends BasePage {
     await this.sleep(5000);
     if (TFN && contributionType !== 'Child' && contributionType !== 'Super Guarantee' && contributionType !== 'Salary Sacrifice') {
       await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
-    }
-    else if (TFN && (contributionType == 'Super Guarantee' || contributionType == 'Salary Sacrifice')) {
-      await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step Send Member Contribution Payload. did not meet conditions.'));
-    }
-    else if (TFN == true && contributionType == 'Child') {
-      if (age! > 18) {
-
-        await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage)
-          .then(async () => {
-
-            await this.page.screenshot();
-          })
-          .catch(async (error) => {
-
-            console.error("Error occurred during approval and verification:", error);
-
-          });
-
-
-      }else{
-        await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
-      }
-
-    }
-    else {
+  }
+  else if (TFN && (contributionType == 'Super Guarantee' || contributionType == 'Salary Sacrifice')) {
+    await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step Send Member Contribution Payload. did not meet conditions.'));
+}
+    else if (contributionType == 'Personal' && !TFN && !GovContribution ) {
       await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
     }
+    else if (TFN && contributionType == 'Child') {
+      if (age > 18) {
+          await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage)
+              .then(async () => {
+                  await this.page.screenshot();
+              })
+              .catch(async (error) => {
+                  console.error("Error occurred during approval and verification:", error);
+              });
+      } else {
+          await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+      }
+  }
+  else {
+      await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
+  }
     return contributionAmount;
   }
 
@@ -409,14 +408,13 @@ export class MemberTransactionsPage extends BasePage {
   /** Member Rollout, perform rollout and exits member */
   async memberRolloverOut(TFN: boolean) {
     //await this.memberHFMFundLink.click();
-    await this.memberTransactionTab.click();
+    //await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.rolloverOut.click();
-
+    await this.sleep(3000);
     await this.viewCase.click();
     await this.createCase.click();
-    this.sleep(3000);
-
+    await this.sleep(3000);
     await this.payTo.click();
     await this.payToOption.click();
     await this.fundUSI.fill("STA0100AU");
@@ -425,7 +423,6 @@ export class MemberTransactionsPage extends BasePage {
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press("Tab");
     await this.payFullBalance.click();
-
     await this.linkCase.click();
     await this.sleep(5000);
 

@@ -689,7 +689,7 @@ export class PensionShellAccount extends BasePage {
       await this.sleep(3000);
       await this.transactionsTab.click();
       await this.sleep(3000);
-      let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='CCO']").first();
+      let sgcType = await this.page.getByRole('cell', { name: 'Personal' }).first();
       await sgcType.scrollIntoViewIfNeeded();
       await this.sleep(2000);
       await sgcType.click();

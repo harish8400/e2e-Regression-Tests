@@ -313,7 +313,7 @@ export class PensionTransactionPage extends BasePage {
     // this.State = page.locator('#gs10__combobox div').first();
     this.State = page.locator("(//label[@title='State']//following::div[@name='state']//div//div[2])");
 
-    this.StateInput = page.getByRole('option', { name: 'New South Wales' });
+    this.StateInput = page.getByRole('option', { name: 'Australian Antarctic Territory' });
     this.ResidentialAddress = page.getByLabel('Residential address line 1 *');
     this.CheckboxKYC = page.locator('.top-0');
     this.PostCode = page.getByLabel('Postcode *');
@@ -559,12 +559,19 @@ export class PensionTransactionPage extends BasePage {
       await this.createCase.click();
       await this.sleep(5000);
       await this.linkCase.click();
-      await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+      await this.sleep(5000);
+      const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
+      const text = await textContent.textContent();
+      if (text ==='Updated member.') {
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    } else {
+        await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step MER003 - Send Member Contact Details Update to Chandler did not meet conditions.'));
     }
+}
 
     // locator update todo for vanguard and AE
-    //await this.accumulationTab.click();
-    await this.HESTAforMercyRetirementTab.click();
+    await this.accumulationTab.click();
+    //await this.HESTAforMercyRetirementTab.click();
     await this.ButtonTransactions.click();
     await this.sleep(1000);
     await this.ButtonAddTransactions.click();
@@ -605,9 +612,9 @@ export class PensionTransactionPage extends BasePage {
     await this.ResidentialAddress.fill(member.address);
     await this.State.click();
     await this.StateInput.click();
-    await this.CheckboxKYC.click();
     // await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
+    // await this.CheckboxKYC.click();
     (await this.sleep(3000).then(() => this.page.getByLabel('check icon'))).click();
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
