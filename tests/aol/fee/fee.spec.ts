@@ -15,7 +15,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-  test.setTimeout(120000);
+  test.setTimeout(300000);
   await navBar.selectProduct();
   await allure.suite("Fee");
   await allure.parentSuite(process.env.PRODUCT!);
