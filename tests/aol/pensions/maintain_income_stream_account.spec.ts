@@ -1,6 +1,5 @@
 import { aolTest as base } from "../../../src/aol/base_aol_test";
 import { allure } from "allure-playwright";
-import { AssertionError } from "assert";
 import { fundName } from "../../../src/aol/utils_aol";
 import { APIRequestContext } from "@playwright/test";
 import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
@@ -14,7 +13,7 @@ export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(300000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);

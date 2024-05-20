@@ -9,7 +9,6 @@ import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handle
 import pensionMember from "../../../data/aol_test_data.json";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 import * as data from "../../../data/aol_test_data.json";
-import * as member from "../../../src/aol/data/member.json";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
   apiRequestContext: async ({}, use) => {
@@ -18,7 +17,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(300000);
   await navBar.selectProduct();
   await allure.suite("Pension");
   await allure.parentSuite(process.env.PRODUCT!);

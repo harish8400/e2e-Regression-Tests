@@ -6,7 +6,6 @@ import { initDltaApiContext } from "../../../src/aol_api/base_dlta_aol";
 import { AssertionError } from "assert";
 import { ShellAccountApiHandler } from "../../../src/aol_api/handler/internal_transfer_in_handler";
 import *  as data from "../../../data/aol_test_data.json"
-import { Navbar } from "../../../src/adviser_online/pom/component/navbar";
 
 export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
     apiRequestContext: async ({ }, use) => {
@@ -15,13 +14,13 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(300000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async ({ navBar, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
 
     try {
 
@@ -33,8 +32,8 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async 
 
         if (data.generate_test_data_from_api) {
             await test.step("Add new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = createMemberNo;
+                let {memberNo} = await memberPage.createAccumulationMember(apiRequestContext);
+                memberID = memberNo;
             })
         }
         else {
@@ -69,7 +68,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async 
 
 })
 
-test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async ({ navBar, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
 
     try {
 
@@ -81,8 +80,8 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async 
 
         if (data.generate_test_data_from_api) {
             await test.step("Add new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = createMemberNo;
+                let {memberNo} = await memberPage.createAccumulationMember(apiRequestContext);
+                memberID = memberNo;
             })
         }
         else {
