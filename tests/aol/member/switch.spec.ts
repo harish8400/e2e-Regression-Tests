@@ -31,7 +31,7 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
         
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                createMemberNo = memberData.createMemberNo;
+                createMemberNo = memberData.memberNo;
             })
         }
         else{
@@ -61,7 +61,7 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
         
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                createMemberNo = memberData.createMemberNo;
+                createMemberNo = memberData.memberNo;
             })
         }
         else{
@@ -90,7 +90,7 @@ test(fundName()+" Verify Combined switch is processed successfully for a more th
         
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                createMemberNo = memberData.createMemberNo;
+                createMemberNo = memberData.memberNo;
             })
         }
         else{
