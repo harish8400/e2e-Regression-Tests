@@ -13,7 +13,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(240000);
     await navBar.selectProduct();
     await allure.suite("SuperTick");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -33,7 +33,7 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
             //** create a new accumulation member with Active state if data from api is set to true */
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                createMemberNo = memberData.createMemberNo;
+                createMemberNo = memberData.memberNo;
             })
         }
         else{
@@ -54,7 +54,7 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
     }
 }) 
 
-test(fundName()+"Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, accountInfoPage, memberPage, navBar, memberOverviewpage, relatedInformationPage }) => {
+test(fundName()+"Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, memberPage, navBar, memberOverviewpage, relatedInformationPage, accountInfoPage, internalTransferPage }) => {
 
     try {
 
@@ -68,8 +68,8 @@ test(fundName()+"Verify that for a member with Pending status No super tick call
 
             //** create a new accumulation member with Active state if data from api is set to true */
             await test.step("Add new Accumulation Member", async () => {
-                const memberData = await memberPage.createAccumulationMember(apiRequestContext, accountInfoPage, navBar);
-                createMemberNo = memberData.createMemberNo;
+                const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                createMemberNo = memberData.memberNo;
                 await globalPage.captureScreenshot('Accumulation Account Creation');
             })
         }

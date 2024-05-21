@@ -142,7 +142,7 @@ export class RelatedInformationPage extends BasePage {
         }
         else{
             let count = await this.superTickVerificationRow.count();
-            expect(count).toEqual(0);
+            expect(count,'SuperTick status does not match').toEqual(0);
         }
     }
 }
