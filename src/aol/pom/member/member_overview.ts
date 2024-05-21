@@ -105,7 +105,7 @@ export class MemberOverView extends BasePage{
 
     async deleteTFN(){
         await this.sleep(5000)
-        //await this.overViewTab.focus();
+        await this.overViewTab.focus();
         await this.overViewTab.click();
         await this.sleep(3000);
         await this.editPersonalDetails.click();

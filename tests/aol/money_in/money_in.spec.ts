@@ -123,7 +123,6 @@ test(fundName() + " Contribution without TFN - Verify if contribution is process
     await test.step("Add Personal Contribution", async () => {
         await memberOverviewpage.memberAccumulationAccount_Tab.click();
         await memberTransactionPage.memberRolloverIn('Personal', false, true);
-        globalPage.captureScreenshot('Personal Contribution');
     });
 
 })

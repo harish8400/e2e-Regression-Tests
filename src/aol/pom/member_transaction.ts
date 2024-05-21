@@ -324,33 +324,34 @@ export class MemberTransactionsPage extends BasePage {
     await this.sleep(5000);
     if (TFN && contributionType !== 'Child' && contributionType !== 'Super Guarantee' && contributionType !== 'Salary Sacrifice') {
       await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
-  }
-  else if (TFN && (contributionType == 'Super Guarantee' || contributionType == 'Salary Sacrifice')) {
-    await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step Send Member Contribution Payload. did not meet conditions.'));
-}
-    else if (contributionType == 'Personal' && !GovContribution ) {
-      if(!TFN){
+    }
+    else if (TFN && (contributionType == 'Super Guarantee' || contributionType == 'Salary Sacrifice')) {
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step Send Member Contribution Payload. did not meet conditions.'));
+    }
+    else if (contributionType == 'Personal' && !GovContribution) {
+      if (!TFN) {
         await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
-      }else{
+      } else {
         await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
       }
     }
     else if (TFN && contributionType == 'Child') {
       if (age! > 18) {
-          await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage)
-              .then(async () => {
-                  await this.page.screenshot();
-              })
-              .catch(async (error) => {
-                  console.error("Error occurred during approval and verification:", error);
-              });
+        await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage)
+          .then(async () => {
+            await this.page.screenshot();
+          })
+          .catch(async (error) => {
+            console.error("Error occurred during approval and verification:", error);
+          });
       } else {
-          await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+        await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
       }
-  }
-  else {
-      await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
-  }
+    }
+    else {
+      await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+    }
+    await this.sleep(3000);
     return contributionAmount;
   }
 
@@ -446,12 +447,28 @@ export class MemberTransactionsPage extends BasePage {
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.benefitPaymentOption.click();
-
-    await this.viewCase.click();
+    await this.page.waitForTimeout(3000);
+    await this.viewCase.click({ force: true });
+    await this.sleep(3000);
     await this.createCase.click();
-    this.sleep(3000);
+    await this.sleep(3000);
 
-    await this.benefitType_dropdown.click();
+    if (await this.benefitType_dropdown.isVisible()) {
+      await this.benefitType_dropdown.click();
+    } else {
+      await this.page.reload();
+      await this.sleep(3000);
+      await this.memberAddTransaction.click({ force: true });
+      await this.sleep(3000);
+      await this.benefitPaymentOption.click({ force: true });
+      await this.sleep(3000);
+      await this.viewCase.click({ force: true });
+      await this.sleep(3000);
+      await this.createCase.click();
+      await this.sleep(3000);
+      await this.benefitType_dropdown.click();
+    }
+
     if (benefitType == 'Retirement - Preservation Age') {
       await this.benefitType_RetirementPreservationAge.click();
     }
@@ -506,6 +523,11 @@ export class MemberTransactionsPage extends BasePage {
     else if (paymentCategory == 'Benefit Payment-BPA') {
       this.benefitTransactionReference.scrollIntoViewIfNeeded();
       this.benefitTransactionReference.click();
+    }
+    else if (paymentCategory == 'Benefit') {
+      await this.sleep(5000);
+      await this.benefitTransactionReference.scrollIntoViewIfNeeded();
+      await this.benefitTransactionReference.click();
     }
     await this.investmentsReference.click();
     await this.reviewCase.captureScreenshot();
