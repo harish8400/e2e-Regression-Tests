@@ -328,11 +328,15 @@ export class MemberTransactionsPage extends BasePage {
   else if (TFN && (contributionType == 'Super Guarantee' || contributionType == 'Salary Sacrifice')) {
     await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step Send Member Contribution Payload. did not meet conditions.'));
 }
-    else if (contributionType == 'Personal' && !TFN && !GovContribution ) {
-      await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
+    else if (contributionType == 'Personal' && !GovContribution ) {
+      if(!TFN){
+        await this.reviewCase.approveAndVerifyError(this.memberContributionErrorMessage);
+      }else{
+        await this.reviewCase.reviewCaseProcess(this.verifyContributionSuccess);
+      }
     }
     else if (TFN && contributionType == 'Child') {
-      if (age > 18) {
+      if (age! > 18) {
           await this.reviewCase.approveAndVerifyError(this.childContributionErrorMessage)
               .then(async () => {
                   await this.page.screenshot();
