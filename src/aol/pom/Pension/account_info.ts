@@ -130,6 +130,7 @@ export class AccountInfoPage extends BasePage {
 
     /** this function is for adding New Bank Account Details */
     async addNewBankAccount() {
+        await this.sleep(3000);
         await this.accountInfo.click();
         await this.sleep(3000);
         await this.addNewButton.click();

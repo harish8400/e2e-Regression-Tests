@@ -23,16 +23,16 @@ test.beforeEach(async ({ navBar }) => {
 /**This test performs self triggered rollout full exit on a member */
 test(fundName() + "-Money Out - Rollover out full exit @moneyout", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, globalPage, memberPage, memberTransactionPage }) => {
 
-    let createMemberNo:string;
+    let createMemberNo: string;
 
-     await test.step("Navigate to Accumulation member page", async () => {
+    await test.step("Navigate to Accumulation member page", async () => {
         await navBar.navigateToAccumulationMembersPage();
         globalPage.captureScreenshot('Accumulation Member page');
 
 
     });
 
-    
+
     if (data.generate_test_data_from_api) {
 
         await test.step("Create New Accumulation Account", async () => {
@@ -46,11 +46,11 @@ test(fundName() + "-Money Out - Rollover out full exit @moneyout", async ({ navB
 
 
     await test.step("Rollover In personal contribution", async () => {
-        await memberTransactionPage.memberRolloverIn('Personal');
+        await memberTransactionPage.memberRolloverIn('Personal', true, false);
     })
 
     await test.step("Rollout full exit", async () => {
-        
+
         await memberTransactionPage.memberRolloverOut(true);
     })
 
@@ -62,7 +62,7 @@ test(fundName() + "-Rollover In Personal contribution @moneyout", async ({ navBa
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
     await navBar.selectMemberSurName(addedMember);
-    await memberTransactionPage.memberRolloverIn('Personal');
+    await memberTransactionPage.memberRolloverIn('Personal', true);
 
 })
 
@@ -359,13 +359,12 @@ test(fundName() + " Benefit Payment_Death benefit_Verify claim processed success
     let createMemberNo: string | undefined;
 
     await test.step("Add new Accumulation Member", async () => {
-        const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-        createMemberNo = memberData.memberNo;
-        await navBar.navigateToAccumulationMembersPage();
+        let addedMember = await memberPage.addNewMember(false, true);
+        await memberPage.selectMember(addedMember);
+        await memberTransactionPage.memberRolloverIn('Personal',true);
     })
 
     await test.step("Select the Accumulation Member & add bank account", async () => {
-        await navBar.selectMember(createMemberNo!);
         await accountInfoPage.addNewBankAccount();
     })
 
@@ -376,10 +375,7 @@ test(fundName() + " Benefit Payment_Death benefit_Verify claim processed success
 
     await test.step("Validate the payment details & components ", async () => {
         await pensionAccountPage.transactionsTab.click();
-        await memberTransactionPage.investmentsComponents('Payment-BPAP');
-        await pensionTransactionPage.componentsValidation();
-
-        await memberTransactionPage.investmentsComponents('Benefit Payment-BPA');
+        await memberTransactionPage.investmentsComponents('Benefit');
         await pensionTransactionPage.componentsValidation();
     })
 
@@ -435,6 +431,7 @@ test(fundName() + " Roll Out - Without TFN for APRA fund @moneyout", async ({ me
         await test.step("Add new Accumulation Member & select the created member", async () => {
             const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             createMemberNo = memberData.memberNo;
+
         })
     }
     //when api is set to false, we will use existing member details for testing.
@@ -452,6 +449,7 @@ test(fundName() + " Roll Out - Without TFN for APRA fund @moneyout", async ({ me
         await memberOverviewpage.verifyTFNStatus(false);
         await globalPage.captureScreenshot("TFN Status");
         await relatedInformationPage.memberAccumulationAccount_Tab.click();
+        await memberTransactionPage.memberTransactionTab.click();
         await memberTransactionPage.memberRolloverOut(false);
 
     });

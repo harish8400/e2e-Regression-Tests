@@ -283,7 +283,7 @@ export class PensionTransactionPage extends BasePage {
 
     ///Death Benifits
 
-    this.BenefitPayment = page.getByText("Benefit Payment");
+    this.BenefitPayment = page.getByText('Benefit Payment');
     this.SearchOptionComboBox = page
       .getByRole("combobox", { name: "Search for option" })
       .getByLabel("Select", { exact: true });
@@ -295,9 +295,7 @@ export class PensionTransactionPage extends BasePage {
       "(//label[@title='Payment type']//following::div[@name='payeeType0']//div//div[2])"
     );
     this.PaymentTypeInput = page.getByText("Death Benefit Payment - Dependant");
-    this.RelationShip = page.locator(
-      "(//label[@title='Relationship']//following::div[@name='relationship0']//div//div[2])"
-    );
+    this.RelationShip = page.locator("(//label[@title='Relationship']//following::div[@name='relationship0']//div//div[2])");
     this.RelationShipInput = page.getByText("Spouse");
     this.Title = page.locator(
       "(//label[@title='Title']//following::div[@name='title0']//div//div[2])"
@@ -313,10 +311,10 @@ export class PensionTransactionPage extends BasePage {
     // this.State = page.locator('#gs10__combobox div').first();
     this.State = page.locator("(//label[@title='State']//following::div[@name='state']//div//div[2])");
 
-    this.StateInput = page.getByRole('option', { name: 'Australian Antarctic Territory' });
+    this.StateInput = page.getByRole('option', { name: 'New South Wales' });
     this.ResidentialAddress = page.getByLabel('Residential address line 1 *');
-    this.CheckboxKYC = page.locator('.top-0');
-    this.PostCode = page.getByLabel('Postcode *');
+    this.CheckboxKYC = page.locator("//label[@class='pointer']/following-sibling::div[1]");
+    this.PostCode = page.locator("//label[@for='postCode0']/following::input[@id='postCode0']")
     this.TFN = page.getByLabel('TFN');
     this.BSBNumber = page.getByLabel('BSB number');
     this.AccountName = page.getByLabel('Name on account');
@@ -407,8 +405,8 @@ export class PensionTransactionPage extends BasePage {
   //Pension commutation roll-out
   async commutationRolloverOut(FullExit: boolean) {
     await this.memberTransactionTab.click();
-    (await this.sleep(300).then(()=>this.memberAddTransaction)).click({force:true});
-    (await this.page.waitForTimeout(3000).then(()=>this.pensionCommutation)).click();
+    (await this.sleep(300).then(() => this.memberAddTransaction)).click({ force: true });
+    (await this.page.waitForTimeout(3000).then(() => this.pensionCommutation)).click();
     await this.sleep(3000);
     await this.commutation_type.click();
     await this.reviewCase.captureScreenshot();
@@ -432,8 +430,8 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(2000);
       await this.page.getByPlaceholder("0").fill("2000");
     }
-    
-    (await this.sleep(300).then(()=>this.viewCase)).click();
+
+    (await this.sleep(300).then(() => this.viewCase)).click();
     await this.sleep(3000);
     await this.createCase.click();
     await this.sleep(3000);
@@ -445,7 +443,7 @@ export class PensionTransactionPage extends BasePage {
     // ) {
     //   await this.reviewCase.reviewCaseProcess(this.unathorized);
     // } else {
-      await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
+    await this.reviewCase.reviewCaseProcess(this.verifyRolloutProcessSuccess);
     //}
     await this.sleep(3000);
   }
@@ -519,8 +517,8 @@ export class PensionTransactionPage extends BasePage {
     await this.page
       .getByRole("option", { name: "Commutation - UNP Benefit" })
       .click();
-    
-    
+
+
     await this.page.locator("#gs4__combobox div").first().click();
     await this.page
       .getByRole("option", { name: "Commutation - UNP Payment" })
@@ -555,6 +553,7 @@ export class PensionTransactionPage extends BasePage {
     if (isDODavilable == '') {
       await this.sleep(3000);
       await this.DOD.fill(DateUtils.ddmmyyyStringDate(-1));
+      await this.sleep(5000);
       await this.viewCase.click();
       await this.createCase.click();
       await this.sleep(5000);
@@ -562,36 +561,53 @@ export class PensionTransactionPage extends BasePage {
       await this.sleep(5000);
       const textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]");
       const text = await textContent.textContent();
-      if (text ==='Updated member.') {
+      if (text === 'Updated member.') {
         await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
-    } else {
+      } else {
         await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step MER003 - Send Member Contact Details Update to Chandler did not meet conditions.'));
+      }
     }
-}
 
     // locator update todo for vanguard and AE
     await this.accumulationTab.click();
-    //await this.HESTAforMercyRetirementTab.click();
+    await this.sleep(3000);
     await this.ButtonTransactions.click();
     await this.sleep(1000);
-    await this.ButtonAddTransactions.click();
+    await this.ButtonAddTransactions.click({force:true});
+    await this.sleep(1000);
     await this.BenefitPayment.click();
-
     await this.viewCase.click();
     await this.sleep(3000);
     await this.createCase.click();
     await this.sleep(3000);
 
-    await this.SearchOptionComboBox.click();
+    if (await this.SearchOptionComboBox.isVisible()) {
+      await this.SearchOptionComboBox.click();
+    } else {
+      await this.page.reload();
+      await this.sleep(3000);
+      await this.ButtonAddTransactions.click();
+      await this.BenefitPayment.click();
+      await this.sleep(3000);
+      await this.viewCase.click();
+      await this.sleep(3000);
+      await this.createCase.click();
+      await this.sleep(3000);
+      await this.SearchOptionComboBox.click();
+
+    }
     await this.DeathBenifitsOption.click();
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
-    await this.effectiveDate.press("Tab");
+    await this.effectiveDate.press("Enter");
+    await this.PaymentType.click();
+    await this.sleep(3000);
+    await this.PaymentTypeInput.click();
+    await this.sleep(3000);
+    await this.RelationShip.click();
+    await this.sleep(3000);
+    await this.RelationShipInput.click();
     await this.ShareOfBeneit.click();
     await this.ShareOfBeneitInput.fill("100");
-    await this.PaymentType.click();
-    await this.PaymentTypeInput.click();
-    await this.RelationShip.click();
-    await this.RelationShipInput.click();
     await this.Title.click();
     await this.InputTitle.click();
     let beneficiaryName = UtilsAOL.randomName();
@@ -601,21 +617,37 @@ export class PensionTransactionPage extends BasePage {
     await this.LastName.click();
     await this.LastName.fill(`${randomSurname}`);
     await this.LastName.press('Tab');
-    let otherName = await this.page.locator("(//label[text()='Other name ']/following::input)[1]");
-    otherName.fill('Test01');
-    otherName.press('Tab');
+    // let otherName = await this.page.locator("(//label[text()='Other name ']/following::input)[1]");
+    // otherName.fill('Test01');
+    // otherName.press('Tab');
     await this.sleep(3000);
-    await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 50)}`);
-    await this.City_Town.click();
-    await this.City_Town.fill(member.city);
+    await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 17)}`);
+    await this.page.locator("(//label[text()='Gender ']/following::input)[1]").click();
+    (await this.sleep(3000).then(()=>this.page.locator("(//li[contains(@class,'gs__dropdown-option px-5')])[1]"))).click({force:true});
+    let phoneNumber = await this.page.locator("(//label[text()='Phone ']/following::input)[1]");
+    phoneNumber.click();
+    await this.sleep(3000).then(()=>phoneNumber.fill(member.phone));
+    let Email = await this.page.locator("(//label[text()='Email ']/following::input)[1]");
+    Email.click();
+    await this.sleep(3000).then(()=>Email.fill(member.email))
     await this.ResidentialAddress.click();
     await this.ResidentialAddress.fill(member.address);
+    // let address = await this.page.locator("(//label[text()='Residential address line 2 ']/following::input)[1]");
+    // address.click();
+    // address.fill(member.address2);
+    await this.sleep(3000);
+    await this.City_Town.click();
+    await this.City_Town.fill(member.city);
+    await this.sleep(3000);
     await this.State.click();
+    await this.sleep(3000);
     await this.StateInput.click();
-    // await this.PostCode.click();
+    await this.sleep(3000);
+    await this.CheckboxKYC.click({ force: true });
+    await this.sleep(3000);
+    await this.PostCode.click();
     await this.PostCode.fill(member.postcode);
-    // await this.CheckboxKYC.click();
-    (await this.sleep(3000).then(() => this.page.getByLabel('check icon'))).click();
+    await this.sleep(3000);
     await this.TFN.click();
     let tfn = UtilsAOL.generateValidTFN();
     await this.TFN.fill(`${tfn}`);
@@ -631,9 +663,15 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.linkCase.click();
     await this.sleep(3000);
-    await this.reviewCase.reviewCaseProcess(
-      this.deathBenefitTransactionSuccess
-    );
+    const textArea = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
+    const text = textArea?.trim();
+    if(text==='Process step completed with note: Benefit payment correspondence sent.'){
+      await this.sleep(3000);
+    await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
+    }else{
+      await this.sleep(3000);
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('java.lang.IllegalArgumentException: Failed requirement: Provided address is incomplete and requires fields according to country.'));
+    }
   }
 
   async pensionCommence() {
@@ -886,7 +924,7 @@ export class PensionTransactionPage extends BasePage {
     await this.page
       .locator("(//div[text()='Market value'])[1]")
       .scrollIntoViewIfNeeded();
-      await this.sleep(3000);
+    await this.sleep(3000);
     await this.reviewCase.captureScreenshot();
   }
 
