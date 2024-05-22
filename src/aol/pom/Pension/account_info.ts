@@ -157,8 +157,8 @@ export class AccountInfoPage extends BasePage {
 
     //CRN Update
     async updateCRN() {
-        await this.page.waitForTimeout(3000);
-        await this.accountInfo.click();
+        await this.sleep(3000);
+        await this.accountInfo.click({force:true});
         await this.sleep(3000);
         await this.editCRN.click();
         await this.CRN_Field.fill(member.CRN);

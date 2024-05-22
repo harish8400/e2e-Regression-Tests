@@ -573,7 +573,7 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.ButtonTransactions.click();
     await this.sleep(1000);
-    await this.ButtonAddTransactions.click({force:true});
+    await this.ButtonAddTransactions.click({ force: true });
     await this.sleep(1000);
     await this.BenefitPayment.click();
     await this.viewCase.click();
@@ -623,13 +623,13 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     await this.DateOfBirth.fill(`${DateUtils.ddmmyyyStringDate(0, 17)}`);
     await this.page.locator("(//label[text()='Gender ']/following::input)[1]").click();
-    (await this.sleep(3000).then(()=>this.page.locator("(//li[contains(@class,'gs__dropdown-option px-5')])[1]"))).click({force:true});
+    (await this.sleep(3000).then(() => this.page.locator("(//li[contains(@class,'gs__dropdown-option px-5')])[1]"))).click({ force: true });
     let phoneNumber = await this.page.locator("(//label[text()='Phone ']/following::input)[1]");
     phoneNumber.click();
-    await this.sleep(3000).then(()=>phoneNumber.fill(member.phone));
+    await this.sleep(3000).then(() => phoneNumber.fill(member.phone));
     let Email = await this.page.locator("(//label[text()='Email ']/following::input)[1]");
     Email.click();
-    await this.sleep(3000).then(()=>Email.fill(member.email))
+    await this.sleep(3000).then(() => Email.fill(member.email))
     await this.ResidentialAddress.click();
     await this.ResidentialAddress.fill(member.address);
     // let address = await this.page.locator("(//label[text()='Residential address line 2 ']/following::input)[1]");
@@ -665,10 +665,10 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
     const textArea = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
     const text = textArea?.trim();
-    if(text==='Process step completed with note: Benefit payment correspondence sent.'){
+    if (text === 'Process step completed with note: Benefit payment correspondence sent.') {
       await this.sleep(3000);
-    await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
-    }else{
+      await this.reviewCase.reviewCaseProcess(this.deathBenefitTransactionSuccess);
+    } else {
       await this.sleep(3000);
       await this.reviewCase.reviewCaseProcess(this.page.getByText('java.lang.IllegalArgumentException: Failed requirement: Provided address is incomplete and requires fields according to country.'));
     }
@@ -676,7 +676,7 @@ export class PensionTransactionPage extends BasePage {
 
   async pensionCommence() {
     await this.pensionTab.click();
-    this.sleep(5000);
+    await this.sleep(5000);
     await this.viewCase.click();
     await this.sleep(5000);
     await this.createCase.click();
@@ -684,9 +684,11 @@ export class PensionTransactionPage extends BasePage {
     await this.linkCase.click();
     await this.sleep(5000);
     await this.check_box.scrollIntoViewIfNeeded();
+    await this.sleep(3000);
     await this.check_box.click();
+    await this.sleep(2000);
     await this.commence_pension_button.click();
-    this.sleep(3000);
+    await this.sleep(3000);
     await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
     await expect(this.pensionCommencementHistory).toBeVisible();
     await this.pensionCommencementHistory.click();
@@ -1012,16 +1014,11 @@ export class PensionTransactionPage extends BasePage {
       await MemberApiHandler.createPensionShellAccount(apiRequestContext);
 
     // Perform necessary operations related to pension account creation
-    //await pensionAccountPage.ProcessTab();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 6000));
     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 6000));
     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
     await new Promise((resolve) => setTimeout(resolve, 10000));
-    //await pensionAccountPage.reload();
-
-    // Navigate to pension members page and select member
-    // await navBar.navigateToPensionMembersPage();
     await navBar.selectMember(memberNo);
 
     // Return relevant data
@@ -1177,18 +1174,26 @@ export class PensionTransactionPage extends BasePage {
     await this.page.getByRole('main').locator('div').filter({ hasText: 'Retirement Transition Live' }).nth(2).click();
     await this.sleep(2000);
     await this.page.locator("//div[text()=' Set Cohort - Start Date and Frequency ']").click();
+    await this.sleep(2000);
+    const deleteIcon = await this.page.getByRole('button', { name: 'bin icon' });
+    if (await deleteIcon.isVisible()) {
+      deleteIcon.click();
+    } else {
     await this.sleep(2000).then(() => {
       this.page.getByRole('button', { name: 'add-circle icon Add New Cohort' }).click()
     });
     await this.page.locator("//span[text()=' FILTER ']").click();
     await this.page.getByText('Member Number').click();
-    let textArea = await this.page.locator('textarea');
     await this.sleep(3000);
+    const textArea = await this.page.locator("//textarea[@class='el-textarea__inner']");
+    console.log(memberNumber);
     textArea.fill(memberNumber);
+    await this.sleep(3000);
     await this.page.getByRole('button', { name: 'APPLY' }).click();
+    let datePlaceHolder = await this.page.getByRole('textbox', { name: 'dd/mm/yyyy' });
     await this.sleep(5000);
-    let datePlaceHolder = await this.page.getByRole('textbox', { name: 'dd/mm/yyyy' })
     datePlaceHolder.scrollIntoViewIfNeeded();
+    await this.sleep(3000);
     datePlaceHolder.click();
     let date = new Date();
     let today = DateUtils.ddmmyyyStringDate(0);
@@ -1219,31 +1224,32 @@ export class PensionTransactionPage extends BasePage {
     await this.page.waitForTimeout(3000);
     let reference = await this.page.getByLabel('Cohort Reference *')
     reference.scrollIntoViewIfNeeded();
-    reference.fill(pensions.cohorenceType[1]);
+    let testName = UtilsAOL.randomName();
+    reference.fill(`${testName} +Test`);
     await this.sleep(2000)
     await this.page.getByRole('button', { name: 'Add', exact: true }).focus().then(() => { this.page.getByRole('button', { name: 'Add', exact: true }).click({ force: true }) });
     await this.sleep(3000);
     await this.page.getByRole('button', { name: 'Done' }).click();
-    await this.sleep(3000);
-    let processIcon = await this.page.getByRole('button', { name: 'more icon' }).nth(3);
-    processIcon.focus();
-    processIcon.click();
-    await this.sleep(2000);
-    let runProcess = await this.page.locator("(//div[text()='Run Process'])[2]");
-    runProcess.focus().then(() => runProcess.click())
-    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
-    await this.sleep(2000);
-    let processDate = await this.page.locator("(//input[@placeholder='dd/mm/yyyy'])[2]");
-    processDate.click().then(() => processDate.fill(today));
-    await this.sleep(2000);
-    processDate.press('Enter');
-    await this.sleep(2000);
-    await this.page.getByRole('button', { name: 'Run Process' }).click();
-    await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    await this.page.waitForTimeout(3000);
+      const processIcon = await this.page.locator('div').filter({ hasText: /^more icon$/ }).getByRole('button');
+      processIcon.click();
+      await this.page.waitForTimeout(3000);
+      const runProcess = await this.page.getByText('Run Process');
+      runProcess.focus().then(() => runProcess.click())
+      await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+      await this.sleep(3000);
+      const processDate = await this.page.getByPlaceholder('dd/mm/yyyy');
+      processDate.click().then(() => processDate.fill(today));
+      await this.sleep(3000);
+      processDate.press('Enter');
+      await this.sleep(3000);
+      await this.page.getByRole('button', { name: 'Run Process' }).click();
+      await this.sleep(2000).then(() => { this.reviewCase.captureScreenshot() });
+    }
   }
 
   async retirementToTransistionProcess() {
-    await this.sleep(2000);
+    await this.sleep(5000);
     let processSummary = await this.page.locator("//a[contains(text(),'Process Summary')]");
     processSummary.click();
     await this.page.locator("//button[@aria-label='Retirement Transition']").first().isVisible();

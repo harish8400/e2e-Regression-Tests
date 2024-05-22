@@ -45,14 +45,13 @@ export class ShellAccountApiHandler {
         const { memberNo, processId, surname } = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
     
         // Perform necessary operations related to pension account creation
-        await pensionAccountPage.ProcessTab();
+        await new Promise(resolve => setTimeout(resolve, 6000));
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await new Promise(resolve => setTimeout(resolve, 6000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
     
         // Navigate to TTR members page and select member
-        await navBar.navigateToTTRMembersPage(); 
         await navBar.selectMember(memberNo);
     
         // Return relevant data
