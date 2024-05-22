@@ -242,7 +242,7 @@ export class MemberTransactionsPage extends BasePage {
       .getByText("ASSET_BASED_FEE")
       .first();
     //Benefit Payment
-    this.benefitPaymentOption = page.getByText('Benefit Payment');
+    this.benefitPaymentOption = page.locator("(//span[contains(@class,'flex items-center')]/following::li[@class='el-dropdown-menu__item menu-item'])[7]");
     this.benefitType_dropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
     this.benefitType_RetirementPreservationAge = page.getByRole('option', { name: 'Retirement - Preservation Age' });
     this.benefitType_CeasedEmploymentAgeAfter60 = page.getByRole('option', { name: 'Ceased Employment After Age' });
@@ -446,6 +446,7 @@ export class MemberTransactionsPage extends BasePage {
     //await this.memberHFMFundLink.click();
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
+    await this.page.waitForTimeout(3000);
     await this.benefitPaymentOption.click();
     await this.page.waitForTimeout(3000);
     await this.viewCase.click({ force: true });
