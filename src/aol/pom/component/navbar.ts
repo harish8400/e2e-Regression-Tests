@@ -32,7 +32,7 @@ export class Navbar extends BasePage {
     this.memberIdentities = page.getByText('memberIdentities');
     this.addEmployer = page.getByText('Add new employer');
 
-    this.selectRetirementProduct = page.locator("(//a[@class='NxLAj'])[2]");
+    this.selectRetirementProduct = page.locator("(//p[@type='label'])[3]");
     this.selectTTRProduct = page.locator("(//a[@class='NxLAj'])[3]");
     this.membersLink = page.getByRole('link', { name: 'Members' });
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });

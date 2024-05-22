@@ -503,7 +503,7 @@ export class MemberPage extends BasePage {
         await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
         await accountInfoPage.reload();
         await ShellAccountApiHandler.getMemberDetails(apiRequestContext, linearId.id);
-        return { memberNo };
+        return { memberNo ,linearId};
     }
 
     async createAccumulationMember(apiRequestContext: APIRequestContext) {

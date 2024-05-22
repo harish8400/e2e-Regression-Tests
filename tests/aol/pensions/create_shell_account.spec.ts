@@ -37,7 +37,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
         // Create New Accumulation Account
         await test.step("Create New Pension Shell Account", async () => {
             const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            membersId = memberId.memberNo
+            membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Accumulation Account Creation');
         });
 
@@ -72,7 +72,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
     await test.step("Validate MAAS Submit Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId!, 'MAAS Submit');
             console.log('MAAS Report:', MAASReport);
         } else {
             console.log("memberId is undefined. Cannot fetch MAAS Submit Report.");
@@ -100,7 +100,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
         // Create New Accumulation Account
         await test.step("Create New Pension Shell Account", async () => {
             const memberId = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-            membersId = memberId.memberNo
+            membersId = memberId.linearId.id;
             await globalPage.captureScreenshot('Accumulation Account Creation');
         });
 
@@ -134,7 +134,7 @@ test(fundName() + "-Capturing Reversionary and/or beneficiary details while crea
     await test.step("Validate MAAS Submit Report", async () => {
         const memberId = getMemberId();
         if (memberId) {
-            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MATS Submit');
+            const MAASReport = await ShellAccountCreationApiHandler.getMemberReport(transactionApi, memberId, 'MAAS Submit');
             console.log('MAAS Report:', MAASReport);
             allure.attachment('MAAS Report Data', JSON.stringify(MAASReport, null, 2), 'application/json');
         } else {

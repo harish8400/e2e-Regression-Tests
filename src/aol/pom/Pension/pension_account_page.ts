@@ -323,7 +323,7 @@ export class PensionShellAccount extends BasePage {
     this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
-    this.abp = page.locator("(//ul[@class='gmzECJ']//li)[3]");
+    this.abp = page.locator("(//li[@class='cPSIRL'])[3]");
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
     const date = DateUtils.ddMMMyyyStringDate(new Date());
     this.pensionHistory = page.getByRole('row', { name: date + ' Pension Payment Details Update' }).first();
@@ -613,12 +613,13 @@ export class PensionShellAccount extends BasePage {
   async createShellAccountExistingMember(addBeneficiary: boolean = false, memberNo: string = '') {
 
     await this.sleep(3000);
-    //await this.memberOverview.waitFor();
+    await this.memberOverview.waitFor();
     await this.memberOverview.click({ force: true });
     await this.sleep(5000).then(() => this.addAccount.scrollIntoViewIfNeeded());
     await this.addAccount.click({ force: true });
     await this.sleep(3000);
     await this.abp.click();
+    await this.sleep(3000);
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     await this.residencyStatus.click();
