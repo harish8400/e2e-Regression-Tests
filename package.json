@@ -9,7 +9,7 @@
         "test:pension": "ENVIRONMENT='dev' npx playwright test create_employer.spec.ts --project='chromium' --workers=1",
         "report": "npx playwright show-report",
         "test:setup": "npx playwright install && npx playwright install-deps",
-        "test:ui": "PLAYWRIGHT_JUNIT_OUTPUT_NAME=playwright-report/results.xml npx playwright test --grep @superTick --project='chromium' --workers=1 --reporter=junit",
+        "test:ui": "PLAYWRIGHT_JUNIT_OUTPUT_NAME=playwright-report/results.xml npx playwright test --grep @moneyout --project='chromium' --workers=1 --reporter=junit",
         "ci:e2e-test:pension": "ENVIRONMENT='dev' && npm run test:setup && npm run test:ui"
     },
     "author": "",
