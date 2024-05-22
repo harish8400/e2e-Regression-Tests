@@ -219,7 +219,7 @@ export class PensionShellAccount extends BasePage {
     this.sourceAccountNumber = page.locator('.gs__actions').nth(2);
     this.slider = page.locator('.switch-slider');
     this.enterAmount = page.locator('//input[@id="transferAmount"]/parent::div');
-    this.amount = page.locator('//input[@id="transferAmount"]');
+    this.amount = page.locator("//input[@id='transferAmount']");
     this.amountToBeEntered = page.getByPlaceholder('0');
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
@@ -227,7 +227,7 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
+    this.invPercentage = page.locator("(//label[text()='Percentage']/following::input[@class='el-input__inner'])[2]");
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
@@ -375,7 +375,7 @@ export class PensionShellAccount extends BasePage {
     if (transferPartialBalance) {
       await this.slider.click();
       await this.enterAmount.click();
-      await this.sleep(1000);
+      await this.sleep(3000);
       await this.amount.fill(member.Amount);
       await this.sleep(1000);
     } else {
@@ -416,7 +416,7 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async addMemberPensionDetails() {
+  async addMemberPensionDetails(account?:string) {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
     await this.PensionPaymentDate.click();
@@ -428,7 +428,11 @@ export class PensionShellAccount extends BasePage {
     //await this.taxThreshold.click();
     await this.sleep(2000);
     await this.eligibilty.click();
+    if(account =='TTR'){
+      await this.page.locator('li').filter({ hasText: 'Reached Preservation Age' }).click();
+    }else{
     await this.select_eligibility.click();
+    }
     await this.annual_payment.click();
     await this.select_payment.click();
     await this.sleep(5000);
@@ -576,7 +580,12 @@ export class PensionShellAccount extends BasePage {
     await this.abpScreenView.first().waitFor();
     await this.abpScreenView.first().click();
     await this.sleep(3000);
-    await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
+    if (process.env.PRODUCT == FUND.HESTA) {
+    await this.page.locator("//button[text()='HESTA for Mercy Retirement Income Stream']").click();
+    }else{
+      await this.page.locator("//button[text()='Vanguard Super SpendSmart']").click();
+
+    }
     // await this.transactionsTab.click();
 
   }
@@ -660,7 +669,7 @@ export class PensionShellAccount extends BasePage {
 
     }
 
-  async ttrAccountCreation(addBeneficiary: boolean = false) {
+  async ttrAccountCreation(addBeneficiary: boolean = false ) {
       await this.sleep(3000);
       await this.memberOverview.waitFor();
       await this.memberOverview.click();
@@ -671,7 +680,7 @@ export class PensionShellAccount extends BasePage {
       await this.residencyStatus.click();
       await this.residencyStatusSelect.click();
       await this.nextStep.click();
-      await this.addMemberConsolidation();
+      await this.addMemberConsolidation(true);
       await this.addMemberInvestments();
       if (addBeneficiary) {
         await this.addMemberBeneficiaries();
@@ -679,7 +688,7 @@ export class PensionShellAccount extends BasePage {
 
         await this.nextStep.click();
       }
-      await this.addMemberPensionDetails();
+      await this.addMemberPensionDetails('TTR');
       await this.sleep(3000);
       await this.initCreateCase();
       await this.createAcc.click();
@@ -711,5 +720,19 @@ export class PensionShellAccount extends BasePage {
     return message ? message.trim() : null;
 }
 
+async selectAccumulationTab() {
+  await this.sleep(3000)
+  await this.abpScreenView.first().waitFor();
+  await this.abpScreenView.first().click();
+  await this.sleep(3000);
+  if (process.env.PRODUCT == FUND.HESTA) {
+  await this.page.locator("//button[text()='HESTA for Mercy Super']").click();
+  }else{
+    await this.page.locator("//button[text()='Vanguard Accumulation']").click();
+
+  }
+  // await this.transactionsTab.click();
+
+}
 
   }

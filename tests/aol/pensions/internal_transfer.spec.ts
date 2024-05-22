@@ -14,7 +14,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(300000);
+    test.setTimeout(480000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -32,7 +32,7 @@ test(fundName() + "-Internal Transfer from Accumulation to ABP @pension", async 
 
         if (data.generate_test_data_from_api) {
             await test.step("Add new Accumulation Member", async () => {
-                let {memberNo} = await memberPage.createAccumulationMember(apiRequestContext);
+                let { memberNo } = await memberPage.createAccumulationMember(apiRequestContext);
                 memberID = memberNo;
             })
         }
@@ -80,7 +80,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async 
 
         if (data.generate_test_data_from_api) {
             await test.step("Add new Accumulation Member", async () => {
-                let {memberNo} = await memberPage.createAccumulationMember(apiRequestContext);
+                let { memberNo } = await memberPage.createAccumulationMember(apiRequestContext);
                 memberID = memberNo;
             })
         }
@@ -103,7 +103,7 @@ test(fundName() + "-Internal Transfer from Accumulation to TTR @pension", async 
             await pensionAccountPage.selectTTRRetirement();
             await internalTransferPage.internalTransferMember('Accumulation', memberID);
         });
-        
+
         await test.step("Validate the payment details & components ", async () => {
             await pensionTransactionPage.transactionView();
             await pensionTransactionPage.componentsValidation();
@@ -137,8 +137,8 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation @pension", async 
 
         await test.step("Select the ABP Member", async () => {
             await new Promise((resolve) => setTimeout(resolve, 10000));
-           // await navBar.navigateToPensionMembersPage();
-          //  await navBar.selectMember(memberID);
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(memberID);
         });
 
         await test.step("Create accumulation account for same Member", async () => {
@@ -146,9 +146,9 @@ test(fundName() + "-Internal Transfer from ABP to Accumulation @pension", async 
         });
 
         await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            //await navBar.navigateToAccumulationMembersPage();
-           // await navBar.selectMember(memberID);
-            await pensionAccountPage.selectABPTab();
+            await navBar.navigateToPensionMembersPage();
+            await navBar.selectMember(memberID);
+            await pensionAccountPage.selectAccumulationTab();
             await internalTransferPage.internalTransferMember('ABP', memberID);
         });
 
@@ -182,21 +182,16 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation @pension", async 
         }
         else {
             memberID = data.members.Internal_Transfer_TTR_To_Accumulation_Source_Account;
-        }
-
-        await test.step("Select the TTR Member", async () => {
-            await navBar.navigateToTTRMembersPage();
             await navBar.selectMember(memberID);
-        });
+        }
 
         await test.step("Create accumulation account for same Member", async () => {
             await internalTransferPage.accumulationAccountCreation(true, false);
         });
 
         await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-          //await navBar.selectMember(memberID);
-          await internalTransferPage.accumulationAccountLink()
-          await internalTransferPage.internalTransferMember('TTR', memberID);
+            await internalTransferPage.accumulationAccountLink()
+            await internalTransferPage.internalTransferMember('TTR', memberID);
 
         });
 
