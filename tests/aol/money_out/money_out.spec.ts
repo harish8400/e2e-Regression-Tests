@@ -58,7 +58,6 @@ test(fundName() + "-Money Out - Rollover out full exit @moneyout", async ({ navB
 
 test(fundName() + "-Rollover In Personal contribution @moneyout", async ({ navBar, memberPage, memberTransactionPage }) => {
 
-    await allure.suite("Money Out");
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
     await navBar.selectMemberSurName(addedMember);
@@ -67,8 +66,6 @@ test(fundName() + "-Rollover In Personal contribution @moneyout", async ({ navBa
 })
 
 test(fundName() + "-Rollover out @moneyout", async ({ navBar, memberPage, memberTransactionPage }) => {
-
-    await allure.suite("Money Out");
 
     await navBar.navigateToAccumulationMembersPage();
     let addedMember = await memberPage.addNewMember(false, true);
