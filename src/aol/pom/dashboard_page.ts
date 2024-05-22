@@ -1084,9 +1084,9 @@ export class DashboardPage extends BasePage {
           await this.page.getByRole('button', { name: 'FILTER' }).first().click();
           await this.page.getByText('Member Last Name').click();
           await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').click();
-          await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').fill('u1wii');
+          await this.page.getByRole('tooltip', { name: 'close icon Member Last Name' }).getByRole('textbox').fill('eMJXk');
           await this.page.getByRole('button', { name: 'APPLY' }).click();
-          await this.page.getByRole('cell', { name: 'Kane u1wii' }).click();
+          await this.page.getByRole('cell', { name: 'eMJXk' }).click();
           await this.globalPage.captureScreenshot('Create a Shell Account');
         });
 

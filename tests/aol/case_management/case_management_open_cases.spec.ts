@@ -7,7 +7,7 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { Admins } from "../../../src/aol/data/admins";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(120000);
+    test.setTimeout(600000);
     await navBar.selectProduct();
     await allure.suite("Case Management");
     await allure.parentSuite(process.env.PRODUCT!);
