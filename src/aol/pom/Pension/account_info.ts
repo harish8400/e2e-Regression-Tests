@@ -6,6 +6,7 @@ import { DateUtils } from "../../../utils/date_utils";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "../component/global_page";
 import { FUND } from "../../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class AccountInfoPage extends BasePage {
 
@@ -93,7 +94,7 @@ export class AccountInfoPage extends BasePage {
         await this.sleep(4000);
         await this.accountInfo.click();
         await this.sleep(4000);
-        await this.editAccountIcon.click({force:true});
+        await this.editAccountIcon.click({ force: true });
         await this.bsbNumberField.click();
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
@@ -109,12 +110,28 @@ export class AccountInfoPage extends BasePage {
         await this.createCaseButton.click();
         await this.sleep(3000);
         await this.buttonLinkToCase.click();
+        await this.sleep(3000);
+        let textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
+        let text = textContent?.trim();
+        let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+        switch (product) {
+            case 'HESTA for Mercy':
+                if (text == 'Process step completed with note: Pension payment correspondence sent.') {
+                    await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Pension payment correspondence sent.'));
+                } else {
+                    await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
+                }
+                break;
 
-        if (process.env.product == FUND.HESTA) {
-            await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
-        } else {
-            await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Confirmation Sent'));
+            case 'Vanguard Super':
+                await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Confirmation Sent'));
+                break;
+
+            default:
+                throw new Error(`Unsupported product: ${product}`);
         }
+
+
         await allure.step("Validate Correspondence is sent with success", async () => {
             allure.logStep("Verify Correspondence sent success is displayed")
             if (process.env.product == FUND.HESTA) {
@@ -158,7 +175,7 @@ export class AccountInfoPage extends BasePage {
     //CRN Update
     async updateCRN() {
         await this.sleep(3000);
-        await this.accountInfo.click({force:true});
+        await this.accountInfo.click({ force: true });
         await this.sleep(3000);
         await this.editCRN.click();
         await this.CRN_Field.fill(member.CRN);
