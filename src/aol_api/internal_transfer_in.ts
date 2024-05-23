@@ -81,7 +81,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     eligibleServiceDate: '2023-06-14',
                     "memberPensionConfiguration": {
                         "eligibilityType": "reachedPreservationAge",
-                        "firstPensionPaymentDate": `${DateUtils.localISOStringDate(this.today)}`,
+                        "firstPensionPaymentDate": '2024-05-24',
                         "pensionCommencementDate": `${DateUtils.localISOStringDate(this.commencementDate)}`,
                         "totalTaxFreePensionPercent": "0",
                         "pensionPurchasedWithDeathBenefits": "true",
@@ -111,7 +111,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                             addressDetails: [],
                             mailingDetails: [],
                             documents: [],
-                            effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
+                            effectiveDate: '2024-05-24',
                             endDate: null,
                         },
                     ],
@@ -123,7 +123,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     "annualPensionPaymentOption": "nominatedAmount",
                     "claimingPensionTaxFreeThreshold": false,
                     "nextPaymentDate": `${DateUtils.localISOStringDate(this.nextPaymentDate)}`,
-                    "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+                    "effectiveDate": '2024-05-24',
                 },
                 bankAccountData: {
                     bankAccountList: [
@@ -146,7 +146,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                             "percent": 50
                         }
                     ],
-                    "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+                    "effectiveDate": '2024-05-24',
                 },
                 "initialRollInProcessData": [
                     {
