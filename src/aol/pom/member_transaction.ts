@@ -227,7 +227,7 @@ export class MemberTransactionsPage extends BasePage {
     this.typeFilter = page.locator(
       "//div[text()='Type' and @class='filter-list-item']"
     );
-    this.selectOption = page.getByRole("textbox", { name: "Select" });
+    this.selectOption = page.getByRole('tooltip', { name: 'close icon Type Select APPLY' }).locator('i');
     this.afeOption = page.locator("//li//span[text()='AFE']");
     this.applyButton = page.getByRole("button", { name: " APPLY " });
     expect(
@@ -586,10 +586,10 @@ export class MemberTransactionsPage extends BasePage {
     let dateExpected: string = DateUtils.ddMMMyyyStringDate(new Date());
     // console.log(" the date is " + dateExpected);
     //await this.page..locator("//td//div[text()='AFE']//following::td[2]//div[text()='"+dateExpected+"']");
-    dateExpected = "26 Mar 2024";
+    //dateExpected = "26 Mar 2024";
     await this.page
       .locator(
-        "//td//div[text()='AFE']//following::td[2]//div[text()='26 Mar 2024']"
+        "//td//div[text()='AFE']//following::td[2]//div[text()='"+dateExpected+"']"
       )
       .click();
     await expect(this.fixedFee).toBeVisible();
