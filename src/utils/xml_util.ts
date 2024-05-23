@@ -13,17 +13,9 @@ export class xmlUtility {
     static sourceFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_template');
     static destinationFolder = path.join(DataUtils.testsDir, 'src/aol/data/superstream_processed');
 
-    static generateXMLFile(templateName: string): void {
-
-        switch (templateName) {
-            case 'MRRWithTFN.xml': this.generateMRRWithTFNXML(templateName);
-            case 'MRRWithoutTFN.xml': this.generateMRRWithoutTFNXML(templateName);
-        }
-
-    }
-
     // Generate XML with TFN for MRR
-    static generateMRRWithoutTFNXML(templateFileName: string) {
+    static generateMRRWithoutTFNXML() {
+        const templateFileName:string = "MRRWithoutTFN.xml";
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -62,7 +54,8 @@ export class xmlUtility {
     }
 
     // Generate XML for MRR
-    static generateMRRWithTFNXML(templateFileName: string) {
+    static generateMRRWithTFNXML() {
+        const templateFileName:string = "MRRWithTFN.xml";
 
         let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -109,43 +102,38 @@ export class xmlUtility {
 
     // Update nodes and save xml
     static updateAndSaveXML(filePath: string, nodesAndValuesList: any): void {
-        try {
-            const xmlContent = fs.readFileSync(filePath, 'utf8');
-            const xmlDoc = new DOMParser().parseFromString(xmlContent);
+        const xmlContent = fs.readFileSync(filePath, 'utf8');
+        const xmlDoc = new DOMParser().parseFromString(xmlContent);
 
-            // Looping through the nodes list and update each node
-            for (const nodePath in nodesAndValuesList) {
-                
-                const value = nodesAndValuesList[nodePath];
-                const nodes = xpath.select(nodePath, xmlDoc);
-                //console.log(`Key: ${nodePath}, Value: ${value}`);
+        // Looping through the nodes list and update each node
+        for (const nodePath in nodesAndValuesList) {
+            
+            const value = nodesAndValuesList[nodePath];
+            const nodes = xpath.select(nodePath, xmlDoc);
+            //console.log(`Key: ${nodePath}, Value: ${value}`);
 
-                // Check if nodes is an array of nodes
-                if (Array.isArray(nodes)) {
-                    // Iterate over selected nodes
-                    for (const node of nodes) {
-                        // Access node properties or modify node content as needed
-                        const element = node as Element;
-                        element.textContent = value;
-                    }
-                } else if (nodes instanceof Node) { // Check if nodes is a single node
+            // Check if nodes is an array of nodes
+            if (Array.isArray(nodes)) {
+                // Iterate over selected nodes
+                for (const node of nodes) {
                     // Access node properties or modify node content as needed
-                    const element = nodes as Element;
+                    const element = node as Element;
                     element.textContent = value;
-                } else {
-                    console.log('No nodes found for the XPath expression');
                 }
+            } else if (nodes instanceof Node) { // Check if nodes is a single node
+                // Access node properties or modify node content as needed
+                const element = nodes as Element;
+                element.textContent = value;
+            } else {
+                console.log('No nodes found for the XPath expression');
             }
-
-            // Serialize the updated XML document back to string
-            const updatedXmlContent = xmlDoc.toString();
-
-            // Write the updated XML content back to file
-            fs.writeFileSync(filePath, updatedXmlContent, 'utf-8');
-
-        } catch (error) {
-            console.error(`An error occurred while updating XML: ${error}`);
         }
+
+        // Serialize the updated XML document back to string
+        const updatedXmlContent = xmlDoc.toString();
+
+        // Write the updated XML content back to file
+        fs.writeFileSync(filePath, updatedXmlContent, 'utf-8');
     }
 
 }

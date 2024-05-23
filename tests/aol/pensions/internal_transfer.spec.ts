@@ -14,287 +14,247 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
 test(fundName() + "-Internal Transfer from Accumulation to ABP-@PensionNewTest", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+    })
 
-    try {
+    let memberID: string;
 
-        await test.step("Navigate to Accumulation Members page", async () => {
-            await navBar.navigateToAccumulationMembersPage();
+    if (data.generate_test_data_from_api) {
+        await test.step("Add new Accumulation Member", async () => {
+            let { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            memberID = createMemberNo;
         })
-
-        let memberID: string;
-
-        if (data.generate_test_data_from_api) {
-            await test.step("Add new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = createMemberNo;
-            })
-        }
-        else {
-            memberID = data.members.Internal_Transfer_Accumulation_To_ABP_Source_Account;
-        }
-
-        await test.step("Select the Accumulation Member", async () => {
-            await navBar.selectMember(memberID!);
-        });
-
-        await test.step("Create Shell Account for accumulation member", async () => {
-            await pensionAccountPage.createShellAccountExistingMember();
-        });
-
-        await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
-            await navBar.navigateToAccumulationMembersPage();
-            await navBar.selectMember(memberID!);
-            await pensionAccountPage.selectABPTab()
-            await internalTransferPage.internalTransferMember('Accumulation', memberID!);
-        });
-
-        await test.step("Validate the payment details & components ", async () => {
-            await pensionTransactionPage.transactionView();
-            await pensionTransactionPage.componentsValidation();
-            await pensionTransactionPage.sleep(2000)
-        });
-
-    } catch (Error) {
-        throw Error;
+    }
+    else {
+        memberID = data.members.Internal_Transfer_Accumulation_To_ABP_Source_Account;
     }
 
+    await test.step("Select the Accumulation Member", async () => {
+        await navBar.selectMember(memberID!);
+    });
+
+    await test.step("Create Shell Account for accumulation member", async () => {
+        await pensionAccountPage.createShellAccountExistingMember();
+    });
+
+    await test.step("Perform Internal Transfer From Accumulation to ABP ", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(memberID!);
+        await pensionAccountPage.selectABPTab()
+        await internalTransferPage.internalTransferMember('Accumulation', memberID!);
+    });
+
+    await test.step("Validate the payment details & components ", async () => {
+        await pensionTransactionPage.transactionView();
+        await pensionTransactionPage.componentsValidation();
+        await pensionTransactionPage.sleep(2000)
+    });
 })
 
 test(fundName() + "-Internal Transfer from Accumulation to TTR-@PensionNewTest", async ({ navBar, accountInfoPage, internalTransferPage, apiRequestContext, memberPage, pensionAccountPage, pensionTransactionPage }) => {
+    await test.step("Navigate to Accumulation Members page", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+    })
 
-    try {
+    let memberID: string;
 
-        await test.step("Navigate to Accumulation Members page", async () => {
-            await navBar.navigateToAccumulationMembersPage();
+    if (data.generate_test_data_from_api) {
+        await test.step("Add new Accumulation Member", async () => {
+            let { createMemberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            memberID = createMemberNo;
         })
+    }
+    else {
+        memberID = data.members.Internal_Transfer_Accumulation_To_TTR_Source_Account;
+    }
 
-        let memberID: string;
+    await test.step("Select the Accumulation Member", async () => {
+        await navBar.selectMember(memberID);
+    });
 
-        if (data.generate_test_data_from_api) {
-            await test.step("Add new Accumulation Member", async () => {
-                let {createMemberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = createMemberNo;
-            })
-        }
-        else {
-            memberID = data.members.Internal_Transfer_Accumulation_To_TTR_Source_Account;
-        }
+    await test.step("Create TTR Account for Accumulation Member", async () => {
+        await pensionAccountPage.ttrAccountCreation();
+    });
 
-        await test.step("Select the Accumulation Member", async () => {
-            await navBar.selectMember(memberID);
+    await test.step("Perform Internal Transfer From Accumulation to TTR ", async () => {
+        await navBar.navigateToAccumulationMembersPage();
+        await navBar.selectMember(memberID!);
+        await pensionAccountPage.selectTTRRetirement();
+        await internalTransferPage.internalTransferMember('Accumulation', memberID);
+    });
+
+    await test.step("Validate the payment details & components ", async () => {
+        await pensionTransactionPage.transactionView();
+        await pensionTransactionPage.componentsValidation();
+        await pensionTransactionPage.sleep(5000)
+    });
+})
+
+test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToPensionMembersPage();
+    });
+
+    let memberID: string;
+
+    if (data.generate_test_data_from_api) {
+        await test.step("Add new ABP Member", async () => {
+            let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            memberID = memberData.memberNo;
+        })
+    }
+    else {
+        memberID = data.members.Internal_Transfer_ABP_To_Accumulation_Source_Account;
+    }
+
+    await test.step("Select the ABP Member", async () => {
+        await navBar.selectMember(memberID);
+    });
+
+    await test.step("Create accumulation account for same Member", async () => {
+        await internalTransferPage.accumulationAccountCreation(true, false);
+    });
+
+    await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
+        await navBar.selectMember(memberID);
+        await pensionAccountPage.selectABPTab();
+        await internalTransferPage.internalTransferMember('ABP', memberID);
+    });
+
+    await test.step("Validate the payment details & components ", async () => {
+        await internalTransferPage.transferOut();
+        await pensionTransactionPage.transactions();
+        await pensionTransactionPage.componentsValidation();
+        await pensionTransactionPage.sleep(5000);
+    });
+});
+
+test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, globalPage, apiRequestContext }) => {
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+    });
+
+    let memberID: string;
+
+    if (data.generate_test_data_from_api) {
+        await test.step("Add new TTR Member", async () => {
+            const memberData = await ShellAccountApiHandler.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
+            await globalPage.captureScreenshot('TTR Account Creation');
+            memberID = memberData.memberNo;
+        });
+    }
+    else {
+        memberID = data.members.Internal_Transfer_TTR_To_Accumulation_Source_Account;
+    }
+
+    await test.step("Select the TTR Member", async () => {
+        await navBar.selectMember(memberID);
+    });
+
+    await test.step("Create accumulation account for same Member", async () => {
+        await internalTransferPage.accumulationAccountCreation(true, false);
+    });
+
+    await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
+        await navBar.selectMemberSurName(memberID);
+        await internalTransferPage.internalTransferMember('TTR', memberID);
+
+    });
+
+    await test.step("Validate the payment details & components ", async () => {
+        await internalTransferPage.transferOutTTR();
+        await pensionTransactionPage.transactions();
+        await pensionTransactionPage.componentsValidation();
+        await pensionTransactionPage.sleep(5000);
+    });
+})
+
+test(fundName() + "-Validate Retirement Transition process is successful where PTB transaction is processed on TTR account prior to conversion", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, internalTransferPage }) => {
+    //navigating to TTR source member and verifying PTB
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+    })
+
+    let memberNo: string | undefined;
+    let surname: string | undefined;
+    await test.step("Add new Pension Shellaccount Member and add PTB Transactions", async () => {
+        const memberData = await ShellAccountApiHandler.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
+        memberNo = memberData.memberNo;
+        surname = memberData.surname;
+    })
+    await test.step("Verify PTB Transactions from Transactions Table", async () => {
+        await pensionTransactionPage.verifyPTBtransaction(true);
+    });
+
+    if (memberNo && surname) {
+        await test.step("Add new Pension Shellaccount For same member", async () => {
+            await pensionAccountPage.createShellAccountExistingMember();
         });
 
-        await test.step("Create TTR Account for Accumulation Member", async () => {
-            await pensionAccountPage.ttrAccountCreation();
+        await test.step("Select the pension Member and perform Internal Transfer", async () => {
+            await pensionAccountPage.reload();
+            await navBar.selectMemberSurName(surname!);
+            await internalTransferPage.internalTransferMember('TTR', memberNo!);
+
         });
 
-        await test.step("Perform Internal Transfer From Accumulation to TTR ", async () => {
-            await navBar.navigateToAccumulationMembersPage();
-            await navBar.selectMember(memberID!);
-            await pensionAccountPage.selectTTRRetirement();
-            await internalTransferPage.internalTransferMember('Accumulation', memberID);
-        });
-        
         await test.step("Validate the payment details & components ", async () => {
             await pensionTransactionPage.transactionView();
             await pensionTransactionPage.componentsValidation();
             await pensionTransactionPage.sleep(5000)
         });
-
-    } catch (Error) {
-        throw Error;
+    } else {
+        throw new AssertionError({ message: "Test Execution Failed : Missing member data" });
     }
-
-})
-
-test(fundName() + "-Internal Transfer from ABP to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
-
-    try {
-        await test.step("Navigate to Pensions Members page", async () => {
-            await navBar.navigateToPensionMembersPage();
-        });
-
-        let memberID: string;
-
-        if (data.generate_test_data_from_api) {
-            await test.step("Add new ABP Member", async () => {
-                let memberData = await pensionTransactionPage.memberShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                memberID = memberData.memberNo;
-            })
-        }
-        else {
-            memberID = data.members.Internal_Transfer_ABP_To_Accumulation_Source_Account;
-        }
-
-        await test.step("Select the ABP Member", async () => {
-            await navBar.selectMember(memberID);
-        });
-
-        await test.step("Create accumulation account for same Member", async () => {
-            await internalTransferPage.accumulationAccountCreation(true, false);
-        });
-
-        await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            await navBar.selectMember(memberID);
-            await pensionAccountPage.selectABPTab();
-            await internalTransferPage.internalTransferMember('ABP', memberID);
-        });
-
-        await test.step("Validate the payment details & components ", async () => {
-            await internalTransferPage.transferOut();
-            await pensionTransactionPage.transactions();
-            await pensionTransactionPage.componentsValidation();
-            await pensionTransactionPage.sleep(5000);
-        });
-    } catch (error) {
-        throw error;
-    }
-
-});
-
-test(fundName() + "-Internal Transfer from TTR to Accumulation", async ({ navBar, internalTransferPage, pensionTransactionPage, pensionAccountPage, globalPage, apiRequestContext }) => {
-
-    try {
-        await test.step("Navigate to Pensions Members page", async () => {
-            await navBar.navigateToTTRMembersPage();
-        });
-
-        let memberID: string;
-
-        if (data.generate_test_data_from_api) {
-            await test.step("Add new TTR Member", async () => {
-                const memberData = await ShellAccountApiHandler.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                await globalPage.captureScreenshot('TTR Account Creation');
-                memberID = memberData.memberNo;
-            });
-        }
-        else {
-            memberID = data.members.Internal_Transfer_TTR_To_Accumulation_Source_Account;
-        }
-
-        await test.step("Select the TTR Member", async () => {
-            await navBar.selectMember(memberID);
-        });
-
-        await test.step("Create accumulation account for same Member", async () => {
-            await internalTransferPage.accumulationAccountCreation(true, false);
-        });
-
-        await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            await navBar.selectMemberSurName(memberID);
-            await internalTransferPage.internalTransferMember('TTR', memberID);
-
-        });
-
-        await test.step("Validate the payment details & components ", async () => {
-            await internalTransferPage.transferOutTTR();
-            await pensionTransactionPage.transactions();
-            await pensionTransactionPage.componentsValidation();
-            await pensionTransactionPage.sleep(5000);
-        });
-    } catch (error) {
-        throw error;
-    }
-
-})
-
-test(fundName() + "-Validate Retirement Transition process is successful where PTB transaction is processed on TTR account prior to conversion", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, internalTransferPage }) => {
-
-    try {
-        //navigating to TTR source member and verifying PTB
-        await test.step("Navigate to Pensions Members page", async () => {
-            await navBar.navigateToTTRMembersPage();
-        })
-
-        let memberNo: string | undefined;
-        let surname: string | undefined;
-        await test.step("Add new Pension Shellaccount Member and add PTB Transactions", async () => {
-            const memberData = await ShellAccountApiHandler.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
-            memberNo = memberData.memberNo;
-            surname = memberData.surname;
-        })
-        await test.step("Verify PTB Transactions from Transactions Table", async () => {
-            await pensionTransactionPage.verifyPTBtransaction(true);
-        });
-
-        if (memberNo && surname) {
-            await test.step("Add new Pension Shellaccount For same member", async () => {
-                await pensionAccountPage.createShellAccountExistingMember();
-            });
-
-            await test.step("Select the pension Member and perform Internal Transfer", async () => {
-                await pensionAccountPage.reload();
-                await navBar.selectMemberSurName(surname!);
-                await internalTransferPage.internalTransferMember('TTR', memberNo!);
-
-            });
-
-            await test.step("Validate the payment details & components ", async () => {
-                await pensionTransactionPage.transactionView();
-                await pensionTransactionPage.componentsValidation();
-                await pensionTransactionPage.sleep(5000)
-            });
-        } else {
-            throw new AssertionError({ message: "Test Execution Failed : Missing member data" });
-        }
-    } catch (error) {
-        throw error;
-    }
-
 })
 
 test(fundName() + "-Validate Retirement Transition process completes successfully on TTR account with CoR and NO PTB transaction", async ({ navBar, pensionAccountPage, apiRequestContext, internalTransferPage, relatedInformationPage, pensionTransactionPage }) => {
+    //navigating to TTR source member and verifying PTB
+    await test.step("Navigate to Pensions Members page", async () => {
+        await navBar.navigateToTTRMembersPage();
+    })
 
-    try {
-        //navigating to TTR source member and verifying PTB
-        await test.step("Navigate to Pensions Members page", async () => {
-            await navBar.navigateToTTRMembersPage();
-        })
+    let memberNo: string | undefined;
+    let surname: string | undefined;
+    await test.step("Add new Pension Shellaccount Member and add PTB Transactions", async () => {
+        const memberData = await ShellAccountApiHandler.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
+        memberNo = memberData.memberNo;
+        surname = memberData.surname;
+    })
+    await test.step("Verify PTB Transactions from Transactions Table", async () => {
+        await pensionTransactionPage.verifyPTBtransaction(false);
+    });
+    await test.step("Add condition of Release for the same member", async () => {
+        await relatedInformationPage.addConditionOfRelease();
 
-        let memberNo: string | undefined;
-        let surname: string | undefined;
-        await test.step("Add new Pension Shellaccount Member and add PTB Transactions", async () => {
-            const memberData = await ShellAccountApiHandler.ptbTransactions(navBar, pensionAccountPage, apiRequestContext);
-            memberNo = memberData.memberNo;
-            surname = memberData.surname;
-        })
-        await test.step("Verify PTB Transactions from Transactions Table", async () => {
-            await pensionTransactionPage.verifyPTBtransaction(false);
+    });
+
+    if (memberNo && surname) {
+        await test.step("Add new Pension Shellaccount For same member", async () => {
+            await pensionAccountPage.createShellAccountExistingMember();
         });
-        await test.step("Add condition of Release for the same member", async () => {
-            await relatedInformationPage.addConditionOfRelease();
+
+        await test.step("Select the pension Member and perform Internal Transfer", async () => {
+            await pensionAccountPage.reload();
+            await navBar.selectMemberSurName(surname!);
+            await internalTransferPage.internalTransferMember('TTR', memberNo!);
 
         });
 
-        if (memberNo && surname) {
-            await test.step("Add new Pension Shellaccount For same member", async () => {
-                await pensionAccountPage.createShellAccountExistingMember();
-            });
-
-            await test.step("Select the pension Member and perform Internal Transfer", async () => {
-                await pensionAccountPage.reload();
-                await navBar.selectMemberSurName(surname!);
-                await internalTransferPage.internalTransferMember('TTR', memberNo!);
-
-            });
-
-            await test.step("Validate the payment details & components ", async () => {
-                await pensionTransactionPage.transactionView();
-                await pensionTransactionPage.componentsValidation();
-                await pensionTransactionPage.sleep(5000)
-            });
-        } else {
-            throw new AssertionError({ message: "Test Execution Failed : Missing member data" });
-        }
-    } catch (error) {
-        throw error;
+        await test.step("Validate the payment details & components ", async () => {
+            await pensionTransactionPage.transactionView();
+            await pensionTransactionPage.componentsValidation();
+            await pensionTransactionPage.sleep(5000)
+        });
+    } else {
+        throw new AssertionError({ message: "Test Execution Failed : Missing member data" });
     }
-
 })

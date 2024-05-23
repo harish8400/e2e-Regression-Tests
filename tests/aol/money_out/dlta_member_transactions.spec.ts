@@ -3,7 +3,7 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
 });
 

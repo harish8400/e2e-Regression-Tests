@@ -43,7 +43,7 @@ function getCurrentDateFormatted(): string {
 
 export function copyGeneratedFile(absolutePath: string, templateFileName: string, fileName: string, destifolder: string) {
     try {
-        const files = fs.readdirSync(`/home/minal.tate/MinalAutomation/e2e-regression-tests/src/aol/data/superstream_template`);
+        const files = fs.readdirSync(path.join(__dirname, `../../src/aol/data/superstream_template`));
 
         console.log(files)
         for (const file of files) {

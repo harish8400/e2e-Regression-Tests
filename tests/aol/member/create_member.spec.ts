@@ -4,7 +4,7 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { FUND } from "../../../constants";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -12,9 +12,6 @@ test.beforeEach(async ({ navBar }) => {
 
 /**This test performs member creation tests */
 test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered", async ({ memberPage, navBar }) => {
-
-    try {
-
         await navBar.navigateToAccumulationMembersPage();
         let addedMember = await memberPage.addNewMember(false, true);
         if(process.env.PRODUCT! == FUND.HESTA){
@@ -23,15 +20,9 @@ test(fundName()+"-Verify a new Active Member Account is created successfully and
         }else{
             await memberPage.approveMemberCreationProcess(addedMember);
         }
-    } catch (error) {
-        throw error;
-    }
 })
 
 test(fundName()+"-Verify new member creation without TFN and welcome letter is triggered", async ({ memberPage, navBar }) => {
-
-    try {
-
         await navBar.navigateToAccumulationMembersPage();
         let addedMember = await memberPage.addNewMember(true, true);
         if(process.env.PRODUCT! == FUND.HESTA){
@@ -40,15 +31,9 @@ test(fundName()+"-Verify new member creation without TFN and welcome letter is t
         }else{
             await memberPage.approveMemberCreationProcess(addedMember);
         }
-    } catch (error) {
-        throw error;
-    }
 })
 
 test(fundName()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful", async ({ memberPage, navBar }) => {
-
-    try {
-
         await navBar.navigateToAccumulationMembersPage();
         let addedMember = await memberPage.addNewMember(true, true, true);
         if(process.env.PRODUCT! == FUND.HESTA){
@@ -57,9 +42,6 @@ test(fundName()+"-Verify creation of a new active member account with Date Joine
         }else{
             await memberPage.approveMemberCreationProcess(addedMember);
         }
-    } catch (error) {
-        throw error;
-    }
 })
 
 

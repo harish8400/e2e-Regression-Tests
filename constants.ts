@@ -103,6 +103,14 @@ export const FUND_IDS = {
             RETIREMENT: "52bc7ff5-0ad9-520f-bd45-308e03aedbcb",
             TTR: "85a3990c-c88b-5c24-a1e0-4299c5c5aebe"
         }
+    },
+    AE: {
+        FUND_ID: "72438fe0-af05-55dc-ae71-1ff41be2d22f",
+        PRODUCT_ID: {
+            ACCUMULATION: "09f8ec82-d978-57b6-bec0-1b4eda31f6a8",
+            RETIREMENT: "9b66758f-b878-5c15-b451-57aa0d07f93c",
+            TTR: "3d7bc9b0-25a4-5cb0-a45f-003dc0800fc5"
+        }
     }
 };
 export const INVESTMENT_OPTIONS = {
@@ -216,6 +224,94 @@ export const INVESTMENT_OPTIONS = {
                 NAME: "Growth",
                 ID: "SGDP"
             }
+        },
+    },
+    AE: {
+        ACCUMULATION: {
+            DEFENSIVE: {
+                NAME: "Defensive",
+                ID: "AESDEF"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "AESCON"
+            },
+            BALANCED: {
+                NAME: "Balanced",
+                ID: "AESBAL"
+            },
+            GROWTH: {
+                NAME: "Growth",
+                ID: "AESGRW"
+            },
+            HIGH_GROWTH: {
+                NAME: "High Growth",
+                ID: "AESHGF"
+            },
+            INTERNATIONAL_SHARES: {
+                NAME: "International Shares",
+                ID: "AESINT"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "AESAUS"
+            },
+        },
+        TTR: {
+            DEFENSIVE: {
+                NAME: "Defensive",
+                ID: "AESDEF"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "AESCON"
+            },
+            BALANCED: {
+                NAME: "Balanced",
+                ID: "AESBAL"
+            },
+            GROWTH: {
+                NAME: "Growth",
+                ID: "AESGRW"
+            },
+            HIGH_GROWTH: {
+                NAME: "High Growth",
+                ID: "AESHGF"
+            },
+            INTERNATIONAL_SHARES: {
+                NAME: "International Shares",
+                ID: "AESINT"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "AESAUS"
+            },
+        },
+        RETIREMENT: {
+            DEFENSIVE: {
+                NAME: "Defensive",
+                ID: "AESDEF"
+            },
+            CONSERVATIVE: {
+                NAME: "Conservative",
+                ID: "AESCON"
+            },
+            BALANCED_PENSION: {
+                NAME: "Balanced (pension)",
+                ID: "AESBAL"
+            },
+            GROWTH: {
+                NAME: "Growth",
+                ID: "AESGRW"
+            },
+            INTERNATIONAL_SHARES: {
+                NAME: "International Shares",
+                ID: "AESINT"
+            },
+            AUSTRALIAN_SHARES: {
+                NAME: "Australian Shares",
+                ID: "AESAUS"
+            },
         },
     }
 }

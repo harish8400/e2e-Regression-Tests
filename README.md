@@ -88,3 +88,11 @@ docker run --rm -v ./playwright-report:/e2e/playwright-report -e ENVIRONMENT=uat
 [ ] move environment config init to global setup?
 
 [ ] update MOL documents tests to upload document as part of the test 
+
+
+
+### Notes
+
+Using Dev Containers
+* https://www.oddbird.net/2022/11/30/headed-playwright-in-docker/
+

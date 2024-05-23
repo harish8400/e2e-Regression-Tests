@@ -20,53 +20,29 @@ test.beforeEach(async ({ navBar }) => {
 
 /** Test Case: Maintain Income Stream Account: Bank account details (Edit) */
 test(fundName()+"- Maintain Income Stream Account (documentation required): Bank account details", async ({ navBar , accountInfoPage ,pensionAccountPage ,apiRequestContext ,pensionTransactionPage}) => {
-    
-    try {
         await navBar.navigateToPensionMembersPage();
         await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await accountInfoPage.editBankAccount();
-    } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
-    }
-    
+        await accountInfoPage.editBankAccount();   
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Monthly' */
 test(fundName()+"- Maintain Income Steam Account - Payment details (payment amount, frequency, payment draw down options)", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
-    
-    try {
         await navBar.navigateToPensionMembersPage();
         await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
-        await pensionAccountPage.editPaymentDetails();
-    } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
-    }
-    
+        await pensionAccountPage.editPaymentDetails();    
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details freqeuncy 'Quarterly' */
 test(fundName()+"- Verify Pension Payment is executed successful for Half-yearly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage, apiRequestContext }) => {
-    
-    try {
-        
+           
         await navBar.navigateToPensionMembersPage();
         await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionAccountPage.editPaymentDetails('Bi-Annualy');
-    } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
-    }
-    
 })
 
 /** Test Case: Maintain Income Stream Account: Edit Payment details frequency 'Annually' */
 test(fundName()+"- Verify Pension Payment is executed successful for Quarterly frequency", async ({ navBar , pensionAccountPage ,pensionTransactionPage ,apiRequestContext}) => {
-    
-    try {
-        await navBar.navigateToPensionMembersPage();
+            await navBar.navigateToPensionMembersPage();
         await pensionTransactionPage.process(navBar, pensionAccountPage, apiRequestContext );
         await pensionAccountPage.editPaymentDetails('Quartely');
-    } catch (Error) {
-        throw new AssertionError({ message: "Test Execution Failed : Updating Bank Account Details has been failed" });
-    }
-    
 })

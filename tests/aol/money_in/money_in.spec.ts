@@ -4,7 +4,7 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await allure.suite("Money_In");
     await navBar.selectProduct();
     await allure.parentSuite(process.env.PRODUCT!);

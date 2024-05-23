@@ -1,7 +1,12 @@
 version: '3.9'
 services:
   e2e_tests:
-    build:
-      context: .
-      dockerfile: buildkite.Dockerfile
-    working_dir: /e2e
+    image: mcr.microsoft.com/playwright:v1.43.0
+    working_dir: .
+    environment:
+      - CI
+      - BUILDKITE_ANALYTICS_TOKEN
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - AWS_REGION

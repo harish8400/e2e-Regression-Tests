@@ -124,23 +124,19 @@ export class MemberApi extends BaseDltaAolApi {
 
   async approveProcess(caseGroupId: string, notes: string = "E2E auto test - approve"): Promise<void> {
     let path = `case/group/${caseGroupId}/approve`;
-    try {
-      let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
-      let fundProductId = productId;
-      let data = {
-        fundProductId: fundProductId,
-        notes: notes,
-        effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
-      };
 
-      let response = await this.post(path, JSON.stringify(data));
-      if (response.status() !== 201) {
-        const responseBody = await response.json();
-        throw new Error(`Failed to approve process. ${responseBody.error?.message}`);
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
+    let { productId } = fundDetails(ENVIRONMENT_CONFIG.product);
+    let fundProductId = productId;
+    let data = {
+      fundProductId: fundProductId,
+      notes: notes,
+      effectiveDate: `${DateUtils.localISOStringDate(this.today)}`
+    };
+
+    let response = await this.post(path, JSON.stringify(data));
+    if (response.status() !== 201) {
+      const responseBody = await response.json();
+      throw new Error(`Failed to approve process. ${responseBody.error?.message}`);
     }
   }
 
@@ -348,28 +344,23 @@ export class MemberApi extends BaseDltaAolApi {
     return { id, fundName, tfn, givenName, dob };
   }
   async memberIdentity(linearId: string, memberDetails: { tfn: string, dob: string, givenName: string, fundName: string }): Promise<{ linearId: string, tfn: string, givenName: string, dob: string }> {
-    try {
-      let path = `identity/${linearId}/identity/check`;
-      let data = {
-        tfn: memberDetails.tfn,
-        dob: memberDetails.dob,
-        givenName: memberDetails.givenName,
-        familyName: 'Seaborn',
-        abn: "64971749321",
-        fundName: memberDetails.fundName,
-        effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
-      };
-      let response = await this.post(path, JSON.stringify(data));
-      let responseBody = await response.json();
-      console.log(responseBody);
-      const member = responseBody.member;
-      assert.strictEqual(member.active, true, 'The member is active');
-      let LinearId = responseBody.identity.id;
-      return { linearId: LinearId, tfn: memberDetails.tfn, givenName: memberDetails.givenName, dob: memberDetails.dob };
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
-    }
+    let path = `identity/${linearId}/identity/check`;
+    let data = {
+      tfn: memberDetails.tfn,
+      dob: memberDetails.dob,
+      givenName: memberDetails.givenName,
+      familyName: 'Seaborn',
+      abn: "64971749321",
+      fundName: memberDetails.fundName,
+      effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
+    };
+    let response = await this.post(path, JSON.stringify(data));
+    let responseBody = await response.json();
+    console.log(responseBody);
+    const member = responseBody.member;
+    assert.strictEqual(member.active, true, 'The member is active');
+    let LinearId = responseBody.identity.id;
+    return { linearId: LinearId, tfn: memberDetails.tfn, givenName: memberDetails.givenName, dob: memberDetails.dob };
   }
 
   async fetchMemberSummary(linearId: string, FullExit: boolean): Promise<{ status: boolean }> {
@@ -388,7 +379,6 @@ export class MemberApi extends BaseDltaAolApi {
       console.log("Partial Exit is done and paymentdate is:`${todayDateOnly}`")
     }
     return { status: true };
-
   }
 
   async ptbTransactions(linearId: string): Promise<{ linearId: string; memberNo?: string }> {
@@ -427,22 +417,14 @@ export class MemberApi extends BaseDltaAolApi {
   async getCaseGroupId(processId: String) {
     let path = `process/${processId}/case`;
 
-    try {
-      let response = await this.get(path);
-      let responseBody = await response.json();
-      if (responseBody.data.length > 0) {
-        return responseBody.data[0].caseGroupId;
-      } else {
-        throw new Error('No data found for the given processId');
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Error fetching caseGroupId:', error.message);
-        throw error;
-      } else {
-        throw new Error('Unknown error occurred');
-      }
+    let response = await this.get(path);
+    let responseBody = await response.json();
+
+    if (!responseBody.data.length) {
+      throw new Error('No data found for the given processId');
     }
+
+    return responseBody.data[0].caseGroupId;
   }
 
   async addRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
@@ -521,7 +503,7 @@ export class MemberApi extends BaseDltaAolApi {
       name: item.name,
       effectiveDate: item.effectiveDate
     }));
-console.log(extractedData);
+    console.log(extractedData);
     return extractedData;
   }
 

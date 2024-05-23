@@ -800,8 +800,6 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension", async ({ navBar, 
 })
 
 test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, globalPage }) => {
-    try {
-
         await test.step("Navigate to Pensions Members page", async () => {
             await navBar.navigateToPensionMembersPage();
             await globalPage.captureScreenshot('Pensions Members page');
@@ -836,9 +834,6 @@ test(fundName() + "-ABP Death Benefit Payment @pension", async ({ navBar, pensio
             await globalPage.captureScreenshot('Death Benefit Payment');
 
         });
-    } catch (error) {
-        throw error
-    }
 })
 
 test(fundName() + "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension", async ({ navBar, pensionTransactionPage, globalPage, apiRequestContext, pensionAccountPage }) => {

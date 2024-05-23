@@ -143,7 +143,10 @@ export function fundDetails(product: string) {
             productId = FUND_IDS.VANGUARD.PRODUCT_ID.RETIREMENT;
             investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
             break;
-
+        case 'Australian Ethical Super':
+            productId = FUND_IDS.AE.PRODUCT_ID.RETIREMENT;
+            investmentId = INVESTMENT_OPTIONS.AE.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            break;
         default:
             throw new Error(`Unsupported product: ${product}`);
     }
