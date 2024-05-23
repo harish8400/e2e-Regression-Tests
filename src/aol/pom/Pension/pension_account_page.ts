@@ -615,7 +615,6 @@ export class PensionShellAccount extends BasePage {
     await this.ttrScreenView.first().waitFor();
     await this.ttrScreenView.first().click();
     await this.sleep(3000);
-    await this.transactionsTab.click();
 
   }
 
@@ -733,6 +732,16 @@ async selectAccumulationTab() {
   }
   // await this.transactionsTab.click();
 
+}
+
+async memberRollIn() {
+  await this.sleep(3000);
+  await this.page.locator("//button[text()='Member Summary']").click();
+  const number = await this.page.locator("(//p[@data-cy='info-value'])[2]").textContent();
+  const memberNo = number?.trim();
+  await this.sleep(3000);
+  await this.transactionsTab.click();
+  return memberNo || '';
 }
 
   }

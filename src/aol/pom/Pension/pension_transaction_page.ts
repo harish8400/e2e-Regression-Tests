@@ -215,9 +215,7 @@ export class PensionTransactionPage extends BasePage {
     this.verifyContributionSuccess = page.getByText(
       "Process step completed with note: Member roll in payload sent to Chandler."
     );
-    this.commutationUNPBenefitButton = page.getByText(
-      "Commutation - UNP Benefit"
-    );
+    this.commutationUNPBenefitButton = page.locator("(//li[@role='option'])[2]");
 
     //case
     this.viewCase = page.getByRole("button", { name: "View Cases" });
@@ -329,7 +327,7 @@ export class PensionTransactionPage extends BasePage {
     this.ButtonTransactions = page.getByRole('button', { name: 'Transactions' });
     this.ButtonAddTransactions = page.getByRole('button', { name: 'ADD TRANSACTION' });
     this.deathBenefitTransactionSuccess = page.getByText('Process step completed with note: Benefit payment correspondence sent.');
-    this.commutationTypeDropDown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
+    this.commutationTypeDropDown = page.locator("(//div[@class='gs__selected-options']//input)[2]");
     this.UNPPayment = page.getByRole('option', { name: 'Commutation - UNP Payment' }).locator('span');
     this.bankOption = page.getByRole('option', { name: 'Bank' });
     this.radioButton = page.locator('.switch-slider');
@@ -362,6 +360,7 @@ export class PensionTransactionPage extends BasePage {
 
   /** Member Rollin, adds a contribution to member account */
   async rollInTransaction() {
+    await this.sleep(3000);
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.memberAddContribution.click();
@@ -452,19 +451,25 @@ export class PensionTransactionPage extends BasePage {
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.pensionCommutation.click();
-
+    if (await this.commutation_type.isVisible()) {
+      await this.sleep(3000);
+    } else {
+      await this.page.reload();
+      await this.sleep(3000);
+      await this.memberAddTransaction.click();
+      await this.pensionCommutation.click();
+    }
+    await this.viewCase.click();
+    await this.sleep(3000);
+    await this.createCase.click();
+    await this.sleep(3000);
     await this.commutation_type.click();
     await this.commutation_type.press("Enter");
     //await this.sleep(3000);
     await this.page
       .getByRole("option", { name: "Commutation - UNP Benefit" })
       .click();
-
-    await this.viewCase.click();
     await this.sleep(3000);
-    await this.createCase.click();
-    await this.sleep(3000);
-
     await this.page.locator('(//span[text()="*"])[2]/following::input').click();
     await this.page
       .getByRole("option", { name: "Commutation - UNP Payment" })
@@ -506,6 +511,16 @@ export class PensionTransactionPage extends BasePage {
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.pensionCommutation.click();
+    if (await this.commutation_type.isVisible()) {
+      await this.sleep(3000);
+    } else {
+      while (!(await this.commutation_type.isVisible())) {
+        await this.page.reload();
+        await this.sleep(3000);
+        await this.memberAddTransaction.click();
+        await this.pensionCommutation.click();
+      }
+    }
     await this.sleep(3000);
     await this.viewCase.click();
     await this.sleep(3000)
@@ -514,20 +529,23 @@ export class PensionTransactionPage extends BasePage {
     await this.commutation_type.click();
     await this.commutation_type.press("Enter");
     //await this.sleep(3000);
-    await this.page
-      .getByRole("option", { name: "Commutation - UNP Benefit" })
-      .click();
-
-
-    await this.page.locator("#gs4__combobox div").first().click();
-    await this.page
-      .getByRole("option", { name: "Commutation - UNP Payment" })
-      .click();
-    await this.page.locator("#gs6__combobox").getByLabel("CloseSelect").click();
-    await this.page.getByRole("option").nth(0).click();
+    await this.page.getByRole("option", { name: "Commutation - UNP Benefit" }).click();
+    await this.sleep(3000);
+    const payment = await this.page.locator("(//div[@class='gs__selected-options']//input)[3]");
+    payment.click();
+    await this.sleep(3000);
+    payment.press('ArrowDown');
+    payment.press('Enter');
+    await this.sleep(3000);
+    const bank = await this.page.locator("//div[@id='gs5__combobox']/div[1]/input[1]");
+    bank.click();
+    await this.sleep(3000);
+    bank.press('ArrowDown');
+    bank.press('Enter');
+    await this.sleep(3000);
+    await this.effectiveDate.click();
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press("Enter");
-
     if (!FullExit) {
       await this.page.locator(".switch-slider").click();
       await this.partialBalance.click();
@@ -539,10 +557,16 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(3000);
 
     //Check commutation case and verify reject
+    var textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
+    let text = textContent?.trim();
+    if(text == 'Step 3 rejected.'){
     await this.reviewCase.reviewAndRejectCase(this.communationUNPReject);
+    }else{
+      await this.reviewCase.reviewAndRejectCase(this.page.getByText('Step 2 rejected.'));
+    }
   }
 
-  async deathBenefitTransaction() {
+  async deathBenefitTransaction(processType?: String) {
     await this.sleep(3000);
     await this.OverviewTab.focus();
     await this.OverviewTab.click();
@@ -568,8 +592,34 @@ export class PensionTransactionPage extends BasePage {
       }
     }
 
-    // locator update todo for vanguard and AE
-    await this.accumulationTab.click();
+    let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+
+    if (processType == 'ABP') {
+      switch (product) {
+        case 'HESTA for Mercy':
+          await this.sleep(3000);
+          await this.page.getByRole('button', { name: 'HESTA for Mercy Retirement' }).click();
+          break;
+        case 'Vanguard Super':
+          await this.page.getByRole('option', { name: 'Vanguard Super SpendSmart' }).click();
+          break;
+        default:
+          throw new Error(`Unsupported product: ${product}`);
+      }
+    } else {
+
+      switch (product) {
+        case 'HESTA for Mercy':
+          await this.page.getByRole('option', { name: 'HESTA for Mercy Super' }).click();
+          break;
+        case 'Vanguard Super':
+          await this.page.locator('//li[text()="Vanguard Accumulation"]').click();
+          break;
+        default:
+          throw new Error(`Unsupported product: ${product}`);
+      }
+
+    }
     await this.sleep(3000);
     await this.ButtonTransactions.click();
     await this.sleep(1000);
@@ -885,6 +935,12 @@ export class PensionTransactionPage extends BasePage {
     await this.sleep(4000);
     await this.adminFeeCase.click();
     await this.sleep(5000);
+    let view = await this.page.locator("//span[text()=' VIEW CASE ']");
+    view.scrollIntoViewIfNeeded();
+    await this.sleep(3000);
+    view.click();
+
+    await this.sleep(3000);
     await this.activityData.click();
     const fixedFeeTotal = await this.page.$(
       "(//span[@class='tree-view-item-key']/following::span[@class='tree-view-item-value tree-view-item-value-number'])[1]"
@@ -1104,33 +1160,30 @@ export class PensionTransactionPage extends BasePage {
     await this.memberTransactionTab.click();
     await this.memberAddTransaction.click();
     await this.pensionCommutation.click();
-    await this.commutation_type.click();
-    await this.commutation_type.press("Enter");
     await this.sleep(3000);
     await this.viewCase.click();
     await this.sleep(3000);
     await this.createCase.click();
     await this.sleep(3000);
-    //await this.page.getByRole('button', { name: 'arrow-left icon clipboard-' }).click();
+    if (await this.commutation_type.isVisible()) {
+      await this.commutation_type.click();
+    } else {
+      await this.linkCase.click();
+      await this.sleep(3000);
+    }
+    await this.commutation_type.press("Enter");
     await this.commutationTypeDropDown.click();
     await this.commutationUNPBenefitButton.click();
-    await this.page
-      .locator("#gs4__combobox")
-      .getByLabel("Select", { exact: true })
-      .click();
+    await this.sleep(3000);
+    await this.page.locator("(//div[@class='gs__selected-options']//input)[3]").click();
     await this.UNPPayment.click();
-    await this.page
-      .locator("#gs5__combobox")
-      .getByLabel("Select", { exact: true })
-      .click();
-    await this.bankOption.click();
-    await this.page
-      .locator("#gs6__combobox")
-      .getByLabel("Select", { exact: true })
-      .click();
-    await this.bankAccountType.click();
-    //await this.radioButton.click();
-    //await this.paymentAmount.fill("5000");
+    const bankAccount = await this.page.locator("//label[@for='bankAccount']/following::div[@class='gs__selected-options']");
+    bankAccount.click();
+    await this.sleep(3000);
+    bankAccount.press('ArrowDown');
+    await this.sleep(3000);
+    bankAccount.press('Enter');
+    await this.sleep(3000);
     await this.effectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
     await this.effectiveDate.press("Enter");
     await this.linkCase.click();
@@ -1179,58 +1232,58 @@ export class PensionTransactionPage extends BasePage {
     if (await deleteIcon.isVisible()) {
       deleteIcon.click();
     } else {
-    await this.sleep(2000).then(() => {
-      this.page.getByRole('button', { name: 'add-circle icon Add New Cohort' }).click()
-    });
-    await this.page.locator("//span[text()=' FILTER ']").click();
-    await this.page.getByText('Member Number').click();
-    await this.sleep(3000);
-    const textArea = await this.page.locator("//textarea[@class='el-textarea__inner']");
-    console.log(memberNumber);
-    textArea.fill(memberNumber);
-    await this.sleep(3000);
-    await this.page.getByRole('button', { name: 'APPLY' }).click();
-    let datePlaceHolder = await this.page.getByRole('textbox', { name: 'dd/mm/yyyy' });
-    await this.sleep(5000);
-    datePlaceHolder.scrollIntoViewIfNeeded();
-    await this.sleep(3000);
-    datePlaceHolder.click();
-    let date = new Date();
-    let today = DateUtils.ddmmyyyStringDate(0);
-    datePlaceHolder.fill(today);
-    await this.sleep(2000);
-    datePlaceHolder.press('Enter');
-    datePlaceHolder.press('Tab');
-    await this.sleep(2000).then(() => { this.page.getByRole('option', { name: pensions.FrequencyType[0], exact: true }).click() });
-    let monthSearch = await this.page.locator("(//label[text()='Start Month ']/following::input)[1]");
-    monthSearch.click();
-    await this.sleep(3000);
-    let currentMonth = date.getMonth();
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    let currentMonthName = months[currentMonth];
-    monthSearch.fill(currentMonthName);
-    await this.sleep(2000);
-    await this.page.getByRole('option', { name: currentMonthName, exact: true }).click();
-    date.setDate(date.getDate() - 15);
-    let currentDayOfMonth = date.getDate();
-    let dayOfMonth = await this.page.locator("(//label[text()='Day of Month ']/following::input)[1]");
-    dayOfMonth.click();
-    dayOfMonth.fill(currentDayOfMonth.toString());
-    await this.sleep(2000);
-    await this.page.getByRole('option', { name: currentDayOfMonth.toString(), exact: true }).click();
-    let time = await this.page.locator("//input[@placeholder='00:00:00']");
-    time.click();
-    await this.sleep(2000).then(() => { this.page.locator("//button[text()='OK']").click() });
-    await this.page.waitForTimeout(3000);
-    let reference = await this.page.getByLabel('Cohort Reference *')
-    reference.scrollIntoViewIfNeeded();
-    let testName = UtilsAOL.randomName();
-    reference.fill(`${testName} +Test`);
-    await this.sleep(2000)
-    await this.page.getByRole('button', { name: 'Add', exact: true }).focus().then(() => { this.page.getByRole('button', { name: 'Add', exact: true }).click({ force: true }) });
-    await this.sleep(3000);
-    await this.page.getByRole('button', { name: 'Done' }).click();
-    await this.page.waitForTimeout(3000);
+      await this.sleep(2000).then(() => {
+        this.page.getByRole('button', { name: 'add-circle icon Add New Cohort' }).click()
+      });
+      await this.page.locator("//span[text()=' FILTER ']").click();
+      await this.page.getByText('Member Number').click();
+      await this.sleep(3000);
+      const textArea = await this.page.locator("//textarea[@class='el-textarea__inner']");
+      console.log(memberNumber);
+      textArea.fill(memberNumber);
+      await this.sleep(3000);
+      await this.page.getByRole('button', { name: 'APPLY' }).click();
+      let datePlaceHolder = await this.page.getByRole('textbox', { name: 'dd/mm/yyyy' });
+      await this.sleep(5000);
+      datePlaceHolder.scrollIntoViewIfNeeded();
+      await this.sleep(3000);
+      datePlaceHolder.click();
+      let date = new Date();
+      let today = DateUtils.ddmmyyyStringDate(0);
+      datePlaceHolder.fill(today);
+      await this.sleep(2000);
+      datePlaceHolder.press('Enter');
+      datePlaceHolder.press('Tab');
+      await this.sleep(2000).then(() => { this.page.getByRole('option', { name: pensions.FrequencyType[0], exact: true }).click() });
+      let monthSearch = await this.page.locator("(//label[text()='Start Month ']/following::input)[1]");
+      monthSearch.click();
+      await this.sleep(3000);
+      let currentMonth = date.getMonth();
+      let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      let currentMonthName = months[currentMonth];
+      monthSearch.fill(currentMonthName);
+      await this.sleep(2000);
+      await this.page.getByRole('option', { name: currentMonthName, exact: true }).click();
+      date.setDate(date.getDate() - 15);
+      let currentDayOfMonth = date.getDate();
+      let dayOfMonth = await this.page.locator("(//label[text()='Day of Month ']/following::input)[1]");
+      dayOfMonth.click();
+      dayOfMonth.fill(currentDayOfMonth.toString());
+      await this.sleep(2000);
+      await this.page.getByRole('option', { name: currentDayOfMonth.toString(), exact: true }).click();
+      let time = await this.page.locator("//input[@placeholder='00:00:00']");
+      time.click();
+      await this.sleep(2000).then(() => { this.page.locator("//button[text()='OK']").click() });
+      await this.page.waitForTimeout(3000);
+      let reference = await this.page.getByLabel('Cohort Reference *')
+      reference.scrollIntoViewIfNeeded();
+      let testName = UtilsAOL.randomName();
+      reference.fill(`${testName} +Test`);
+      await this.sleep(2000)
+      await this.page.getByRole('button', { name: 'Add', exact: true }).focus().then(() => { this.page.getByRole('button', { name: 'Add', exact: true }).click({ force: true }) });
+      await this.sleep(3000);
+      await this.page.getByRole('button', { name: 'Done' }).click();
+      await this.page.waitForTimeout(3000);
       const processIcon = await this.page.locator('div').filter({ hasText: /^more icon$/ }).getByRole('button');
       processIcon.click();
       await this.page.waitForTimeout(3000);
@@ -1361,9 +1414,12 @@ export class PensionTransactionPage extends BasePage {
     await this.reviewCase.captureScreenshot();
   }
 
-  async deathBenefit() {
-    (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
-    await this.sleep(3000);
+  async deathBenefit(NewMember?: boolean) {
+    if (NewMember) {
+      await this.sleep(3000);
+    } else {
+      (await this.sleep(3000).then(() => this.page.locator("//button[text()='Transactions']"))).click();
+    }
     let sgcType = await this.page.locator("//div[@class='cell']/following::div[text()='DBE']").first();
     await sgcType.scrollIntoViewIfNeeded();
     await this.sleep(2000);
