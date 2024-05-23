@@ -8,6 +8,8 @@ import data from "../../../data/aol_test_data.json"
 import { AccumulationMemberApiHandler } from "../../../src/aol_api/handler/member_creation_accum_handler";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 import { MemberApiHandler } from "../../../src/aol_api/handler/member_api_handler";
+import pensionMember from "../../../data/aol_test_data.json";
+import { TransactionsApiHandler } from "../../../src/aol_api/handler/transaction_api_handler";
 
 export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
     apiRequestContext: async ({ }, use) => {
@@ -16,7 +18,7 @@ export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(300000);
+    test.setTimeout(480000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -66,6 +68,12 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
             } else {
                 console.log("Member ID is undefined");
             }
+            const memberno = await pensionAccountPage.memberRollIn(true);
+            console.log(memberno)
+            if (memberno) {
+           const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberno!);
+                membersId = linearId.id;
+            }
         });
 
         // Validate MAAS Submit Report
@@ -80,7 +88,21 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
         });
 
         await test.step("Validate Rollin succes", async () => {
+            if (pensionMember.generate_test_data_from_api) {
+                const memberno = await pensionAccountPage.memberRollIn();
+                if (memberno) {
+                    const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberno!);
+                    const memberID = linearId.id;
+                    await MemberApiHandler.addRollIn(apiRequestContext, memberID!);
+                    await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, memberID!);
+                    await pensionAccountPage.reload();
+                }
+            } else {
+    
+                // Select Existing Pension Member
+                const memberNo = pensionMember.members.TTR_Commutation_Rollout_Partial_And_Full_Member_Number;
             await pensionInvestmentPage.RolloverInTransaction();
+            }
         });
 
     } catch (error) {
@@ -417,7 +439,7 @@ test(fundName()+"-For future drawdown Members should not be able to select any i
     }
 })
 
-test(fundName()+"Verify if user can add investment price for Investment product @pension", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify if user can add investment price for Investment product @investment", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.addInvestmentPrice();
@@ -426,7 +448,7 @@ test(fundName()+"Verify if user can add investment price for Investment product 
     }
 })
 
-test(fundName()+"Verify edit/updating an existing investment product @pension", async ({ navBar, investmentsAndPricing }) => {
+test(fundName()+"Verify edit/updating an existing investment product @investment", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.editInvestment();

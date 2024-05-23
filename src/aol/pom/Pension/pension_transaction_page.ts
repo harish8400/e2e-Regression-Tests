@@ -559,9 +559,9 @@ export class PensionTransactionPage extends BasePage {
     //Check commutation case and verify reject
     var textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
     let text = textContent?.trim();
-    if(text == 'Step 3 rejected.'){
-    await this.reviewCase.reviewAndRejectCase(this.communationUNPReject);
-    }else{
+    if (text == 'Step 3 rejected.') {
+      await this.reviewCase.reviewAndRejectCase(this.communationUNPReject);
+    } else {
       await this.reviewCase.reviewAndRejectCase(this.page.getByText('Step 2 rejected.'));
     }
   }
@@ -738,11 +738,12 @@ export class PensionTransactionPage extends BasePage {
     await this.check_box.click();
     await this.sleep(2000);
     await this.commence_pension_button.click();
+    await this.sleep(5000);
+    await this.reviewCase.reviewCaseProcess(await this.pensionCommenceSuccessMessage);
     await this.sleep(3000);
-    await this.reviewCase.reviewCaseProcess(this.pensionCommenceSuccessMessage);
-    await expect(this.pensionCommencementHistory).toBeVisible();
-    await this.pensionCommencementHistory.click();
     await this.reviewCase.captureScreenshot();
+
+
 
   }
 

@@ -10,7 +10,9 @@ import { DashboardPage } from "../dashboard_page";
 import { allure } from "allure-playwright";
 import { GlobalPage } from "../component/global_page";
 import { FUND } from "../../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
+let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 export class PensionShellAccount extends BasePage {
 
   readonly navbar: Navbar;
@@ -734,10 +736,27 @@ async selectAccumulationTab() {
 
 }
 
-async memberRollIn() {
+async memberRollIn(memberLink?:boolean) {
+  if(memberLink){
+    await this.sleep(3000);
+    await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]").click();
+    await this.sleep(3000);
+    switch(product){
+        case 'HESTA for Mercy':
+          await this.page.getByRole('button', { name: 'HESTA for Mercy Retirement' }).click();
+      break;
+      case 'Vanguard Super':
+        await this.page.getByRole('option', { name: 'Vanguard Super SpendSmart' }).click();
+        break;
+        default:
+                throw new Error(`Unsupported product: ${product}`);
+    }
+
+  }
   await this.sleep(3000);
   await this.page.locator("//button[text()='Member Summary']").click();
-  const number = await this.page.locator("(//p[@data-cy='info-value'])[2]").textContent();
+  await this.sleep(3000);
+  const number = await this.page.locator("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[2]").textContent();
   const memberNo = number?.trim();
   await this.sleep(3000);
   await this.transactionsTab.click();
