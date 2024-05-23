@@ -100,7 +100,7 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
 
 
 test(
-    fundName() + "-ABP Rollover Out Commutation - Partial @pension_moneyout",
+    fundName() + "-ABP Rollover Out Commutation - Partial @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -221,7 +221,7 @@ test(
 );
 
 test(
-    fundName() + "-ABP UNP Commutation - Partial @pension_moneyout",
+    fundName() + "-ABP UNP Commutation - Partial @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -345,7 +345,7 @@ test(
 );
 
 test(
-    fundName() + "-TTR RLO Commutation - Partial @pension_moneyout",
+    fundName() + "-TTR RLO Commutation - Partial @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -470,7 +470,7 @@ test(
 
 test(
     fundName() +
-    "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @pension_moneyout",
+    "-ABP UNP Commutation - Review on Step 3 Validate Commutation  - Reject @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -518,7 +518,7 @@ test(
     })
 
 test(
-    fundName() + "-ABP Rollover Out Commutation - Full exit @pension_moneyout",
+    fundName() + "-ABP Rollover Out Commutation - Full exit @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -645,7 +645,7 @@ test(
 );
 
 test(
-    fundName() + "-ABP UNP Commutation - Full Exit @pension_moneyout",
+    fundName() + "-ABP UNP Commutation - Full Exit @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -771,7 +771,7 @@ test(
 
     })
 
-test(fundName() + "-TTR RLO Commutation - Full Exit @pension_moneyout", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
+test(fundName() + "-TTR RLO Commutation - Full Exit @money_out", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext, transactionApi, globalPage }) => {
 
     let membersId: string | undefined;
 
@@ -904,7 +904,7 @@ test(fundName() + "-TTR RLO Commutation - Full Exit @pension_moneyout", async ({
 
 
 test(
-    fundName() + "-ABP Death Benefit Payment @pension_moneyout",
+    fundName() + "-ABP Death Benefit Payment @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -957,7 +957,7 @@ test(
 
 test(
     fundName() +
-    "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @pension_moneyout",
+    "-Lump sum withdrawals from pre-retirement income streams are not permitted - TTR @money_out",
     async ({
         navBar,
         pensionTransactionPage,

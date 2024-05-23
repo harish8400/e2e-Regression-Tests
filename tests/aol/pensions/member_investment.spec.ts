@@ -110,7 +110,7 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
     }
 })
 
-test(fundName()+"ABP - Pension draw-down as Proportional @pension_moneyout", async ({ memberPage, internalTransferPage, accountInfoPage, pensionTransactionPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"ABP - Pension draw-down as Proportional @money_out", async ({ memberPage, internalTransferPage, accountInfoPage, pensionTransactionPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than proportional
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -163,7 +163,7 @@ else{
     })
 })
 
-test(fundName()+"ABP - Pension draw-down as Specific order @pension_moneyout", async ({ memberPage, accountInfoPage, internalTransferPage, navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
+test(fundName()+"ABP - Pension draw-down as Specific order @money_out", async ({ memberPage, accountInfoPage, internalTransferPage, navBar, pensionInvestmentPage ,pensionTransactionPage, pensionAccountPage, apiRequestContext}) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -216,7 +216,7 @@ else{
     });  
 })
 
-test(fundName()+"ABP - Pension draw-down as Percentage @pension_moneyout", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
+test(fundName()+"ABP - Pension draw-down as Percentage @money_out", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, pensionAccountPage, apiRequestContext, navBar, pensionInvestmentPage }) => {
     //to do: pension account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -269,7 +269,7 @@ else{
     });  
 })
 
-test(fundName()+"TTR - Pension draw-down as Proportional @pension_moneyout", async ({ pensionTransactionPage, internalTransferPage, accountInfoPage, memberPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"TTR - Pension draw-down as Proportional @money_out", async ({ pensionTransactionPage, internalTransferPage, accountInfoPage, memberPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than proportional
 if (data.generate_test_data_from_api) {
     await test.step("Navigate to Accumulation Members page", async () => {
@@ -320,7 +320,7 @@ else{
     
 })
 
-test(fundName()+"TTR - Pension draw-down as Specific order @pension_moneyout", async ({ pensionTransactionPage, accountInfoPage, memberPage, internalTransferPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"TTR - Pension draw-down as Specific order @money_out", async ({ pensionTransactionPage, accountInfoPage, memberPage, internalTransferPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Specified Order
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {
@@ -371,7 +371,7 @@ else{
     }); 
 })
 
-test(fundName()+"TTR - Pension draw-down as Percentage @pension_moneyout", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
+test(fundName()+"TTR - Pension draw-down as Percentage @money_out", async ({ pensionTransactionPage, internalTransferPage, memberPage, accountInfoPage, apiRequestContext, pensionAccountPage, navBar, pensionInvestmentPage }) => {
     //to do: TTR account creation as per the pre-requisite - member should have drawdown option set to other than Percentage
 if (data.generate_test_data_from_api) {
     await test.step("Navigate to Accumulation Members page", async () => {
