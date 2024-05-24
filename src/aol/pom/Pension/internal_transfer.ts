@@ -297,6 +297,7 @@ export class InternalTransferPage extends BasePage {
         await this.reviewCase.captureScreenshot('Internal Transfer Out Case');
 
         // Click on Internal Transfer In Process
+        await this.sleep(4000);
         await this.processID.click();
         // Click on Internal Transfer In Process
         await this.processID.nth(1).click();

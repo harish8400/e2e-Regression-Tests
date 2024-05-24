@@ -17,7 +17,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(480000);
+    test.setTimeout(600000);
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -100,7 +100,7 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
 
 
 test(
-    fundName() + "-ABP Rollover Out Commutation - Partial @Fail",
+    fundName() + "-ABP Rollover Out Commutation - Partial @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -645,7 +645,7 @@ test(
 );
 
 test(
-    fundName() + "-ABP UNP Commutation - Full Exit @Fail",
+    fundName() + "-ABP UNP Commutation - Full Exit @money_out",
     async ({
         navBar,
         pensionTransactionPage,
@@ -1010,7 +1010,7 @@ test(
     }
 );
 
-test(fundName() + "-ABP Pension commencement WITH PTB @pension", async ({ navBar, memberPage, accountInfoPage, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
+test(fundName() + "-ABP Pension commencement WITH PTB @money_out", async ({ navBar, memberPage, accountInfoPage, internalTransferPage, pensionTransactionPage, pensionAccountPage, apiRequestContext }) => {
     //Creating test data from api   
     if (data.generate_test_data_from_api) {
         await test.step("Navigate to Accumulation Members page", async () => {

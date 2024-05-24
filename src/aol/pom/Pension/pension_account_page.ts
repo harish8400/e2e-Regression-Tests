@@ -692,7 +692,9 @@ export class PensionShellAccount extends BasePage {
       await this.addMemberPensionDetails('TTR');
       await this.sleep(3000);
       await this.initCreateCase();
+      await this.sleep(3000);
       await this.createAcc.click();
+      await this.sleep(3000);
       await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
     }
