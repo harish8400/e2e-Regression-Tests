@@ -81,7 +81,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     eligibleServiceDate: '2023-06-14',
                     "memberPensionConfiguration": {
                         "eligibilityType": "reachedPreservationAge",
-                        "firstPensionPaymentDate": '2024-05-24',
+                        "firstPensionPaymentDate": `${DateUtils.localISOStringDate(this.today)}`,
                         "pensionCommencementDate": `${DateUtils.localISOStringDate(this.commencementDate)}`,
                         "totalTaxFreePensionPercent": "0",
                         "pensionPurchasedWithDeathBenefits": "true",
@@ -111,7 +111,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                             addressDetails: [],
                             mailingDetails: [],
                             documents: [],
-                            effectiveDate: '2024-05-24',
+                            effectiveDate: `${DateUtils.localISOStringDate(this.today)}`,
                             endDate: null,
                         },
                     ],
@@ -123,7 +123,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     "annualPensionPaymentOption": "nominatedAmount",
                     "claimingPensionTaxFreeThreshold": false,
                     "nextPaymentDate": `${DateUtils.localISOStringDate(this.nextPaymentDate)}`,
-                    "effectiveDate": '2024-05-24',
+                    "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
                 },
                 bankAccountData: {
                     bankAccountList: [
@@ -146,7 +146,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                             "percent": 50
                         }
                     ],
-                    "effectiveDate": '2024-05-24',
+                    "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
                 },
                 "initialRollInProcessData": [
                     {
@@ -170,7 +170,6 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let MemberNo: string = responseBody.initialData.memberData.memberNo;
         return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId, processId };
     }
-
     async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
         let productId:string;
         switch (fundProduct) {
