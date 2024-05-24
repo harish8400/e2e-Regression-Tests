@@ -110,7 +110,7 @@ export class RelatedInformationPage extends BasePage {
         await this.sleep(9000);
         await this.linkCase.click();
         await this.sleep(6000);
-        await expect(this.correspondenceStatus).toBeVisible();
+        await expect(await this.correspondenceStatus).toBeVisible();
     }
 
     async addConditionOfRelease(){

@@ -826,7 +826,7 @@ export class PensionTransactionPage extends BasePage {
     await this.selectFilterType.fill("PTB");
     await this.filterType_PTB.click();
     await this.applyButton.click();
-    await this.sleep(3000);
+    await this.sleep(5000);
     if (PTB) {
       expect(this.transactionType_PTB).toBeVisible();
       await this.page.locator("//tr[contains(@class,'clickable')]//td[1]").first().click();
@@ -1102,7 +1102,7 @@ export class PensionTransactionPage extends BasePage {
       await new Promise((resolve) => setTimeout(resolve, 10000));
       await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
     }
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
     await TransactionsApiHandler.fetchRollInDetails(
       apiRequestContext,
