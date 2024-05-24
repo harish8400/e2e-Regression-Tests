@@ -100,7 +100,7 @@ test(fundName() + "-Manual Roll-in - Pension Member @pension", async ({ globalPa
 
 
 test(
-    fundName() + "-ABP Rollover Out Commutation - Partial @money_out",
+    fundName() + "-ABP Rollover Out Commutation - Partial @Fail",
     async ({
         navBar,
         pensionTransactionPage,
@@ -645,7 +645,7 @@ test(
 );
 
 test(
-    fundName() + "-ABP UNP Commutation - Full Exit @money_out",
+    fundName() + "-ABP UNP Commutation - Full Exit @Fail",
     async ({
         navBar,
         pensionTransactionPage,

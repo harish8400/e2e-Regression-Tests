@@ -420,7 +420,7 @@ export class MemberApi extends BaseDltaAolApi {
       expect(active).toBe(false);
       expect(exitReason).toMatch(/^(BENEFIT|ROLLOUT)$/i);
     } else {
-      console.log("Partial Exit is done and paymentdate is:`${todayDateOnly}`")
+      console.log("Partial Exit is done and paymentdate is:" +todayDateOnly)
     }
     return { status: true };
 

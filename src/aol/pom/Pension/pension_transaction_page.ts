@@ -454,10 +454,12 @@ export class PensionTransactionPage extends BasePage {
     if (await this.commutation_type.isVisible()) {
       await this.sleep(3000);
     } else {
+      while (!(await this.commutation_type.isVisible())) {
       await this.page.reload();
       await this.sleep(3000);
       await this.memberAddTransaction.click();
       await this.pensionCommutation.click();
+      }
     }
     await this.viewCase.click();
     await this.sleep(3000);
@@ -1071,9 +1073,9 @@ export class PensionTransactionPage extends BasePage {
       await MemberApiHandler.createPensionShellAccount(apiRequestContext);
 
     // Perform necessary operations related to pension account creation
-    await new Promise((resolve) => setTimeout(resolve, 6000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-    await new Promise((resolve) => setTimeout(resolve, 6000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
     await new Promise((resolve) => setTimeout(resolve, 10000));
     await navBar.selectMember(memberNo);
@@ -1097,8 +1099,10 @@ export class PensionTransactionPage extends BasePage {
     // Fetch additional details and perform pension-related actions
     const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
     if (commencePension) {
+      await new Promise((resolve) => setTimeout(resolve, 10000));
       await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
     }
+    await new Promise((resolve) => setTimeout(resolve, 4000));
     await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
     await TransactionsApiHandler.fetchRollInDetails(
       apiRequestContext,
