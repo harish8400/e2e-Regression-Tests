@@ -190,7 +190,9 @@ test(fundName() + "-Internal Transfer from TTR to Accumulation @pension", async 
         });
 
         await test.step("Select the Accumulation Member and perform Internal Transfer", async () => {
-            await internalTransferPage.accumulationAccountLink()
+            await navBar.navigateToTTRMembersPage();
+            await navBar.selectMember(memberID);
+            await internalTransferPage.accumulationAccountLink();
             await internalTransferPage.internalTransferMember('TTR', memberID);
 
         });

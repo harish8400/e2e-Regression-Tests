@@ -2,6 +2,8 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
+let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+
 export class Navbar extends BasePage {
   readonly accumulationProduct: Locator;
   readonly accumulationMembersLink: Locator;
@@ -14,6 +16,7 @@ export class Navbar extends BasePage {
   readonly productOptionDropDown: Locator;
   readonly productSelection: Locator;
   readonly selectTTRProduct: Locator;
+  readonly selectVGTTRProduct: Locator;
 
   readonly FilterClick: Locator;
   readonly FilterOption: Locator;
@@ -33,7 +36,8 @@ export class Navbar extends BasePage {
     this.addEmployer = page.getByText('Add new employer');
 
     this.selectRetirementProduct = page.locator("(//p[@type='label'])[3]");
-    this.selectTTRProduct = page.locator("(//a[@class='bSXxLn']//p)[3]");
+    this.selectTTRProduct = page.locator("(//p[text()='Transition to Retirement'])[1]");
+    this.selectVGTTRProduct = page.locator("(//p[text()='Vanguard TransitionSmart'])[1]");
     this.membersLink = page.getByRole('link', { name: 'Members' });
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
     this.productOptionDropDown = page.locator("(//div[@class='bWJdlu']/following-sibling::div)[1]");
@@ -113,7 +117,18 @@ export class Navbar extends BasePage {
   }
 
   async navigateToTTRMembersPage() {
-    await this.selectTTRProduct.click();
+    switch (product) {
+      case 'HESTA for Mercy':
+        await this.selectTTRProduct.click();
+        break;
+
+      case 'Vanguard Super':
+        await this.selectVGTTRProduct.click();
+        break;
+      default:
+        throw new Error(`Unsupported product: ${product}`);
+    }
+
     await this.membersLink.click();
   }
 }

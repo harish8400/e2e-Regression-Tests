@@ -6,7 +6,7 @@ import { DateUtils } from "../../../utils/date_utils";
 import * as member from "../../data/member.json";
 import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
-
+let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 export class InternalTransferPage extends BasePage {
     readonly processesLink: Locator;
     readonly reviewCase: ReviewCase;
@@ -374,7 +374,9 @@ export class InternalTransferPage extends BasePage {
             await this.beneficiaryEffectiveDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
             await this.beneficiaryEffectiveDate.press('Tab');
             await this.beneficiaryPercentage.fill('100');
+            await this.sleep(3000);
             await this.beneficiarySave.click();
+            await this.sleep(3000);
         }
         //Create account
         await this.createAccount.click();
@@ -482,15 +484,20 @@ export class InternalTransferPage extends BasePage {
 
     }
     async accumulationAccountLink() {
+
         await this.sleep(3000);
-        await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]").click();
-        await this.sleep(3000);
-        if (process.env.PRODUCT == FUND.HESTA) {
-            await this.page.locator("//button[text()='HESTA for Mercy Super']").click();
-        } else {
-            await this.page.locator("//button[text()='Vanguard Accumulation']").click();
+        switch (product) {
+            case 'HESTA for Mercy':
+                await this.page.locator("//button[text()='HESTA for Mercy Super']").click();
+                break;
+            case 'Vanguard Super':
+                await this.page.locator("//button[text()='Vanguard Accumulation']").click();
+                break;
+            default:
+                throw new Error(`Unsupported product: ${product}`);
 
         }
+        await this.sleep(3000);
 
     }
 

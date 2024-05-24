@@ -24,7 +24,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName() + "Money gets invested into CASH after roll-in post member creation @pension", async ({ navBar, pensionInvestmentPage, apiRequestContext, globalPage, memberPage, internalTransferPage, accountInfoPage, shellAccountApi, pensionAccountPage, transactionApi }) => {
+test(fundName() + "Money gets invested into CASH after roll-in post member creation @pension", async ({ rollinApi,navBar, pensionInvestmentPage, apiRequestContext, globalPage, memberPage, internalTransferPage, accountInfoPage, shellAccountApi, pensionAccountPage, transactionApi }) => {
     try {
         let membersId: string | undefined;
 
@@ -93,7 +93,7 @@ test(fundName() + "Money gets invested into CASH after roll-in post member creat
                 if (memberno) {
                     const linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberno!);
                     const memberID = linearId.id;
-                    await MemberApiHandler.addRollIn(apiRequestContext, memberID!);
+                    await ShellAccountCreationApiHandler.createRollin(rollinApi, memberID!);
                     await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, memberID!);
                     await pensionAccountPage.reload();
                 }
