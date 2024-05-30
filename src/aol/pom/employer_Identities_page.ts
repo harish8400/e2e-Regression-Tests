@@ -2,13 +2,8 @@ import { Locator, Page, expect, } from "@playwright/test";
 import { BasePage } from "../../common/pom/base_page";
 import * as employer from "../data/employer.json";
 import { DateUtils } from "../../utils/date_utils";
-import * as member from "../data/member.json";
-import { TFN } from "../data/tfn";
-
 import { UtilsAOL } from "../utils_aol";
 import assert from "assert";
-import { Console, error } from "console";
-
 
 export class EmployerIdentitiesPage extends BasePage {
 
