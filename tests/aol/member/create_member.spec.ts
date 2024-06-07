@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs member creation tests */
-test(fundName()+"-Verify a new Active Member Account is created successfully and welcome letter is triggered @member", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
+test(fundName() + "-Verify a new Active Member Account is created successfully and welcome letter is triggered @member", async ({ internalTransferPage, apiRequestContext, accountInfoPage, memberPage, navBar }) => {
 
     try {
 
@@ -28,14 +28,14 @@ test(fundName()+"-Verify a new Active Member Account is created successfully and
         })
 
         await test.step("Create a new Active member & Verify welcome letter is triggered", async () => {
-            
+
             let memberID;
-            let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
-                memberID = memberNo;
-            if(process.env.PRODUCT! == FUND.HESTA){
+            let { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+            memberID = memberNo;
+            if (process.env.PRODUCT! == FUND.HESTA) {
                 //await memberPage.selectMember(addedMember);
                 await memberPage.verifyIfWelcomeLetterTriggered();
-            }else{
+            } else {
                 let addedMember = await memberPage.addNewMember(false, true);
                 await memberPage.approveMemberCreationProcess(addedMember);
             }
@@ -45,42 +45,42 @@ test(fundName()+"-Verify a new Active Member Account is created successfully and
     }
 })
 
-test(fundName()+"-Verify new member creation without TFN and welcome letter is triggered @member", async ({ memberPage, navBar }) => {
+test(fundName() + "-Verify new member creation without TFN and welcome letter is triggered @member", async ({ memberPage, navBar }) => {
 
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
         })
-        
+
         await test.step("Create a new member without TFN & Verify welcome letter is triggered", async () => {
             let addedMember = await memberPage.addNewMember(true, true);
-            if(process.env.PRODUCT! == FUND.HESTA){
+            if (process.env.PRODUCT! == FUND.HESTA) {
                 await memberPage.selectMember(addedMember);
                 await memberPage.verifyIfWelcomeLetterTriggered();
-            }else{
+            } else {
                 await memberPage.approveMemberCreationProcess(addedMember);
             }
         })
-        
+
     } catch (error) {
         throw error;
     }
 })
 
-test(fundName()+"-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful @member", async ({ memberPage, navBar }) => {
+test(fundName() + "-Verify creation of a new active member account with Date Joined Fund date earlier than current system date is successful @member", async ({ memberPage, navBar }) => {
 
     try {
 
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
         })
-        
+
         await test.step("Create a new member without TFN & Verify welcome letter is triggered", async () => {
             let addedMember = await memberPage.addNewMember(true, true, true);
-            if(process.env.PRODUCT! == FUND.HESTA){
+            if (process.env.PRODUCT! == FUND.HESTA) {
                 await memberPage.selectMember(addedMember);
                 await memberPage.verifyIfWelcomeLetterTriggered();
-            }else{
+            } else {
                 await memberPage.approveMemberCreationProcess(addedMember);
             }
         })
@@ -89,5 +89,3 @@ test(fundName()+"-Verify creation of a new active member account with Date Joine
         throw error;
     }
 })
-
-

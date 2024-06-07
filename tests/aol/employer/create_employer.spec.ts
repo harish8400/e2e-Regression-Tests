@@ -1,6 +1,6 @@
 import { allure } from "allure-playwright";
 import { aolTest as test } from "../../../src/aol/base_aol_test"
-import {fundName } from "../../../src/aol/utils_aol";
+import { fundName } from "../../../src/aol/utils_aol";
 
 
 test.beforeEach(async ({ navBar }) => {
@@ -30,7 +30,7 @@ test(fundName() + "-Verify if new employer ABN is created successfully @employer
 })
 
 test(fundName() + "Verify if new employer WPN is created successfully @employer", async ({ employerIdentitiesPage }) => {
-   
+
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
     })
@@ -64,7 +64,7 @@ test(fundName() + "-Verify for new employer Contact Details are added successful
     })
 })
 
-test(fundName() +"Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
+test(fundName() + "Verify existing employer data can be edited successfully @employer", async ({ employerIdentitiesPage }) => {
 
     await test.step("Navigate to Employer Identities page", async () => {
         await employerIdentitiesPage.employerIdentities();
@@ -74,12 +74,12 @@ test(fundName() +"Verify existing employer data can be edited successfully @empl
     await test.step("- Existing employer", async () => {
         await employerIdentitiesPage.updateExistingEmployer(false);
     })
-})    
+})
 
 test(fundName() + "-Verify if error is displayed on empty create employer request @employer", async ({ employerIdentitiesPage }) => {
 
-        await test.step("Click on Add new Employers", async () => {
-            await employerIdentitiesPage.validateInvalidEmployerCreation();
-        });
+    await test.step("Click on Add new Employers", async () => {
+        await employerIdentitiesPage.validateInvalidEmployerCreation();
+    });
 
 })

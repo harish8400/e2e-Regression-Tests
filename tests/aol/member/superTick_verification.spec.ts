@@ -19,7 +19,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"Verify Super Tick status is Matched for an Active Super member when a valid TFN is updated for the member @superTick", async ({ apiRequestContext, internalTransferPage, memberPage, navBar, memberOverviewpage, relatedInformationPage,accountInfoPage }) => {
+test(fundName() + "Verify Super Tick status is Matched for an Active Super member when a valid TFN is updated for the member @superTick", async ({ apiRequestContext, internalTransferPage, memberPage, navBar, memberOverviewpage, relatedInformationPage, accountInfoPage }) => {
 
     try {
         let createMemberNo: string | undefined;
@@ -36,7 +36,7 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
                 createMemberNo = memberData.memberNo;
             })
         }
-        else{
+        else {
             //** select the existing accumulation member with Active status if data from api is set to false */
             createMemberNo = member.memberID;
             await navBar.selectMember(createMemberNo);
@@ -48,13 +48,13 @@ test(fundName()+"Verify Super Tick status is Matched for an Active Super member 
             await navBar.selectMember(createMemberNo!);
             await relatedInformationPage.verifySuperTickStatus(true);
         })
-            
+
     } catch (error) {
         throw error;
     }
-}) 
+})
 
-test(fundName()+"Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, memberPage, navBar, memberOverviewpage, relatedInformationPage, accountInfoPage, internalTransferPage }) => {
+test(fundName() + "Verify that for a member with Pending status No super tick call is made. @superTick", async ({ globalPage, apiRequestContext, memberPage, navBar, memberOverviewpage, relatedInformationPage, accountInfoPage, internalTransferPage }) => {
 
     try {
 
@@ -73,19 +73,19 @@ test(fundName()+"Verify that for a member with Pending status No super tick call
                 await globalPage.captureScreenshot('Accumulation Account Creation');
             })
         }
-        else{
+        else {
             //** select the existing accumulation member with Active status if data from api is set to false */
             createMemberNo = member.memberID;
             await navBar.selectMember(createMemberNo);
         }
-        
+
         await test.step("do supertick call and verify supertick status is not showing as 'Matched' ", async () => {
             await memberOverviewpage.superTickVerification();
             await navBar.navigateToAccumulationMembersPage();
             await navBar.selectMember(createMemberNo!);
             await relatedInformationPage.verifySuperTickStatus(false);
         })
-        
+
     } catch (error) {
         throw error;
     }

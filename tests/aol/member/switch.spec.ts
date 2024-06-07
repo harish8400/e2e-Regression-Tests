@@ -19,26 +19,26 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
-      
+test(fundName() + " Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+
     try {
         if (pensionMember.generate_test_data_from_api) {
             await test.step("Navigate to Accumulation Members page", async () => {
                 await navBar.navigateToAccumulationMembersPage();
             })
-    
-        let createMemberNo: string | undefined;
-        
+
+            let createMemberNo: string | undefined;
+
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
                 createMemberNo = memberData.memberNo;
             })
         }
-        else{
+        else {
             await test.step("Select the Accumulation Member", async () => {
                 let member = memberData.Employment.EmployementTerminationMember_Hesta;
                 await navBar.selectMember(member);
-            })  
+            })
         }
         await test.step("Verify Combined switch is processed successfully for a member with 1 single option to another single options using current date.", async () => {
             await memberPage.verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToAnotherOption();
@@ -46,29 +46,29 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
 
     } catch (error) {
         throw error;
-    } 
+    }
 
 })
 
-test(fundName()+" Verify Combined switch is processed successfully for a member with 1 single option to multiple option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+test(fundName() + " Verify Combined switch is processed successfully for a member with 1 single option to multiple option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
     try {
         if (pensionMember.generate_test_data_from_api) {
-                await test.step("Navigate to Accumulation Members page", async () => {
+            await test.step("Navigate to Accumulation Members page", async () => {
                 await navBar.navigateToAccumulationMembersPage();
             })
-    
-        let createMemberNo: string | undefined;
-        
+
+            let createMemberNo: string | undefined;
+
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
                 createMemberNo = memberData.memberNo;
             })
         }
-        else{
+        else {
             await test.step("Select the Accumulation Member", async () => {
                 let member = memberData.Employment.EmployementTerminationMember_Hesta;
                 await navBar.selectMember(member);
-            })  
+            })
         }
         await test.step("Verify Combined Switch Processed Successfully For One SingleOption To Multiple Option", async () => {
             await memberPage.verifyCombinedSwitchProcessedSuccessfullyForOneSingleOptionToMultipleOption();
@@ -79,25 +79,25 @@ test(fundName()+" Verify Combined switch is processed successfully for a member 
     }
 })
 
-test(fundName()+" Verify Combined switch is processed successfully for a more than one option to single option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
+test(fundName() + " Verify Combined switch is processed successfully for a more than one option to single option using current date. @switch", async ({ internalTransferPage, apiRequestContext, accountInfoPage, navBar, memberPage }) => {
     try {
         if (pensionMember.generate_test_data_from_api) {
             await test.step("Navigate to Accumulation Members page", async () => {
                 await navBar.navigateToAccumulationMembersPage();
             })
-    
-        let createMemberNo: string | undefined;
-        
+
+            let createMemberNo: string | undefined;
+
             await test.step("Add new Accumulation Member", async () => {
                 const memberData = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
                 createMemberNo = memberData.memberNo;
             })
         }
-        else{
+        else {
             await test.step("Select the Accumulation Member", async () => {
                 let member = memberData.Employment.EmployementTerminationMember_Hesta;
                 await navBar.selectMember(member);
-            })  
+            })
         }
         await test.step("Verify Combined switch is processed successfully for a more than one option to single option using current date", async () => {
             await memberPage.verifyCombinedSwitchProcessedSuccessfullyForMoreThanOneOptionToSingleOption();

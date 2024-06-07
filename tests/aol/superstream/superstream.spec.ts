@@ -1,4 +1,3 @@
-
 import { xmlUtility } from '../../../src/utils/xml_util';
 import { aolTest as base } from "../../../src/aol/base_aol_test"
 import { allure } from 'allure-playwright';
@@ -1420,6 +1419,3 @@ test("Verify if valid bank csv file is uploaded successfully and its validation 
 
     });
 });
-
-
-

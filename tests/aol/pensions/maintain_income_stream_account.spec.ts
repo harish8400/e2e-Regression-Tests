@@ -72,7 +72,7 @@ test(fundName() + "- Maintain Income Steam Account - Payment details (payment am
             // Create New Pension Shell Account
             await allure.step("Create New Pension Shell Account", async () => {
                 const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                    membersId = memberId.linearId.id;
+                membersId = memberId.linearId.id;
                 await globalPage.captureScreenshot('New ABP Member');
             });
         }
@@ -92,12 +92,12 @@ test(fundName() + "- Maintain Income Steam Account - Payment details (payment am
         const getMemberId = () => membersId;
         const memberId = getMemberId();
         if (memberId) {
-        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
-            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
-            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
-            await globalPage.captureScreenshot("Re-calculated regular pension payment");
-        })
-    }
+            await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+                var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
+                allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+                await globalPage.captureScreenshot("Re-calculated regular pension payment");
+            })
+        }
 
     } catch (Error) {
         throw Error;
@@ -118,7 +118,7 @@ test(fundName() + "- Verify Pension Payment is executed successful for Half-year
         if (data.generate_test_data_from_api) {
             await allure.step("Create New Pension Shell Account", async () => {
                 const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                    membersId = memberId.linearId.id;
+                membersId = memberId.linearId.id;
                 await globalPage.captureScreenshot('New ABP Member');
             });
         }
@@ -138,12 +138,12 @@ test(fundName() + "- Verify Pension Payment is executed successful for Half-year
         const getMemberId = () => membersId;
         const memberId = getMemberId();
         if (memberId) {
-        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
-            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
-            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
-            await globalPage.captureScreenshot("Re-calculated regular pension payment");
-        })
-    }
+            await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+                var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
+                allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+                await globalPage.captureScreenshot("Re-calculated regular pension payment");
+            })
+        }
 
     } catch (Error) {
         throw Error;
@@ -163,7 +163,7 @@ test(fundName() + "- Verify Pension Payment is executed successful for Quarterly
         if (data.generate_test_data_from_api) {
             await test.step("Add new ABP Member", async () => {
                 const memberId = await pensionTransactionPage.memberPensionShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
-                    membersId = memberId.linearId.id;
+                membersId = memberId.linearId.id;
                 await globalPage.captureScreenshot('New ABP Member');
             });
         }
@@ -183,12 +183,12 @@ test(fundName() + "- Verify Pension Payment is executed successful for Quarterly
         const getMemberId = () => membersId;
         const memberId = getMemberId();
         if (memberId) {
-        await test.step("Validate Re-calculation of regular pension payment amount", async () => {
-            var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
-            allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
-            await globalPage.captureScreenshot("Re-calculated regular pension payment");
-        })
-    }
+            await test.step("Validate Re-calculation of regular pension payment amount", async () => {
+                var recalculatedPensionAmount = await MemberApiHandler.getRegularPensionPaymentAmount(memberApi, memberId!);
+                allure.logStep("Re-calculated regular pension payment from DLTA -" + recalculatedPensionAmount);
+                await globalPage.captureScreenshot("Re-calculated regular pension payment");
+            })
+        }
 
     } catch (Error) {
         throw Error;

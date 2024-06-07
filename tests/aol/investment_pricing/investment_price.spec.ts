@@ -9,7 +9,7 @@ test.beforeEach(async ({ navBar }) => {
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"Verify if user can add investment price for Investment product", async ({ navBar, investmentsAndPricing }) => {
+test(fundName() + "Verify if user can add investment price for Investment product", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.addInvestmentPrice();
@@ -18,7 +18,7 @@ test(fundName()+"Verify if user can add investment price for Investment product"
     }
 })
 
-test(fundName()+"Verify edit/updating an existing investment product", async ({ navBar, investmentsAndPricing }) => {
+test(fundName() + "Verify edit/updating an existing investment product", async ({ navBar, investmentsAndPricing }) => {
     try {
         await navBar.accumulationProduct.click();
         await investmentsAndPricing.editInvestment();

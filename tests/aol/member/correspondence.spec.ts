@@ -8,11 +8,11 @@ test.beforeEach(async ({ navBar }) => {
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
-        
+
 });
 
-test(fundName()+"-Stop Correspondence @pension", async ({ navBar , relatedInformationPage,memberApi,pensionAccountPage }) => {
-    
+test(fundName() + "-Stop Correspondence @pension", async ({ navBar, relatedInformationPage, memberApi, pensionAccountPage }) => {
+
     try {
         await navBar.navigateToPensionMembersPage();
         let { memberNo, processId } = await ShellAccountCreationApiHandler.createPensionShellAccount(memberApi);
@@ -28,5 +28,5 @@ test(fundName()+"-Stop Correspondence @pension", async ({ navBar , relatedInform
     } catch (error) {
         throw error;
     }
-    
+
 })
