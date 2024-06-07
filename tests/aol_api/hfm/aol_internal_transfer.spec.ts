@@ -14,7 +14,7 @@ export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -22,37 +22,30 @@ test.beforeEach(async ({ navBar }) => {
 
 
 test(fundName() + "-Internal Transfer Out @Hesta", async ({ navBar, pensionAccountPage, internalTransferPage,apiRequestContext ,pensionTransactionPage }) => {
-
-    try {
-
-        await allure.suite("Pension");
-        await allure.parentSuite(process.env.PRODUCT!);
-        await navBar.navigateToPensionMembersPage();
-        let { memberNo, processId,surname} = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
-        await pensionAccountPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
-        await navBar.navigateToPensionMembersPage();
-        await navBar.selectMember(memberNo);
-        let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-        await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
-        let { amount } = await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
-        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-        await MemberApiHandler.internalTransferOutvalidation(apiRequestContext, linearId.id, amount)
-        await pensionAccountPage.reload();
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await internalTransferPage.accumulationAccountCreation(true, true);
-        await navBar.selectMemberSurName(surname);
-        await internalTransferPage.internalTransferMemberOut('ABP', memberNo);
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await pensionAccountPage.reload();
-        await pensionTransactionPage.transactionView();
-
-    } catch (error) {
-        throw error;
-    }
+    await allure.suite("Pension");
+    await allure.parentSuite(process.env.PRODUCT!);
+    await navBar.navigateToPensionMembersPage();
+    let { memberNo, processId,surname} = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
+    await pensionAccountPage.ProcessTab();
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+    await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    await pensionAccountPage.reload();
+    await navBar.navigateToPensionMembersPage();
+    await navBar.selectMember(memberNo);
+    let linearId = await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+    await MemberApiHandler.commencePensionMember(apiRequestContext, linearId.id);
+    let { amount } = await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+    await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+    await MemberApiHandler.internalTransferOutvalidation(apiRequestContext, linearId.id, amount)
+    await pensionAccountPage.reload();
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    await internalTransferPage.accumulationAccountCreation(true, true);
+    await navBar.selectMemberSurName(surname);
+    await internalTransferPage.internalTransferMemberOut('ABP', memberNo);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    await pensionAccountPage.reload();
+    await pensionTransactionPage.transactionView();
 })
 
 

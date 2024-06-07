@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.35.1-arm64
+FROM mcr.microsoft.com/playwright:v1.43.0
 
 COPY . /e2e
 

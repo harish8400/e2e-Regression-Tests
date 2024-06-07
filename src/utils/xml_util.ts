@@ -34,7 +34,7 @@ export class xmlUtility {
     static page: Page;
 
     constructor(page: Page) {
-        
+
         xmlUtility.memberPage = new MemberPage(page);
         xmlUtility.reviewCase = new ReviewCase(page);
 
@@ -2827,8 +2827,8 @@ export class xmlUtility {
         }
     }
 
-     // Generate XML for IRR for a New Member
-     static async generateIRRWithSMSFPartialRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+    // Generate XML for IRR for a New Member
+    static async generateIRRWithSMSFPartialRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
         try {
             let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -2839,7 +2839,7 @@ export class xmlUtility {
             const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
             this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
 
-             /// Node values
+            /// Node values
             const currentUTCTime: Date = new Date();
             const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
             const surName = superStreamDataForVG.memberLastName;
@@ -2881,8 +2881,8 @@ export class xmlUtility {
         }
     }
 
-     // Generate XML for IRR for a New Member
-     static async generateIRRWithSMSFFullExitRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
+    // Generate XML for IRR for a New Member
+    static async generateIRRWithSMSFFullExitRolloverOutForExsistingMemberVG(templateFileName: string): Promise<{ destinationFileName: string; conversationId: string; member: string; surName: string; dob: string; }> {
         try {
             let formattedDate: string = DateUtils.yyyymmddStringDate();
 
@@ -2893,7 +2893,7 @@ export class xmlUtility {
             const destinationFileName = `SUPERCHOICE_CLIENT-IRR_${formattedDate}_1131855111${randomThreeDigitNumber}.xml`;
             this.copyTemplateFileToProcessedFolder(templateFileName, destinationFileName);
 
-             /// Node values
+            /// Node values
             const currentUTCTime: Date = new Date();
             const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
             const surName = superStreamDataForVG.memberLastName;
@@ -3087,7 +3087,7 @@ export class xmlUtility {
 
             /// Node values
             const currentUTCTime: Date = new Date();
-            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", ""); 
+            const timeInUTC: string = currentUTCTime.toISOString().replace("Z", "");
 
             // Fetch member data 
             const memberData = await MemberApiHandler.createMember(apiRequestContext, isTFNToBePassed);
@@ -3098,7 +3098,7 @@ export class xmlUtility {
             await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
             await new Promise(resolve => setTimeout(resolve, 3000));
             await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
-            
+
 
             // Extract member data
             const { memberNo, member, surName, dob, tfn } = memberData;

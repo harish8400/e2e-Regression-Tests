@@ -15,7 +15,7 @@ export const test = base.extend<{apiRequestContext: APIRequestContext;}>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -24,27 +24,19 @@ test.beforeEach(async ({ navBar }) => {
 
 
 test(fundName() + "-Verify creation of a new active member account@accumulation", async ({ navBar, apiRequestContext,accountInfoPage ,internalTransferPage,pensionTransactionPage}) => {
-
-    try {
-
-        await navBar.navigateToAccumulationMembersPage();
-        let { memberNo ,processId} = await MemberApiHandler.createMember(apiRequestContext);
-        await accountInfoPage.ProcessTab();
-        const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
-        await MemberApiHandler.approveProcess(apiRequestContext,caseGroupId!);
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        await accountInfoPage.reload();
-        await navBar.navigateToAccumulationMembersPage();
-        await navBar.selectMember(memberNo);
-        let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
-        await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
-        await accountInfoPage.reload();
-        await internalTransferPage.memberSummary();
-        await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
-        await pensionTransactionPage.transactionView();
-
-    } catch (error) {
-        throw error;
-    }
-
+    await navBar.navigateToAccumulationMembersPage();
+    let { memberNo ,processId} = await MemberApiHandler.createMember(apiRequestContext);
+    await accountInfoPage.ProcessTab();
+    const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+    await MemberApiHandler.approveProcess(apiRequestContext,caseGroupId!);
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    await accountInfoPage.reload();
+    await navBar.navigateToAccumulationMembersPage();
+    await navBar.selectMember(memberNo);
+    let linearId =  await MemberApiHandler.fetchMemberDetails(apiRequestContext, memberNo);
+    await RollinApiHandler.createRollin(apiRequestContext, linearId.id);
+    await accountInfoPage.reload();
+    await internalTransferPage.memberSummary();
+    await TransactionsApiHandler.fetchRollInDetails(apiRequestContext, linearId.id);
+    await pensionTransactionPage.transactionView();
 })

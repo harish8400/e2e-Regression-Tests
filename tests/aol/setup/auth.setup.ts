@@ -28,10 +28,10 @@ test(fundName() + "Verify successful user login functionality ", async ({ page }
         const url = request.url();
         const headers = request.headers();
         const authorization = headers['authorization'];
-            if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
-        authToken = authorization;
-        process.env.TOKEN = authToken;
-            }
+        if (url.startsWith(ENVIRONMENT_CONFIG.middlewareURL) && authorization) {
+            authToken = authorization;
+            process.env.TOKEN = authToken;
+        }
     });
 
     // Perform authentication steps. Replace these actions with your own.
@@ -53,4 +53,3 @@ test(fundName() + "Verify successful user login functionality ", async ({ page }
 
 
 });
-

@@ -658,19 +658,25 @@ export class DashboardPage extends BasePage {
   }
 
   async clickOnOutcomeItem(expectedText: string) {
+    // Retrieve the list of items
     const items = await this.getListOfItems();
+    // Ensure that items is an array
+    if (Array.isArray(items)) {
+      // Find the index of the item that contains the expected text
+      const outcomeIndex = items.findIndex(text => text.includes(expectedText));
 
-    // Find the index of the item that contains the expected text
-    const outcomeIndex = items.findIndex(text => text.includes(expectedText));
-
-    if (outcomeIndex !== null) {
-      const elements = await this.items.all();
-      await elements[outcomeIndex].click();
-      //console.log(`Clicked on the item with "${expectedText}" text.`);
+      if (outcomeIndex !== -1) { // Check if the index is found
+        const elements = await this.items.all();
+        await elements[outcomeIndex].click();
+        console.log(`Clicked on the item with "${expectedText}" text.`);
+      } else {
+        console.log(`No item with "${expectedText}" text found in the list.`);
+      }
     } else {
-      //console.log(`No item with "${expectedText}" text found in the list.`);
+      console.log("getListofItems() did not return an array.");
     }
   }
+
 
   async click_outcome() {
     await allure.step("Clicking on outcome", async () => {
@@ -1036,10 +1042,10 @@ export class DashboardPage extends BasePage {
   }
 
   async getTableLastColumnXPath(): Promise<string> {
-   
-      return `//td[contains(@class, 'el-table_1_column')][last()]/div`;
-     
-    
+
+    return `//td[contains(@class, 'el-table_1_column')][last()]/div`;
+
+
   }
 
   //TO BE DELETED
@@ -1207,12 +1213,10 @@ export class DashboardPage extends BasePage {
   }
 
   async logout() {
-    (await this.sleep(3000).then(()=>this.page.getByRole('button', { name: 'AU' }))).click();
-    (await this.sleep(3000).then(()=>this.page.locator("//li[@class='el-dropdown-menu__item avatar-dropdown-item']/following-sibling::li[1]"))).click();
-    await this.page.locator("(//button[@type='button']/following-sibling::button)[2]").click({force:true});
-    
+    (await this.sleep(3000).then(() => this.page.getByRole('button', { name: 'AU' }))).click();
+    (await this.sleep(3000).then(() => this.page.locator("//li[@class='el-dropdown-menu__item avatar-dropdown-item']/following-sibling::li[1]"))).click();
+    await this.page.locator("(//button[@type='button']/following-sibling::button)[2]").click({ force: true });
+
   }
 
 }
-
-

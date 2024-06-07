@@ -1,0 +1,14 @@
+# This is triggered by other pipelines with the appropriate metadata passed in
+# - trigger: "e2e-regression-test-ci-trigger"
+#   label: "E2E Tests"
+#   build:
+#     commit: 24.04.3
+#     meta_data:
+env:
+  BUILDKITE_ANALYTICS_TOKEN: VRi9YdM8ZfynGFcuKQK23Qsn
+
+steps:
+  - label: "Run E2E tests"
+    command: ".buildkite/ci-automation-trigger.sh"
+    agents:
+      queue: "pipeline-upload"

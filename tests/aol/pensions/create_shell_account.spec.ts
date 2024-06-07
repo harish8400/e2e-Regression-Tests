@@ -67,7 +67,7 @@ test(fundName() + "-Create a Pension Shell ABP account - Reached age 65 @pension
 
     });
 
-   // Validate MAAS Submit Report
+    // Validate MAAS Submit Report
 
     await test.step("Validate MAAS Submit Report", async () => {
         const memberId = getMemberId();

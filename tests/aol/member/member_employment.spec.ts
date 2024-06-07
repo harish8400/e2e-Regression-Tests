@@ -20,19 +20,19 @@ test.beforeEach(async ({ navBar }) => {
 });
 
 /**This test performs Employment Termination  tests */
-test(fundName()+"-Verify an employment termination at current system date is processed successfully @member", async ({ internalTransferPage, apiRequestContext, memberPage, navBar, memberTransactionPage,accountInfoPage }) => {
-    try{
+test(fundName() + "-Verify an employment termination at current system date is processed successfully @member", async ({ internalTransferPage, apiRequestContext, memberPage, navBar, memberTransactionPage, accountInfoPage }) => {
+    try {
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
         })
 
         //** Create a new accumulation member when data from api is set to true */
-        if(pensionMember.generate_test_data_from_api){
+        if (pensionMember.generate_test_data_from_api) {
             await test.step("Create a new Accumulation Member", async () => {
-                let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                let { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             })
         }
-        else{
+        else {
             //** select existing accumulation member which has employment details when data from api is set to false*/
             await test.step("Select the Member from Accumulation members list", async () => {
                 await navBar.selectMember(member.memberID);
@@ -47,19 +47,19 @@ test(fundName()+"-Verify an employment termination at current system date is pro
     }
 })
 
-test(fundName()+"-Verify an employment termination with effective date earlier than current system date is processed successfully @member", async ({ memberPage, internalTransferPage, apiRequestContext, navBar, memberTransactionPage,accountInfoPage ,memberApi}) => {
+test(fundName() + "-Verify an employment termination with effective date earlier than current system date is processed successfully @member", async ({ memberPage, internalTransferPage, apiRequestContext, navBar, memberTransactionPage, accountInfoPage, memberApi }) => {
     try {
         await test.step("Navigate to Accumulation Members page", async () => {
             await navBar.navigateToAccumulationMembersPage();
         })
 
         //** Create a new accumulation member when data from api is set to true */
-        if(pensionMember.generate_test_data_from_api){
+        if (pensionMember.generate_test_data_from_api) {
             await test.step("Create a new Accumulation Member", async () => {
-                let {memberNo} = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
+                let { memberNo } = await memberPage.accumulationMember(navBar, accountInfoPage, apiRequestContext, internalTransferPage);
             })
         }
-        else{
+        else {
             //** select existing accumulation member which has employment details when data from api is set to false*/
             await test.step("Select the Member from Accumulation members list", async () => {
                 await navBar.selectMember(member.memberID);

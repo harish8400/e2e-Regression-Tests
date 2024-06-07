@@ -17,7 +17,7 @@ export const test = base.extend<{ apiRequestContext: APIRequestContext; }>({
 });
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(600000);
+    test.setTimeout(1000 * 60 * 10); // 10 minutes
     await navBar.selectProduct();
     await allure.suite("Pension");
     await allure.parentSuite(process.env.PRODUCT!);
@@ -26,8 +26,6 @@ test.beforeEach(async ({ navBar }) => {
 
 
 test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext ,processApi}) => {
-    try {
-
         await navBar.navigateToPensionMembersPage();
         let { memberNo, processId } = await MemberApiHandler.createPensionShellAccount(apiRequestContext);
         await pensionAccountPage.ProcessTab();
@@ -52,16 +50,10 @@ test(fundName() + "-commutation Payment Full Exit @API-payment", async ({ navBar
         let paymentId = await pensionTransactionPage.paymentView();
         let paymentTransactionId = paymentId!.split(":")[1];
         await TransactionsApiHandler.fetchPaymentDetails(apiRequestContext, paymentTransactionId!.trim());
-
-
-    } catch (error) {
-        throw error;
-    }
 })
 
 
 test(fundName() + "-commutation Rollout Full Exit @API-rollout", async ({ navBar, pensionTransactionPage, pensionAccountPage, apiRequestContext ,processApi }) => {
-    try {
         await allure.suite("Pension");
         await allure.parentSuite(process.env.PRODUCT!);
         await navBar.navigateToPensionMembersPage();
@@ -92,7 +84,4 @@ test(fundName() + "-commutation Rollout Full Exit @API-rollout", async ({ navBar
             await CaseApiHandler.closeGroupWithSuccess(processApi, linearId.id, caseGroupId);
         }
         await pensionTransactionPage.paymentView();
-    } catch (error) {
-        throw error;
-    }
 })
