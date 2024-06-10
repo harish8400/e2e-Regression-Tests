@@ -57,7 +57,7 @@ export class RelatedInformationPage extends BasePage {
 
         //edit correspondence
         this.relatedInformationTab = page.getByRole('button', { name: 'Related Information', exact: true });
-        this.editCorrespondenceButton = page.locator('div').filter({ hasText: /^Manage Case - CorrespondenceEdit ContentSend correspondence status Active$/ }).getByRole('button');
+        this.editCorrespondenceButton = page.locator('.menu-options > .gs-button').first();
         this.correspondenceDropdown = page.getByRole('combobox', { name: 'Search for option' }).getByLabel('Select', { exact: true });
         this.correspondeceOptionInactive = page.getByRole('option', { name: 'Inactive' });
         this.reasonDropdown = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
@@ -110,13 +110,14 @@ export class RelatedInformationPage extends BasePage {
         await this.sleep(9000);
         await this.linkCase.click();
         await this.sleep(6000);
-        await expect(this.correspondenceStatus).toBeVisible();
+        await expect(await this.correspondenceStatus).toBeVisible();
     }
 
     async addConditionOfRelease(){
         await this.relatedInformationTab.click();
         await this.sleep(3000);
         await this.addConditionOfRelease_button.click();
+        await this.sleep(3000);
         await this.viewCase.click();
         await this.sleep(3000);
         await this.createCase.click();
@@ -124,10 +125,12 @@ export class RelatedInformationPage extends BasePage {
         await this.conditionForRelease_dropdown.click();
         await this.option_65orOlder.click();
         await this.expiryDate.fill(`${DateUtils.ddmmyyyStringDate(0)}`);
+        await this.expiryDate.press("Enter");
+        await this.sleep(3000);
         await this.linkCase.click();
         await this.sleep(5000);
         expect(this.confirmationMessage).toBeVisible();
-        await this.clipBoardIcon.click();
+        //await this.clipBoardIcon.click();
     }
 
     async verifySuperTickStatus(activeMember?: boolean){
@@ -139,7 +142,7 @@ export class RelatedInformationPage extends BasePage {
         }
         else{
             let count = await this.superTickVerificationRow.count();
-            expect(count).toEqual(0);
+            expect(count,'SuperTick status does not match').toEqual(0);
         }
     }
 }

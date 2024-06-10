@@ -2,8 +2,10 @@ import { APIRequestContext, expect } from '@playwright/test';
 import { BaseDltaAolApi } from './base_dlta_aol';
 import { UtilsAOL } from '../aol/utils_aol';
 import { DateUtils } from '../utils/date_utils';
-import { FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
+import { FUND, FUND_IDS, INVESTMENT_OPTIONS } from '../../constants';
+import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 
+let fundProduct = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 
 export class ShellAccountApi extends BaseDltaAolApi {
 
@@ -24,9 +26,26 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async createPensionShellAccount(fundProductId: string): Promise<{ memberNo: string, surname: string, fundProductId: string, processId: string }> {
-        let productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
-        let investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
-        let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
+        let productId: string;
+
+        let memberInvestmentId: string;
+        let investmentId: string;
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+                investmentId = INVESTMENT_OPTIONS.MERCY.TTR.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.MERCY.TTR.DIVERSIFIED_BONDS.ID;
+                break;
+            case 'Vanguard Super':
+                productId = FUND_IDS.VANGUARD.PRODUCT_ID.TTR;
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.TTR.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.TTR.CONSERVATIVE.ID;
+                break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
+
+
         let path = `/product/${productId}/process`;
         let tfn = UtilsAOL.generateValidTFN();
         let member = UtilsAOL.randomName();
@@ -61,7 +80,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     effectiveDate: '2023-04-10',
                     eligibleServiceDate: '2023-06-14',
                     "memberPensionConfiguration": {
-                        "eligibilityType": "reachedPreservationAge", 
+                        "eligibilityType": "reachedPreservationAge",
                         "firstPensionPaymentDate": `${DateUtils.localISOStringDate(this.today)}`,
                         "pensionCommencementDate": `${DateUtils.localISOStringDate(this.commencementDate)}`,
                         "totalTaxFreePensionPercent": "0",
@@ -117,7 +136,7 @@ export class ShellAccountApi extends BaseDltaAolApi {
                     ],
                 },
                 investmentData: {
-                    investments:[
+                    investments: [
                         {
                             "id": investmentId,
                             "percent": 50
@@ -151,9 +170,19 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let MemberNo: string = responseBody.initialData.memberData.memberNo;
         return { memberNo: MemberNo, surname: surname, fundProductId: fundProductId, processId };
     }
-
     async fetchMemberDetails(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-        let productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+        let productId:string;
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                productId = FUND_IDS.MERCY.PRODUCT_ID.TTR;
+                
+                break;
+            case 'Vanguard Super':
+                productId = FUND_IDS.VANGUARD.PRODUCT_ID.TTR;
+                break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
         let fundProductId = productId;
         let queryParams = new URLSearchParams({});
         let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -162,11 +191,11 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let id = responseBody?.linearId?.id || null;
         let fundName = responseBody?.fundName || null;
         let memberNumber = responseBody?.memberNo || null;
-    
-        return { id, fundName, memberNo: memberNumber };
-      }
 
-    async getMemberDetails(linearId: string): Promise<{ memberNo: string, otherNames: string, givenName: string, surname: string, gender: string, title: string, dob: string, tfn: string }> {
+        return { id, fundName, memberNo: memberNumber };
+    }
+
+    async getMemberDetails(linearId: string): Promise<{ memberId: string, memberNo: string, otherNames: string, givenName: string, surname: string, gender: string, title: string, dob: string, tfn: string }> {
         let path = `/member/${linearId}`;
         let response = await this.get(path);
         let responseBody = await response.json();
@@ -179,12 +208,26 @@ export class ShellAccountApi extends BaseDltaAolApi {
         let title = responseBody?.identity?.title || null;
         let dob = responseBody?.identity?.dob || null;
         let tfn = responseBody?.identity?.tfn || null;
-
-        return { memberNo, otherNames, givenName, surname, gender, title, dob, tfn };
+        let memberId = responseBody?.identity?.linearId.id || null;
+        return { memberNo, otherNames, givenName, surname, gender, title, dob, tfn, memberId };
     }
 
     async getMemberInfo(memberNo: string): Promise<{ id: string, fundName: string, memberNo: string }> {
-        let productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+        let productId: string;
+
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                productId = FUND_IDS.MERCY.PRODUCT_ID.ACCUMULATION;
+                break;
+            case 'Vanguard Super':
+                productId = FUND_IDS.VANGUARD.PRODUCT_ID.ACCUMULATION;
+                break;
+
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
+
+
         let fundProductId = productId;
         let queryParams = new URLSearchParams({});
         let path = `product/${fundProductId}/member/number?memberNo=${memberNo}${queryParams.toString()}`;
@@ -198,22 +241,33 @@ export class ShellAccountApi extends BaseDltaAolApi {
     }
 
     async addRollIn(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
-
-        let investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+       
+        let investmentId: string;
+        let memberInvestmentId: string
+        if (process.env.PRODUCT === FUND.HESTA) {
+       
+                investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.BALANCED_GROWTH.ID;
+        }else{
+                
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.CONSERVATIVE.ID;
+        }
+                
         let path = `member/${linearId}/rollin`;
         let data = {
             "paymentReference": "InternalTransfer_902010134",
             "transferringFundABN": "11789425178",
             "transferringFundUSI": "11789425178799",
             "transferringClientIdentifier": "902010134",
-            "amount": "50000",
-            "preserved": "50000",
+            "amount": "100000",
+            "preserved": "0",
             "restrictedNonPreserved": "0",
-            "unrestrictedNonPreserved": "0",
+            "unrestrictedNonPreserved": "100000",
             "kiwiPreserved": "0",
-            "taxed": "50000",
+            "taxed": "0",
             "untaxed": "0",
-            "taxFree": "0",
+            "taxFree": "100000",
             "kiwiTaxFree": "0",
             "type": "RLI",
             "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
@@ -225,7 +279,11 @@ export class ShellAccountApi extends BaseDltaAolApi {
             "targetInvestments": [
                 {
                     id: investmentId,
-                    "percent": 100
+                    "percent": 50
+                },
+                {
+                    id: memberInvestmentId,
+                    "percent": 50
                 }
             ]
         };
@@ -241,7 +299,54 @@ export class ShellAccountApi extends BaseDltaAolApi {
         return { linearId: Id, memberNo: memberNo, amount: amount };
     }
 
+    async addContribution(linearId: string): Promise<{ linearId: string, amount: number }> {
+        let investmentId: string;
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+                investmentId = INVESTMENT_OPTIONS.MERCY.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
+            case 'Vanguard Super':
+                investmentId = INVESTMENT_OPTIONS.VANGUARD.ACCUMULATION.AUSTRALIAN_SHARES.ID;
+                break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
+        let path = `member/${linearId}/contribution?strictDuplicateCheck=false`;
+        let randomNumber = UtilsAOL.generateRandomThreeDigitNumber();
+        let paymentReferenceNumber = `Contribution.1234567${randomNumber}`;
+        let data = {
+            "transactionReference": paymentReferenceNumber,
+            "paymentReference": "NA1257412369871812",
+            "amount": 50000,
+            "type": "SGC",
+            "targetInvestments": [
+                {
+                    "id": investmentId,
+                    "percent": 100
+                }
+            ],
+            "empCode": "45004189708",
+            "empName": "COLES ONLINE",
+            "employerPayrollNumberIdentifier": "001",
+            "effectiveDate": `${DateUtils.localISOStringDate(this.today)}`,
+            "paymentReceivedDate": `${DateUtils.localISOStringDate(this.today)}`,
+            "payPeriodStartDate": null,
+            "payPeriodEndDate": null,
+            "messageType": "Government",
+            "initiator": null,
+            "historic": true,
+            "caseReference": null,
+            "conversationId": paymentReferenceNumber
 
-    
+        };
+        let response = await this.post(path, JSON.stringify(data));
+        let responseBody = await response.json();
+        let Id = responseBody?.linearId?.id || null;
+        let amount = responseBody?.amount || 0;
+        return { linearId: Id, amount: amount };
+    }
+
+
+
 
 }

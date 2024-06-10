@@ -5,9 +5,9 @@ import { RollinApi } from '../rollin_api';
 
 
 export class MemberApiHandler {
-    static async createMember(apiRequestContext: APIRequestContext) {
+    static async createMember(apiRequestContext: APIRequestContext,tfnNull: boolean = false,member?: string, surName?: string, memberNo?: string, tfn?: string,dob?: string) {
         const memberCreation = new MemberApi(apiRequestContext);
-        return memberCreation.createMember();
+        return memberCreation.createMember(tfnNull,member!, surName!, memberNo!, tfn!,dob!);
     }
 
     static async approveProcess(apiRequestContext: APIRequestContext, caseGroupId?: string, notes: string = "E2E auto test - approve") {
@@ -56,9 +56,9 @@ export class MemberApiHandler {
         return identity.memberIdentity(memberId!, details);
     }
 
-    static async fetchMemberSummary(apiRequestContext: APIRequestContext, linearId?: string,FullExit?:boolean): Promise<{ status: boolean }> {
+    static async fetchMemberSummary(apiRequestContext: APIRequestContext, linearId?: string, FullExit?: boolean): Promise<{ status: boolean }> {
         const details = new MemberApi(apiRequestContext);
-        const summary = await details.fetchMemberSummary(linearId!,FullExit!);
+        const summary = await details.fetchMemberSummary(linearId!, FullExit!);
         return summary;
     }
 
@@ -72,23 +72,38 @@ export class MemberApiHandler {
         return Id.getCaseGroupId(processId!);
     }
 
-    static async addRollIn(apiRequestContext: APIRequestContext,memberId?: string) {
+    static async addRollIn(apiRequestContext: APIRequestContext, memberId?: string) {
         const rollin = new MemberApi(apiRequestContext);
         return rollin.addRollIn(memberId!);
     }
 
-    static async getMemberRelatedBeneficiaries(memberApi:MemberApi,memberId?: string) {
+    static async getMemberRelatedBeneficiaries(memberApi: MemberApi, memberId?: string) {
         return memberApi.getMemberRelatedBeneficiaries(memberId!);
     }
 
-    static async getMemberInvestmentRebalance(memberApi:MemberApi,memberId?: string) {
-        return memberApi.getMemberInvestmentRebalance(memberId!);
+    static async getMemberInvestmentRebalance(memberApi: MemberApi, memberId?: string, pageNumber?: number, pageSize?: number) {
+        return memberApi.getMemberInvestmentRebalance(memberId!, pageNumber!, pageSize!);
     }
 
-    static async getMemberInvestmentSwitch(memberApi:MemberApi,memberId?: string) {
-        return memberApi.getMemberInvestmentSwitch(memberId!);
+    static async getMemberInvestmentSwitch(memberApi: MemberApi, memberId?: string, pageNumber?: number, pageSize?: number) {
+        return memberApi.getMemberInvestmentSwitch(memberId!, pageNumber!, pageSize!);
     }
 
+    static async memberInvestmentSwitch(memberApi: MemberApi, memberId?: string) {
+        return memberApi.memberInvestmentSwitch(memberId!);
+    }
+
+    static async memberCorrespondenceInfo(memberApi: MemberApi, memberId?: string) {
+        return memberApi.memberCorrespondenceInfo(memberId!);
+    }
+
+    static async getRegularPensionPaymentAmount(memberApi:MemberApi,memberId?: string) {
+        return memberApi.getRegularPensionPaymentAmount(memberId!);
+    }
+
+    static async addMemberRollIn(memberApi:MemberApi,memberId?: string) {
+        return memberApi.addMemberRollIn(memberId!);
+    }
 }
 
 

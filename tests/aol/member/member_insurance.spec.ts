@@ -3,13 +3,13 @@ import { aolTest as test } from "../../../src/aol/base_aol_test"
 import { fundName } from "../../../src/aol/utils_aol";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(1000 * 60 * 10); // 10 minutes
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
 });
 
-test(fundName()+"Process full exit on member with active insurance", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage, memberOverviewpage }) => {
+test(fundName() + "Process full exit on member with active insurance", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage, memberOverviewpage }) => {
 
     await test.step("Super Member creation", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -18,11 +18,11 @@ test(fundName()+"Process full exit on member with active insurance", async ({ me
     })
 
     await test.step("Rollover In personal contribution", async () => {
-        await memberTransactionPage.memberRolloverIn('personal',true);
+        await memberTransactionPage.memberRolloverIn('personal', true);
         await memberTransactionPage.sleep(3000);
     })
 
-    await test.step("supertick call", async ()=> {
+    await test.step("supertick call", async () => {
         await memberOverviewpage.superTickVerification();
         await memberOverviewpage.memberAccumulationAccount_Tab.click();
     })
@@ -37,7 +37,7 @@ test(fundName()+"Process full exit on member with active insurance", async ({ me
     })
 })
 
-test(fundName()+"Ensure user can delete insurance polices", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage }) => {
+test(fundName() + "Ensure user can delete insurance polices", async ({ memberPage, navBar, memberInsurancePage, memberTransactionPage }) => {
 
     await test.step("Super Member creation", async () => {
         await navBar.navigateToAccumulationMembersPage();
@@ -46,7 +46,7 @@ test(fundName()+"Ensure user can delete insurance polices", async ({ memberPage,
     })
 
     await test.step("Rollover In personal contribution", async () => {
-        await memberTransactionPage.memberRolloverIn('personal',true);
+        await memberTransactionPage.memberRolloverIn('personal', true);
         await memberTransactionPage.sleep(3000);
     })
 

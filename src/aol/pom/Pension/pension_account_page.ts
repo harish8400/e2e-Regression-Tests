@@ -7,7 +7,12 @@ import { AssertionError } from "assert";
 import { UtilsAOL } from "../../utils_aol";
 import { ReviewCase } from "../component/review_case";
 import { DashboardPage } from "../dashboard_page";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "../component/global_page";
+import { FUND } from "../../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
+let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
 export class PensionShellAccount extends BasePage {
 
   readonly navbar: Navbar;
@@ -37,6 +42,8 @@ export class PensionShellAccount extends BasePage {
   readonly residencyStatus: Locator;
   readonly residencyStatusSelect: Locator;
   readonly nextStep: Locator;
+  readonly createdMemberCaseLink: Locator;
+  readonly memberID: Locator;
 
   //Random members 
 
@@ -53,6 +60,7 @@ export class PensionShellAccount extends BasePage {
   readonly slider: Locator;
   readonly addFundSelectOption: Locator;
   readonly enterAmount: Locator;
+  readonly amount: Locator;
   readonly amountToBeEntered: Locator;
   readonly saveFundDetails: Locator;
 
@@ -90,6 +98,7 @@ export class PensionShellAccount extends BasePage {
   readonly select_eligibility: Locator;
   readonly annual_payment: Locator;
   readonly select_payment: Locator;
+  readonly clipBoard_icon: Locator;
 
   //Pension Commencement
   readonly editButton: Locator;
@@ -160,10 +169,17 @@ export class PensionShellAccount extends BasePage {
   readonly addAccount: Locator;
   readonly abp: Locator;
   readonly ttr: Locator;
+  readonly globalPage: GlobalPage;
+  readonly pensionHistory: Locator;
+  readonly regularPensionAmount: Locator;
+  readonly caseHeading: Locator;
+  readonly transferIn: Locator;
+  readonly transferOut: Locator;
 
   constructor(page: Page) {
     super(page)
     this.dashboard_page = new DashboardPage(page);
+    this.globalPage = new GlobalPage(page);
     this.reviewCase = new ReviewCase(page);
     this.navbar = new Navbar(page);
     this.addMemberButton = page.getByRole('button', { name: 'add-circle icon Add Member' });
@@ -178,7 +194,7 @@ export class PensionShellAccount extends BasePage {
     this.givenName = page.getByTitle('Given Name').getByRole('textbox');
     this.surname = page.getByTitle('Surname').getByRole('textbox');
     this.dob = page.getByTitle('DOB').getByPlaceholder('dd/mm/yyyy');
-    this.gender = page.getByTitle('Gender').getByPlaceholder('Select');
+    this.gender = page.locator('.gs__actions').nth(2);
     this.genderSelect = page.locator('li').filter({ hasText: /^Male$/ });
     this.emailAddress = page.getByTitle('Email Address').getByRole('textbox');
     this.primaryPhone = page.getByTitle('Primary Phone').getByRole('textbox');
@@ -194,16 +210,18 @@ export class PensionShellAccount extends BasePage {
     this.residencyStatus = page.getByTitle('Residency Status').getByPlaceholder('Select');
     this.residencyStatusSelect = page.getByText('Resident', { exact: true });
     this.nextStep = page.getByRole('button', { name: 'Next Step arrow-right icon' });
-
+    this.createdMemberCaseLink = page.locator("//a[@class='gs-link text-teal-300 cursor-pointer relative no-underline font-bold']");
+    this.memberID = page.locator("(//p[@data-cy='info-value'])[2]");
     //Consolidate step
     this.addFund = page.getByRole('button', { name: 'add-circle icon Add Fund' });
     this.addFundSelect = page.getByRole('combobox', { name: 'Search for option' }).locator('div').first();
     this.addFundSelectOption = page.getByText('Internal fund account');
     this.memberAccountNumber = page.locator("(//input[@class='gs__search'])[3]");
 
-    this.sourceAccountNumber = page.locator('#gs10__listbox');
+    this.sourceAccountNumber = page.locator('.gs__actions').nth(2);
     this.slider = page.locator('.switch-slider');
-    this.enterAmount = page.getByText('$ 0.00');
+    this.enterAmount = page.locator('//input[@id="transferAmount"]/parent::div');
+    this.amount = page.locator("//input[@id='transferAmount']");
     this.amountToBeEntered = page.getByPlaceholder('0');
     this.saveFundDetails = page.getByRole('button', { name: 'SAVE' });
 
@@ -211,23 +229,23 @@ export class PensionShellAccount extends BasePage {
     this.invSelect = page.getByRole('main').getByPlaceholder('Select');
     this.invSelection = page.locator("(//ul[@class='el-scrollbar__view el-select-dropdown__list'])[2]/li[1]");
     //this.invSelection = page.getByText('Australian Shares', { exact: true });
-    this.invPercentage = page.getByRole('textbox').nth(1);
+    this.invPercentage = page.locator("(//label[text()='Percentage']/following::input[@class='el-input__inner'])[2]");
     this.saveInv = page.getByRole('button', { name: 'Add', exact: true })
 
     //Beneficiaries step
     this.addNewBeneficiary = page.locator('(//h2[@class="heading-md mb-5"]/following::span[@class="text-caption"])[1]');
     this.beneficiaryName = page.getByLabel('Beneficiary Name *');
-    this.beneficiaryRelation = page.locator('#gs10__combobox div').first()
+    this.beneficiaryRelation = page.locator('.gs__actions').nth(1);
     this.beneficiaryRelationSelect = page.getByRole('option', { name: 'Spouse' })
     this.beneficiaryEffectiveDate = page.getByPlaceholder('dd/mm/yyyy');
-    this.select_gender = page.getByRole('option', { name: 'Male', exact: true })
-    this.gender_select = page.locator('#gs11__combobox div').first()
+    this.select_gender = page.getByText('Male', { exact: true });
+    this.gender_select = page.locator('#gs11__combobox').getByLabel('Select', { exact: true }).locator('path');
     this.beneficiaryContactName = page.getByLabel('Contact First Name');
-    this.countrySelect = page.locator('#gs12__combobox div').first()
+    this.countrySelect = page.locator('.gs__actions').nth(3);
     this.selectCountry = page.getByRole('option', { name: 'Australia' });
     this.beneficiaryAddress1 = page.getByLabel('Residential Address 1 *');
     this.beneficiaryCity = page.getByLabel('City/Town *');
-    this.beneficiaryState = page.locator('#gs18__combobox div').first()
+    this.beneficiaryState = page.locator('.gs__actions').nth(4);
     this.beneficiaryStateSelect = page.getByText('Australian Antarctic Territory');
     this.beneficiaryPostcode = page.getByLabel('Postcode *');
     this.beneficiarySave = page.getByRole('button', { name: 'SAVE' }).first()
@@ -239,9 +257,11 @@ export class PensionShellAccount extends BasePage {
     this.proRata = page.locator("(//label[text()='Yes'])[1]");
     this.taxThreshold = page.locator("(//label[text()='Yes'])[2]");
     this.eligibilty = page.getByTitle('Eligibilty Type').getByPlaceholder('Select');
-    this.select_eligibility = page.locator('li').filter({ hasText: 'Reached Preservation Age' })
+    this.select_eligibility = page.getByText('Retired - at least');
+    // locator('li').filter({ hasText: 'Reached Preservation Age' })
     this.annual_payment = page.getByTitle('Annual Payment Amount').getByPlaceholder('Select');
-    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' })
+    this.select_payment = page.locator('li').filter({ hasText: 'Minimum Amount' });
+    this.clipBoard_icon = page.getByRole('button', { name: 'arrow-left icon clipboard-' });
 
     //Bank Acc
 
@@ -257,12 +277,12 @@ export class PensionShellAccount extends BasePage {
     // Edit Pension Peyment Details for existing member
     this.pensionTab = page.getByRole('button', { name: 'Pension' });
     this.editIcon = page.locator('button').filter({ hasText: 'Edit Content' }).nth(1);
-    this.frequency = page.locator('#gs3__combobox').getByLabel('Select', { exact: true });
+    this.frequency = page.locator("(//div[@class='gs__selected-options']//span)[1]");
     this.frequencyValue1 = page.getByRole('option', { name: 'Monthly' });
     this.frequencyValue2 = page.getByRole('option', { name: 'Quarterly' });
     this.frequencyValue3 = page.getByRole('option', { name: 'Bi-Annually', exact: true });
     this.nextPaymentDate = page.locator("//input[@name='nextPaymentDate']");
-    this.annualPaymentMethod = page.locator('#gs4__combobox').getByLabel('Select', { exact: true });
+    this.annualPaymentMethod = page.locator("(//input[@class='gs__search'])[3]");
     this.annualPaymentMethodValue = page.getByRole('option', { name: 'Minimum Amount' });
 
     this.buttonViewCase = page.getByRole('button', { name: 'View Cases' }).nth(1);
@@ -290,7 +310,7 @@ export class PensionShellAccount extends BasePage {
     this.linkCase = page.getByRole('button', { name: 'Link to Case' });
     this.approveProcessStep = page.getByRole('button', { name: 'Approve' });
     this.retryProcessStep = page.getByRole('button', { name: 'reset icon Retry' });
-    this.successMessage = page.getByText('Processed insert pension history');
+    this.successMessage = page.getByText('Process step completed with note: Pension payment correspondence sent.');
     this.verifyShellAccountCreation = page.locator('//*[@class = "gs-column full-row-gutter font-semibold"]/following::div[@class="text-neutral-600" and text()= "SuperStream - Initiated Roll In"]');
     this.close_left = page.getByRole('button', { name: 'arrow-left icon clipboard-tick icon' });
     this.acknowledgeCheckbox = page.locator('.checkbox-indicator');
@@ -298,15 +318,21 @@ export class PensionShellAccount extends BasePage {
     //process link
     this.processesLink = page.getByRole('link', { name: 'Processes' });
     this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-    this.review = page.locator('//span[text()="In Review"]');
+    this.review = page.getByRole('cell', { name: 'In Review' }).locator('div');
     this.abpScreen = page.locator('//button[@data-cy-value="DltaIdentity"]/following-sibling::button[1]');
     this.transactionsTab = page.locator('//button[text()="Transactions"]');
     this.abpScreenView = page.getByRole('button', { name: 'HESTA for Mercy Retirement' });
     this.ttrScreenView = page.locator("//button[text()='HESTA for Mercy Transition to Retirement']");
     this.memberOverview = page.locator("//*[@data-cy-value='DltaIdentity' and text()='Overview']");
     this.addAccount = page.getByRole('button', { name: 'Add new account' });
-    this.abp = page.locator('//li[text()="HESTA for Mercy Retirement Income Stream"]');
+    this.abp = page.locator("(//li[@class='cPSIRL'])[3]");
     this.ttr = page.locator('//li[text()="HESTA for Mercy Transition to Retirement"]')
+    const date = DateUtils.ddMMMyyyStringDate(new Date());
+    this.pensionHistory = page.getByRole('row', { name: date + ' Pension Payment Details Update' }).first();
+    this.regularPensionAmount = page.locator('div').filter({ hasText: /^Regular Pension Payment Amount\$0\.00$/ }).first();
+    this.caseHeading = page.getByRole('heading', { name: 'Pension - Update Payment' });
+    this.transferIn = page.getByText('Intra Fund - Internal Transfer In is completed.');
+    this.transferOut = page.getByText('Intra fund Internal Transfer out complete.')
   }
 
   async navigateToPensionMemberPage() {
@@ -342,19 +368,18 @@ export class PensionShellAccount extends BasePage {
     //return this.memberSurname;
   }
 
-  async addMemberConsolidation(transferEntireBalance: boolean = true) {
+  async addMemberConsolidation(transferPartialBalance: boolean = false, memberNo: string = '') {
     await this.addFund.click();
     await this.addFundSelect.click();
     await this.addFundSelectOption.click();
-    await this.memberAccountNumber.click();
-    await this.sleep(3000);
     await this.sourceAccountNumber.click();
-    if (transferEntireBalance) {
+    await this.page.getByRole('option', { name: memberNo }).click();
+    if (transferPartialBalance) {
       await this.slider.click();
       await this.enterAmount.click();
       await this.sleep(3000);
-      await this.amountToBeEntered.fill(member.Amount);
-      await this.sleep(2000);
+      await this.amount.fill(member.Amount);
+      await this.sleep(1000);
     } else {
       await this.slider.click();
     }
@@ -378,7 +403,7 @@ export class PensionShellAccount extends BasePage {
     await this.beneficiaryRelationSelect.click();
     await this.beneficiaryEffectiveDate.fill(member.beneficiaryDOB);
     await this.beneficiaryEffectiveDate.press('Tab');
-    await this.gender_select.click();
+    //await this.gender_select.click();
     await this.select_gender.click();
     await this.countrySelect.click();
     await this.selectCountry.click();
@@ -393,7 +418,7 @@ export class PensionShellAccount extends BasePage {
     await this.nextStep.click();
   }
 
-  async addMemberPensionDetails() {
+  async addMemberPensionDetails(account?:string) {
     await this.payment_frequency_select.click();
     await this.payment_frequency.click();
     await this.PensionPaymentDate.click();
@@ -405,7 +430,11 @@ export class PensionShellAccount extends BasePage {
     //await this.taxThreshold.click();
     await this.sleep(2000);
     await this.eligibilty.click();
+    if(account =='TTR'){
+      await this.page.locator('li').filter({ hasText: 'Reached Preservation Age' }).click();
+    }else{
     await this.select_eligibility.click();
+    }
     await this.annual_payment.click();
     await this.select_payment.click();
     await this.sleep(5000);
@@ -489,26 +518,55 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(8000);
     await this.editIcon.click();
     await this.sleep(3000)
+    await this.frequency.scrollIntoViewIfNeeded();
     await this.frequency.click();
     if (frequency == 'Bi-Annualy') {
       await this.frequencyValue3.click();
     }
-    else if (frequency == 'Quartely') {
-      await this.frequencyValue2.click();
+    else if (frequency === 'Quarterly') {
+      await this.page.waitForTimeout(4000);
+      await this.frequencyValue2.click({ force: true });
     }
     else {
-      await this.frequencyValue3.click();
+      await this.frequencyValue1.click({force:true});
     }
     await this.nextPaymentDate.fill(`${DateUtils.ddmmyyyStringDate(15)}`);
     await this.annualPaymentMethod.click();
-    await this.annualPaymentMethodValue.click();
+    await this.sleep(3000);
+    await this.annualPaymentMethodValue.click({force:true});
     await this.viewCase.click();
     await this.sleep(3000);
     await this.createCase.click();
     await this.sleep(3000);
     await this.linkCase.click();
-    await this.sleep(5000);
+    await this.page.waitForTimeout(5000);
     await this.reviewCase.reviewCaseProcess(this.successMessage);
+
+    await allure.step("Validate Correspondence is sent with success", async () => {
+      allure.logStep("Verify Correspondence sent success is displayed")
+      expect(this.successMessage).toBeVisible();
+      await this.caseHeading.focus();
+      //await this.successMessage.scrollIntoViewIfNeeded();
+      await this.globalPage.captureScreenshot("Correspondence triggered");
+    });
+
+    await allure.step("Validate Case is processed without error", async () => {
+      await this.caseHeading.focus();
+      await this.caseHeading.scrollIntoViewIfNeeded();
+      await this.globalPage.captureScreenshot("Pension - Update case");
+    });
+
+    await allure.step("Validate New Pension History record", async () => {
+      await expect(this.pensionHistory).toBeVisible();
+      await this.pensionHistory.scrollIntoViewIfNeeded();
+      await this.sleep(1000);
+      await this.pensionHistory.click();
+      await this.globalPage.captureScreenshot("New Pension History record");
+    });
+
+    //await this.regularPensionAmount.scrollIntoViewIfNeeded();
+    //this.regularPensionAmount.focus();
+
   }
 
   async ProcessTab() {
@@ -524,8 +582,34 @@ export class PensionShellAccount extends BasePage {
     await this.abpScreenView.first().waitFor();
     await this.abpScreenView.first().click();
     await this.sleep(3000);
-    await this.transactionsTab.click();
+    if (process.env.PRODUCT == FUND.HESTA) {
+    await this.page.locator("//button[text()='HESTA for Mercy Retirement Income Stream']").click();
+    }else{
+      await this.page.locator("//button[text()='Vanguard Super SpendSmart']").click();
 
+    }
+    // await this.transactionsTab.click();
+
+  }
+
+  async getMemberId(account: string) {
+    await this.createdMemberCaseLink.click();
+    await this.sleep(3000)
+    if (account == 'ABP') {
+      await this.abpScreenView.waitFor();
+      await this.abpScreenView.click();
+    }
+    if (account == 'TTR') {
+      await this.ttrScreenView.waitFor();
+      await this.ttrScreenView.click();
+    }
+    if (account == 'Accumulation') {
+      await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).waitFor();
+      await this.page.getByRole('button', { name: 'HESTA for Mercy Super' }).click();
+    }
+    await this.sleep(3000);
+    let memberNumber = await this.memberID.textContent();
+    return memberNumber;
   }
 
   async selectTTRRetirement() {
@@ -533,23 +617,25 @@ export class PensionShellAccount extends BasePage {
     await this.ttrScreenView.first().waitFor();
     await this.ttrScreenView.first().click();
     await this.sleep(3000);
-    await this.transactionsTab.click();
 
   }
 
-  async createShellAccountExistingMember(addBeneficiary: boolean = false) {
+  async createShellAccountExistingMember(addBeneficiary: boolean = false, memberNo: string = '') {
 
     await this.sleep(3000);
     await this.memberOverview.waitFor();
-    await this.memberOverview.click();
-    await this.addAccount.click();
+    await this.memberOverview.click({ force: true });
+    await this.sleep(5000).then(() => this.addAccount.scrollIntoViewIfNeeded());
+    await this.addAccount.click({ force: true });
+    await this.sleep(3000);
     await this.abp.click();
+    await this.sleep(3000);
     await this.preferredContactMethod.click();
     await this.preferredContactMethodSelect.click();
     await this.residencyStatus.click();
     await this.residencyStatusSelect.click();
     await this.nextStep.click();
-    await this.addMemberConsolidation();
+    await this.addMemberConsolidation(true, memberNo);
     await this.addMemberInvestments();
     if (addBeneficiary) {
       await this.addMemberBeneficiaries();
@@ -561,38 +647,122 @@ export class PensionShellAccount extends BasePage {
     await this.sleep(3000);
     await this.initCreateCase();
     await this.createAcc.click();
-    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
-    await this.reviewCase.captureScreenshot("Shell account creation");
 
-  }
 
-  async ttrAccountCreation(addBeneficiary: boolean = false) {
-    await this.sleep(3000);
-    await this.memberOverview.waitFor();
-    await this.memberOverview.click();
-    await this.addAccount.click();
-    await this.ttr.click();
-    await this.preferredContactMethod.click();
-    await this.preferredContactMethodSelect.click();
-    await this.residencyStatus.click();
-    await this.residencyStatusSelect.click();
-    await this.nextStep.click();
-    await this.addMemberConsolidation();
-    await this.addMemberInvestments();
-    if (addBeneficiary) {
-      await this.addMemberBeneficiaries();
+    if (process.env.PRODUCT == FUND.HESTA) {
+      await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
     } else {
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('Intra Fund - Internal Transfer In is completed.'));
+      // Click on Internal transfer out process
+      await this.sleep(3000);
+      await this.page.locator("(//div[contains(@class,'gs-column full-row-gutter')]/following-sibling::div)[1]").click();
+      await this.sleep(3000);
+      await this.reviewCase.reviewCaseProcess(this.page.getByText('Pipeline item Check Intra Fund - Internal Transfer has been skipped'));
+      await this.reviewCase.captureScreenshot('Internal Transfer Out Case');
 
-      await this.nextStep.click();
+      // Click on Internal Transfer In Process
+      await this.page.locator("(//div[contains(@class,'gs-column full-row-gutter')]/following::div[contains(@class,'gs-column full-row-gutter')])[18]").click();
+    
+        await this.reviewCase.reviewCaseProcess(this.page.getByText('Transfer Out Finalised.'));
+        await this.reviewCase.captureScreenshot('Finalize Money Out Case');
+      }
+      await this.reviewCase.captureScreenshot("Shell account creation");
+
     }
-    await this.addMemberPensionDetails();
-    await this.sleep(3000);
-    await this.initCreateCase();
-    await this.createAcc.click();
-    await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
 
+  async ttrAccountCreation(addBeneficiary: boolean = false ) {
+      await this.sleep(3000);
+      await this.memberOverview.waitFor();
+      await this.memberOverview.click();
+      await this.addAccount.click();
+      await this.ttr.click();
+      await this.preferredContactMethod.click();
+      await this.preferredContactMethodSelect.click();
+      await this.residencyStatus.click();
+      await this.residencyStatusSelect.click();
+      await this.nextStep.click();
+      await this.addMemberConsolidation(true);
+      await this.addMemberInvestments();
+      if (addBeneficiary) {
+        await this.addMemberBeneficiaries();
+      } else {
+
+        await this.nextStep.click();
+      }
+      await this.addMemberPensionDetails('TTR');
+      await this.sleep(3000);
+      await this.initCreateCase();
+      await this.sleep(3000);
+      await this.createAcc.click();
+      await this.sleep(3000);
+      await this.reviewCase.reviewCaseProcess(this.shellAccountCreationSuccess);
+
+    }
+    async TransactionsTab(){
+      await this.sleep(3000);
+      await this.transactionsTab.click();
+      await this.sleep(3000);
+      let sgcType = await this.page.getByRole('cell', { name: 'Personal' }).first();
+      await sgcType.scrollIntoViewIfNeeded();
+      await this.sleep(2000);
+      await sgcType.click();
+      let amount = await this.getAmountContributed();
+      allure.logStep(`Amount contributed from Super Guarantee is: ${amount}`);
+      const message = await this.getMessageType();
+      allure.logStep(`Message Type expected for this contribution is: ${message}`);
+    }
+
+    async getAmountContributed(): Promise<string | null> {
+      const amount = await this.page.locator("(//p[text()='Amount']/following::p[@class='font-semibold'])[1]").textContent();
+      return amount ? amount.trim() : null;
   }
 
+  async getMessageType(): Promise<string | null> {
+    await this.sleep(3000);
+    const message = await this.page.locator("(//p[text()='Message type']/following::p[@class='font-semibold'])[1]").textContent();
+    return message ? message.trim() : null;
+}
 
+async selectAccumulationTab() {
+  await this.sleep(3000)
+  await this.abpScreenView.first().waitFor();
+  await this.abpScreenView.first().click();
+  await this.sleep(3000);
+  if (process.env.PRODUCT == FUND.HESTA) {
+  await this.page.locator("//button[text()='HESTA for Mercy Super']").click();
+  }else{
+    await this.page.locator("//button[text()='Vanguard Accumulation']").click();
+
+  }
+  // await this.transactionsTab.click();
 
 }
+
+async memberRollIn(memberLink?:boolean) {
+  if(memberLink){
+    await this.sleep(3000);
+    await this.page.locator("(//a[contains(@class,'gs-link text-teal-300')]//span)[1]").click();
+    await this.sleep(3000);
+    switch(product){
+        case 'HESTA for Mercy':
+          await this.page.getByRole('button', { name: 'HESTA for Mercy Retirement' }).click();
+      break;
+      case 'Vanguard Super':
+        await this.page.getByRole('option', { name: 'Vanguard Super SpendSmart' }).click();
+        break;
+        default:
+                throw new Error(`Unsupported product: ${product}`);
+    }
+
+  }
+  await this.sleep(3000);
+  await this.page.locator("//button[text()='Member Summary']").click();
+  await this.sleep(3000);
+  const number = await this.page.locator("(//p[@data-cy='info-title']/following::p[@data-cy='info-value'])[2]").textContent();
+  const memberNo = number?.trim();
+  await this.sleep(3000);
+  await this.transactionsTab.click();
+  return memberNo || '';
+}
+
+  }

@@ -6,6 +6,8 @@ import { UtilsAOL, fundDetails } from '../aol/utils_aol';
 import { ENVIRONMENT_CONFIG } from '../../config/environment_config';
 import { INVESTMENT_OPTIONS } from '../../constants';
 
+let fundProduct = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+
 export class RollinApi extends BaseDltaAolApi {
 
   readonly today: Date;
@@ -17,8 +19,20 @@ export class RollinApi extends BaseDltaAolApi {
   }
 
   async createRollin(linearId: string): Promise<{ linearId: string, memberNo: string, amount: number }> {
-    let { investmentId } = fundDetails(ENVIRONMENT_CONFIG.product);
-    let memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.BALANCED_GROWTH.ID;
+    let investmentId: string;
+    let memberInvestmentId:string
+        switch (fundProduct) {
+            case 'HESTA for Mercy':
+            investmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            memberInvestmentId = INVESTMENT_OPTIONS.MERCY.RETIREMENT.BALANCED_GROWTH.ID;
+            break;
+            case 'Vanguard Super':
+            investmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.AUSTRALIAN_SHARES.ID;
+            memberInvestmentId = INVESTMENT_OPTIONS.VANGUARD.RETIREMENT.CONSERVATIVE.ID;
+            break;
+            default:
+                throw new Error(`Unsupported product: ${fundProduct}`);
+        }
     let path = `member/${linearId}/rollin`;
     let moneyIn = UtilsAOL.generateMoney();
     let data = {

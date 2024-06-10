@@ -120,46 +120,55 @@ export class Transactions extends BaseDltaAolApi {
 
 
     async getMemberReport(memberId: string, type: string): Promise<any> {
-        const path = `member/${memberId}/report`;
-        const response = await this.get(path);
-        const responseBody = await response.json();
+        try {
+            const path = `member/${memberId}/report`;
+            const response = await this.get(path);
+            const responseBody = await response.json();
 
-        let dataOfRequestedType = null;
+            let dataOfRequestedType = null;
 
-        // Iterate through each item in the data array to find the desired report
-        for (let i = responseBody.data.length - 1; i >= 0; i--) {
-            const item = responseBody.data[i];
-            if (item.type === type) {
-                dataOfRequestedType = item;
-                break;
+            // Iterate through each item in the data array to find the desired report
+            for (let i = responseBody.data.length - 1; i >= 0; i--) {
+                const item = responseBody.data[i];
+                if (item.type === type) {
+                    dataOfRequestedType = item;
+                    break;
+                }
             }
+
+            if (!dataOfRequestedType) {
+                throw new Error(`Report of type '${type}' not found`);
+            }
+
+            // Extracting data from the found report
+            const { effectiveDate, type: reportType, data } = dataOfRequestedType;
+
+            // Parse the data based on the type
+            let parsedData: any = {};
+            if (type === 'MAAS Submit') {
+                parsedData = {
+                    type: "MAAS Submit",
+                    subType: "VALNEWMEM",
+                    individualsAccountPhase: "Accumulation",
+                    individualsAccountStatus: "Transition to retirement income stream",
+                    individualAccountStatusDate: "individualAccountStatusDate" // Replace with actual data
+                };
+            } else if (type === 'MATS Submit') {
+                parsedData = JSON.parse(data);
+            }
+
+            // Log the extracted fields
+            console.log(`${type} Report:`, parsedData);
+
+            // Return the extracted fields
+            return parsedData;
+        } catch (error: any) {
+
+            throw new Error(`Failed to fetch member report of type '${type}': ${error.message}`);
         }
-
-        if (!dataOfRequestedType) {
-            throw new Error(`Report of type '${type}' not found`);
-        }
-
-        // Extracting data from the found report
-        const { effectiveDate, type: reportType, data } = dataOfRequestedType;
-
-        // Parse the data based on the type
-        let parsedData: any = {};
-        if (type === 'MAAS Submit') {
-            parsedData = {
-                type: "MAAS Submit",
-                subType: "VALNEWMEM",
-                individualsAccountPhase: "Accumulation",
-                individualsAccountStatus: "Transition to retirement income stream",
-                individualAccountStatusDate: "individualAccountStatusDate" // Replace with actual data
-            };
-        } else if (type === 'MATS Submit') {
-            parsedData = JSON.parse(data);
-        }
-
-        // Log the extracted fields
-        console.log(`${type} Report:`, parsedData);
-
-        // Return the extracted fields
-        return parsedData;
     }
+
+
+
+
 }

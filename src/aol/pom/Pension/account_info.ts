@@ -3,6 +3,10 @@ import { BasePage } from "../../../common/pom/base_page";
 import * as member from "../../data/member.json"
 import { ReviewCase } from "../component/review_case";
 import { DateUtils } from "../../../utils/date_utils";
+import { allure } from "allure-playwright";
+import { GlobalPage } from "../component/global_page";
+import { FUND } from "../../../../constants";
+import { ENVIRONMENT_CONFIG } from "../../../../config/environment_config";
 
 export class AccountInfoPage extends BasePage {
 
@@ -38,12 +42,14 @@ export class AccountInfoPage extends BasePage {
     readonly processesLink: Locator;
     readonly memberaccount: Locator;
     readonly review: Locator;
-    readonly shellaccount:Locator;
-    readonly inReview:Locator;
+    readonly shellaccount: Locator;
+    readonly inReview: Locator;
+    readonly globalPage: GlobalPage;
 
     constructor(page: Page) {
         super(page)
         this.reviewCase = new ReviewCase(page);
+        this.globalPage = new GlobalPage(page);
 
         // Bank Account Details Add/Edit step
         this.accountInfo = page.getByRole('button', { name: 'Account Info' });
@@ -76,16 +82,19 @@ export class AccountInfoPage extends BasePage {
 
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberaccount = page.locator('(//button[@aria-label="Member - Create"])[1]').first();
-        this.review = page.locator('//span[text()="In Progress"]');
+        this.review = page.getByRole('cell', { name: 'In Review' });
+        //locator('//span[text()="In Progress "]');
         this.shellaccount = page.locator('//div[text()="Pension Shell Account - Create"][1]').first();
-        this.inReview = page.locator('//span[text()="In Review"]');
+        this.inReview = page.getByText('In Review')
 
     }
 
     /** this function is for edit or update the existing bank account details  */
     async editBankAccount() {
+        await this.sleep(4000);
         await this.accountInfo.click();
-        await this.editAccountIcon.click();
+        await this.sleep(4000);
+        await this.editAccountIcon.click({ force: true });
         await this.bsbNumberField.click();
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
@@ -101,12 +110,44 @@ export class AccountInfoPage extends BasePage {
         await this.createCaseButton.click();
         await this.sleep(3000);
         await this.buttonLinkToCase.click();
+        await this.sleep(3000);
+        let textContent = await this.page.locator("(//div[contains(@class,'leading-snug break-words')]//p)[1]").textContent();
+        let text = textContent?.trim();
+        let product = process.env.PRODUCT || ENVIRONMENT_CONFIG.product;
+        switch (product) {
+            case 'HESTA for Mercy':
+                if (text == 'Process step completed with note: Pension payment correspondence sent.') {
+                    await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Pension payment correspondence sent.'));
+                } else {
+                    await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
+                }
+                break;
 
-        await this.reviewCase.reviewCaseProcess(this.EditBankAcc_successMessage);
+            case 'Vanguard Super':
+                await this.reviewCase.reviewCaseProcess(this.page.getByText('Process step completed with note: Confirmation Sent'));
+                break;
+
+            default:
+                throw new Error(`Unsupported product: ${product}`);
+        }
+
+
+        await allure.step("Validate Correspondence is sent with success", async () => {
+            allure.logStep("Verify Correspondence sent success is displayed")
+            if (process.env.product == FUND.HESTA) {
+                expect(this.EditBankAcc_successMessage).toBeVisible();
+            }
+
+        });
+
+        await allure.step("Validate Bank-Update is processed without error", async () => {
+            await this.globalPage.captureScreenshot("Bank-Update case");
+        });
     }
 
     /** this function is for adding New Bank Account Details */
     async addNewBankAccount() {
+        await this.sleep(3000);
         await this.accountInfo.click();
         await this.sleep(3000);
         await this.addNewButton.click();
@@ -115,24 +156,26 @@ export class AccountInfoPage extends BasePage {
         await this.bsbNumberField.fill(member.BSBNumber);
         await this.accountNameField.click();
         await this.accountNameField.fill(member.AccountName);
-        await this.sleep(5000);
+        //await this.sleep(5000);
         await this.accountNUmberField.fill(member.AccountNumber);
+        await this.page.keyboard.press('Enter');
         await this.purposeDropdown.click();
         await this.sleep(5000);
         await this.purposeOption.click();
         await this.viewCasesButton.click();
         await this.sleep(5000);
         await this.createCaseButton.click();
-        await this.sleep(5000);
+        await this.sleep(7000);
         await this.buttonLinkToCase.click();
-        await this.sleep(10000);
+        await this.sleep(5000);
         await this.reviewCase.reviewCaseProcess(this.NewBankAcc_successMessage);
 
     }
 
     //CRN Update
     async updateCRN() {
-        await this.accountInfo.click();
+        await this.sleep(3000);
+        await this.accountInfo.click({ force: true });
         await this.sleep(3000);
         await this.editCRN.click();
         await this.CRN_Field.fill(member.CRN);

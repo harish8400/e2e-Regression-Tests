@@ -7,8 +7,8 @@ import { ShellAccountApi } from '../internal_transfer_in';
 
 export class AccumulationMemberApiHandler {
     
-    static async createMember(memberApi: MemberApi, tfnNull: boolean = false) {
-        return await memberApi.createMember(tfnNull);
+    static async createMember(memberApi: MemberApi, tfnNull: boolean = false,member?: string, surName?: string, memberNo?: string, tfn?: string,dob?: string) {
+        return await memberApi.createMember(tfnNull,member!, surName!, memberNo!, tfn!,dob!);
     }
     static async getCaseGroupId(memberApi: MemberApi, processId?: string) {
         
@@ -30,8 +30,8 @@ export class AccumulationMemberApiHandler {
         return await rollinApi.createRollin(memberId!);
     }
 
-    static async fetchMemberSummary(memberApi: MemberApi, linearId?: string): Promise<{ status: boolean }> {
-        return await memberApi.fetchMemberSummary(linearId!);
+    static async fetchMemberSummary(memberApi: MemberApi, linearId?: string,FullExit?: boolean): Promise<{ status: boolean }> {
+        return await memberApi.fetchMemberSummary(linearId!,FullExit!);
         
     }
 

@@ -21,9 +21,12 @@ import {ProcessApi } from '../aol_api/process_api';
 import { MemberApi } from '../aol_api/member_api';
 import { MemberInsurance } from './pom/member/member_insurance';
 import { EmployerPage } from './pom/employer_page';
+import { EmployerIdentitiesPage } from './pom/employer_Identities_page';
 import { RollinApi } from '../aol_api/rollin_api';
 import { ShellAccountApi } from '../aol_api/internal_transfer_in';
 import { GlobalPage } from './pom/component/global_page';
+import { SuperStreamPage } from './pom/superstream_contribution_page';
+
 import { DrawDownProfile } from '../aol_api/drawdown_profile_api';
 
 type ExtensionFixtures = {
@@ -49,10 +52,13 @@ type ExtensionFixtures = {
     processApi: ProcessApi;
     memberApi: MemberApi;
     memberInsurancePage: MemberInsurance;
-    employerPage : EmployerPage
+    employerPage : EmployerPage;
+    employerIdentitiesPage : EmployerIdentitiesPage;
     rollinApi:RollinApi;
     shellAccountApi:ShellAccountApi;
     transactionApi:Transactions;
+    superSteam:SuperStreamPage
+
     drawDownType:DrawDownProfile
 }
 
@@ -147,6 +153,14 @@ export const aolTest = base.extend<ExtensionFixtures>({
     employerPage: async ({ page }, use) => {
         await use(new EmployerPage(page));
     },
+    employerIdentitiesPage: async({ page }, use) => {
+        await use(new EmployerIdentitiesPage(page));
+    },
+
+    superSteam: async ({ page }, use) => {
+        await use(new SuperStreamPage(page));
+    },
+
     drawDownType: async ({ dltaApiRequestContext }, use) => {
         await use(new DrawDownProfile(dltaApiRequestContext));
     },

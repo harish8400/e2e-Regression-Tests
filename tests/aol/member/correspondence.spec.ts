@@ -4,14 +4,16 @@ import { fundName } from "../../../src/aol/utils_aol";
 import { ShellAccountCreationApiHandler } from "../../../src/aol_api/handler/shell_account_creation_handler";
 
 test.beforeEach(async ({ navBar }) => {
-    test.setTimeout(1000 * 60 * 10); // 10 minutes
+    test.setTimeout(120000);
     await navBar.selectProduct();
     await allure.suite("Member");
     await allure.parentSuite(process.env.PRODUCT!);
-        
+
 });
 
-test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage,memberApi,pensionAccountPage }) => {
+test(fundName() + "-Stop Correspondence @pension", async ({ navBar, relatedInformationPage, memberApi, pensionAccountPage }) => {
+
+    try {
         await navBar.navigateToPensionMembersPage();
         let { memberNo, processId } = await ShellAccountCreationApiHandler.createPensionShellAccount(memberApi);
         console.log('ProcessId:', processId);
@@ -22,5 +24,9 @@ test(fundName()+"-Stop Correspondence", async ({ navBar , relatedInformationPage
         await pensionAccountPage.reload();
         await navBar.navigateToPensionMembersPage();
         await navBar.selectMember(memberNo);
-        await relatedInformationPage.editCorrespondence('Lost Member');    
+        await relatedInformationPage.editCorrespondence('Lost Member');
+    } catch (error) {
+        throw error;
+    }
+
 })

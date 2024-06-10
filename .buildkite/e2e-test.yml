@@ -1,11 +1,37 @@
 # agents:
 #     queue: '${DEPLOY_AGENTS_QUEUE}'
-env:
-#  ENVIRONMENT: "dev"
-  DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
+# env:
+#   #  ENVIRONMENT: "dev"
+#   DEPLOY_AGENTS_QUEUE: "grow-tina-qa-provisioner"
+
+# steps:
+#   - label: "Pension E2E Test"
+#     agents:
+#       queue: "${DEPLOY_AGENTS_QUEUE}"
+#     command: "buildkite-signed-pipeline upload .buildkite/pension-test.yml"
+
+# queue: "${DEPLOY_AGENTS_QUEUE}"
 
 steps:
-  - label: "Pension E2E Test"
-    agents:
-      queue: "${DEPLOY_AGENTS_QUEUE}"
-    command: "buildkite-signed-pipeline upload .buildkite/pension-test.yml"
+  - label: ":test_tube: E2E UI Tests"
+    command: "./.buildkite/scripts/pension-test.sh"
+    artifact_paths:
+      - "playwright-report/**/*"
+    plugins:
+      - docker-compose#v4.14.0:
+          run: app
+          config:
+            - ./buildkite.docker-compose.yml
+          mount-checkout: true
+          volumes:
+            - "./playwright-report:/workdir/playwright-report"
+          env:
+            - BUILDKITE_ANALYTICS_TOKEN
+            - BUILDKITE
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION
+      - test-collector#v1.0.0:
+          files: "playwright-report/results.xml"
+          format: "junit"

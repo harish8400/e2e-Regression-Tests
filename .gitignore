@@ -9,5 +9,6 @@ dist/
 \nplaywright/.auth
 allure-report/
 allure-results/
-
 .env
+results.xml
+

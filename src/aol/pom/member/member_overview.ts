@@ -2,6 +2,7 @@ import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from "../../../common/pom/base_page";
 import { TFN } from "../../data/tfn";
 import { ReviewCase } from "../component/review_case";
+import { DateUtils } from "../../../utils/date_utils";
 
 export class MemberOverView extends BasePage{
     readonly processesLink: Locator;
@@ -19,6 +20,8 @@ export class MemberOverView extends BasePage{
     readonly tfnSource_dropdown: Locator;
     readonly tfnSourceOption_Member: Locator;
     readonly memberUpdate_sucessMessage: Locator;
+    readonly DOD: Locator;
+    readonly DOB: Locator;
 
     //Case Review
     readonly viewCase: Locator;
@@ -31,6 +34,8 @@ export class MemberOverView extends BasePage{
         super(page)
 
         this.reviewCase = new ReviewCase(page);
+        this.DOD = page.locator('input[name="dateOfDeath"]');
+        this.DOB = page.locator('input[name="dob"]');
         this.processException = page.locator("(//p[contains(text(),'java.lang.IllegalArgumentException')])[1]");
         this.processesLink = page.getByRole('link', { name: 'Processes' });
         this.memberAccumulationAccount_Tab = page.locator("//button[contains(.,'Accumulation' ) or contains(.,'HESTA for Mercy Super')]");
@@ -39,11 +44,11 @@ export class MemberOverView extends BasePage{
         this.TFNStatus_NotSupplied = page.locator('div').filter({ hasText: /^TFN Not Supplied$/ }).locator('div').first();
         this.superTickButton = page.getByRole('button', { name: 'Supertick' });
         this.superTickSuccessIcon = page.getByText('Supertickalert-success icon');
-        this.editPersonalDetails = page.locator('div').filter({ hasText: /^Personal detailsEdit Content$/ }).getByRole('button');
+        this.editPersonalDetails = page.locator('div').filter({ hasText: /^Personal DetailsEdit Content$/ }).getByRole('button');
         this.TFN_Field = page.getByLabel('TFN');
         this.tfnSource_dropdown = page.locator('#gs5__combobox div').first();
         this.tfnSourceOption_Member = page.getByRole('option', { name: 'Member' });
-        this.memberUpdate_sucessMessage = page.getByText('Updated member.');
+        this.memberUpdate_sucessMessage = page.locator("//p[contains(text(),'Updated member.')]");
 
         //case review
         this.viewCase = page.getByRole('button', { name: 'View Cases' });
@@ -85,4 +90,43 @@ export class MemberOverView extends BasePage{
         await this.superTickSuccessIcon.waitFor({state: 'visible'});
         await expect(this.superTickSuccessIcon).toBeVisible();
     }
+
+    async addDateOfDeath(){
+        await this.overViewTab.click();
+        await this.sleep(3000);
+        await this.editPersonalDetails.click();
+        await this.DOD.fill(DateUtils.ddmmyyyStringDate(-1));
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    }
+
+    async deleteTFN(){
+        await this.sleep(5000)
+        await this.overViewTab.focus();
+        await this.overViewTab.click();
+        await this.sleep(3000);
+        await this.editPersonalDetails.click();
+        await this.TFN_Field.clear();
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    }
+
+    async updateMemberAgeBelow18(){
+        await this.sleep(5000);
+        await this.overViewTab.click();
+        await this.sleep(3000);
+        await this.editPersonalDetails.click();
+        await this.DOB.fill(DateUtils.ddmmyyyStringDate(0,17));
+        await this.viewCase.click();
+        await this.createCase.click();
+        await this.sleep(5000);
+        await this.linkCase.click();
+        await this.reviewCase.reviewCaseProcess(this.memberUpdate_sucessMessage);
+    }    
 }

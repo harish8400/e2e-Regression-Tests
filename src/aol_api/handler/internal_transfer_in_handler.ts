@@ -14,7 +14,8 @@ export class ShellAccountApiHandler {
         gender?: string;
         title?: string;
         dob?: string;
-        tfn?:string
+        tfn?:string;
+        memberId?:string;
     }> {
         const memberApi = new ShellAccountApi(apiRequestContext);
         return memberApi.getMemberDetails(linearId!);
@@ -44,14 +45,13 @@ export class ShellAccountApiHandler {
         const { memberNo, processId, surname } = await ShellAccountApiHandler.createPensionShellAccount(apiRequestContext);
     
         // Perform necessary operations related to pension account creation
-        await pensionAccountPage.ProcessTab();
+        await new Promise(resolve => setTimeout(resolve, 6000));
         const caseGroupId = await MemberApiHandler.getCaseGroupId(apiRequestContext, processId);
+        await new Promise(resolve => setTimeout(resolve, 6000));
         await MemberApiHandler.approveProcess(apiRequestContext, caseGroupId!);
         await new Promise(resolve => setTimeout(resolve, 10000));
-        await pensionAccountPage.reload();
     
         // Navigate to TTR members page and select member
-        await navBar.navigateToTTRMembersPage(); 
         await navBar.selectMember(memberNo);
     
         // Return relevant data
@@ -71,15 +71,20 @@ export class ShellAccountApiHandler {
         if (id) {
           await MemberApiHandler.memberIdentity(apiRequestContext, id, { tfn, dob, givenName, fundName });
         }
-        await pensionAccountPage.reload();
         // Return relevant data
         return { memberNo, surname ,linearId };
       }
 
       static async ptbTransactions(navBar: Navbar, pensionAccountPage: PensionShellAccount, apiRequestContext: APIRequestContext) {
-        let { linearId ,memberNo,surname} = await this.process(navBar, pensionAccountPage, apiRequestContext);
+        let { linearId ,memberNo,surname} = await this.ttrShellAccountCreation(navBar, pensionAccountPage, apiRequestContext);
         await MemberApiHandler.ptbTransactions(apiRequestContext,linearId.id);
         return {memberNo,surname};
+    }
+
+
+    static async addContribution(apiRequestContext: APIRequestContext,memberId?: string) {
+        const contribution = new ShellAccountApi(apiRequestContext);
+        return contribution.addContribution(memberId!);
     }
 
     
